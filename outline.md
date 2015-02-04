@@ -21,20 +21,20 @@
 - Evaluation / Case Study
   - *maybe pitch this as a case study? it's certainly not going to feel like much of an "evaluation"*
   - explain Retwis application, txns:
-    - `new_user:5%`, `follow:10%`, `unfollow:5%`, `post:30%`, `read_timeline:50%`
-    - uniform vs powerlaw graph
-    - uniform vs zipfian workload generation
+      - `new_user:5%`, `follow:10%`, `unfollow:5%`, `post:30%`, `read_timeline:50%`
+      - uniform vs powerlaw graph
+      - uniform vs zipfian workload generation
   - evaluate with commutativity "on" and "off"
   - *evaluate with multiple levels of commutativity? something like comm. lattice eval?*
   - *evaluate against non-transactional?*
-    - could just run the same thing without transactions or with no aborting txns as a proxy
-    - but should we quantify the number of resulting conflicts/inconsistencies somehow?
+      - could just run the same thing without transactions or with no aborting txns as a proxy
+      - but should we quantify the number of resulting conflicts/inconsistencies somehow?
   - *evaluate against eventual consistency somehow?*
 - Future work
   - other potential uses of ADTs and commutativity
-    - batching and combining
-    - contention/hot-spot avoidance via splitting (phase reconciliation)
-    - replication/fault tolerance
+      - batching and combining
+      - contention/hot-spot avoidance via splitting (phase reconciliation)
+      - replication/fault tolerance
 
 ## Questions:
 - where to work in contention / naturally skewed workload? use as motivation? or just in case study?
