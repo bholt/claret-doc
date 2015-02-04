@@ -5,8 +5,8 @@
     - go to NoSQL for the flexibility and scaling
     - use eventual consistency and hope it works out
   - usually it does! why?
-    - because the operations actually don't conflict
-    - people will tolerate some inconsistencies/inaccuracy 
+      - because the operations actually don't conflict
+      - people will tolerate some inconsistencies/inaccuracy 
   - benefits ADTs
     - system understands commutativity, which means it doesn't have to abort
     - express desired behavior/semantics (may be approx)
