@@ -1,1 +1,1 @@
-Replace this text with your caption
+Average latency of completed transactions. Commutative and non-commutative concurrency control use the same number of round-trips, so latency should be unchanged.
