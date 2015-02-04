@@ -9,7 +9,8 @@ Commutativity is well known, especially in distributed systems, for enabling imp
 Since then, commutativity has seen a resurgence in modern NoSQL systems which have forgone complex data models for increased flexibility and scalability. In systems with eventual consistency, Conflict-free Replicated Data Types (CRDTs)\cite{Shapiro:SSS11} are defined in such a way that all their operations commute with each other to ensure that all replicas converge to the same state, regardless of the order in which operations are executed. In CRDTs, this is done by defining *merge* semantics which, while simpler than unbounded eventual consistency, may still be difficult for programmers to reason about. For instance, a Set CRDT must decide what to do when two clients concurrently add and remove the same key — usually this is handled by choosing a preference for adds. The result is that the client who removed the key must understand that their operation may not have happened.
 
 ## Commutativity Specifications
-
+Though *commutativity* is often discussed in terms of an operation commuting with all other operations, it is actually more nuanced.
+Commutativity is a property between two operations and the current abstract state of the ADT value which tells
 
 ## Transaction Boosting
 
