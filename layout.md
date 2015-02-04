@@ -1,4 +1,5 @@
 
+figures/avg_latency1/avg_latency1.png
 figures/avg_latency/avg_latency.png
 Introduction.md
 Commutativity.md
