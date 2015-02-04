@@ -6,9 +6,7 @@
 
 Commutativity is well known, especially in distributed systems, for enabling important optimizations. In classic databases literature from the 70s and 80s, commutativity was exploited by database systems designers within the safe confines of relational models. They were able to use their deep, complete knowledge of the data model and query plans to determine which transactions conflict with one another. *(citations?)*
 
-Since then, commutativity has seen a resurgence in modern NoSQL systems which have forgone complex data models for increased flexibility and scalability. In an eventually consistent model, RedBlue consistency allows executing commutative ("blue") operations locally, knowing they will eventually converge. Similarly, conflict-free replicated data types (CRDTs)\cite{Shapiro:SSS11} define commutative merge functions for all operations to ensure that replicas will converge.
-
-are defined in such a way that all their operations commute with each other to ensure that all replicas converge to the same state, regardless of the order in which operations are executed. In CRDTs, this is done by defining *merge* semantics which, while simpler than unbounded eventual consistency, may still be difficult for programmers to reason about. For instance, a Set CRDT must decide what to do when two clients concurrently add and remove the same key — usually this is handled by choosing a preference for adds. The result is that the client who removed the key must understand that their operation may not have happened.
+Since then, commutativity has seen a resurgence in modern NoSQL systems which have forgone complex data models for increased flexibility and scalability. In an eventually consistent model, RedBlue consistency allows executing commutative ("blue") operations locally, knowing they will eventually converge. Similarly, conflict-free replicated data types (CRDTs)\cite{Shapiro:SSS11} define commutative merge functions for all operations to ensure that replicas will converge. Lynx \cite{Zhang:SOSP13} uses knowledge of some commutative operations to make tracking serializability cheaper.
 
 ## Commutativity Specifications
 Though *commutativity* is often discussed in terms of an operation commuting with all other operations, it is actually more nuanced.
@@ -18,3 +16,11 @@ Commutativity is a property between two operations and the current abstract stat
 
 
 ## Other opportunities
+
+Sometimes, due to heavily skewed workloads such as those arising from social networks, there may be so many requests to a single record that just executing all the operations, even without aborting, is a bottleneck which prevents scaling. The Ellen Degeneres selfie retweet is a prime example of this. Luckily, ADTs and commutativity can help here, too.
+
+### Record splitting for parallelism
+Doppel \cite{Narula:OSDI14} observed that several contentious operations, such as incrementing counters or keeping track of the maximum bid, actually commute because the application doesn't need the output of each update operation. This allows them to *split* hot records onto multiple cores and execute commutative operations in parallel, *reconciling* them back to a single value before executing reads or non-commuting operations. This observation can be generalized via ADTs: operations can operate on copies of a record in parallel provided they commute with each other and provided they can be combined at the end of a phase before beginning to execute a new phase with a different set of operations that didn't commute with the first set.
+
+### Combining
+Another way to reduce contention on a shared data structure is to synchronize hierarchically: first with a couple immediate neighbors, then possibly with more clusters of neighbors, and finally with the data structure itself. This is known as combining \cite{flatCombining,yew:combining-trees,funnels} in the multi-processing literature, and can be applied to contended records in our model just as well as to shared data structures where it originated.
