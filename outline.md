@@ -8,11 +8,11 @@
       - because the operations actually don't conflict
       - people will tolerate some inconsistencies/inaccuracy 
   - benefits ADTs
-    - system understands commutativity, which means it doesn't have to abort
-    - express desired behavior/semantics (may be approx)
+      - system understands commutativity, which means it doesn't have to abort
+      - express desired behavior/semantics (may be approx)
 - Commutativity
   - commutativity specification
-    - ex: set
+      - ex: set
   - avoid aborting txns: transactional boosting, evaluated in Retwis case study
   - phase reconciliation: another use case, not evaluated but in the pipeline
 - Implementation
