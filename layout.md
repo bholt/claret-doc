@@ -1,5 +1,6 @@
 Introduction.md
 Commutativity.md
+datatypes.md
 Evaluation.md
 figures/throughput/throughput.png
 figures/abort_rates/abort_rates.png
