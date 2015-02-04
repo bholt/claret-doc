@@ -39,6 +39,7 @@
 ## Questions:
 - where to work in contention / naturally skewed workload? use as motivation? or just in case study?
 - where to introduce CRDTs? for this audience in particular, should have this be prominent
+- introduce "Ellen retweet" example in Intro? (can we find somewhere to cite?)
 
 ## Todo:
 - **Implementation/Evaluation**
