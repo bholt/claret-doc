@@ -1,3 +1,4 @@
+----------------------
 # Paper Outline
 - Introduction
   - strong consistency is expensive
