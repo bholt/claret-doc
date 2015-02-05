@@ -2,8 +2,8 @@
 
 Choosing the right ADT for your application can have profound performance implications. By selecting the semantics that are most permissive or specialized for the particular use case, programmers can ensure that the system is given the best chance of scaling performance effectively. By allowing approximations or non-determinism, performance may be further improved.
 
-## Approximate data types
-Twitter's stream processing system \cite{summingbird} leverages a library of algebraic data types, known as Algebird, to allow easy composition of commutative operations. Among these data types are a number of approximate data types.
+## Probabilistic data types
+Twitter's stream processing system \cite{summingbird} leverages a library of algebraic data types, known as Algebird, to allow easy composition of commutative operations. Among these data types are a number with probabilistic, rather than precise semantics.
 
 ## Conflict-free replicated data types
 
