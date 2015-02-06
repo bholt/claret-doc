@@ -6,4 +6,5 @@ Evaluation.md
 figures/throughput/throughput.png
 figures/abort_rates/abort_rates.png
 figures/avg_latency/avg_latency.png
+figures/txn_counts/txn_counts.png
 outline.md
