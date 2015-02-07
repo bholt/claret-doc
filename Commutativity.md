@@ -4,7 +4,7 @@
 - *discuss formal representations of commutativity from \cite{Herlihy:PPoPP08} and \cite{Kulkarni:PLDI11}, tradeoff between maximum concurrency and cost (runtime and implementation) of tracking it* 
 
 
-Commutativity is well known, especially in distributed systems, for enabling important optimizations. Since the 70s and 80s, commutativity has been exploited by database systems designers, particularly Weihl et al.\cite{Weihl:1988,Fekete:90}, within the safe confines of relational models, where knowledge of query plans and complete control of the data structures allows systems to determine when transactions may conflict. Recently, commutativity has seen a resurgence in systems without a predefined data model, such as NoSQL databases and transactional memory.
+Commutativity is well known, especially in distributed systems, for enabling important optimizations. Since the 80s, commutativity has been exploited by database systems designers \cite{Weihl:1988,Fekete:90}, within the safe confines of relational models, where knowledge of query plans and complete control of the data structures allows systems to determine when transactions may conflict. Recently, commutativity has seen a resurgence in systems without a predefined data model, such as NoSQL databases and transactional memory.
 
 In the realm of evental consistency, commutativity has been leveraged for convergence guarantees.
 RedBlue consistency allows executing commutative ("blue") operations locally, knowing they will eventually converge. Similarly, conflict-free replicated data types (CRDTs) \cite{Shapiro:SSS11} define commutative merge functions for all operations to ensure that replicas will converge.
