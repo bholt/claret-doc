@@ -4,9 +4,12 @@
 - *discuss formal representations of commutativity from \cite{Herlihy:PPoPP08} and \cite{Kulkarni:PLDI11}, tradeoff between maximum concurrency and cost (runtime and implementation) of tracking it* 
 
 
-Commutativity is well known, especially in distributed systems, for enabling important optimizations. In classic databases literature from the 70s and 80s, commutativity was exploited by database systems designers within the safe confines of relational models. They were able to use their deep, complete knowledge of the data model and query plans to determine which transactions conflict with one another. *(citations?)*
+Commutativity is well known, especially in distributed systems, for enabling important optimizations. Since the 70s and 80s, commutativity has been exploited by database systems designers, particularly Weihl et al.\cite{Weihl:1988,Fekete:90}, within the safe confines of relational models, where knowledge of query plans and complete control of the data structures allows systems to determine when transactions may conflict. Recently, commutativity has seen a resurgence in systems without a predefined data model, such as NoSQL databases and transactional memory.
 
-Since then, commutativity has seen a resurgence in modern NoSQL systems which have forgone complex data models for increased flexibility and scalability. In an eventually consistent model, RedBlue consistency allows executing commutative ("blue") operations locally, knowing they will eventually converge. Similarly, conflict-free replicated data types (CRDTs)\cite{Shapiro:SSS11} define commutative merge functions for all operations to ensure that replicas will converge. Lynx \cite{Zhang:SOSP13} uses knowledge of some commutative operations to make tracking serializability cheaper.
+In the realm of evental consistency, commutativity has been leveraged for convergence guarantees.
+RedBlue consistency allows executing commutative ("blue") operations locally, knowing they will eventually converge. Similarly, conflict-free replicated data types (CRDTs) \cite{Shapiro:SSS11} define commutative merge functions for all operations to ensure that replicas will converge.
+
+Lynx \cite{Zhang:SOSP13} uses knowledge of some commutative operations to make tracking serializability cheaper in chained transactions. Doppel \cite{Narula:OSDI14} added several explicitly commutative operations on records which they exploited to better handle common high-contention situations such as counters and "top-k lists" in the context of a single node multicore database. Finally, HyFlow \cite{Kim:EuroPar13}, a distributed transactional memory framework, reorders commutative operations on specific data types to execute before others to allow them to operate concurrently on a single version of a record.
 
 ## Commutativity Specifications
 Though *commutativity* is often discussed in terms of an operation commuting with all other operations, it is actually more nuanced.
