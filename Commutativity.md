@@ -12,11 +12,11 @@ RedBlue consistency allows executing commutative ("blue") operations locally, kn
 Lynx \cite{Zhang:SOSP13} uses knowledge of some commutative operations to make tracking serializability cheaper in chained transactions. Doppel \cite{Narula:OSDI14} added several explicitly commutative operations on records which they exploited to better handle common high-contention situations such as counters and "top-k lists" in the context of a single node multicore database. Finally, HyFlow \cite{Kim:EuroPar13}, a distributed transactional memory framework, reorders commutative operations on specific data types to execute before others to allow them to operate concurrently on a single version of a record.
 
 ## Commutativity Specifications
-Though *commutativity* is often discussed in terms of an operation commuting with all other operations, it is actually more nuanced.
-Commutativity is a property between two operations and the current abstract state of the ADT value which tells
 
+Though *commutativity* is often discussed in terms of an operation commuting with all other operations, it is actually more nuanced. If a pair of operations commute, then executing them in either order will produce the same result. Using the definitions from \cite{Kulkarni:PLDI11}, whether or not a pair of method invocations commute is a property of the data type and is a function of the methods, their arguments, their return values, and the *abstract* state of their target. We call the full set of commutativity rules for a data type its *commutativity specification.* An example specification for a *set* is shown in Table \cite{spec}.
+  
 ## Transaction Boosting
-
+If two operations in different transactions commute with each other, it means they could execute in any order, 
 
 ## Other opportunities
 
