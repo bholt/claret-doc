@@ -1,6 +1,7 @@
 abstract.md
 Introduction.md
 Commutativity.md
+set_spec.tex
 datatypes.md
 Evaluation.md
 figures/throughput/throughput.png
