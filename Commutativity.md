@@ -13,7 +13,7 @@ Lynx \cite{Zhang:SOSP13} uses knowledge of some commutative operations to make t
 
 ## Commutativity Specifications
 
-Though *commutativity* is often discussed in terms of an operation commuting with all other operations, it is actually more nuanced. If a pair of operations commute, then executing them in either order will produce the same result. Using the definitions from \cite{Kulkarni:PLDI11}, whether or not a pair of method invocations commute is a property of the data type and is a function of the methods, their arguments, their return values, and the *abstract* state of their target. We call the full set of commutativity rules for a data type its *commutativity specification.* An example specification for a *set* is shown in Table \cite{spec}.
+Though *commutativity* is often discussed in terms of an operation commuting with all other operations, it is actually more nuanced. If a pair of operations commute, then executing them in either order will produce the same result. Using the definitions from \cite{Kulkarni:PLDI11}, whether or not a pair of method invocations commute is a property of the data type and is a function of the methods, their arguments, their return values, and the *abstract* state of their target. We call the full set of commutativity rules for a data type its *commutativity specification.* An example specification for a *set* is shown in Table \cite{tab:spec}.
 
 ## Transaction Boosting
 If two operations in different transactions commute with each other, it means they could execute in any order, 
