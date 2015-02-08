@@ -1,0 +1,14 @@
+\begin{tabular}{lll}
+\textbf{method:} & \textbf{commutes with:} & \textbf{when:} \\
+\hline
+\texttt{add(x)} & \texttt{add(y)} & $\forall x, y$ \\
+\texttt{remove(x)} & \texttt{remove(y)} & $\forall x, y$ \\
+    & \texttt{add(y)} & $x \ne y$ \\
+\texttt{size()} & \texttt{add(x)} & $x \in Set$ \\
+    & \texttt{remove(x)} & $x \notin Set$ \\
+\texttt{getall()} & \texttt{add(x)} & $x \in Set$ \\
+    & \texttt{remove(x)} & $x \notin Set$ \\
+    & \texttt{size()} & $always$ \\
+    \hline
+\end{tabular}
+\caption{\label{spec} Commutativity Specification for Set.}
