@@ -8,7 +8,7 @@ As an extremely simple motivating example, imagine a programmer wants a unique i
 
 ## Probabilistic data types
 
-Some data types have *probabilistic* guarantees about their semantics, which, rather than always returning a precisely correct answer, trade off some accuracy for better performance or storage. Some better-known examples include *bloom filters*\cite{bloom}, *hyperloglog* \cite{hyperloglog}, and *count-min sketch* \cite{countminsketch}. Hyperloglog, which also appears in Redis \cite{redis}, estimates the cardinality (size) of a set within a fixed error bound. Twitter's streaming analytics system \cite{summingbird} leverages these probabilistic data types to handle the high volume of data needing to be processed. We expect similar improvements to be had from their use in Claret.
+Some data types have *probabilistic* guarantees about their semantics, which, rather than always returning a precisely correct answer, trade off some accuracy for better performance or storage. Some better-known examples include *bloom filters* \cite{bloom}, *hyperloglog* \cite{hyperloglog}, and *count-min sketch* \cite{countminsketch}. Hyperloglog, which also appears in Redis \cite{redis}, estimates the cardinality (size) of a set within a fixed error bound. Twitter's streaming analytics system \cite{summingbird} leverages these probabilistic data types to handle the high volume of data needing to be processed. We expect similar improvements to be had from their use in Claret.
 
 ## Conflict-free replicated data types
 
