@@ -23,8 +23,6 @@ Though *commutativity* is often discussed in terms of an operation commuting wit
     4 ECHB      & 18.10  & --     & 16.76 &  --  & --    \\
     5 ICB       & 18.56  & --     & 12.85 &  --  & --    \\    
     6 ECCB      & 18.56  & --     & 12.83 &  --  & --    \\
-\label{spec}
-\caption{Commutativity Specification for \emph{Set}.}
 \end{tabular}
 
 ## Transaction Boosting
