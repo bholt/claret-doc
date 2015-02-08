@@ -1,0 +1,148 @@
+---
+title: 'Claret: Using Data Types for Highly Concurrent Distributed Transactions'
+preprint: true
+
+author:
+  - {family: Holt,  given: Brandon, affiliation: 1, email: bholt}
+  - {family: Zhang, given: Irene,   affiliation: 1, email: iyzhang}
+  - {family: Ports, given: Dan,     affiliation: 1, email: dkp}
+  - {family: Oskin, given: Mark,    affiliation: 1, email: oskin}
+  - {family: Ceze,  given: Luis,    affiliation: 1, email: luisceze}
+
+organization:
+  - {id: 1, name: University of Washington}
+
+conference:
+  name: PaPoC 2015
+  location: 'April 21, 2015, Bordeaux, France'
+  year: 2015
+  
+doi: 0
+
+layout: sigplanconf
+bibliography: biblio.bib
+output:
+  pdf_document:
+    fig_caption: yes
+
+abstract: |
+  Building database applications out of data structures rather than simple string values allows the flexibility and fine-grained control of typical key-value databases while providing better performance and scalability. Composing transactions out of linearizable data structure operations exposes concurrency in a safe way, making it simple to implement efficiently and easy to reason about.
+---
+```{r setup, include=FALSE}
+opts_chunk$set(dev = 'pdf')
+```
+
+# Introduction
+
+Providing strong consistency in interactions with databases greatly aids programmers in their ability to write correct code. However, when scaling services under heavy load to millions or billions of users, systems today often must give up these consistency guarantees to meet tight performance goals. A wide variety of NoSQL databases support a more relaxed, or eventually consistent model, and in the majority of cases, it seems that this lack of consistency does not hinder them — the observation being that most times, transactional updates are unneccessary because potential conflicts are just not likely to be observed, and the users may even accept minor inconsistencies, such as two tweets being out of temporal order.
+
+However, this is leaving a lot to chance. If it truly is the case that these interactions shouldn't conflict in observable ways, or that certain parts of the application can tolerate imprecision, then why not capture those properties in the programming model for these databases? What if the semantics of operations were known to the database, so it could continue to ignore cases where ordering or consistency really don't matter, but could step in and mediate those specific instances where it could be a problem. And what if the programmer could express the semantics they desire succintly and rigorously?
+
+We argue that the correct way to express and enforce these semantics is through the use of an old computer science standby: abstract data types (ADTs). Rather than treating the values in a key/value store simply as strings, making them into more complex data types provides a richer interface, exposing ample opportunities for optimization to the database and a clean mechanism for programmers to express their intentions.
+
+Performance benefits come from understanding the properties of ADT operations: those that commute with each other can be performed concurrently, even on multiple copies of the record. This means that transactions whose operations commute abort less, approaching the performance without transactions. This cleanly captures the cases described above where conflicts were unobservable or ordering didn't matter but in a safe way because any operations that don't in fact commute will be handled with traditional concurrency control. Using insights from multi-core concurrent data structures, we show in \autoref{comm} that it is practical to reason about the matrix of commutativity among operations and build implementations that make the right tradeoff between the amount of concurrency allowed and the efficiency of tracking it.
+
+Selecting the right data type for the job gives programmers a clean, precise way to express their desired behavior. For instance, rather than using a generic integer to generate unique identifiers, a `UniqueID` type, realizing that contiguity isn't necessary, can be trivially parallelized and distributed. Though this is an extremely simple case (and nearly universally adopted optimization), it fits the same mold as more nuanced decisions, such as choosing to represent the number of times a given post has been "retweeted" as a `HyperLogLog`, which can efficiently yield the approximate number of unique users, rather than a costly precise `Set`. Though selecting data structures for the job at hand is nothing new to programmers, only a handful of databases, such as Redis, MongoDB or Riak, support this flexibility, and they do not use the abstraction it affords to enforce strongly consistent transactions.
+
+# Commutativity {#comm}
+
+Commutativity is well known, especially in distributed systems, for enabling important optimizations. Since the 80s, commutativity has been exploited by database systems designers \cite{Weihl:1988,Fekete:90}, within the safe confines of relational models, where knowledge of query plans and complete control of the data structures allows systems to determine when transactions may conflict. Recently, commutativity has seen a resurgence in systems without a predefined data model, such as NoSQL databases and transactional memory.
+
+In the realm of eventual consistency, commutativity has been leveraged for convergence guarantees.
+RedBlue consistency allows executing commutative ("blue") operations locally, knowing they will eventually converge. Similarly, conflict-free replicated data types (CRDTs) \cite{Shapiro:SSS11} define commutative merge functions for all operations to ensure that replicas will converge.
+
+Lynx \cite{Zhang:SOSP13} uses knowledge of some commutative operations to make tracking serializability cheaper in chained transactions. Doppel \cite{Narula:OSDI14} added several explicitly commutative operations on records which they exploited to better handle common high-contention situations such as counters and "top-k lists" in the context of a single node multicore database. Finally, HyFlow \cite{Kim:EuroPar13}, a distributed transactional memory framework, reorders commutative operations on specific data types to execute before others to allow them to operate concurrently on a single version of a record.
+
+## Commutativity Specifications
+
+\begin{table}
+\centering
+\begin{tabular}{lll}
+\textbf{method:} & \textbf{commutes with:} & \textbf{when:} \\
+\hline
+\texttt{add(x) -> void} & \texttt{add(y)} & $\forall x, y$ \\
+\texttt{remove(x) -> void} & \texttt{remove(y)} & $\forall x, y$ \\
+    & \texttt{add(y)} & $x \ne y$ \\
+\texttt{size() -> int} & \texttt{add(x)} & $x \in Set$ \\
+    & \texttt{remove(x)} & $x \notin Set$ \\
+\texttt{getall() -> list} & \texttt{add(x)} & $x \in Set$ \\
+    & \texttt{remove(x)} & $x \notin Set$ \\
+    & \texttt{size()} & $always$ \\
+    \hline
+\end{tabular}
+\caption{\label{spec} Commutativity Specification for Set.}
+\end{table}
+
+Though *commutativity* is often discussed in terms of an operation commuting with all other operations, it is actually more nuanced. If a pair of operations commute, then executing them in either order will produce the same result. Using the definitions from \cite{Kulkarni:PLDI11}, whether or not a pair of method invocations commute is a property of the data type and is a function of the methods, their arguments, their return values, and the *abstract* state of their target. We call the full set of commutativity rules for a data type its *commutativity specification.* An example specification for a *Set* is shown in \autoref{tab:spec}. It is important to note that interface choice affects commutativity: if `add(x)` returned a boolean that expressed if the item was added or not, then `add(x)` would only commute with `add(y)` if $x \ne y$. In this case, the difference doesn't drastically impact commutativity, but it would affect the cost of checking commutativity dynamically.
+
+For a given data type interface, there is one specification that expresses the maximum concurrency, like the one in \autoref{tab:spec}, but there may be many that express varying degrees of commutativity. The space of possible specifications forms a *lattice* where $\top$ specifies the maximum possible commutativity, and $\bot$ represents the case where no operations are allowed to commute. As Kulkarni \cite{Kulkarni:PLDI11} explored, there is a complicated tradeoff between exposing more concurrency and efficiently tracking commutativity. Data structure designers and users navigate these choices to optimize their programs.
+
+## Transactional Boosting
+If two operations on the same record in two different transactions commute, then the transactions can safely execute concurrently, even though they both update the record. This technique of raising the level of abstraction in transactions to operations is known as *transactional boosting* \cite{Herlihy:PPoPP08}. This straightforward use of commutativity was shown to significantly improve abort rates in state-of-the-art software transactional memory. In \autoref{eval}, we show how it can be applied to distributed transactions.
+
+## Other opportunities
+
+Sometimes, due to heavily skewed workloads such as those arising from social networks, there may be so many requests to a single record that just executing all the operations, even without aborting, is a bottleneck which prevents scaling. The Ellen Degeneres selfie retweet is a prime example of this. In addition to transactional boosting, which we evaluate in this work, there are many other uses for commutativity. We mention just a few here which we have yet to evaluate.
+
+### Record splitting for parallelism
+
+Doppel \cite{Narula:OSDI14} observed that several contentious operations, such as incrementing counters or keeping track of the maximum bid, actually commute because the application doesn't need the output of each update operation. This allows them to *split* hot records onto multiple cores and execute commutative operations in parallel, *reconciling* them back to a single value before executing reads or non-commuting operations. This observation can be generalized via ADTs: operations can operate on copies of a record in parallel provided they commute with each other and provided they can be combined at the end of a phase before beginning to execute a new phase with a different set of operations that didn't commute with the first set.
+
+### Combining
+
+Another way to reduce contention on a shared data structure is to synchronize hierarchically: first with a couple immediate neighbors, then possibly with more clusters of neighbors, and finally with the data structure itself. This is known as combining \cite{flatCombining,yew:combining-trees,funnels} in the multi-processing literature, and could be applied to contended records in our model just as well as to shared data structures where it originated.
+
+
+# Data type selection
+
+Choosing the right data type for your application can have profound performance implications.
+As mentioned before, the interface can determine what commutes simply by exposing more information than necessary. By selecting the semantics that are most permissive or specialized for their particular use case, programmers can ensure that the system is given the best chance of scaling performance effectively. By allowing approximations or non-determinism, performance may be further improved.
+
+## Unique identifiers
+As an extremely simple motivating example, imagine a programmer wants a unique identifier for each new post. They might naively choose a `Counter` which returns the next number in the sequence whenever `next` is called. Ensuring each caller gets the next value without skipping any ends up being very expensive, as implementers of TPC-C \cite{TPCC}, which explicitly requires this, know well. In most cases, however, the programmer could use a special `UniqueID` type, whose only criteria is that each call to `next` returns a different value, which can be implemented trivially in a number of efficient highly-concurrent ways.
+
+## Probabilistic data types
+
+Some data types have *probabilistic* guarantees about their semantics, which, rather than always returning a precisely correct answer, trade off some accuracy for better performance or storage. Some better-known examples include *bloom filters*\cite{bloom}, *hyperloglog* \cite{hyperloglog}, and *count-min sketch* \cite{countminsketch}. Hyperloglog, which also appears in Redis \cite{redis}, estimates the cardinality (size) of a set within a fixed error bound. Twitter's streaming analytics system \cite{summingbird} leverages these probabilistic data types to handle the high volume of data needing to be processed. We expect similar improvements to be had from their use in Claret.
+
+## Conflict-free replicated data types
+
+CRDTs, which were invented for eventual consistency, can actually be fit into our model as well, as a new kind of data type with loosly synchronized semantics. These data types might allow multiple copies in different shards to asynchronously update each other on the operations they've seen. By defining the same kind of *merge* function as traditional CRDTs, these replicas could ensure they all converge to the same state. For instance, a Set CRDT must decide what to do when two clients concurrently add and remove the same key — usually this is handled by choosing a preference for adds. Clients of this data type might find it more difficult to reason about, since a remove may appear to never have happened, but one can imagine making this tradeoff in parts of the application where it otherwise cannot scale.
+
+This mixing in of non-serializability should not be taken lightly. To ensure that serializable transactions aren't tainted by inconsistent information from these kinds of data types, some form of information flow or static analysis (via a type system) could be employed in client code.
+
+# Evaluation {#eval}
+To show the efficacy of leveraging commutative operations, we use an application typical of web workloads: a simplified Twitter clone known as *Retwis*. In \autoref{tput} you can see that with commutativity, transaction throughput scales with increased concurrency.
+
+```{r throughput, fig.cap="Throughput on uniform random workload.\\label{tput}", fig.width=3.5, fig.height=3, echo=F, message=F, warning=F, error=F}
+data <- function(d) {
+  d$abort_rate <- d$txn_failed / (d$txn_count + d$txn_failed)
+  d$throughput <- d$txn_count * num(d$nclients) / d$total_time
+  # d$throughput <- d$ntxns * num(d$nclients) / d$total_time
+  d$avg_latency_ms <- d$txn_time / d$txn_count * 1000
+  return(d)
+}
+
+d <- data(db("
+  select * from tapir where 
+  generator_time is not null and total_time is not null
+  and (initusers = 50 or initusers = 500)
+  and name like 'claret-v%'
+",
+  factors=c('nshards', 'nclients'),
+  numeric=c('total_time', 'txn_count')
+))
+
+ggplot(d, aes(
+  x = nclients,
+  y = throughput,
+  group = ccmode,
+  fill = ccmode,
+  color = ccmode
+))+
+# geom_meanbar()+
+stat_smooth()+
+facet_grid(~nshards, labeller=label_pretty)+
+theme_mine
+```
+
