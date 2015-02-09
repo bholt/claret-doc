@@ -1,6 +1,6 @@
 abstract.md
 Introduction.md
-set_spec.tex
+spec.tex
 Commutativity.md
 datatypes.md
 Evaluation.md
