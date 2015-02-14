@@ -5,24 +5,7 @@ The observation has been that relaxed or eventual consistency is a good fit for 
 
 In situations where consistency really is crucial, developers can enforce stronger guarantees on top of any platform, but they often get it wrong. Google, recognizing the benefit to programmer productivity, reintroduced serializable transactions to their next generation database, Spanner \cite{Spanner}. However, this leaves them with two extreme choices, with significant performance impact. If certain parts of an application can tolerate imprecision, then why not capture those properties in the database programming model? What if the programmer could express the semantics they desire succintly and precisely, in a way that the database can better reason about conflicts and optimize performance, without giving up the flexibility and scalability of their existing systems?
 
-Abstract data types (ADTs) are exactly what is needed in this case. They 
-
-Providing strong consistency in databases greatly aids programmers in their ability to write correct code. 
-However, in order to scale services to millions or billions of users, many gave up on strong consistency and moved to NoSQL systems with weak consistency guarantees in order to meet tight performance goals. 
-
-Since that initial migration, however, many systems, recognizing the benefit to programmer productivity, have reintroduced features supporting serializability, such as Google's Spanner \cite{Spanner}.
-
-However since the initial migration, some 
-many have recognized that supporting serializability can aid programmer productivity and of course
- the cost of this lack of consistency on programmer productivity, and have reintroduced features to support serializability, such as Google's Spanner \cite{Spanner}. 
-
-In addition, they have forgone the structure of relational schemas for ad-hoc key-value data models 
-
-Providing strong consistency in interactions with databases greatly aids programmers in their ability to write correct code. However, when scaling services under heavy load to millions or billions of users, systems today often must give up these consistency guarantees to meet tight performance goals. A wide variety of NoSQL databases support a more relaxed, or eventually consistent model, and in the majority of cases, it seems that this lack of consistency does not hinder them — the observation being that most times, transactional updates are unnecessary because potential conflicts are just not likely to be observed, and the users may even accept minor inconsistencies, such as two tweets being out of temporal order.
-
-However, this is leaving a lot to chance. If it truly is the case that these interactions shouldn't conflict in observable ways, or that certain parts of the application can tolerate imprecision, then why not capture those properties in the programming model for these databases? What if the semantics of operations were known to the database, so it could continue to ignore cases where ordering or consistency really don't matter, but could step in and mediate those specific instances where it could be a problem. And what if the programmer could express the semantics they desire succinctly and rigorously?
-
-We argue that the correct way to express and enforce these semantics is through the use of an old computer science standby: abstract data types (ADTs). Rather than treating the values in a key/value store simply as strings, making them into more complex data types provides a richer interface, exposing ample opportunities for optimization to the database and a clean mechanism for programmers to express their intentions.
+Abstract data types (ADTs) are the solution to this problema. Rather than limiting the records in databases to being primitive types like strings or integers, raising them to more complex data types provides a richer interface, exposing ample opportunities for optimization to the database and a precise mechanism to express the intentions of programmers.
 
 Performance benefits come from understanding the properties of ADT operations: those that commute with each other can be performed concurrently, even on multiple copies of the record. This means that transactions whose operations commute abort less, approaching the performance without transactions. This cleanly captures the cases described above where conflicts were unobservable or ordering didn't matter but in a safe way because any operations that don't in fact commute will be handled with traditional concurrency control. Using insights from multi-core concurrent data structures, we show in Section \ref{sec:commutativity} that it is practical to reason about the matrix of commutativity among operations and build implementations that make the right tradeoff between the amount of concurrency allowed and the efficiency of tracking it.
 
