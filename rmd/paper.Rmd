@@ -29,7 +29,7 @@ abstract: |
   Building database applications out of data structures rather than simple string values allows the flexibility and fine-grained control of typical key-value databases while providing better performance and scalability. Composing transactions out of linearizable data structure operations exposes concurrency in a safe way, making it simple to implement efficiently and easy to reason about.
 ---
 ```{r setup, include=FALSE}
-opts_chunk$set(dev = 'pdf')
+opts_chunk$set(dev='pdf', echo=F, message=F, warning=F, error=F, fig.width=3.2, fig.height=3)
 ```
 
 # Introduction
@@ -112,35 +112,42 @@ This mixing in of non-serializability should not be taken lightly. To ensure tha
 # Evaluation {#eval}
 To show the efficacy of leveraging commutative operations, we use an application typical of web workloads: a simplified Twitter clone known as *Retwis*. In \autoref{tput} you can see that with commutativity, transaction throughput scales with increased concurrency.
 
-```{r throughput, fig.cap="Throughput on uniform random workload.\\label{tput}", fig.width=3.5, fig.height=3, echo=F, message=F, warning=F, error=F}
-data <- function(d) {
-  d$abort_rate <- d$txn_failed / (d$txn_count + d$txn_failed)
-  d$throughput <- d$txn_count * num(d$nclients) / d$total_time
-  # d$throughput <- d$ntxns * num(d$nclients) / d$total_time
-  d$avg_latency_ms <- d$txn_time / d$txn_count * 1000
-  return(d)
-}
-
+```{r stress, fig.cap="Throughput of SortedSet microbenchmark.\\label{stress_tput}"}
 d <- data(db("
-  select * from tapir where 
-  generator_time is not null and total_time is not null
-  and (initusers = 50 or initusers = 500)
-  and name like 'claret-v%'
-",
-  factors=c('nshards', 'nclients'),
-  numeric=c('total_time', 'txn_count')
-))
-
-ggplot(d, aes(
-  x = nclients,
-  y = throughput,
-  group = ccmode,
-  fill = ccmode,
-  color = ccmode
-))+
-# geom_meanbar()+
-stat_smooth()+
-facet_grid(~nshards, labeller=label_pretty)+
-theme_mine
+    select * from tapir where 
+    total_time is not null
+    and name like 'stress-v0.14%'
+    ", factors=c('nshards', 'nclients'), numeric=c('total_time', 'txn_count')))
+d$opmix <- factor(revalue(d$mix, c(
+    'mostly_update'='35% read\n65% update',
+    'update_heavy'='50% read\n50% update',
+    'read_heavy'='90% read\n10% update'
+)))
+d.u <- subset(d, nshards == 4 & nkeys == 10000 & alpha == 0.6 & grepl('update_heavy|read_heavy', mix))
+ggplot(d.u, aes(x=nclients, y=throughput, group=cc, fill=cc, color=cc, linetype=cc))+
+    stat_summary(fun.y=mean, geom="line")+
+    xlab('Concurrent clients')+ylab('Throughput (transactions / sec)')+
+    expand_limits(y=0)+
+    facet_wrap(~opmix)+
+    theme_mine+theme(legend.position='top', legend.direction='horizontal', legend.title.align=1)+
+    cc_scales(title='Concurrency\ncontrol:')
 ```
 
+```{r throughput, fig.cap="Throughput on social network workloads.\\label{tput}"}
+d <- data(db("
+    select * from tapir where 
+    generator_time is not null and total_time is not null
+    and name like 'claret-v0.14%'
+  ",
+    factors=c('nshards', 'nclients'),
+    numeric=c('total_time', 'txn_count')
+))
+d.u <- subset(d, nshards == 4 & initusers == 4096 & grepl('geom_repost|read_heavy', mix))
+ggplot(d.u, aes(x=nclients, y=throughput, group=cc, fill=cc, color=cc, linetype=cc))+
+    stat_summary(fun.y=mean, geom="line")+
+    xlab('Concurrent clients')+ylab('Throughput (transactions / sec)')+
+    expand_limits(y=0)+
+    facet_wrap(~workload)+
+    theme_mine+theme(legend.position='top', legend.direction='horizontal', legend.title.align=1)+
+    cc_scales(title='Concurrency\ncontrol:')
+```
