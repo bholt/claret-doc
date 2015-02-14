@@ -97,9 +97,14 @@ Doppel \cite{Narula:OSDI14} observed that several contentious operations, such a
 Another way to reduce contention on a shared data structure is to synchronize hierarchically: first with a couple immediate neighbors, then possibly with more clusters of neighbors, and finally with the data structure itself. This is known as combining \cite{flatCombining,yew:combining-trees,funnels} in the multi-processing literature, and could be applied to contended records in our model just as well as to shared data structures where it originated.
 
 # Evaluation {#eval}
-To show the efficacy of leveraging commutative operations, we use an application typical of web workloads: a simplified Twitter clone known as *Retwis*. In \autoref{tput} you can see that with commutativity, transaction throughput scales with increased concurrency.
+To demonstrate the efficacy of leveraging commutative operations in transactions, we built a simple prototype key-value store, modeled after Redis, that supports complex data types for records, each with their own set of available operations. The transaction protocol employs fairly standard two-phase commit design, and uses two-phase locking with retries to guarantee isolation. To support transactions with arbitrary data structure operations, each operation is split into two steps: *stage* and *apply*. During transaction execution, each operation's *stage* method attempts to acquire the necessary lock and may return a value *as if the operation has completed* (e.g. an "increment" speculatively returns the incremented value). When the transaction is prepared to commit, *apply* is called on each staged operation to actually mutate the underlying data structure. This allows operations to easily be un-staged if the transaction fails to acquire all the necessary locks, without requiring rollbacks.
 
-```{r stress, fig.cap="Throughput of SortedSet microbenchmark.\\label{stress_tput}"}
+Commutativity comes into play in the locking scheme. Using the algorithms from \cite{Kulkarni:PLDI11} and our commutativity specifications, we design an abstract lock for each record type. Our `SortedSet`, for instance, has an `add` mode which allows all insertion operations to commute, but disallows operations like `contains` or `size`.
+As a baseline, we implement a standard reader/writer locking scheme that allows all read-only operations to execute concurrently, but enforces that only one transaction may modify a record at a time.
+
+These experiments were run with 4 shards on 4 local nodes, each with 8-core 2GHz Xeon E5335 processors.
+
+```{r stress, fig.cap="Throughput of raw Set operations., \\label{stress_tput}", fig.height=3.3}
 d <- data(db("
     select * from tapir where 
     total_time is not null
@@ -110,17 +115,20 @@ d$opmix <- factor(revalue(d$mix, c(
     'update_heavy'='50% read\n50% update',
     'read_heavy'='90% read\n10% update'
 )))
-d.u <- subset(d, nshards == 4 & nkeys == 10000 & alpha == 0.6 & grepl('update_heavy|read_heavy', mix))
-ggplot(d.u, aes(x=nclients, y=throughput, group=cc, fill=cc, color=cc, linetype=cc))+
-    stat_summary(fun.y=mean, geom="line")+
-    xlab('Concurrent clients')+ylab('Throughput (transactions / sec)')+
+d$dist <- factor(revalue(d$alpha, c('0.6'='Zipf: 0.6', '-1'='Uniform')))
+d.u <- subset(d, nshards == 4 & nkeys == 10000 & (alpha == '0.6' | alpha == '-1') & grepl('update_heavy|read_heavy', mix))
+ggplot(d.u, aes(x=nclients, y=throughput/1000, group=cc, fill=cc, color=cc, linetype=cc))+
+    stat_summary(fun.y=max, geom="line")+
+    xlab('Concurrent clients')+ylab('Throughput (k/sec)')+
     expand_limits(y=0)+
-    facet_wrap(~opmix)+
-    theme_mine+theme(legend.position='top', legend.direction='horizontal', legend.title.align=1)+
+    facet_grid(dist~opmix)+
+    theme_mine+theme(legend.position='bottom', legend.direction='horizontal', legend.title.align=1)+
     cc_scales(title='Concurrency\ncontrol:')
 ```
 
-```{r throughput, fig.cap="Throughput on social network workloads.\\label{tput}"}
+**Microbenchmark: Set operations.** We first evaluate performance with a simple workload consisting of a raw mix of `Set` operations randomly distributed over 10,000 keys. We use both a uniform random distribution as well as a skewed Zipfian distribution with a coefficient of 0.6. In \autoref{stress_tput}, we see that commutative transactions perform strictly better, showing the most pronounced benefit over the more update-heavy, skewed workload.
+
+```{r throughput, fig.cap="Throughput on social network workload (Retwis). Leveraging commutativity prevents performance from falling over even when a posts spread virally across the network (repost-heavy).\\label{tput}"}
 d <- data(db("
     select * from tapir where 
     generator_time is not null and total_time is not null
@@ -135,6 +143,12 @@ ggplot(d.u, aes(x=nclients, y=throughput, group=cc, fill=cc, color=cc, linetype=
     xlab('Concurrent clients')+ylab('Throughput (transactions / sec)')+
     expand_limits(y=0)+
     facet_wrap(~workload)+
-    theme_mine+theme(legend.position='top', legend.direction='horizontal', legend.title.align=1)+
+    theme_mine+theme(legend.position='bottom', legend.direction='horizontal', legend.title.align=1)+
     cc_scales(title='Concurrency\ncontrol:')
 ```
+
+**Case study: Retwis.** To understand performance of more typical of web workloads, we implemented a version of *Retwis*, a simplified Twitter clone designed originally for Redis. We use data structures such as sets to track each user's followers and posts, and keep a materialized up-to-date timeline for each user (represented as a sorted set). On top of Retwis's basic functionality, we also add a "repost" option that works like Twitter's "retweet". We simulate a realistic workload using a synthetic graph with power-law degree distribution and clients that randomly select between Retwis transactions including "add follower", "new post", and "repost", executing them as fast as they can. More about this workload is in \autoref{apx:retwis}.
+
+\autoref{tput} shows the results of this simulation. When most of the traffic is content consumption (reading timelines), both systems perform well enough. However, when we simulate a workload where clients repost popular posts from their timelines, we see a viral propagation effect, where a large fraction of the users get and share a post. As Twitter came to a standstill when Ellen Degeneres's Oscar selfie set a retweeting record, so too does our baseline fall over. But with commutativity, we see that performance continues to scale even under this arduous load.
+
+
