@@ -105,7 +105,7 @@ As a baseline, we implement a standard reader/writer locking scheme that allows 
 
 These experiments were run with 4 shards on 4 local nodes, each with 8-core 2GHz Xeon E5335 processors.
 
-```{r stress, fig.cap="Throughput of raw Set operations., \\label{stress_tput}", fig.height=3.3}
+```{r stress, include=F}
 d <- data(db("
     select * from tapir where 
     total_time is not null
@@ -126,10 +126,15 @@ ggplot(d.u, aes(x=nclients, y=throughput/1000, group=cc, fill=cc, color=cc, line
     theme_mine+theme(legend.position='bottom', legend.direction='horizontal', legend.title.align=1)+
     cc_scales(title='Concurrency\ncontrol:')
 ```
+\begin{figure}[t]
+\centering
+\includegraphics{figure/stress-1.pdf}
+\caption{Throughput of raw Set operations.\label{stress_tput}}
+\end{figure}
 
 **Microbenchmark: Set operations.** We first evaluate performance with a simple workload consisting of a raw mix of `Set` operations randomly distributed over 10,000 keys. We use both a uniform random distribution as well as a skewed Zipfian distribution with a coefficient of 0.6. In \autoref{stress_tput}, we see that commutative transactions perform strictly better, showing the most pronounced benefit over the more update-heavy, skewed workload.
 
-```{r throughput, fig.cap="Throughput of social network workload (Retwis) with 4000 users. Leveraging commutativity prevents performance from falling over even when posts spread virally (repost-heavy).\\label{tput}"}
+```{r throughput, include=F}
 d <- data(db("
     select * from tapir where 
     generator_time is not null and total_time is not null
@@ -147,6 +152,14 @@ ggplot(d.u, aes(x=nclients, y=throughput, group=cc, fill=cc, color=cc, linetype=
     theme_mine+theme(legend.position='bottom', legend.direction='horizontal', legend.title.align=1)+
     cc_scales(title='Concurrency\ncontrol:')
 ```
+\begin{figure}[t]
+\centering
+\includegraphics{figure/throughput-1.pdf}
+\caption{Throughput of social network workload (Retwis) with 4000 users.
+Leveraging commutativity prevents performance from falling over even
+when posts spread virally (repost-heavy).\label{tput}}
+\end{figure}
+
 
 **Case study: Retwis.** 
 To understand performance of more typical of web workloads, we implemented a version of *Retwis*, a simplified Twitter clone designed originally for Redis. We use data structures such as sets to track each user's followers and posts, and keep a materialized up-to-date timeline for each user (represented as a sorted set). On top of Retwis's basic functionality, we also add a "repost" option that works like Twitter's "retweet". We simulate a realistic workload using a synthetic graph with power-law degree distribution and clients that randomly select between Retwis transactions including "add follower", "new post", and "repost", executing them as fast as they can. More about this workload is in the appendix (\autoref{apx:retwis}).

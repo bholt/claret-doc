@@ -115,13 +115,17 @@
 \floatname{figure}{Figure}
 \def\figureautorefname{Figure}
 
-\usepackage[font=small,labelfont=bf]{caption}
+\usepackage[font=small,labelfont=bf,skip=-10pt]{caption}
 
 \def\Snospace~{\S{}}
 \renewcommand*\sectionautorefname{\Snospace}
 \renewcommand*\subsectionautorefname{\Snospace}
 \renewcommand*\subsubsectionautorefname{\Snospace}
 
+% \setlength{\belowcaptionskip}{-20pt}
+\setlength{\textfloatsep}{15pt}
+\setlength{\floatsep}{5pt}
+\setlength{\intextsep}{5pt}
 
 \begin{document}
 \special{papersize=8.5in,11in}
