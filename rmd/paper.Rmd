@@ -26,9 +26,9 @@ output:
     fig_caption: yes
 
 abstract: |
-  Out of the many NoSQL databases in use today, some that provide simple data structures for records, such as Redis and MongoDB, are now becoming popular. Building applications out of these complex data types provides a way to communicate intent to the database system without sacrificing flexibility or committing to a fixed schema. Currently this expressiveness is used in limited ways, such as providing atomic operations or ensuring related values are co-located. However, there are many ways in which data types can be used to make databases more efficient and simpler to use that are not yet being exploited.
+  Out of the many NoSQL databases in use today, some that provide simple data structures for records, such as Redis and MongoDB, are now becoming popular. Building applications out of these complex data types provides a way to communicate intent to the database system without sacrificing flexibility or committing to a fixed schema. Currently this capability is leveraged in limited ways, such as to ensure related values are co-located, or for atomic updates. There are many ways data types can be used to make databases more efficient that are not yet being exploited.
 
-  In this work, we explore several ways of leveraging abstract data type (ADT) semantics in databases, focusing primarily on commutativity. Using a Twitter clone as a case study, we show that using commutativity can reduce transaction abort rates for high-contention, update-heavy workloads that arise in real social networks. We conclude that ADTs are a good abstraction for database records, providing a safe and expressive programming model with ample opportunities for optimization, which will make databases more safe and scalable.
+  We explore several ways of leveraging abstract data type (ADT) semantics in databases, focusing primarily on commutativity. Using a Twitter clone as a case study, we show that using commutativity can reduce transaction abort rates for high-contention, update-heavy workloads that arise in real social networks. We conclude that ADTs are a good abstraction for database records, providing a safe and expressive programming model with ample opportunities for optimization, making databases more safe and scalable.
 ---
 ```{r setup, include=FALSE}
 opts_chunk$set(dev='pdf', echo=F, message=F, warning=F, error=F, fig.width=3.6, fig.height=3)
@@ -45,12 +45,12 @@ We propose abstract data types (ADTs) as the solution. Rather than limiting the 
 
 # Commutativity {#comm}
 
-Commutativity is well known, especially in distributed systems, for enabling important optimizations. Since the 80s, commutativity has been exploited by database systems designers [@Weihl:1988,Fekete:90], within the safe confines of relational models, where knowledge of query plans and complete control of the data structures allows systems to determine when transactions may conflict. Recently, commutativity has seen a resurgence in systems without a predefined data model, such as NoSQL databases and transactional memory.
-Eventually consistent databases use commutativity for convergence in work such as RedBlue consistency [@Li:OSDI12] and conflict-free replicated data types (CRDTs) [@Shapiro:SSS11]. Other systems specialize for commutative operations to improve transaction processing, such as Lynx [@Zhang:SOSP13] for tracking serializability, and Doppel [@Narula:OSDI14] for executing operations in parallel on highly contended records, and HyFlow [@Kim:EuroPar13] for reordering operations in the context of distributed transactional memory. We propose unifying and generalizing these uses of commutativity under the abstraction afforded by ADTs.
+Commutativity is well known, especially in distributed systems, for enabling important optimizations. Since the 80s, commutativity has been exploited by database systems designers [@Weihl:1988;@Fekete:90] within the safe confines of relational models, where complete control of the data structures allows systems to determine when transactions may conflict. Recently, commutativity has seen a resurgence in systems without a predefined data model, such as NoSQL databases and transactional memory.
+Eventually consistent databases use commutativity for convergence in work such as RedBlue consistency [@Li:OSDI12] and conflict-free replicated data types (CRDTs) [@Shapiro:SSS11]. Other systems specialize for commutative operations to improve transaction processing, such as Lynx [@Zhang:SOSP13] for tracking serializability, Doppel [@Narula:OSDI14] for executing operations in parallel on highly contended records, and HyFlow [@Kim:EuroPar13] for reordering operations in the context of distributed transactional memory. We propose unifying and generalizing these under the abstraction afforded by ADTs.
 
 \begin{table}
-\resizebox{\columnwidth}{!}{%
 \centering
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{lll}
 \textbf{method:} & \textbf{commutes with:} & \textbf{when:} \\
 \hline
@@ -67,19 +67,21 @@ Eventually consistent databases use commutativity for convergence in work such a
 \caption{\label{spec} Commutativity Specification for Set.}}
 \end{table}
 
-Though *commutativity* is often discussed in terms of an operation commuting with all other operations, it is actually more nuanced. If a pair of operations commute, then executing them in either order will produce the same result. Using the definitions from [@Kulkarni:PLDI11], whether or not a pair of method invocations commute is a function of the methods, their arguments, their return values, and the *abstract* state of their target. We call the full set of commutativity rules for an ADT its *commutativity specification.* An example specification for a *Set* is shown in \autoref{spec}. There are actually many valid specifications which expose less than the maximum commutativity, but may be cheaper to implement.[@Kulkarni:PLDI11]
+Though *commutativity* is often discussed in terms of an operation commuting with all other operations, it is actually more nuanced. If a pair of operations commute, then executing them in either order will produce the same result. Using the definitions from [@Kulkarni:PLDI11], whether or not a pair of method invocations commute is a function of the methods, their arguments, their return values, and the *abstract* state of their target. We call the full set of commutativity rules for an ADT its *commutativity specification.* An example specification for a *Set* is shown in \autoref{spec}. There are actually many valid specifications which expose less than the maximum commutativity, but may be cheaper to implement.
 
-If two operations on the same record in two different transactions commute, then the transactions can safely execute concurrently, even though they both update the record. This technique is known as *transactional boosting* [@Herlihy:PPoPP08]. This straightforward use of commutativity was shown to significantly improve abort rates in software transactional memory. In \autoref{eval}, we show how we applied it to distributed transactions.
+**Transaction boosting.** If two operations on the same record in two different transactions commute, then the transactions can safely execute concurrently, even though they both update the record. This technique is known as *transactional boosting* [@Herlihy:PPoPP08]. This straightforward use of commutativity was shown to significantly improve abort rates in software transactional memory. In \autoref{eval}, we show how we applied it to distributed transactions.
+
+**Combining.** Associativity, often paired with commutativity, allows some concurrent operations to be *combined* before being applied to the data structure itself. *Combining* [@flatCombining;@yew:combining-trees;@funnels] can drastically reduce contention on shared data structures. This technique could be applied to hot records, similar to *splitting* in Doppel [@Narula:OSDI14], to avoid bottlenecking on a single shard.
 
 # Data type selection
 
-Choosing the right data type for your application can drastically impact performance.
-Selecting the semantics that are most permissive or specialized for a particular use case gives the system the best chance of scaling performance.
-For a simple example, an application needing to generate unique IDs should not use a counter, which must return the next number in the sequence, because this is very difficult to scale (as users of TPC-C [@TPCC], which explicitly requires this, know well). Instead, a `UniqueID` type succinctly expresses that non-sequential IDs are okay, which can be implemented very efficiently. By allowing approximations or non-determinism, performance may be further improved.
+Choosing an ADT with semantics specialized for a particular use case gives the system the best chance of scaling performance.
+For example, rather than using a counter, which must return the next number in the sequence (which is difficult to scale, as users of TPC-C [@TPCC] know well)
+For example, an application needing to generate unique IDs should not use a counter, which must return the next number in the sequence, because this is very difficult to scale (as users of TPC-C [@TPCC], which explicitly requires this, know well). Instead, a `UniqueID` type succinctly expresses that non-sequential IDs are okay, which can be implemented very efficiently. By allowing approximations or non-determinism, performance may be further improved.
 
-**Probabilistic data types** are a class of data types with *probabilistic* guarantees about their semantics, trading off some accuracy for better performance or storage. These include *bloom filters* [@bloom], *hyperloglog* [@hyperloglog], and *count-min sketch* [@countminsketch]. Hyperloglog, which also appears in Redis [@redis], estimates the size of a set within a fixed error bound. Twitter's streaming analytics system [@summingbird] leverages these to handle their high data volume, and we expect similar benefit.
+**Probabilistic data types** such as *bloom filters* [@bloom], *hyperloglogs* [@hyperloglog], and *count-min sketches* [@countminsketch] trade off accuracy (within fixed bounds) for better performance or storage. Twitter's streaming analytics system [@summingbird] and many machine learning algorithms leverage these to handle high data volume, and we expect similar benefit.
 
-**Conflict-free replicated data types (CRDTs)**, which were invented for eventual consistency, can actually be fit into our model as well, as a new kind of data type. This could allow copies to exist in different shards, asynchronously updating each other. By defining the same kind of *merge* function as traditional CRDTs, these replicas could ensure they all converge to the same state. Clients may find them more difficult to reason about but might make this tradeoff in parts of the application where it otherwise cannot scale.
+**Conflict-free replicated data types (CRDTs)**, which were invented for eventual consistency, can actually be fit into our model as well, as a new kind of data type. Copies of a record could exist in different shards, asynchronously updating each other. By defining the same kind of *merge* function as traditional CRDTs, these copies could ensure they all converge to the same state. Clients may find them more difficult to reason about but might make that tradeoff in parts of the application where it otherwise cannot scale.
 
 # Evaluation {#eval}
 To demonstrate the efficacy of leveraging commutative operations in transactions, we built a simple prototype key-value store, modeled after Redis, that supports complex data types for records, each with their own set of operations. 
@@ -124,7 +126,7 @@ ggplot(d.u, aes(x=nclients, y=throughput/1000,
 
 **Microbenchmark: Set operations.** We first evaluate performance with a simple workload consisting of a raw mix of `Set` operations randomly distributed over 10,000 keys. We use both a uniform random distribution as well as a skewed Zipfian distribution with a coefficient of 0.6. In \autoref{stress_tput}, we see that commutative transactions perform strictly better, showing the most pronounced benefit over the more update-heavy, skewed workload.
 
-```{r throughput, include=F, fig.height=2.0}
+```{r throughput, include=F, fig.height=2.1}
 d <- data(db("
     select * from tapir where 
     generator_time is not null and total_time is not null
@@ -155,24 +157,13 @@ when posts spread virally (repost-heavy).\label{tput}}
 
 
 **Case study: Retwis.** 
-To understand performance of more typical of web workloads, we implemented a version of *Retwis*, a simplified Twitter clone designed originally for Redis. We use data structures such as sets to track each user's followers and posts, and keep a materialized up-to-date timeline for each user (represented as a sorted set). On top of Retwis's basic functionality, we also add a "repost" option that works like Twitter's "retweet". We simulate a realistic workload using a synthetic graph with power-law degree distribution and clients that randomly select between Retwis transactions including "add follower", "new post", and "repost", executing them as fast as they can. More about this workload is in the appendix (\autoref{apx:retwis}).
+To understand performance on a typical web workload, we implemented a version of *Retwis*, a simplified Twitter clone designed originally for Redis [@redis]. We use data structures such as sets to track each user's followers and posts, and keep a materialized up-to-date timeline for each user (represented as a sorted set). On top of Retwis's basic functionality, we also add a "repost" action that behaves like Twitter's "retweet". We simulate a realistic workload using a synthetic graph with power-law degree distribution and clients that randomly select between Retwis transactions including "add follower", "new post", and "repost", executing them as fast as they can. More about this workload is in the appendix (\autoref{apx:retwis}).
 
 \autoref{tput} shows the results of this simulation. When most of the traffic is content consumption (reading timelines), both systems perform well enough. However, when we simulate a workload where clients repost popular posts from their timelines, we see a viral propagation effect, where a large fraction of the users get and share a post. As Twitter came to a standstill when Ellen DeGeneres's Oscar selfie set a retweeting record [@ellenselfie], so too does our baseline fall over. But with commutativity, performance continues to scale even under this highly contentious load.
 
-
 # Appendix
 
-Many ideas and details did not fit into the core of the paper, but because they may help interpret our findings and give more of a sense of future directions, we include them here for anyone interested.
-
-##  Other opportunities for commutativity
-
-Sometimes, due to heavily skewed workloads such as those arising from social networks, there may be so many requests to a single record that just executing all the operations sequentially is a bottleneck which prevents scaling. In addition to transactional boosting, which we evaluate in this work, there are many other uses for commutativity. We mention just a few here which we have yet to evaluate.
-
-**Record splitting.**
-Associativity, often paired with commutativity, can be leveraged to execute operations in parallel on a "split" record and the changes made to these splits can be merged to form a consistent whole. Doppel [@Narula:OSDI14] used this for a handful of operations. We propose generalizing this concept to ADTs: associative operations execute on replicas first, other operations wait to execute until the replicas have been brought back in sync.
-
-**Combining.**
-Another spin on associative operations is to merge or *combine* operations as they come in. This is known as combining [@flatCombining,yew:combining-trees,funnels], and it can drastically reduce contention. Combining can be done hierarchically: first with a few neighbors, then with clusters of neighbors, finally the combined operation is applied to the shared data structure.
+Some details did not fit into the core of the paper, but because they may help interpret our findings and give a sense of future directions, we include them here for anyone interested.
 
 ## Transaction protocol {#apx:protocol}
 
@@ -200,7 +191,7 @@ histogram.facets <- function(df, measure, grp) {
 }
 ```
 
-```{r followers, include=F}
+```{r followers, include=F, fig.width=2.5, fig.height=2.5}
 d.follow <- histogram.facets(subset(df,
     initusers == 4096 & mix == 'geom_repost'
 ), 'stat_follower_counts', 'grp')
@@ -218,7 +209,7 @@ distribution of natural graphs.\label{followers}}
 \end{figure}
 
 
-```{r reposts, include=F}
+```{r reposts, include=F, fig.width=2.5, fig.height=2.5}
 d.repost <- histogram.facets(
     subset(df, initusers == 4096 & mix == 'geom_repost')
 , 'stat_repost_counts', 'grp')

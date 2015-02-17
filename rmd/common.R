@@ -144,7 +144,7 @@ data <- function(d) {
     'geom_repost'='repost-heavy',
     'read_heavy'='read-heavy',
     'update_heavy'='mixed'
-  )), levels=c('repost-heavy','read-heavy','mixed'))
+  )), levels=c('read-heavy', 'repost-heavy', 'mixed'))
   
   d$zmix <- sprintf('%s/%s', d$mix, d$alpha)
   
