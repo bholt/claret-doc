@@ -113,7 +113,7 @@ theme_mine <- list(
     panel.grid = element_line(colour="black"),
     axis.text.y = element_text(colour="black"),
     axis.text.x = element_text(colour="black"),
-    text = element_text(size=10, family="Helvetica")
+    text = element_text(size=8, family="Helvetica")
   )
 )
 
