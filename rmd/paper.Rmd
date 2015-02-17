@@ -103,13 +103,18 @@ d$opmix <- factor(revalue(d$mix, c(
     'read_heavy'='90% read\n10% update'
 )))
 d$dist <- factor(revalue(d$alpha, c('0.6'='Zipf: 0.6', '-1'='Uniform')))
-d.u <- subset(d, nshards == 4 & nkeys == 10000 & (alpha == '0.6' | alpha == '-1') & grepl('update_heavy|read_heavy', mix))
-ggplot(d.u, aes(x=nclients, y=throughput/1000, group=cc, fill=cc, color=cc, linetype=cc))+
+d.u <- subset(d, nshards == 4 & nkeys == 10000 
+    & (alpha == '0.6' | alpha == '-1') 
+    & grepl('update_heavy|read_heavy', mix)
+)
+ggplot(d.u, aes(x=nclients, y=throughput/1000,
+        group=cc, fill=cc, color=cc, linetype=cc))+
     stat_summary(fun.y=max, geom="line", size=0.4)+
     xlab('Concurrent clients')+ylab('Throughput (k/sec)')+
     expand_limits(y=0)+
     facet_grid(dist~opmix)+
-    theme_mine+theme(legend.position='right', legend.direction='vertical', legend.title.align=0)+
+    theme_mine+
+    theme(legend.position='right', legend.direction='vertical', legend.title.align=0)+
     cc_scales(title='Concurrency\ncontrol:')
 ```
 \begin{figure}[t]
@@ -129,13 +134,16 @@ d <- data(db("
     factors=c('nshards', 'nclients'),
     numeric=c('total_time', 'txn_count')
 ))
-d.u <- subset(d, nshards == 4 & initusers == 4096 & grepl('geom_repost|read_heavy', mix))
-ggplot(d.u, aes(x=nclients, y=throughput/1000, group=cc, fill=cc, color=cc, linetype=cc))+
+d.u <- subset(d, nshards == 4 & initusers == 4096 
+                & grepl('geom_repost|read_heavy', mix))
+ggplot(d.u, aes(x=nclients, y=throughput/1000, 
+        group=cc, fill=cc, color=cc, linetype=cc))+
     stat_summary(fun.y=mean, geom="line", size=0.4)+
     xlab('Concurrent clients')+ylab('Throughput (k trans. / sec)')+
     expand_limits(y=0)+
     facet_wrap(~workload)+
-    theme_mine+theme(legend.position='right', legend.direction='vertical', legend.title.align=0)+
+    theme_mine+
+    theme(legend.position='right', legend.direction='vertical', legend.title.align=0)+
     cc_scales(title='Concurrency\ncontrol:')
 ```
 \begin{figure}[t]
@@ -154,11 +162,8 @@ To understand performance of more typical of web workloads, we implemented a ver
 
 
 # Appendix
-## Transaction protocol {#apx:protocol}
 
-Our protocol for executing transactions is fairly straightforward: two-phase commit, and uses two-phase locking with retries to guarantee isolation. We employ a number of standard optimizations, such as delaying acquiring locks for operations that don't return a value to the *prepare* step so that locks are held for as short a time as possible. However, there is one step that is non-standard in order to support complex data types where rolling back state changes would be non-trivial.
-
-To support transactions with arbitrary data structure operations, each operation is split into two steps: *stage* and *apply*. During transaction execution, each operation's *stage* method attempts to acquire the necessary lock and may return a value *as if the operation has completed* (e.g. an "increment" speculatively returns the incremented value). When the transaction is prepared to commit, *apply* is called on each staged operation to actually mutate the underlying data structure. This allows operations to easily be un-staged if the transaction fails to acquire all the necessary locks, without requiring rollbacks.
+Many ideas and details did not fit into the core of the paper, but because they may help interpret our findings and give more of a sense of future directions, we include them here for anyone interested.
 
 ##  Other opportunities for commutativity
 
@@ -170,10 +175,18 @@ Associativity, often paired with commutativity, can be leveraged to execute oper
 **Combining.**
 Another spin on associative operations is to merge or *combine* operations as they come in. This is known as combining [@flatCombining,yew:combining-trees,funnels], and it can drastically reduce contention. Combining can be done hierarchically: first with a few neighbors, then with clusters of neighbors, finally the combined operation is applied to the shared data structure.
 
+## Transaction protocol {#apx:protocol}
+
+Our protocol for executing transactions is fairly straightforward: two-phase commit, and uses two-phase locking with retries to guarantee isolation. We employ a number of standard optimizations, such as delaying acquiring locks for operations that don't return a value to the *prepare* step so that locks are held for as short a time as possible. However, there is one step that is non-standard in order to support complex data types where rolling back state changes would be non-trivial.
+
+To support transactions with arbitrary data structure operations, each operation is split into two steps: *stage* and *apply*. During transaction execution, each operation's *stage* method attempts to acquire the necessary lock and may return a value *as if the operation has completed* (e.g. an "increment" speculatively returns the incremented value). When the transaction is prepared to commit, *apply* is called on each staged operation to actually mutate the underlying data structure. This allows operations to easily be un-staged if the transaction fails to acquire all the necessary locks, without requiring rollbacks.
 
 ## Retwis workload {#apx:retwis}
 ```{r}
-df <- subset(db("select * from tapir where stat_following_counts is not null and name like '%v0.14%'"),
+df <- subset(db("
+    select * from tapir where stat_following_counts is not null
+    and name like '%v0.14%'
+"),
   nclients == 32
   & initusers == 4096
 )
@@ -189,7 +202,9 @@ histogram.facets <- function(df, measure, grp) {
 ```
 
 ```{r followers, include=F}
-d.follow <- histogram.facets(subset(df, initusers == 4096 & mix == 'geom_repost'), 'stat_follower_counts', 'grp')
+d.follow <- histogram.facets(subset(df,
+    initusers == 4096 & mix == 'geom_repost'
+), 'stat_follower_counts', 'grp')
 ggplot(d.follow, aes(x=x, weight=y))+
     stat_ecdf(color=c.blue)+
     xlab('# followers / user (log scale)')+ylab('CDF (log scale)')+
@@ -205,11 +220,14 @@ distribution of natural graphs.\label{followers}}
 
 
 ```{r reposts, include=F}
-d.repost <- histogram.facets(subset(df, initusers == 4096 & mix == 'geom_repost'), 'stat_repost_counts', 'grp')
+d.repost <- histogram.facets(
+    subset(df, initusers == 4096 & mix == 'geom_repost')
+, 'stat_repost_counts', 'grp')
 ggplot(d.repost, aes(x=x, weight=y))+
     stat_ecdf(color=c.blue)+
     xlab('# reposts')+ylab('count')+
-    scale_x_log10(breaks=c(1,10,100,1000))+scale_y_log10(breaks=c(0.1,0.2,0.4,0.6,0.8,1.0))+
+    scale_x_log10(breaks=c(1,10,100,1000))+
+    scale_y_log10(breaks=c(0.1,0.2,0.4,0.6,0.8,1.0))+
     xlab('# reposts (log scale)')+ylab('CDF (log scale)')+
     theme_mine
 ```
