@@ -1,0 +1,21 @@
+\documentclass[10pt]{article}
+\usepackage[scaled=0.8]{inconsolata}
+
+\begin{document}
+  
+  \title{Claret: Using Data Types for Highly Concurrent Distributed Transactions}
+  \author{
+    Brandon Holt, Irene Zhang, Dan Ports, Mark Oskin, Luis Ceze \\
+    University of Washington \\
+    {\tt \{bholt,iyzhang,drkp,oskin,luisceze\}@cs.washington.edu}
+  }
+  
+  \maketitle
+  
+  \begin{abstract}
+    Out of the many NoSQL databases in use today, some that provide simple data structures for records, such as Redis and MongoDB, are now becoming popular. Building applications out of these complex data types provides a way to communicate intent to the database system without sacrificing flexibility or committing to a fixed schema. Currently this capability is leveraged in limited ways, such as to ensure related values are co-located, or for atomic updates. There are many ways data types can be used to make databases more efficient that are not yet being exploited.
+
+    We explore several ways of leveraging abstract data type (ADT) semantics in databases, focusing primarily on commutativity. Using a Twitter clone as a case study, we show that using commutativity can reduce transaction abort rates for high-contention, update-heavy workloads that arise in real social networks. We conclude that ADTs are a good abstraction for database records, providing a safe and expressive programming model with ample opportunities for optimization, making databases more safe and scalable.
+  \end{abstract}
+  
+\end{document}
