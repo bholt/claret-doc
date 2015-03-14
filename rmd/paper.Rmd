@@ -136,7 +136,7 @@ ggplot(d.u, aes(x=nclients, y=throughput/1000,
 We first evaluate performance with a simple workload consisting of a raw mix of `Set` operations randomly distributed over 10,000 keys. We use both a uniform random distribution as well as a skewed Zipfian distribution with a coefficient of 0.6. In \autoref{stress_tput}, we see that commutative transactions perform strictly better, showing the most pronounced benefit over the more update-heavy, skewed workload.
 
 ## Case study: Retwis
-To understand performance on a typical web workload, we implemented a version of *Retwis*, a simplified Twitter clone designed originally for Redis [@redis]. We use data structures such as sets to track each user's followers and posts, and keep a materialized up-to-date timeline for each user (represented as a sorted set). On top of Retwis's basic functionality, we added a "repost" action that behaves like Twitter's "retweet".
+To understand performance on a typical web workload, we use *Retwis*, a simplified Twitter clone designed originally for Redis [@redis]. Data structures such as sets are used track each user's followers and posts and keep a materialized up-to-date timeline for each user (represented as a sorted set). On top of Retwis's basic functionality, we added a "repost" action that behaves like Twitter's "retweet".
 
 ```{r}
 df <- subset(db("
@@ -157,7 +157,7 @@ histogram.facets <- function(df, measure, grp) {
 }
 ```
 
-```{r followers, include=F, fig.width=2.5, fig.height=2.5}
+```{r followers, include=F, fig.width=2.5, fig.height=2.3}
 d.follow <- histogram.facets(subset(df,
     initusers == 4096 & mix == 'geom_repost'
 ), 'stat_follower_counts', 'grp')
@@ -175,7 +175,7 @@ distribution of natural graphs.\label{followers}}
 \end{figure}
 
 
-```{r reposts, include=F, fig.width=2.5, fig.height=2.5}
+```{r reposts, include=F, fig.width=2.5, fig.height=2.3}
 d.repost <- histogram.facets(
     subset(df, initusers == 4096 & mix == 'geom_repost')
 , 'stat_repost_counts', 'grp')
