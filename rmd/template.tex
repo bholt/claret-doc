@@ -1,4 +1,4 @@
-\documentclass[10pt, nocopyrightspace$if(preprint)$, preprint$endif$]{sigplanconf}
+\documentclass[$documentclass.options$]{$documentclass.name$}
 
 % amsmath package, useful for mathematical formulas
 \usepackage{amsmath}
@@ -133,8 +133,12 @@
 \setlength{\pdfpageheight}{\paperheight}
 \setlength{\pdfpagewidth}{\paperwidth}
 
-\conferenceinfo{$conference.year$}{$conference.location$} 
+$if(exclusivelicense)$
+\exclusivelicense
+$endif$
+\conferenceinfo{$conference.name$}{$conference.location$} 
 \copyrightyear{$conference.year$}
+\copyrightdata{$conference.copyrightdata$}
 \doi{$doi$}
 
 \title{$title$}
