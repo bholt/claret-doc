@@ -101,7 +101,7 @@ As a baseline, we implement a standard reader/writer locking scheme that allows 
 
 ## Microbenchmark: Set operations
 
-```{r stress, include=F, fig.height=2.4}
+```{r stress, include=F, fig.width=2.8, fig.height=3.1}
 d <- data(db("
     select * from tapir where 
     total_time is not null
@@ -124,7 +124,7 @@ ggplot(d.u, aes(x=nclients, y=throughput/1000,
     expand_limits(y=0)+
     facet_grid(dist~opmix)+
     theme_mine+
-    theme(legend.position='right', legend.direction='vertical', legend.title.align=0)+
+    theme(legend.position=c(0.5,-0.22), plot.margin=unit(c(.5,.5,8,.5),'mm'), legend.direction='horizontal', legend.title.align=1)+
     cc_scales(title='Concurrency\ncontrol:')
 ```
 \begin{figure}[t]
@@ -213,7 +213,7 @@ d <- data(db("
     factors=c('nshards', 'nclients'),
     numeric=c('total_time', 'txn_count')
 ))
-d.u <- subset(d, nshards == 4 & initusers == 4096 
+d.u <- subset(d, nshards == 4 & initusers == 4096 & nclients != 96 & nclients != 128
                 & grepl('geom_repost|read_heavy', mix))
 ggplot(d.u, aes(x=nclients, y=throughput/1000, 
         group=cc, fill=cc, color=cc, linetype=cc))+

@@ -3,7 +3,7 @@ suppressPackageStartupMessages(require(sqldf))
 suppressPackageStartupMessages(require(ggplot2))
 suppressPackageStartupMessages(require(reshape))
 options(RMySQL.dbname="claret") # (rest comes from $HOME/.my.cnf)
-
+require(grid)
 library(jsonlite)
 library(scales)
 
