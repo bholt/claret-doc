@@ -190,14 +190,14 @@
 				<key>ID</key>
 				<integer>110</integer>
 				<key>Position</key>
-				<real>0.79368436336517334</real>
+				<real>0.35283095243573087</real>
 			</dict>
 			<key>ID</key>
 			<integer>131</integer>
 			<key>Points</key>
 			<array>
-				<string>{357.46999474805506, 506.26144178271278}</string>
-				<string>{372.68979240847727, 509.16509151483467}</string>
+				<string>{350.43007465718574, 530.32317651739879}</string>
+				<string>{375.25785596009268, 534.94616296991171}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -211,11 +211,11 @@
 					<key>Color</key>
 					<dict>
 						<key>b</key>
-						<string>0.25098</string>
+						<string>0.38229</string>
 						<key>g</key>
-						<string>0.286275</string>
+						<string>0.718205</string>
 						<key>r</key>
-						<string>0.996078</string>
+						<string>0.319743</string>
 					</dict>
 					<key>HeadArrow</key>
 					<string>StickArrow</string>
@@ -236,12 +236,12 @@
 				<key>ID</key>
 				<integer>127</integer>
 				<key>Position</key>
-				<real>0.87069666385650635</real>
+				<real>0.63236637384940608</real>
 			</dict>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{379.04261695698762, 501.09125305546661}, {59, 9}}</string>
+			<string>{{377.99719094702351, 517.20990768032698}, {59, 9}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -3360,7 +3360,7 @@
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2015-03-10 00:31:46 +0000</string>
+	<string>2015-03-11 23:31:08 +0000</string>
 	<key>Modifier</key>
 	<string>Brandon Holt</string>
 	<key>NotesVisible</key>
@@ -3436,7 +3436,7 @@
 		<key>Expanded_Canvases</key>
 		<array/>
 		<key>Frame</key>
-		<string>{{-321, 1050}, {1328, 1177}}</string>
+		<string>{{-201, 1050}, {1560, 1177}}</string>
 		<key>ShowInfo</key>
 		<true/>
 		<key>ShowRuler</key>
@@ -3448,15 +3448,15 @@
 		<key>TopSlabHeight</key>
 		<real>250</real>
 		<key>VisibleRegion</key>
-		<string>{{-16.000000000000011, -20.000000000000032}, {609.73782771535593, 773.03370786516848}}</string>
+		<string>{{-103, -20}, {783.52057686221872, 773.03368577610865}}</string>
 		<key>Zoom</key>
-		<real>1.335</real>
+		<real>1.3350000381469727</real>
 		<key>ZoomValues</key>
 		<array>
 			<array>
 				<string>Canvas 1</string>
+				<real>1.3350000381469727</real>
 				<real>1.335</real>
-				<real>1.0600000000000001</real>
 			</array>
 		</array>
 	</dict>
