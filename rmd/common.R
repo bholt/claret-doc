@@ -6,6 +6,7 @@ options(RMySQL.dbname="claret") # (rest comes from $HOME/.my.cnf)
 require(grid)
 library(jsonlite)
 library(scales)
+require(plyr)
 
 json.to.df <- function(jstr) {
   d <- fromJSON(jstr)
