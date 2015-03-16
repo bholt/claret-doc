@@ -1,6 +1,7 @@
 path := $(abspath $(lastword $(MAKEFILE_LIST)))
 dir := $(notdir $(patsubst %/,%,$(dir $(path))))
-name := $(shell basename $(dir))
+rawname := $(shell basename $(dir))
+name := $(shell echo $(rawname) | sed "s/\#/-/")
 
 dest := /cse/web/homes/bholt/pdf/$(name).pdf
 
