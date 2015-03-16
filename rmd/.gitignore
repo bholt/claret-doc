@@ -5,6 +5,8 @@ paper.html
 figure/*.pdf
 figure/*.png
 
+*.aux
+*.blg
 *.log
 *.bbl
 *.out
