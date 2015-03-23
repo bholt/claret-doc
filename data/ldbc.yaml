@@ -1,0 +1,11 @@
+common:
+  database: mysql:///claret?read_default_file=/Users/bholt/.my.cnf
+  prefix: .
+  format: csv
+exports:
+  - filename: ldbc.json
+    format: json
+    query: |
+      SELECT * from ldbc
+      WHERE ldbc_results is not null AND ldbc_results != ''
+      AND name not like '%sampa'
