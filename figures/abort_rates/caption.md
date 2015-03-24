@@ -1,2 +1,0 @@
-\label{fig:abort_rate}
-Abort rate increases drastically for baseline (non-commutative) as more concurrent clients are added, even for the uniform distribution, whereas even with simple commutativity tracking enabled, transactions scale well with increased concurrency and contention.

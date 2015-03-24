@@ -6,6 +6,6 @@ name := $(shell echo $(rawname) | sed "s/\#/-/")
 dest := /cse/web/homes/bholt/pdf/$(name).pdf
 
 deploy:
-	$(MAKE) -C rmd pdf
+	$(MAKE) -C papoc pdf
 	ssh bicycle "mkdir -p /cse/web/homes/bholt/pdf"
-	scp rmd/paper.pdf bicycle:$(dest)
+	scp papoc/paper.pdf bicycle:$(dest)

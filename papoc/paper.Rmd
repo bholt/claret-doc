@@ -24,7 +24,7 @@ exclusivelicense: true
 doi: 2745947.2745951
 
 layout: sigplanconf
-bibliography: biblio.bib
+bibliography: refs.bib
 output:
   pdf_document:
     fig_caption: yes
