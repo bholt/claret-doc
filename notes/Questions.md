@@ -1,0 +1,25 @@
+# Questions
+- how to implement this?
+    - in Grappa?
+    - in Spark?
+    - in an existing database?
+        - Redis? ("data structures server", but not designed to be consistent across replicas)
+	        - would people take this seriously if it was a modification to Redis?
+        - *TAPIR*?
+        - Lynx (geo-replicated, explicit transaction chains)
+        - Rococo (distributed key/value store, reorder pieces of transactions to ensure strict serializability)
+    - Existing DTM framework
+        - HyFlow (Scala)
+- how best to evaluate?
+    - data structure microbenchmarks
+        - key/value store
+        - kv with more interesting values (e.g. sets)
+    - database workload
+        - graph db?
+    - web server workload (like phase-reconciliation paper)
+- what's the minimal set of features to make this interesting?
+    - combining ops w/o replication?
+    - combining & replication w/o multi-object transactions?
+    - all?
+- What's the difference between "strict serializability" vs just "serializability"?
+    - for instance, Rococo differentiates itself from Lynx this way (Rococo is strictly serializable, Lynx just serializable)

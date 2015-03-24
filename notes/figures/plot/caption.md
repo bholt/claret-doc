@@ -1,0 +1,1 @@
+A fake plot to test how iPython integration works.
