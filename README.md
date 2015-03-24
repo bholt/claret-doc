@@ -1,5 +1,3 @@
-# Claret PaPoC submission
-Managed by <img src=https://www.authorea.com/assets/Authorea-navbar.png height=40px alt=Authorea />
+# Claret papers
 
-It is recommended that you edit on Authorea, not directly through this repo.
-
+Repository for papers related to Claret project.
