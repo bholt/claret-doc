@@ -7,6 +7,7 @@ options(RMySQL.dbname="claret") # (rest comes from $HOME/.my.cnf)
 suppressPackageStartupMessages(library(jsonlite))
 suppressPackageStartupMessages(library(scales))
 suppressPackageStartupMessages(require(grid))
+suppressPackageStartupMessages(require(plyr))
 
 json.to.df <- function(jstr) {
   d <- fromJSON(jstr)
