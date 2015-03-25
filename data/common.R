@@ -6,6 +6,7 @@ options(RMySQL.dbname="claret") # (rest comes from $HOME/.my.cnf)
 
 suppressPackageStartupMessages(library(jsonlite))
 suppressPackageStartupMessages(library(scales))
+suppressPackageStartupMessages(require(grid))
 
 json.to.df <- function(jstr) {
   d <- fromJSON(jstr)
@@ -110,7 +111,7 @@ my_theme <- function() theme(
   panel.grid = element_line(colour="black"),
   axis.text.y = element_text(colour="black"),
   axis.text.x = element_text(colour="black"),
-  text = element_text(size=10, family="Helvetica")
+  text = element_text(size=9, family="Helvetica")
 )
 
 
@@ -123,8 +124,7 @@ theme_mine <- list(
   my_theme()
 )
 
-
-claret_data <- function(where) {
+data.papoc <- function(where) {
   d <- db(
     sprintf("select * from tapir where total_time is not null and %s", where),
     factors=c('nshards', 'nclients'),

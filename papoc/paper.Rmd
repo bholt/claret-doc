@@ -102,11 +102,7 @@ As a baseline, we implement a standard reader/writer locking scheme that allows 
 ## Microbenchmark: Set operations
 
 ```{r stress, include=F, fig.width=2.8, fig.height=3.1}
-d <- data(db("
-    select * from tapir where 
-    total_time is not null
-    and name like 'stress-v0.14%'
-    ", factors=c('nshards', 'nclients'), numeric=c('total_time', 'txn_count')))
+d <- data.papoc(where="name like 'stress-v0.14%'")
 d$opmix <- factor(revalue(d$mix, c(
     'mostly_update'='35% read\n65% update',
     'update_heavy'='50% read\n50% update',
@@ -124,7 +120,7 @@ ggplot(d.u, aes(x=nclients, y=throughput/1000,
     expand_limits(y=0)+
     facet_grid(dist~opmix)+
     theme_mine+
-    theme(legend.position=c(0.5,-0.22), plot.margin=unit(c(.5,.5,8,.5),'mm'), legend.direction='horizontal', legend.title.align=1)+
+    theme(legend.position=c(0.5,-0.25), plot.margin=unit(c(.5,.5,10,.5),'mm'), legend.direction='horizontal', legend.title.align=1)+
     cc_scales(title='Concurrency\ncontrol:')
 ```
 \begin{figure}[t]
@@ -204,15 +200,8 @@ For our synthetic graph, we use the Kronecker graph generator from the Graph 500
 
 We use a simple model of user behavior to determine when and which posts to repost. Each time we load the most recent posts in a timeline for a random user (uniformly selected), they are sorted by the number of times they have already been reposted, and a discrete geometric distribution, skewed toward 0, is used to select the number of these to repost. This results in the "viral" propagation effect that is observed in real social networks. \autoref{reposts} shows the distribution of the number of times a post was reposted, which is again a power-law distribution. Note that a small number of posts are reposted so much that they end up on over a quarter of users' timelines.
 
-```{r throughput, include=F, fig.width=2.5, fig.height=2.8}
-d <- data(db("
-    select * from tapir where 
-    generator_time is not null and total_time is not null
-    and name like 'claret-v0.14%'
-  ",
-    factors=c('nshards', 'nclients'),
-    numeric=c('total_time', 'txn_count')
-))
+```{r throughput, include=F, fig.width=2.8, fig.height=2.8}
+d <- data.papoc(where="name like 'claret-v0.14%'")
 d.u <- subset(d, nshards == 4 & initusers == 4096 & nclients != 96 & nclients != 128
                 & grepl('geom_repost|read_heavy', mix))
 ggplot(d.u, aes(x=nclients, y=throughput/1000, 
