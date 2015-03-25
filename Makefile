@@ -3,7 +3,7 @@ dir := $(notdir $(patsubst %/,%,$(dir $(path))))
 rawname := $(shell basename $(dir))
 name := $(shell echo $(rawname) | sed "s/\#/-/")
 
-dest := /cse/web/homes/bholt/pdf/$(name).pdf
+dest := /cse/web/homes/bholt/pdf/
 
 deploy:
 	$(MAKE) -C papoc final
