@@ -20,6 +20,11 @@ all: pdf web view
 web: $(PAPER).html
 pdf: $(PAPER).pdf
 
+final: pdf
+	pdfstill $(PAPER).pdf
+	mv $(PAPER).still.pdf claret-papoc.pdf
+	rm $(PAPER).still.pdf_original
+
 view: $(PAPER).pdf
 	open -a Skim $(PAPER).pdf
 
