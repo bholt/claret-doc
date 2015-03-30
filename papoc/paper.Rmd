@@ -18,7 +18,7 @@ conference:
   name: PaPoC'15
   location: 'April 21, 2015, Bordeaux, France'
   year: 2015
-  copyrightdata: 978-1-4503-3238-5/15/04
+  copyrightdata: 978-1-4503-3537-9/15/04
  
 exclusivelicense: true
 doi: 2745947.2745951
