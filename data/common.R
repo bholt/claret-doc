@@ -125,6 +125,41 @@ theme_mine <- list(
   my_theme()
 )
 
+data.retwis <- function(where="client = 'dsretwis'") {
+  d <- db(
+    sprintf("select * from retwis where total_time is not null and %s", where),
+    factors=c('nshards', 'nclients'),
+    numeric=c('total_time', 'txn_count')
+  )
+  
+  d$throughput <- d$txn_count * num(d$nclients) / d$total_time
+  # d$throughput <- d$ntxns * num(d$nclients) / d$total_time
+  d$avg_latency_ms <- d$txn_time / d$txn_count * 1000
+
+  d$prepare_total <- d$prepare_retries + d$txn_count
+  d$prepare_retry_rate <- d$prepare_retries / d$prepare_total
+  
+  d$cc <- factor(revalue(d$ccmode, c(
+    'rw'='reader/writer',
+    'simple'='commutative'
+  )), levels=c('commutative','reader/writer'))
+  d$`Concurrency Control` <- d$cc
+  
+  d$graph <- mapply(function(g,d){ if(g == 'none') gsub('^.*/kronecker/([0-9]+)','kronecker:\\1',d) else g }, d$gen, d$loaddir)
+  
+  d$workload <- factor(revalue(d$mix, c(
+    'geom_repost'='repost-heavy',
+    'read_heavy'='read-heavy',
+    'update_heavy'='mixed'
+  )), levels=c('repost-heavy','read-heavy','mixed'))
+  
+  d$zmix <- sprintf('%s/%s', d$mix, d$alpha)
+
+  d$facet <- sprintf('%s\n%s', d$zmix, d$graph)
+  
+  return(d)
+}
+
 data.papoc <- function(where) {
   d <- db(
     sprintf("select * from tapir where total_time is not null and %s", where),
