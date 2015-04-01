@@ -24,6 +24,8 @@ db <- function(query, factors=c(), numeric=c()) {
 
 num <- function(var) as.numeric(as.character(var))
 
+x <- function(...) { return(paste(..., sep='#')) }
+
 capply <- function(col, func) unlist(lapply(col, func))
 
 df.histogram <- function(json, version="none") {
@@ -114,7 +116,6 @@ my_theme <- function() theme(
   axis.text.x = element_text(colour="black"),
   text = element_text(size=9, family="Helvetica")
 )
-
 
 theme_mine <- list(
   scale_fill_manual(values=my_palette),
@@ -231,7 +232,7 @@ data.ldbc <- function(where = "ldbc_config is not null") {
     colnames(mr) <- sprintf("time_%s", colnames(mr))
     
     data.frame(
-      throughput=as.numeric(r$ntotal)/as.numeric(o$total_duration),
+      throughput=as.numeric(r$ntotal)/as.numeric(o$total_duration)*1e6,
       total_time=o$total_duration,
       name=o$all_metrics$name,
       count=o$all_metrics$count,
