@@ -26,7 +26,7 @@ save(
                 labels=trans_format("log10", math_format(10^.x)))+
   cc_scales()+
   my_theme()
-, name='explore_ldbc', w=10, h=8)
+, name='plot/explore_ldbc', w=10, h=8)
 
 save(
   ggplot(subset(d,
@@ -52,7 +52,7 @@ save(
                 labels=trans_format("log10", math_format(10^.x)))+
   cc_scales()+
   my_theme()
-, name='explore_latency', w=10, h=8)
+, name='plot/explore_latency', w=10, h=8)
 
 save(
   ggplot(subset(d,
@@ -79,7 +79,7 @@ save(
   my_theme()
   # scale_fill_manual(values=my_palette, name='Variant')+
   # scale_color_manual(values=my_palette, name='Variant')
-, name='explore_retries', w=10, h=8)
+, name='plot/explore_retries', w=10, h=8)
 
 save(
   ggplot(subset(d, ntotal==50000), aes(
@@ -93,4 +93,4 @@ save(
   theme(axis.text.x = element_text(angle=90, hjust=1, vjust=0))+
   expand_limits(y=0)+
   my_theme()
-, name='explore_counts', w=8, h=6)
+, name='plot/explore_counts', w=8, h=6)
