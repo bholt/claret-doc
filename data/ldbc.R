@@ -3,7 +3,7 @@ source('common.R')
 
 # DATA.MODE <- 'local'
 # d <- data.ldbc(where="name like '%v0.16-multinode%' and snb_threads = 24")
-d <- data.ldbc()
+d <- subset(data.ldbc(), is.na(machines) | grepl('zork.cs',machines))
 
 save(
   ggplot(subset(d,
@@ -32,17 +32,18 @@ save(
   ggplot(subset(d,
     # ccmode == 'simple'
     ntotal == 50000
-    & grepl('zork',machines)
+    & is.na(machines)
+    #& grepl('zork',machines)
     # & name == 'AddPost'
   ), aes(
-    x = snb_time_ratio,
-    y = time_mean,
+    x = 1/snb_time_ratio,
+    y = time_mean / 1000,
     group = cc,
     fill = cc,
     color = cc,
     label = ntotal,
   ))+
-  geom_point()+
+  geom_point()+ylab('avg latency (ms)')+
   # geom_text(size=1.7)+
   # stat_summary(aes(label=ntotal), fun.y=mean, geom="text")+
   stat_smooth()+
@@ -58,10 +59,10 @@ save(
   ggplot(subset(d,
     # ccmode == 'simple'
     ntotal == 50000
-    # & name == 'Query2'
+    & name == 'Query2'
   ), aes(
     x = snb_time_ratio,
-    y = server_cc_check_success,
+    y = server_cc_check_failed / server_cc_check_count,
     group = cc,
     fill = cc,
     color = cc,
@@ -72,7 +73,7 @@ save(
   # stat_summary(aes(label=ntotal), fun.y=mean, geom="text")+
   stat_smooth()+
   # expand_limits(y=0)+
-  facet_wrap(~name)+
+  facet_wrap(~machines)+
   scale_x_log10(breaks=trans_breaks("log10", function(x) 10^x),
                 labels=trans_format("log10", math_format(10^.x)))+
   cc_scales()+
