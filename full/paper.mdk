@@ -1,4 +1,4 @@
-title:       Claret: 
+title:       Claret
 subtitle:    Abstract Data Types in Data Stores
 
 author:      Brandon Holt, Irene Zhang, Dan Ports, Mark Oskin, Luis Ceze
@@ -28,3 +28,7 @@ If certain parts of an application can tolerate imprecision, why not capture tho
 
 We propose abstract data types (ADTs) as the solution. Rather than limiting the records in databases to primitive types like strings or integers, raising them to more complex data types provides a richer interface, exposing ample opportunities for optimization to the database and a precise mechanism to express the intentions of programmers. In this work we explore several ways of leveraging commutativity and data types to improve database performance and allow programmers to make tradeoffs between performance and precision, starting by demonstrating one way of using commutativity to reduce transaction aborts.
 
+# Commutativity {#comm}
+
+Commutativity is well known, especially in distributed systems, for enabling important optimizations. Since the 80s, commutativity has been exploited by database systems designers [@Weihl:1988;@Fekete:90] within the safe confines of relational models, where complete control of the data structures allows systems to determine when transactions may conflict. Recently, commutativity has seen a resurgence in systems without a predefined data model, such as NoSQL databases and transactional memory.
+Eventually consistent databases use commutativity for convergence in work such as RedBlue consistency [@Li:OSDI12] and conflict-free replicated data types (CRDTs) [@Shapiro:SSS11]. Other systems specialize for commutative operations to improve transaction processing, such as Lynx [@Zhang:SOSP13] for tracking serializability, Doppel [@Narula:OSDI14] for executing operations in parallel on highly contended records, and HyFlow [@Kim:EuroPar13] for reordering operations in the context of distributed transactional memory. We propose unifying and generalizing these under the abstraction afforded by ADTs.
