@@ -1,0 +1,10 @@
+body.madoko {
+  font-family: 'Helvetica Neue';
+  font-weight: 300;
+}
+
+.madoko code, .madoko pre {
+  font-family: Hasklig;
+  font-size: 80%;
+  text-rendering: optimizeLegibility;
+}
