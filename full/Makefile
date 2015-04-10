@@ -1,6 +1,6 @@
 all: web-view
 
-SRCS := paper.mdk refs.bib	
+SRCS := paper.mdk ../refs.bib	
 
 out/paper.pdf: $(SRCS)
 	madoko -v --odir=out --pdf $<
@@ -13,3 +13,6 @@ out/paper.html: $(SRCS)
 
 web-view: out/paper.html
 	open -a Safari out/paper.html
+
+clean:
+	rm -r out
