@@ -9,6 +9,9 @@ suppressPackageStartupMessages(library(scales))
 suppressPackageStartupMessages(require(grid))
 suppressPackageStartupMessages(require(plyr))
 
+COMM <- "boosting (commutative)"
+RW <- "reader/writer locks"
+
 json.to.df <- function(jstr) {
   d <- fromJSON(jstr)
   return(data.frame(x=names(d),y=unlist(d)))
@@ -24,7 +27,8 @@ db <- function(query, factors=c(), numeric=c()) {
 
 num <- function(var) as.numeric(as.character(var))
 
-x <- function(...) { return(paste(..., sep='#')) }
+x <- function(...) paste(..., sep='#')
+p <- function(...) paste(..., sep='')
 
 capply <- function(col, func) unlist(lapply(col, func))
 
@@ -68,11 +72,12 @@ my_palette <- c(
   'rw'=c.yellow,
   'simple'=c.blue,
   
-  'reader/writer'=c.yellow,
-  'commutative'=c.blue,
-
   'approx'=c.green,
   'precise'=c.blue,
+  
+  'reader/writer'=c.yellow,
+  'commutative: approx'=c.green,
+  'commutative: precise'=c.blue,
   
   'follow'=c.blue,
   'newuser'=c.yellow,
@@ -88,6 +93,9 @@ my_palette <- c(
   'none'=c.gray  
 )
 
+my_palette[[RW]] <- c.yellow
+my_palette[[COMM]] <- c.blue
+
 # The palette with grey:
 cbPalette <- c("#0072B2", "#E69F00", "#009E73", "#D55E00", "#CC79A7", "#56B4E9", "#F0E442", "#999999")
 
@@ -97,11 +105,16 @@ my_colors <- function(title="") list(
   scale_color_manual(values=my_palette, name=title)
 )
 
-cc_scales <- function(field=cc, title="Concurrency control:") list(
-  scale_fill_manual(values=my_palette, name=title),
-  scale_color_manual(values=my_palette, name=title),
-  scale_linetype_manual(name=title, values=c('commutative'=1,'reader/writer'=2))
-)
+cc_scales <- function(field=cc, title="Concurrency control:") {
+  linetype_map <- c()
+  linetype_map[[COMM]] <- 1
+  linetype_map[[RW]] <- 2
+  list(
+    scale_fill_manual(values=my_palette, name=title),
+    scale_color_manual(values=my_palette, name=title),
+    scale_linetype_manual(name=title, values=linetype_map)
+  )
+}
 
 my_theme <- function() theme(
   panel.background = element_rect(fill="white"),
@@ -126,11 +139,10 @@ theme_mine <- list(
   my_theme()
 )
 
-data.retwis <- function(where="client = 'dsretwis'") {
-  d <- db(
-    sprintf("select * from retwis where total_time is not null and %s", where),
+data.retwis <- function(select="*", where="client = 'dsretwis'") {
+  d <- db(sprintf("select %s from retwis where total_time is not null and %s", select, where),
     factors=c('nshards', 'nclients'),
-    numeric=c('total_time', 'txn_count')
+    numeric=c('total_time', 'txn_count', 'nthreads')
   )
   
   d$throughput <- d$txn_count * num(d$nclients) / d$total_time
@@ -141,10 +153,18 @@ data.retwis <- function(where="client = 'dsretwis'") {
   d$prepare_retry_rate <- d$prepare_retries / d$prepare_total
   
   d$cc <- factor(revalue(d$ccmode, c(
-    'rw'='reader/writer',
-    'simple'='commutative'
-  )), levels=c('commutative','reader/writer'))
+    'rw'=RW,
+    'simple'=COMM
+  )), levels=c(COMM,RW))
   d$`Concurrency Control` <- d$cc
+  
+  d$variant <- revalue(sprintf('%s:%s', d$ccmode, d$approx), c(
+    # 'rw:1'='reader/writer',
+    'rw:0'='reader/writer',
+    'simple:0'='commutative: precise',
+    'simple:1'='commutative: approx'
+  ))
+  
   
   d$graph <- mapply(function(g,d){ if(g == 'none') gsub('^.*/kronecker/([0-9]+)','kronecker:\\1',d) else g }, d$gen, d$loaddir)
   
@@ -152,7 +172,7 @@ data.retwis <- function(where="client = 'dsretwis'") {
     'geom_repost'='repost-heavy',
     'read_heavy'='read-heavy',
     'update_heavy'='mixed'
-  )), levels=c('repost-heavy','read-heavy','mixed'))
+  )), levels=c('read-heavy','repost-heavy','mixed'))
   
   d$zmix <- sprintf('%s/%s', d$mix, d$alpha)
 
@@ -185,10 +205,9 @@ data.papoc <- function(where) {
   d$ccf <- factor(d$ccmode, levels=c('simple','rw','bottom'))
   
   d$cc <- factor(revalue(d$ccmode, c(
-    # 'bottom'='base',
-    'rw'='reader/writer',
-    'simple'='commutative'
-  )), levels=c('commutative','reader/writer','base'))
+    'rw'=RW,
+    'simple'=COMM
+  )), levels=c(COMM,RW))
   d$`Concurrency Control` <- d$cc
   
   d$Graph <- capply(d$gen, function(s) gsub('kronecker:.+','kronecker',s))
@@ -220,10 +239,14 @@ data.ldbc <- function(where = "ldbc_config is not null") {
   d <- subset(d.all, grepl("\\s*\\{",ldbc_results))
   
   d$cc <- factor(revalue(d$ccmode, c(
-    # 'bottom'='base',
-    'rw'='reader/writer',
-    'simple'='commutative'
-  )), levels=c('commutative','reader/writer','base'))
+    'rw'=RW,
+    'simple'=COMM
+  )), levels=c(COMM,RW))
+  
+  ccmap <- c()
+  ccmap[[COMM]] <- 'comm'
+  ccmap[[RW]] <- 'r/w'
+  d$cca <- revalue(d$cc, ccmap)
   
   d <- adply(d, 1, function(r){
     o <- fromJSON(r$ldbc_results)
