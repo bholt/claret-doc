@@ -1,5 +1,5 @@
 #!/usr/bin/env Rscript
-source('common.R')
+source('common.r')
 
 data.retwis.prob <- function() {
   d <- data.retwis(where="nshards = 4 and nclients = 4 and rate != 0 and loaddir like '%12%' and rate <= 1000 and server_conflict like '%_any%'")

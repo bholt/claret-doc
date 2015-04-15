@@ -28,8 +28,8 @@ final: pdf
 view: $(PAPER).pdf
 	open -a Skim $(PAPER).pdf
 
-$(PAPER).md: $(PAPER).Rmd common.R Makefile
-	Rscript --slave -e "library(knitr); source('common.R'); knit('"$<"')"
+$(PAPER).md: $(PAPER).Rmd common.r Makefile
+	Rscript --slave -e "library(knitr); source('common.r'); knit('"$<"')"
 
 $(PAPER).tex: $(PAPER).md template.tex Makefile
 	$(PANDOC) --template=template.tex -o $@ $<
