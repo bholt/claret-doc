@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 source('common.r')
 
-d <- data.retwis(where="nshards = 4 and nclients = 4 and rate != 0 and loaddir like '%12%' and rate <= 1000")
+d <- data.retwis(where="nshards = 4 and nclients = 4 and rate != 0 and rate <= 1000 and nthreads = 32")
 
 sub <- function(d=d) subset(d, mix == 'geom_repost' & is.na(machines))
 
@@ -29,51 +29,71 @@ sub <- function(d=d) subset(d, mix == 'geom_repost' & is.na(machines))
 #   my_theme()
 # , name='plot/retwis', w=10, h=8)
 
-d$throughput <- d$retwis_txn_count * num(d$nclients) / d$total_time;
+# d$throughput <- d$retwis_txn_count * num(d$nclients) / d$total_time;
 
 d$client_machines <- factor(d$machines)
 
 plot.path <- function(d) {
   
-  d$facet <- sprintf('%s*%d\n%s', d$machines, d$nthreads*num(d$nclients), d$workload)
+  d$facet <- sprintf('%s*%d\nscale %s - %s', d$machines, d$nthreads*num(d$nclients), d$scale, d$workload)
   
-  d.mean <- ddply(d, .(facet,cc,rate), summarize, x=mean(throughput), y=mean(avg_latency_ms))
+  d.mean <- ddply(d, .(facet,variant,rate), summarize, x=mean(throughput), y=mean(avg_latency_ms))
 
   return(
     ggplot(d, aes(
       x = throughput,
       y = avg_latency_ms,
-      group = cc,
-      fill = cc,
-      color = cc,
+      group = variant,
+      fill = variant,
+      color = variant,
     ))+
     xlab('Throughput')+ylab('Average latency (ms)')+
     geom_point()+
     geom_path(data=d.mean, aes(x=x,y=y))+
     expand_limits(y=0)+
     cc_scales()+
-    facet_wrap(~facet, scales="free", ncol=3)+
+    theme(legend.position="top")+
+    facet_wrap(~facet, ncol=2)+ # scales="free"
     my_theme()
   )
 }
 
 # save(plot.path(subset(d, !grepl('zork',machines))), name='plot/retwis_tput_v_lat', w=8, h=5)
 save(plot.path(
-  subset(d, (is.na(machines) | grepl('^candy$|,',machines)))
+  subset(d, (is.na(machines) | grepl('^candy$|.sampa$',machines)) & grepl('-heavy',workload))
 ), name='plot/retwis_tput_v_lat', w=8, h=10)
+
+
+d$facet <- sprintf('%s*%d\nscale %s - %s', d$machines, d$nthreads*num(d$nclients), d$scale, d$workload)
+save(
+  ggplot(d, aes(
+    x = rate * num(nthreads) * num(nclients) / 1000,
+    y = throughput / 1000,
+    group = variant,
+    fill = variant,
+    color = variant,
+  ))+
+  xlab('Offered load (ktxns/sec)')+ylab('Throughput (ktxns/sec)')+
+  stat_summary(geom='line', fun.y=mean)+
+  expand_limits(y=0)+
+  cc_scales()+
+  theme(legend.position="top")+
+  facet_wrap(~facet, ncol=2, scales="free")+
+  my_theme()
+, name='plot/retwis_tput', w=8, h=10)
 
 plot.path.final <- function(d) {
   d$facet <- d$workload
-  d.mean <- ddply(d, .(facet,cc,rate), summarize, x=mean(throughput), y=mean(avg_latency_ms))
+  d.mean <- ddply(d, .(facet,cc,rate), summarize, x=mean(throughput/1000), y=mean(avg_latency_ms))
   return(
     ggplot(d, aes(
-      x = throughput,
+      x = throughput / 1000,
       y = avg_latency_ms,
       group = cc,
       fill = cc,
       color = cc,
     ))+
-    xlab('Throughput')+ylab('Average latency (ms)')+
+    xlab('Throughput (ktxns/s)')+ylab('Average latency (ms)')+
     geom_point(size=1.0)+
     geom_path(data=d.mean, aes(x=x,y=y))+
     expand_limits(y=0)+
@@ -89,7 +109,7 @@ plot.path.final <- function(d) {
 
 # save(plot.path(subset(d, !grepl('zork',machines))), name='plot/retwis_tput_v_lat', w=8, h=5)
 save(plot.path.final(
-  subset(d, grepl('^candy$',machines) & grepl('heavy',workload) & approx == 0 & threads == 8)
+  subset(d, grepl('sampa',machines) & grepl('heavy',workload) & approx == 0 & threads == 32)
 ), name='plot/retwis_tput_v_lat_final', w=3.5, h=4)
 
 
@@ -142,11 +162,11 @@ plot.path.breakdown <- function(d) {
   d.m$latency_ms <- d.m$value * 1000
   d.m$facet <- with(d.m, sprintf('%s\n%s', workload, txn_type))
 
-  d.m.mean <- ddply(d.m, .(facet,variant,rate), summarize, x=mean(throughput), y=mean(latency_ms))
+  # d.m.mean <- ddply(d.m, .(facet,variant,rate), summarize, x=mean(throughput), y=mean(latency_ms))
 
   return(
     ggplot(d.m, aes(
-      x = throughput,
+      x = rate,
       y = latency_ms,
       group = variant,
       fill = variant,
@@ -154,7 +174,8 @@ plot.path.breakdown <- function(d) {
       label = rate,
     ))+
     geom_point()+
-    geom_path(data=d.m.mean, aes(x=x,y=y))+
+    stat_smooth(method=loess, enp.target=10)+
+    # geom_path(data=d.m.mean, aes(x=x,y=y))+
     expand_limits(y=0)+
     facet_wrap(~facet, scales="free")+
     cc_scales()+
@@ -162,7 +183,12 @@ plot.path.breakdown <- function(d) {
   )
 }
 
-save(plot.path.breakdown(subset(d, nthreads == 8 & grepl('^candy$',machines) & grepl('repost',workload))), name='plot/retwis_breakdown', w=10, h=8)
+save(plot.path.breakdown(subset(d,
+  nthreads == 32
+  # & grepl('^candy$',machines)
+  & grepl('.sampa',machines)
+  & grepl('read-heavy',workload)
+)), name='plot/retwis_breakdown', w=10, h=8)
 
 # d.c <- data.retwis(where="server_conflict LIKE ")
 # d.reposts <- adply(subset(d, grepl('_any', server_conflict)), 1, function(r){
@@ -179,7 +205,10 @@ save(plot.path.breakdown(subset(d, nthreads == 8 & grepl('^candy$',machines) & g
 #   data.frame(c)
 # })
 
-d.s <- subset(d, nthreads == 8 & grepl('^candy$',machines) & grepl('repost',workload))
+d.s <- subset(d, 
+  # nthreads == 8 & grepl('^candy$',machines) & grepl('repost',workload)
+  nthreads == 32 & grepl('sampa',machines) & grepl('read-heavy',workload)
+)
 
 txns <- gsub('retwis_(.*)_success', '\\1', grep('retwis_.*_success', colnames(d.s), value=T))
 d.s[p(txns,'_retry_rate')] <- d.s[p('retwis_',txns,'_retries')] / d.s[p('retwis_',txns,'_count')]
@@ -223,7 +252,7 @@ save(
       color = variant,
       group = variant,
   ))+
-  ylab('success rate')+
+  ylab('retry rate')+
   # geom_meanbar()+
   stat_summary(fun.y='mean', geom='line')+
   # geom_line()+

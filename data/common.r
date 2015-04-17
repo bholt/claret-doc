@@ -64,10 +64,9 @@ geom_meanbar <- function(labeller=label_pretty) {
   ))
 }
 
-geom_mean_path <- function(x, y, groupby) geom_path(
-  data=ddply(d, groupby, summarize, x=mean(x), y=mean(y)),
-  aes(x=x,y=y)
-)
+mean_path <- function(d, x, y, groupby) eval(parse(text=sprintf('ddply(d, groupby, summarize, x=mean(%s), y=mean(%s))', as.character(substitute(x)), as.character(substitute(y)))))
+
+geom_mean_path <- function(d, x, y, groupby) geom_path(data=mean_path(d, x, y, groupby), aes(x=x,y=y))
 
 mean_path <- function(x, y, groupby) ddply(d, groupby, summarize, x=mean(x), y=mean(y))
 
@@ -155,7 +154,11 @@ data.retwis <- function(select="*", where="client = 'dsretwis'") {
     numeric=c('total_time', 'txn_count', 'nthreads')
   )
   
+  d$scale <- gsub('.*/(\\d+)', '\\1', d$loaddir)
+  
   d$throughput <- d$txn_count * num(d$nclients) / d$total_time
+  # d$throughput <- d$retwis_txn_count * num(d$nclients) / d$total_time;
+  
   # d$throughput <- d$ntxns * num(d$nclients) / d$total_time
   d$avg_latency_ms <- d$txn_time / d$txn_count * 1000
 
@@ -277,3 +280,37 @@ data.ldbc <- function(where = "ldbc_config is not null") {
   
   d
 }
+
+data.stress <- function(where="clientmode = 'stress'") {
+  d <- db(paste("select * from stress where total_time is not null and ", where),
+    factors=c('nshards', 'nclients'),
+    numeric=c('total_time', 'txn_count')
+  )
+  d$failure_rate <- d$txn_failed / (d$txn_count + d$txn_failed)
+  d$throughput <- d$txn_count * num(d$nclients) / d$total_time
+  d$avg_latency_ms <- d$txn_time / d$txn_count * 1000
+
+  d$prepare_total <- d$prepare_retries + d$txn_count
+  d$prepare_retry_rate <- d$prepare_retries / d$prepare_total
+
+  d$op_retries_total <- d$op_retries * num(d$nclients)
+  d$op_retry_ratio <- d$op_retries / d$op_count
+
+  d$cc <- factor(revalue(d$ccmode, c(
+    'rw'=RW,
+    'simple'=COMM
+  )), levels=c(COMM,RW))
+  d$`Concurrency Control` <- d$cc
+
+  d$opmix <- factor(revalue(d$mix, c(
+    'mostly_update'='35% read / 65% update',
+    'update_heavy'='50% read / 50% update',
+    'read_heavy'='90% read / 10% update'
+  )))
+
+  d$zmix <- sprintf('%s/%s', d$mix, d$alpha)
+  d$facet <- sprintf('%s\n%d keys', d$zmix, d$nkeys)
+  
+  return(d)
+}
+
