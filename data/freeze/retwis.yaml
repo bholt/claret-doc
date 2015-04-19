@@ -1,0 +1,7 @@
+common:
+  database: mysql:///claret?read_default_file=/Users/bholt/.my.cnf
+  prefix: .
+  format: json
+exports:
+  - query: SELECT * FROM retwis WHERE total_time is not null AND nshards = 4 and nclients = 4 and rate != 0 and rate <= 1000 and nthreads = 32
+    filename: retwis.json
