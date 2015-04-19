@@ -3,6 +3,8 @@ source('common.r')
 
 d <- data.retwis(where="nshards = 4 and nclients = 4 and rate != 0 and rate <= 1000 and nthreads = 32")
 
+tags <- c('newuser','post','repost','timeline','follow')
+
 sub <- function(d=d) subset(d, mix == 'geom_repost' & is.na(machines))
 
 # save(
@@ -84,17 +86,17 @@ save(
 
 plot.path.final <- function(d) {
   d$facet <- d$workload
-  d.mean <- ddply(d, .(facet,cc,rate), summarize, x=mean(throughput/1000), y=mean(avg_latency_ms))
+  d.mean <- ddply(d, .(facet,variant,rate), summarize, x=mean(throughput/1000), y=mean(avg_latency_ms))
   return(
     ggplot(d, aes(
       x = throughput / 1000,
       y = avg_latency_ms,
-      group = cc,
-      fill = cc,
-      color = cc,
+      group = variant,
+      fill = variant,
+      color = variant,
     ))+
     xlab('Throughput (ktxns/s)')+ylab('Average latency (ms)')+
-    geom_point(size=1.0)+
+    # geom_point(size=1.0)+
     geom_path(data=d.mean, aes(x=x,y=y))+
     expand_limits(y=0)+
     # cc_scales()+
@@ -102,68 +104,61 @@ plot.path.final <- function(d) {
     scale_color_manual(values=my_palette, name='')+
     # scale_linetype_manual(name='Mode', values=c('commutative'=1,'reader/writer'=2))+
     facet_wrap(~facet)+
-    theme(legend.direction='horizontal', legend.position='bottom', legend.title.align=1)+
+    # theme(legend.direction='horizontal', legend.position='bottom', legend.title.align=1)+
     my_theme()
   )
 }
+
+d.f <- subset(d, grepl('sampa',machines) & grepl('heavy',workload) & threads == 32 & scale == 12 & rate <= 100 & !(ccmode == 'rw' & approx == 1))
+
+bottom_legend <- theme(legend.direction='horizontal', legend.position='bottom', legend.title.align=1)
 
 # save(plot.path(subset(d, !grepl('zork',machines))), name='plot/retwis_tput_v_lat', w=8, h=5)
-save(plot.path.final(
-  subset(d, grepl('sampa',machines) & grepl('heavy',workload) & approx == 0 & threads == 32)
-), name='plot/retwis_tput_v_lat_final', w=3.5, h=4)
+# save(plot.path.final(subset(d.f, approx == 0)+bottom_legend), name='plot/retwis_tput_v_lat_final', w=4, h=4)
+# save(plot.path.final(d.f)+bottom_legend, name='plot/retwis_tput_v_lat_final_approx', w=4, h=4)
+
+save(plot.path.final(subset(d.f, approx == 0)), name='plot/retwis_tput_v_lat_final', w=5.5, h=4)
+save(plot.path.final(d.f), name='plot/retwis_tput_v_lat_final_approx', w=5.5, h=4)
 
 
-plot.path.approx <- function(d) {
-  d$facet <- d$workload
-  d.mean <- ddply(d, .(facet,variant,rate), summarize, x=mean(throughput), y=mean(avg_latency_ms))
-  return(
-    ggplot(d, aes(
-      x = throughput,
-      y = avg_latency_ms,
-      group = variant,
-      fill = variant,
-      color = variant,
-    ))+
-    xlab('Throughput')+ylab('Average latency (ms)')+
-    geom_point()+
-    geom_path(data=d.mean, aes(x=x,y=y))+
-    expand_limits(y=0)+
-    # cc_scales()+
-    scale_fill_manual(values=my_palette, name='Variant')+
-    scale_color_manual(values=my_palette, name='Variant')+
-    # scale_linetype_manual(name='Mode', values=c('commutative'=1,'reader/writer'=2))+
-    facet_wrap(~facet)+
-    my_theme()
-  )
-}
-
-save(plot.path.approx(
-  subset(d, grepl('^candy$',machines) & grepl('heavy',workload) & threads == 8)
-), name='plot/retwis_tput_v_lat_approx', w=6, h=4)
+# plot.path.approx <- function(d) {
+#   d$facet <- d$workload
+#   d.mean <- ddply(d, .(facet,variant,rate), summarize, x=mean(throughput), y=mean(avg_latency_ms))
+#   return(
+#     ggplot(d, aes(
+#       x = throughput,
+#       y = avg_latency_ms,
+#       group = variant,
+#       fill = variant,
+#       color = variant,
+#     ))+
+#     xlab('Throughput')+ylab('Average latency (ms)')+
+#     geom_point()+
+#     geom_path(data=d.mean, aes(x=x,y=y))+
+#     expand_limits(y=0)+
+#     # cc_scales()+
+#     scale_fill_manual(values=my_palette, name='Variant')+
+#     scale_color_manual(values=my_palette, name='Variant')+
+#     # scale_linetype_manual(name='Mode', values=c('commutative'=1,'reader/writer'=2))+
+#     facet_wrap(~facet)+
+#     my_theme()
+#   )
+# }
+#
+# save(plot.path.approx(
+#   subset(d, grepl('^candy$',machines) & grepl('heavy',workload) & threads == 8)
+# ), name='plot/retwis_tput_v_lat_approx', w=6, h=4)
 
 plot.path.breakdown <- function(d) {
+  d[p('retwis_',tags,'_latency')] <- d[p('retwis_',tags,'_time')] / d[p('retwis_',tags,'_count')]
   
-  d$retwis_newuser_latency  <- d$retwis_newuser_time  / d$retwis_newuser_count
-  d$retwis_post_latency     <- d$retwis_post_time     / d$retwis_post_count
-  d$retwis_repost_latency   <- d$retwis_repost_time   / d$retwis_repost_count
-  d$retwis_timeline_latency <- d$retwis_timeline_time / d$retwis_timeline_count
-  d$retwis_follow_latency   <- d$retwis_follow_time   / d$retwis_follow_count
-    
-  d.m <- melt(d,
-    measure=c(
-      'retwis_newuser_latency',
-      'retwis_post_latency',
-      'retwis_repost_latency',
-      'retwis_timeline_latency',
-      'retwis_follow_latency'
-    )
-  )
+  d.m <- melt(d, measure=p('retwis_',tags,'_latency'))
   d.m$txn_type <- capply(d.m$variable, function(s) gsub('retwis_(\\w+)_latency','\\1', s))
   d.m$latency_ms <- d.m$value * 1000
   d.m$facet <- with(d.m, sprintf('%s\n%s', workload, txn_type))
 
   # d.m.mean <- ddply(d.m, .(facet,variant,rate), summarize, x=mean(throughput), y=mean(latency_ms))
-
+  
   return(
     ggplot(d.m, aes(
       x = rate,
@@ -177,7 +172,7 @@ plot.path.breakdown <- function(d) {
     stat_smooth(method=loess, enp.target=10)+
     # geom_path(data=d.m.mean, aes(x=x,y=y))+
     expand_limits(y=0)+
-    facet_wrap(~facet, scales="free")+
+    facet_wrap(~facet, scales="free", ncol=1)+
     cc_scales()+
     my_theme()
   )
@@ -187,7 +182,7 @@ save(plot.path.breakdown(subset(d,
   nthreads == 32
   # & grepl('^candy$',machines)
   & grepl('.sampa',machines)
-  & grepl('read-heavy',workload)
+  & grepl('repost',workload)
 )), name='plot/retwis_breakdown', w=10, h=8)
 
 # d.c <- data.retwis(where="server_conflict LIKE ")
@@ -264,7 +259,7 @@ save(
 , name='plot/retwis_aborts', w=10, h=5)
 
 save(
-  ggplot(subset(d.m, rate == 1000), aes(
+  ggplot(subset(d.m, rate == 100), aes(
       x = txn_type,
       y = value,
       fill = variant,

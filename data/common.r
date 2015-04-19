@@ -64,11 +64,9 @@ geom_meanbar <- function(labeller=label_pretty) {
   ))
 }
 
-mean_path <- function(d, x, y, groupby) eval(parse(text=sprintf('ddply(d, groupby, summarize, x=mean(%s), y=mean(%s))', as.character(substitute(x)), as.character(substitute(y)))))
+mean_path <- function(d, x, y, grp) eval(parse(text=sprintf('ddply(d, grp, summarize, x=mean(%s), y=mean(%s))', as.character(substitute(x)), as.character(substitute(y)))))
 
 geom_mean_path <- function(d, x, y, groupby) geom_path(data=mean_path(d, x, y, groupby), aes(x=x,y=y))
-
-mean_path <- function(x, y, groupby) ddply(d, groupby, summarize, x=mean(x), y=mean(y))
 
 c.blue   <- "#0072B2"
 c.yellow <- "#E69F00"
@@ -87,6 +85,10 @@ my_palette <- c(
   'reader/writer'=c.yellow,
   'commutative: approx'=c.green,
   'commutative: precise'=c.blue,
+
+  'Locking/OCC'=c.yellow,
+  'Claret-Approx'=c.green,
+  'Claret'=c.blue,
   
   'follow'=c.blue,
   'newuser'=c.yellow,
@@ -149,6 +151,14 @@ theme_mine <- list(
 )
 
 data.retwis <- function(select="*", where="client = 'dsretwis'") {
+  d <- 
+    if(exists("DATA.MODE") && DATA.MODE == 'local') {
+      d.tmp <- do.call("rbind", fromJSON("ldbc.json"))
+      sqldf(sprintf("select * from `d.tmp` where ldbc_results is not null and %s",where), drv="SQLite")
+    } else {
+      db(sprintf("select * from ldbc where ldbc_results is not null and ldbc_results != \"\" and %s", where))
+    }
+
   d <- db(sprintf("select %s from retwis where total_time is not null and %s", select, where),
     factors=c('nshards', 'nclients'),
     numeric=c('total_time', 'txn_count', 'nthreads')
@@ -171,12 +181,12 @@ data.retwis <- function(select="*", where="client = 'dsretwis'") {
   )), levels=c(COMM,RW))
   d$`Concurrency Control` <- d$cc
   
-  d$variant <- revalue(sprintf('%s:%s', d$ccmode, d$approx), c(
+  d$variant <- factor(revalue(sprintf('%s:%s', d$ccmode, d$approx), c(
     # 'rw:1'='reader/writer',
-    'rw:0'='reader/writer',
-    'simple:0'='commutative: precise',
-    'simple:1'='commutative: approx'
-  ))
+    'rw:0'='Locking/OCC',
+    'simple:0'='Claret',
+    'simple:1'='Claret-Approx'
+  )), levels=c('Locking/OCC', 'Claret', 'Claret-Approx'))
   
   
   d$graph <- mapply(function(g,d){ if(g == 'none') gsub('^.*/kronecker/([0-9]+)','kronecker:\\1',d) else g }, d$gen, d$loaddir)

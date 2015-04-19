@@ -10,8 +10,10 @@ source('common.r')
 d <- data.stress(where="nclients = 4 and nshards = 4 and nkeys = 10000 and nthreads = 32")
 d$facet <- with(d, sprintf("%s\n%s\n%s", machines, zmix, opmix))
 
+d.s <- subset(d)
+
 save(
-  ggplot(subset(d, alpha == 0.6 ), aes(
+  ggplot(d.s, aes(
     x = throughput,
     y = avg_latency_ms,
     group = cc,
@@ -22,6 +24,8 @@ save(
   theme_mine+
   # geom_point()+
   geom_text(size=1.4)+
+  # geom_mean_path(d.s, throughput, avg_latency_ms, .(facet))+
+  geom_path(data=mean_path(d.s, throughput, avg_latency_ms, .(rate,cc,facet)), aes(x=x,y=y))+
   # cc_line()+
   xlab('Throughput')+ylab('Avg latency (ms)')+
   facet_wrap(~facet)+
