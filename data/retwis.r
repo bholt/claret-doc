@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
+DATA.MODE <- 'local'
 source('common.r')
-
 d <- data.retwis(where="nshards = 4 and nclients = 4 and rate != 0 and rate <= 1000 and nthreads = 32")
 
 tags <- c('newuser','post','repost','timeline','follow')
@@ -117,8 +117,11 @@ bottom_legend <- theme(legend.direction='horizontal', legend.position='bottom', 
 # save(plot.path.final(subset(d.f, approx == 0)+bottom_legend), name='plot/retwis_tput_v_lat_final', w=4, h=4)
 # save(plot.path.final(d.f)+bottom_legend, name='plot/retwis_tput_v_lat_final_approx', w=4, h=4)
 
-save(plot.path.final(subset(d.f, approx == 0)), name='plot/retwis_tput_v_lat_final', w=5.5, h=4)
-save(plot.path.final(d.f), name='plot/retwis_tput_v_lat_final_approx', w=5.5, h=4)
+limits <- coord_cartesian(xlim=c(0,22))
+
+save(plot.path.final(subset(d.f, approx == 0 & ccmode == 'rw'))+limits, name='plot/retwis_tput_v_lat_final_rw', w=5.5, h=4)
+save(plot.path.final(subset(d.f, approx == 0))+limits, name='plot/retwis_tput_v_lat_final', w=5.5, h=4)
+save(plot.path.final(d.f)+limits, name='plot/retwis_tput_v_lat_final_approx', w=5.5, h=4)
 
 
 # plot.path.approx <- function(d) {

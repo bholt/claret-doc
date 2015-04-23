@@ -86,7 +86,7 @@ my_palette <- c(
   'commutative: approx'=c.green,
   'commutative: precise'=c.blue,
 
-  'Locking/OCC'=c.yellow,
+  'Locking / OCC'=c.yellow,
   'Claret-Approx'=c.green,
   'Claret'=c.blue,
   
@@ -153,16 +153,19 @@ theme_mine <- list(
 data.retwis <- function(select="*", where="client = 'dsretwis'") {
   d <- 
     if(exists("DATA.MODE") && DATA.MODE == 'local') {
-      d.tmp <- do.call("rbind", fromJSON("ldbc.json"))
-      sqldf(sprintf("select * from `d.tmp` where ldbc_results is not null and %s",where), drv="SQLite")
+      d.tmp <- do.call("rbind", fromJSON("freeze/retwis.json"))
+      sqldf(sprintf("select * from `d.tmp` where total_time is not null and %s",where), drv="SQLite")
     } else {
-      db(sprintf("select * from ldbc where ldbc_results is not null and ldbc_results != \"\" and %s", where))
+      db(sprintf("select * from ldbc where total_time is not null and ldbc_results != \"\" and %s", where),
+        factors=c('nshards', 'nclients'),
+        numeric=c('total_time', 'txn_count', 'nthreads')
+      )
     }
 
-  d <- db(sprintf("select %s from retwis where total_time is not null and %s", select, where),
-    factors=c('nshards', 'nclients'),
-    numeric=c('total_time', 'txn_count', 'nthreads')
-  )
+  # d <- db(sprintf("select %s from retwis where total_time is not null and %s", select, where),
+  #   factors=c('nshards', 'nclients'),
+  #   numeric=c('total_time', 'txn_count', 'nthreads')
+  # )
   
   d$scale <- gsub('.*/(\\d+)', '\\1', d$loaddir)
   
@@ -183,10 +186,10 @@ data.retwis <- function(select="*", where="client = 'dsretwis'") {
   
   d$variant <- factor(revalue(sprintf('%s:%s', d$ccmode, d$approx), c(
     # 'rw:1'='reader/writer',
-    'rw:0'='Locking/OCC',
+    'rw:0'='Locking / OCC',
     'simple:0'='Claret',
     'simple:1'='Claret-Approx'
-  )), levels=c('Locking/OCC', 'Claret', 'Claret-Approx'))
+  )), levels=c('Locking / OCC', 'Claret', 'Claret-Approx'))
   
   
   d$graph <- mapply(function(g,d){ if(g == 'none') gsub('^.*/kronecker/([0-9]+)','kronecker:\\1',d) else g }, d$gen, d$loaddir)
