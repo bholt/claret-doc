@@ -15,7 +15,7 @@ out/refs.bib:
 
 
 out/paper.pdf: $(SRCS) out/style
-	cd out && madoko -v --pdf paper.mdk
+	cd out && madoko -v --pdf --tex paper.mdk
 
 pdf: out/paper.pdf
 

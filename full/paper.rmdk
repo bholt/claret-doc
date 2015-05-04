@@ -12,12 +12,13 @@ doc class:    [preprint,nocopyrightspace]style/sigplanconf.cls
 css:          style/style.css
 Logo: False
 
+~Pre, ~Code: font-family="Inconsolata" font-size=10pt
+
 ~Fig: label='Figure [@fig]{.figure-label}' replace='&source;&nl;[[**&label;.** ]{.caption-before}&caption;]{.figure-caption html-elem=fig-caption}&nl;{notag}&nl;'
 
 ~ TexRaw
 \cssClassRuleDo{fig}{%
-  \def\@pagealign{t}%
-  \cssDoBefore{\begin{figure}}%
+  \cssDoBefore{\begin{figure}[t]\centering}%
      \cssDoAfter{\end{figure}}%
 }
 ~
@@ -48,6 +49,14 @@ We propose abstract data types (ADTs) as the solution. Rather than limiting the 
 Commutativity is well known, especially in distributed systems, for enabling important optimizations. Since the 80s, commutativity has been exploited by database systems designers [@Weihl:1988;@Fekete:90] within the safe confines of relational models, where complete control of the data structures allows systems to determine when transactions may conflict. Recently, commutativity has seen a resurgence in systems without a predefined data model, such as NoSQL databases and transactional memory.
 Eventually consistent databases use commutativity for convergence in work such as RedBlue consistency [@Li:OSDI12] and conflict-free replicated data types (CRDTs) [@Shapiro:SSS11]. Other systems specialize for commutative operations to improve transaction processing, such as Lynx [@Zhang:SOSP13] for tracking serializability, Doppel [@Narula:OSDI14] for executing operations in parallel on highly contended records, and HyFlow [@Kim:EuroPar13] for reordering operations in the context of distributed transactional memory. We propose unifying and generalizing these under the abstraction afforded by ADTs.
 
+~ Fig { caption="Code snippet." }
+```ruby
+def hello(name)
+  puts "Hello, #{name}!"
+end
+```
+~
+
 # Evaluation {#eval}
 
 To demonstrate the efficacy of leveraging commutative operations in transactions, we built a simple prototype key-value store, modeled after Redis, that supports complex data types for records, each with their own set of operations. Our experiments were carried out with 4 shards on 4 local nodes, each with 8-core 2GHz Xeon E5335 processors and standard ethernet connecting them.
@@ -61,8 +70,8 @@ To support transactions with arbitrary data structure operations, each operation
 Commutativity comes into play in the locking scheme. Using the algorithms from [@Kulkarni:PLDI11] and our commutativity specifications, we design an abstract lock for each record type. Our `SortedSet`, for instance, has an `add` mode which allows all insertion operations to commute, but disallows operations like `contains` or `size`.
 As a baseline, we implement a standard reader/writer locking scheme that allows all read-only operations to execute concurrently, but enforces that only one transaction may modify a record at a time.
 
-~ Fig { #stress-tput page-align=top caption="Throughput of raw Set operations." }
-```{r stress, include=F, fig.width=2.9, fig.height=3.1}
+~ Fig { #stress-tput caption="Throughput of raw Set operations." }
+```{r stress, include=T, fig.width=2.3, fig.height=3.1}
 d <- data.papoc(where="name like 'stress-v0.14%'")
 d$opmix <- factor(revalue(d$mix, c(
     'mostly_update'='35% read\n65% update',
@@ -84,7 +93,6 @@ ggplot(d.u, aes(x=nclients, y=throughput/1000,
     theme(legend.position=c(0.5,-0.25), plot.margin=unit(c(.5,.5,10,.5),'mm'), legend.direction='horizontal', legend.title.align=1)+
     cc_scales(title='Concurrency\ncontrol:')
 ```
-![stress](figure/stress-1.pdf)
 ~
 
 We first evaluate performance with a simple workload consisting of a raw mix of `Set` operations randomly distributed over 10,000 keys. We use both a uniform random distribution as well as a skewed Zipfian distribution with a coefficient of 0.6. In [#stress-tput], we see that commutative transactions perform strictly better, showing the most pronounced benefit over the more update-heavy, skewed workload.
