@@ -10,4 +10,4 @@ deploy:
 	$(MAKE) -C full final
 	ssh bicycle "cd /cse/web/homes/bholt && mkdir -p pdf && mkdir -p gen"
 	scp papoc/claret-papoc.pdf $(dest)/pdf
-	scp full/out/claret.pdf $(dest)/pdf/claret.pdf
+	scp full/out/claret.pdf $(dest)/pdf
