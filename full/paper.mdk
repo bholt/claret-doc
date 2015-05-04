@@ -1,4 +1,4 @@
-title:       Claret
+title:       Claret:
 subtitle:    Abstract Data Types in Data Stores
 
 author:      Brandon Holt, Irene Zhang, Dan Ports, Mark Oskin, Luis Ceze
@@ -10,14 +10,29 @@ Bib style:    plainnat
 Bibliography: ../refs.bib
 doc class:    [preprint,nocopyrightspace]style/sigplanconf.cls
 css:          style/style.css
+Logo: False
+
+~Fig: label='Figure [@fig]{.figure-label}' .align-center 
+      after='&nl;&nl;\
+             [[**&label;.** ]\
+             {.caption-before}&caption;]\
+             {.figure-caption html-elem=fig-caption}\
+             &nl;{notag}&nl;'
+      toc=tof toc-line='&label;. &caption;'
+      html-elem=figure
+      html-elem=figure
+
+```{r setup, include=FALSE}
+opts_chunk$set(dev='pdf', echo=F, message=F, warning=F, error=F, fig.width=3.6, fig.height=3)
+```
 
 [TITLE]
 
-~~ Abstract
+~ Abstract
 Out of the many NoSQL databases in use today, some that provide simple data structures for records, such as Redis and MongoDB, are now becoming popular. Building applications out of these complex data types provides a way to communicate intent to the database system without sacrificing flexibility or committing to a fixed schema. Currently this capability is leveraged in limited ways, such as to ensure related values are co-located, or for atomic updates. There are many ways data types can be used to make databases more efficient that are not yet being exploited.
 
 We explore several ways of leveraging abstract data type (ADT) semantics in databases, focusing primarily on commutativity. Using a Twitter clone as a case study, we show that using commutativity can reduce transaction abort rates for high-contention, update-heavy workloads that arise in real social networks. We conclude that ADTs are a good abstraction for database records, providing a safe and expressive programming model with ample opportunities for optimization, making databases more safe and scalable.
-~~
+~
 
 # Introduction
 
