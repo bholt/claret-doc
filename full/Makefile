@@ -1,6 +1,6 @@
 all: web-view
 
-SRCS := out/paper.mdk ../refs.bib
+SRCS := out/paper.mdk out/style out/refs.bib
 
 out/%.mdk: %.rmdk
 	mkdir -p out
@@ -11,10 +11,10 @@ out/style:
 	cd out && ln -s ../style
 
 out/refs.bib:
-	cd out && ln -s ../refs.bib
+	cd out && ln -s ../../refs.bib
 
 
-out/paper.pdf: $(SRCS) out/style
+out/paper.pdf: $(SRCS)
 	cd out && madoko -v --pdf --tex paper.mdk
 
 pdf: out/paper.pdf

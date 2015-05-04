@@ -18,7 +18,7 @@ Logo: False
 
 ~ TexRaw
 \cssClassRuleDo{fig}{%
-  \cssDoBefore{\begin{figure}[t]\centering}%
+  \cssDoBefore{\begin{figure}[t]}%
      \cssDoAfter{\end{figure}}%
 }
 ~
@@ -71,7 +71,7 @@ Commutativity comes into play in the locking scheme. Using the algorithms from [
 As a baseline, we implement a standard reader/writer locking scheme that allows all read-only operations to execute concurrently, but enforces that only one transaction may modify a record at a time.
 
 ~ Fig { #stress-tput caption="Throughput of raw Set operations." }
-```{r stress, include=T, fig.width=2.3, fig.height=3.1}
+```{r stress, include=T, fig.width=3.1, fig.height=3.0}
 d <- data.papoc(where="name like 'stress-v0.14%'")
 d$opmix <- factor(revalue(d$mix, c(
     'mostly_update'='35% read\n65% update',
