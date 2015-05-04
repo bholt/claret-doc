@@ -18,6 +18,9 @@ out/paper.pdf: $(SRCS)
 	cd out && madoko -v --pdf --tex paper.mdk
 
 pdf: out/paper.pdf
+	
+final: pdf
+	cd out && pdfstill paper.pdf && mv paper.still.pdf claret.pdf
 
 pdf-view: pdf
 	open -a Skim out/paper.pdf

@@ -7,7 +7,7 @@ dest := bicycle:/cse/web/homes/bholt
 
 deploy:
 	$(MAKE) -C papoc final
-	$(MAKE) -C full pdf web
+	$(MAKE) -C full final
 	ssh bicycle "cd /cse/web/homes/bholt && mkdir -p pdf && mkdir -p gen"
 	scp papoc/claret-papoc.pdf $(dest)/pdf
-	scp full/out/paper.pdf $(dest)/pdf/claret.pdf
+	scp full/out/claret.pdf $(dest)/pdf/claret.pdf
