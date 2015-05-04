@@ -1,4 +1,4 @@
 #!/bin/bash
-for f in figure/*.pdf; do
+for f in out/figure/*.pdf; do
   pdf2svg $f ${f/.pdf/.svg}
 done
