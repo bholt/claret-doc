@@ -3,7 +3,14 @@ source('common.r')
 
 data.retwis.prob <- function() {
   d <- data.retwis(where="nshards = 4 and nclients = 4 and rate != 0 and loaddir like '%12%' and rate <= 1000 and server_conflict like '%_any%'")
-  d <- adply(d, 1, function(r) data.frame(fromJSON(r$server_conflict)))
+  d <- adply(d, 1, function(r) {
+    o <- fromJSON(r$server_conflict))
+    
+    data.frame()
+  }
+  d$p_comm <- (d$stress_potential_ro) / (d$stress_total^2)
+  d$p_rw <- (d$stress_potential_add + d$stress_potential_ro) / (d$stress_total^2)
+  
   d$ccv <- revalue(d$cc, c('commutative'='comm', 'reader/writer'='r/w'))
   d$wkld <- revalue(d$workload, c('mixed'='mixed','read-heavy'='read','repost-heavy'='repost'))
   return(d)

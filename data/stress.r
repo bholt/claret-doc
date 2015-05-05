@@ -7,13 +7,11 @@ source('common.r')
 #   cc_scales()
 # )
 
-d <- data.stress(where="nclients = 4 and nshards = 4 and nkeys = 10000 and nthreads = 32")
-d$facet <- with(d, sprintf("%s\n%s\n%s", machines, zmix, opmix))
-
-d.s <- subset(d)
+d <- data.stress(where="nclients = 4 and nshards = 4 and nkeys = 10000 and nthreads = 32 and duration = 60 and name like '%v0.17%' and approx = 0 and rate < 1000")
+d$facet <- with(d, sprintf("%s\n%s\nl:%s", machines, zmix, length))
 
 save(
-  ggplot(d.s, aes(
+  ggplot(d, aes(
     x = throughput,
     y = avg_latency_ms,
     group = cc,
@@ -25,13 +23,35 @@ save(
   # geom_point()+
   geom_text(size=1.4)+
   # geom_mean_path(d.s, throughput, avg_latency_ms, .(facet))+
-  geom_path(data=mean_path(d.s, throughput, avg_latency_ms, .(rate,cc,facet)), aes(x=x,y=y))+
+  geom_path(data=mean_path(d, throughput, avg_latency_ms, .(rate,cc,facet)), aes(x=x,y=y))+
   # cc_line()+
   xlab('Throughput')+ylab('Avg latency (ms)')+
   facet_wrap(~facet)+
   theme(legend.position="top")+
   expand_limits(y=0)
 , name='plot/stress_tput_v_lat', w=8, h=8)
+
+save(
+  ggplot(d, aes(
+    x = rate,
+    y = throughput,
+    group = cc,
+    fill = cc,
+    color = cc,
+    label = rate,
+  ))+
+  theme_mine+
+  geom_point()+
+  stat_summary(geom='line', fun.y=mean)+
+  # geom_mean_path(d.s, throughput, avg_latency_ms, .(facet))+
+  # geom_path(data=mean_path(d, throughput, avg_latency_ms, .(rate,cc,facet)), aes(x=x,y=y))+
+  # cc_line()+
+  xlab('Offered rate')+ylab('Throughput')+
+  facet_wrap(~facet, ncol=4)+
+  theme(legend.position="top")+
+  expand_limits(y=0)
+, name='plot/stress_tput', w=8, h=8)
+
 
 # save(
 #   ggplot(d, aes(
