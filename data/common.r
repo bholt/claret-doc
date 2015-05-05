@@ -154,19 +154,14 @@ data.retwis <- function(select="*", where="client = 'dsretwis'") {
   d <- 
     if(exists("DATA.MODE") && DATA.MODE == 'local') {
       d.tmp <- do.call("rbind", fromJSON("freeze/retwis.json"))
-      sqldf(sprintf("select * from `d.tmp` where total_time is not null and %s",where), drv="SQLite")
+      sql(sprintf("select * from `d.tmp` where total_time is not null and %s",where))
     } else {
-      db(sprintf("select * from ldbc where total_time is not null and ldbc_results != \"\" and %s", where),
+      db(sprintf("select * from retwis where total_time is not null and %s", where),
         factors=c('nshards', 'nclients'),
         numeric=c('total_time', 'txn_count', 'nthreads')
       )
     }
 
-  # d <- db(sprintf("select %s from retwis where total_time is not null and %s", select, where),
-  #   factors=c('nshards', 'nclients'),
-  #   numeric=c('total_time', 'txn_count', 'nthreads')
-  # )
-  
   d$scale <- gsub('.*/(\\d+)', '\\1', d$loaddir)
   
   d$throughput <- d$txn_count * num(d$nclients) / d$total_time
