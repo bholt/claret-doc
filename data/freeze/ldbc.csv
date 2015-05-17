@@ -1,0 +1,384 @@
+id,snbdata,clientmode,server_ops_write,nclients,ntxns,initusers,approx,tag,snb_time_ratio,server_op_todos,nshards,server_denied_reset,ldbc_config,snb_threads,server_ops_denied,server_cc_check_success,ntotal,initposts,mix,nkeys,edgefactor,server_cc_check_set_count,server_cc_check_count,mode,clientargs,server_ops_read,server_cc_check_set_success,alpha,server_asyncs_prepared,gen,store,name,server_cc_check_failed,ccmode,length,client,server_cc_check_set_failed,genargs,ldbc_results,debug,server_set_add_exists,generator_time,replicas,ldbc_results_backup,nthreads,duration,rate,server_load_time,loaddir,savedir,server_atomic_retries,sqltable,machines,server_tracking,server_conflict,server_tracking_hist_ops,server_MGet,snb_queries,enablegdb,client_metrics
+634,/sampa/home/bholt/snb/social_network_scale1_up64,retwis,,1,1000,100,0,v0.17.1-38-g6fa7360,1e-05,,4,,"# -------------------------------------
+# -------------------------------------
+# ----- LDBC Driver Configuration -----
+# -------------------------------------
+# -------------------------------------
+
+# ***********************
+# *** driver defaults ***
+# ***********************
+
+# status display interval (intermittently show status during benchmark execution)
+# INT-32 (seconds)
+# COMMAND: -s/--status
+status=2
+
+# thread pool size to use for executing operation handlers
+# INT-32
+# COMMAND: -tc/--thread_count
+thread_count=32
+
+# number of operations to execute during warmup phase of workload
+# INT-64
+# COMMAND: -wu/--warmup
+warmup=0
+
+# name of the benchmark run
+# STRING
+# COMMAND: -nm/--name
+name=LDBC
+
+# path specifying where to write the benchmark results file
+# STRING
+# COMMAND: -rd/--results_dir
+results_dir=results
+
+# create a csv file containing simple data about the execution of every operation in the workload
+# BOOLEAN
+# COMMAND: -rl/--results_log
+results_log=false
+
+# time unit to use for measuring performance metrics (e.g., query response time)
+# ENUM ([NANOSECONDS, MICROSECONDS, MILLISECONDS, SECONDS, MINUTES])
+# COMMAND: -tu/--time_unit
+time_unit=MICROSECONDS
+
+# used to 'compress'/'stretch' durations between operation start times to increase/decrease benchmark load
+# e.g. 2.0 = run benchmark 2x slower, 0.1 = run benchmark 10x faster
+# DOUBLE
+# COMMAND: -tcr/--time_compression_ratio
+time_compression_ratio=1.0E-5
+
+# NOT USED AT PRESENT - reserved for distributed driver mode
+# specifies the addresses of other driver processes, so they can find each other
+# LIST (e.g., peer1|peer2|peer3)
+# COMMAND: -pids/--peer_identifiers
+peer_identifiers=
+
+# enable validation that will check if the provided database implementation is correct
+# parameter value specifies where to find the validation parameters file
+# STRING
+# COMMAND: -vdb/--validate_database
+# validate_database=
+
+# generate validation parameters file for validating correctness of database implementations
+# parameter values specify: (1) where to create the validation parameters file (2) how many validation parameters to generate
+# STRING|INT-32 (e.g., validation_parameters.csv|1000)
+# COMMAND: -cvp/--create_validation_parameters
+# create_validation_parameters=
+
+# enable validation that will check if the provided workload implementation is correct
+# BOOLEAN
+# COMMAND: -vw/--validate_workload
+validate_workload=false
+
+# calculate & display workload statistics (operation mix, etc.)
+# BOOLEAN
+# COMMAND: -stats/--workload_statistics
+workload_statistics=false
+
+# sleep duration (ms) injected into busy wait loops (to reduce CPU consumption)
+# INT-64 (milliseconds)
+# COMMAND: -sw/--spinner_wait_duration
+spinner_wait_duration=0
+
+# print help string - usage instructions
+# BOOLEAN
+# COMMAND: -help
+help=false
+
+# executes operations as fast as possible, ignoring their scheduled start times
+# BOOLEAN
+# COMMAND: -ignore_scheduled_start_times
+ignore_scheduled_start_times=false
+
+# ***************************************************************
+# *** the following should be set by workload implementations ***
+# ***************************************************************
+
+# fully qualified class name of the Workload (class) implementation to execute
+# STRING (e.g., com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcSnbInteractiveWorkload)
+# COMMAND: -w/--workload
+workload=com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcSnbInteractiveWorkload
+
+# number of operations to generate during benchmark execution
+# INT-64
+# COMMAND: -oc/--operation_count
+operation_count=20000
+
+# ************************************************************************************
+# *** the following should be set by vendor implementations for specific workloads ***
+# ************************************************************************************
+
+# fully qualified class name of the Db (class) implementation to execute
+# STRING (e.g., com.ldbc.driver.workloads.ldbc.snb.interactive.db.DummyLdbcSnbInteractiveDb)
+# COMMAND: -db/--database
+database=edu.uw.ldbc.ClaretSnbInteractiveDb
+
+# ************************************************************************************
+# *** non-core configuration parameters ***
+# ************************************************************************************
+
+claret.config_path=/sampa/home/bholt/snb/claret/src/tools/shard
+claret.nshards=4
+ldbc.snb.interactive.LdbcQuery10_enable=false
+ldbc.snb.interactive.LdbcQuery10_freq=30
+ldbc.snb.interactive.LdbcQuery10_interleave=164190
+ldbc.snb.interactive.LdbcQuery11_enable=false
+ldbc.snb.interactive.LdbcQuery11_freq=16
+ldbc.snb.interactive.LdbcQuery11_interleave=87568
+ldbc.snb.interactive.LdbcQuery12_enable=false
+ldbc.snb.interactive.LdbcQuery12_freq=44
+ldbc.snb.interactive.LdbcQuery12_interleave=240812
+ldbc.snb.interactive.LdbcQuery13_enable=false
+ldbc.snb.interactive.LdbcQuery13_freq=19
+ldbc.snb.interactive.LdbcQuery13_interleave=103987
+ldbc.snb.interactive.LdbcQuery14_enable=false
+ldbc.snb.interactive.LdbcQuery14_freq=49
+ldbc.snb.interactive.LdbcQuery14_interleave=268177
+ldbc.snb.interactive.LdbcQuery1_enable=true
+ldbc.snb.interactive.LdbcQuery1_freq=26
+ldbc.snb.interactive.LdbcQuery1_interleave=142298
+ldbc.snb.interactive.LdbcQuery2_enable=true
+ldbc.snb.interactive.LdbcQuery2_freq=37
+ldbc.snb.interactive.LdbcQuery2_interleave=202501
+ldbc.snb.interactive.LdbcQuery3_enable=true
+ldbc.snb.interactive.LdbcQuery3_freq=69
+ldbc.snb.interactive.LdbcQuery3_interleave=377637
+ldbc.snb.interactive.LdbcQuery4_enable=false
+ldbc.snb.interactive.LdbcQuery4_freq=36
+ldbc.snb.interactive.LdbcQuery4_interleave=197028
+ldbc.snb.interactive.LdbcQuery5_enable=false
+ldbc.snb.interactive.LdbcQuery5_freq=57
+ldbc.snb.interactive.LdbcQuery5_interleave=311961
+ldbc.snb.interactive.LdbcQuery6_enable=false
+ldbc.snb.interactive.LdbcQuery6_freq=129
+ldbc.snb.interactive.LdbcQuery6_interleave=706017
+ldbc.snb.interactive.LdbcQuery7_enable=true
+ldbc.snb.interactive.LdbcQuery7_freq=87
+ldbc.snb.interactive.LdbcQuery7_interleave=476151
+ldbc.snb.interactive.LdbcQuery8_enable=true
+ldbc.snb.interactive.LdbcQuery8_freq=45
+ldbc.snb.interactive.LdbcQuery8_interleave=246285
+ldbc.snb.interactive.LdbcQuery9_enable=true
+ldbc.snb.interactive.LdbcQuery9_freq=157
+ldbc.snb.interactive.LdbcQuery9_interleave=859261
+ldbc.snb.interactive.LdbcShortQuery1PersonProfile_enable=false
+ldbc.snb.interactive.LdbcShortQuery2PersonPosts_enable=false
+ldbc.snb.interactive.LdbcShortQuery3PersonFriends_enable=false
+ldbc.snb.interactive.LdbcShortQuery4MessageContent_enable=false
+ldbc.snb.interactive.LdbcShortQuery5MessageCreator_enable=false
+ldbc.snb.interactive.LdbcShortQuery6MessageForum_enable=false
+ldbc.snb.interactive.LdbcShortQuery7MessageReplies_enable=false
+ldbc.snb.interactive.LdbcUpdate1AddPerson_enable=true
+ldbc.snb.interactive.LdbcUpdate2AddPostLike_enable=true
+ldbc.snb.interactive.LdbcUpdate3AddCommentLike_enable=true
+ldbc.snb.interactive.LdbcUpdate4AddForum_enable=true
+ldbc.snb.interactive.LdbcUpdate5AddForumMembership_enable=true
+ldbc.snb.interactive.LdbcUpdate6AddPost_enable=true
+ldbc.snb.interactive.LdbcUpdate7AddComment_enable=true
+ldbc.snb.interactive.LdbcUpdate8AddFriendship_enable=true
+ldbc.snb.interactive.gct_delta_duration=10000
+ldbc.snb.interactive.max_write_event_start_time=1359705599762
+ldbc.snb.interactive.min_write_event_start_time=1312660810917
+ldbc.snb.interactive.num_events=8595305
+ldbc.snb.interactive.parameters_dir=/sampa/home/bholt/snb/social_network_scale1_up64/substitution_parameters
+ldbc.snb.interactive.short_read_dissipation=0.2
+ldbc.snb.interactive.update_interleave=5473
+ldbc.snb.interactive.updates_dir=/sampa/home/bholt/snb/social_network_scale1_up64
+metrics.path=/sampa/home/bholt/snb/claret/src/bench/ldbc/results/client_metrics.json
+",32,,,20000,1000,update_heavy,1024,8,,,ds-l,,,,0.6,,none,dsstore,none,,simple,10,ldbc,,,"{""unit"":""MICROSECONDS"",""throughput"":616.4088023176971,""all_metrics"":[{""name"":""LdbcQuery1"",""count"":1781,""unit"":""MICROSECONDS"",""run_time"":{""name"":""Runtime"",""unit"":""MICROSECONDS"",""count"":1781,""mean"":546459.5991016283,""min"":68072,""max"":3119488,""50th_percentile"":460144,""90th_percentile"":942272,""95th_percentile"":1172928,""99th_percentile"":1740800}},{""name"":""LdbcQuery2"",""count"":1251,""unit"":""MICROSECONDS"",""run_time"":{""name"":""Runtime"",""unit"":""MICROSECONDS"",""count"":1251,""mean"":32348.893685051957,""min"":298,""max"":505344,""50th_percentile"":27539,""90th_percentile"":44660,""95th_percentile"":55706,""99th_percentile"":88416}},{""name"":""LdbcQuery3"",""count"":671,""unit"":""MICROSECONDS"",""run_time"":{""name"":""Runtime"",""unit"":""MICROSECONDS"",""count"":671,""mean"":9366.684053651266,""min"":1606,""max"":518192,""50th_percentile"":5209,""90th_percentile"":11341,""95th_percentile"":14945,""99th_percentile"":25591}},{""name"":""LdbcQuery7"",""count"":532,""unit"":""MICROSECONDS"",""run_time"":{""name"":""Runtime"",""unit"":""MICROSECONDS"",""count"":532,""mean"":8906.231203007519,""min"":231,""max"":666624,""50th_percentile"":2174,""90th_percentile"":16634,""95th_percentile"":22717,""99th_percentile"":64210}},{""name"":""LdbcQuery8"",""count"":1029,""unit"":""MICROSECONDS"",""run_time"":{""name"":""Runtime"",""unit"":""MICROSECONDS"",""count"":1029,""mean"":3757.787172011662,""min"":229,""max"":504432,""50th_percentile"":857,""90th_percentile"":2326,""95th_percentile"":3219,""99th_percentile"":6788}},{""name"":""LdbcQuery9"",""count"":294,""unit"":""MICROSECONDS"",""run_time"":{""name"":""Runtime"",""unit"":""MICROSECONDS"",""count"":294,""mean"":20362.268707482992,""min"":2975,""max"":437072,""50th_percentile"":15781,""90th_percentile"":37186,""95th_percentile"":42728,""99th_percentile"":57560}},{""name"":""LdbcUpdate1AddPerson"",""count"":34,""unit"":""MICROSECONDS"",""run_time"":{""name"":""Runtime"",""unit"":""MICROSECONDS"",""count"":34,""mean"":61777.64705882353,""min"":442,""max"":419024,""50th_percentile"":4974,""90th_percentile"":295648,""95th_percentile"":314256,""99th_percentile"":419024}},{""name"":""LdbcUpdate2AddPostLike"",""count"":1271,""unit"":""MICROSECONDS"",""run_time"":{""name"":""Runtime"",""unit"":""MICROSECONDS"",""count"":1271,""mean"":7411.105428796223,""min"":592,""max"":503632,""50th_percentile"":2808,""90th_percentile"":7792,""95th_percentile"":9270,""99th_percentile"":18026}},{""name"":""LdbcUpdate3AddCommentLike"",""count"":2776,""unit"":""MICROSECONDS"",""run_time"":{""name"":""Runtime"",""unit"":""MICROSECONDS"",""count"":2776,""mean"":6167.006484149856,""min"":586,""max"":458960,""50th_percentile"":2227,""90th_percentile"":6887,""95th_percentile"":8484,""99th_percentile"":43584}},{""name"":""LdbcUpdate4AddForum"",""count"":303,""unit"":""MICROSECONDS"",""run_time"":{""name"":""Runtime"",""unit"":""MICROSECONDS"",""count"":303,""mean"":3425.06600660066,""min"":393,""max"":444800,""50th_percentile"":1351,""90th_percentile"":4132,""95th_percentile"":4897,""99th_percentile"":7530}},{""name"":""LdbcUpdate5AddForumMembership"",""count"":2832,""unit"":""MICROSECONDS"",""run_time"":{""name"":""Runtime"",""unit"":""MICROSECONDS"",""count"":2832,""mean"":3668.9706920903955,""min"":297,""max"":459648,""50th_percentile"":1349,""90th_percentile"":3927,""95th_percentile"":4704,""99th_percentile"":9442}},{""name"":""LdbcUpdate6AddPost"",""count"":3044,""unit"":""MICROSECONDS"",""run_time"":{""name"":""Runtime"",""unit"":""MICROSECONDS"",""count"":3044,""mean"":9526.59691195795,""min"":1560,""max"":451584,""50th_percentile"":7384,""90th_percentile"":16283,""95th_percentile"":19903,""99th_percentile"":34468}},{""name"":""LdbcUpdate7AddComment"",""count"":3004,""unit"":""MICROSECONDS"",""run_time"":{""name"":""Runtime"",""unit"":""MICROSECONDS"",""count"":3004,""mean"":15391.612183754993,""min"":2448,""max"":521472,""50th_percentile"":10469,""90th_percentile"":22925,""95th_percentile"":27941,""99th_percentile"":61406}},{""name"":""LdbcUpdate8AddFriendship"",""count"":1178,""unit"":""MICROSECONDS"",""run_time"":{""name"":""Runtime"",""unit"":""MICROSECONDS"",""count"":1178,""mean"":440329.3166383701,""min"":1083,""max"":1222336,""50th_percentile"":375536,""90th_percentile"":676192,""95th_percentile"":711264,""99th_percentile"":762112}}],""format_version"":3,""start_time"":1431905460151000,""latest_finish_time"":1431905492597000,""total_duration"":32446000,""total_count"":20000}
+",0,,,n20:51728 n22:51728 n21:51728 n19:51728 n20:51729,,1,0,0,,/shared/bholt/claret-data/snb/up64,,,ldbc,n18.sampa,1,"{""members_potential_any"": 32, ""commentLikes_total"": 365, ""commentLikes_total_ro"": 0, ""friends_actual_ro"": 0, ""membership_total_ro"": 0, ""commentLikes_potential_ro"": 0, ""membership_potential_add"": 21, ""personPosts_actual_ro"": 0, ""friends_actual_add"": 0, ""forumPosts_potential_any"": 17446, ""moderates_potential_any"": 3, ""visited_actual_ro"": 0, ""forumPosts_potential_ro"": 0, ""moderates_actual_add"": 0, ""commentLikes_actual_ro"": 0, ""postLikes_total"": 261, ""commentLikes_total_add"": 365, ""visited_potential_ro"": 0, ""moderates_total_ro"": 0, ""personComments_potential_ro"": 0, ""commentLikes_potential_any"": 1593, ""forumPosts_actual_add"": 0, ""postLikes_total_add"": 261, ""moderates_potential_ro"": 0, ""friendNames_total_add"": 5742, ""moderates_total_add"": 37, ""membership_total"": 40, ""recent_total_ro"": 4206, ""personPosts_total_add"": 213, ""friendNames_potential_ro"": 23258, ""postLikes_actual_ro"": 0, ""recent_potential_add"": 13311687, ""personComments_total_ro"": 0, ""members_total"": 276, ""friends_potential_ro"": 800, ""recent_actual_add"": 15, ""members_actual_ro"": 0, ""moderates_actual_ro"": 0, ""foreign_total_add"": 2488, ""foreign_potential_add"": 9994, ""recent_potential_ro"": 154141, ""friendNames_total_ro"": 58, ""friends_total_ro"": 2, ""membership_potential_any"": 21, ""forumPosts_total_ro"": 0, ""friends_total"": 5671, ""recent_total_add"": 268131, ""moderates_potential_add"": 3, ""visited_total_add"": 164, ""membership_actual_ro"": 0, ""members_potential_add"": 32, ""commentLikes_potential_add"": 1593, ""recent_potential_any"": 13545257, ""personPosts_potential_any"": 1528, ""foreign_actual_ro"": 0, ""personPosts_total"": 213, ""personComments_potential_any"": 3, ""visited_total"": 249, ""personPosts_actual_add"": 0, ""forumPosts_total"": 2752, ""foreign_potential_any"": 9994, ""foreign_potential_ro"": 0, ""foreign_total"": 2488, ""membership_total_add"": 40, ""members_actual_add"": 0, ""friendNames_potential_add"": 803830, ""members_total_add"": 276, ""membership_actual_add"": 0, ""friendNames_actual_ro"": 73, ""postLikes_potential_ro"": 0, ""foreign_actual_add"": 0, ""members_potential_ro"": 0, ""visited_potential_any"": 1237, ""personComments_potential_add"": 3, ""commentLikes_actual_add"": 0, ""moderates_total"": 37, ""count"": 290517, ""postLikes_potential_any"": 1427, ""postLikes_actual_add"": 0, ""visited_total_ro"": 85, ""personComments_actual_add"": 0, ""friends_total_add"": 5669, ""personPosts_total_ro"": 0, ""personPosts_potential_add"": 1528, ""members_total_ro"": 0, ""membership_potential_ro"": 0, ""personComments_total_add"": 28, ""personPosts_potential_ro"": 0, ""forumPosts_total_add"": 2752, ""personComments_actual_ro"": 0, ""forumPosts_potential_add"": 17446, ""visited_actual_add"": 0, ""visited_potential_add"": 958, ""friends_potential_any"": 778058, ""postLikes_total_ro"": 0, ""friendNames_total"": 5800, ""friends_potential_add"": 777258, ""foreign_total_ro"": 0, ""personComments_total"": 28, ""recent_total"": 272337, ""friendNames_potential_any"": 828741, ""postLikes_potential_add"": 1427, ""friendNames_actual_add"": 5, ""recent_actual_ro"": 7, ""forumPosts_actual_ro"": 0}","{""216"": 1, ""217"": 1, ""214"": 1, ""215"": 1, ""212"": 1, ""213"": 3, ""218"": 2, ""133"": 10, ""132"": 11, ""131"": 9, ""130"": 8, ""137"": 8, ""136"": 7, ""135"": 2, ""134"": 7, ""139"": 12, ""41"": 34, ""225"": 1, ""24"": 54, ""25"": 51, ""26"": 69, ""27"": 56, ""20"": 64, ""21"": 67, ""22"": 59, ""23"": 72, ""95"": 22, ""28"": 50, ""29"": 56, ""94"": 17, ""289"": 2, ""0"": 8, ""347"": 1, ""4"": 115, ""281"": 1, ""8"": 107, ""96"": 15, ""287"": 2, ""230"": 1, ""120"": 7, ""121"": 17, ""122"": 8, ""123"": 12, ""124"": 12, ""125"": 8, ""126"": 5, ""127"": 11, ""128"": 9, ""129"": 6, ""220"": 1, ""328"": 1, ""59"": 33, ""58"": 38, ""55"": 38, ""54"": 39, ""57"": 32, ""56"": 42, ""51"": 39, ""50"": 29, ""53"": 28, ""52"": 44, ""298"": 2, ""372"": 1, ""90"": 27, ""376"": 1, ""164"": 3, ""201"": 1, ""199"": 2, ""198"": 2, ""147"": 7, ""195"": 3, ""194"": 2, ""197"": 1, ""67"": 37, ""191"": 4, ""190"": 4, ""193"": 1, ""192"": 3, ""115"": 13, ""114"": 17, ""88"": 22, ""89"": 20, ""111"": 11, ""110"": 21, ""113"": 8, ""112"": 9, ""82"": 21, ""83"": 23, ""80"": 31, ""81"": 25, ""119"": 12, ""118"": 9, ""84"": 21, ""85"": 25, ""138"": 4, ""381"": 2, ""141"": 5, ""3"": 131, ""7"": 106, ""247"": 1, ""92"": 23, ""365"": 1, ""166"": 2, ""366"": 1, ""255"": 2, ""301"": 1, ""302"": 1, ""440"": 1, ""306"": 1, ""380"": 2, ""244"": 1, ""108"": 21, ""109"": 14, ""386"": 1, ""242"": 1, ""102"": 11, ""103"": 14, ""100"": 14, ""101"": 17, ""106"": 10, ""107"": 13, ""104"": 19, ""105"": 14, ""39"": 34, ""38"": 52, ""395"": 1, ""33"": 63, ""32"": 45, ""31"": 58, ""30"": 61, ""37"": 57, ""36"": 45, ""35"": 58, ""34"": 37, ""290"": 1, ""252"": 1, ""459"": 1, ""243"": 1, ""423"": 1, ""176"": 1, ""60"": 26, ""61"": 34, ""62"": 28, ""63"": 32, ""64"": 28, ""65"": 40, ""66"": 39, ""178"": 1, ""68"": 34, ""69"": 36, ""250"": 1, ""173"": 2, ""172"": 3, ""171"": 4, ""170"": 2, ""203"": 1, ""407"": 1, ""222"": 1, ""181"": 2, ""182"": 2, ""231"": 1, ""180"": 2, ""2"": 103, ""186"": 1, ""187"": 1, ""184"": 2, ""6"": 109, ""188"": 1, ""189"": 2, ""341"": 1, ""179"": 1, ""196"": 1, ""97"": 19, ""185"": 3, ""142"": 6, ""99"": 15, ""98"": 17, ""168"": 5, ""169"": 5, ""91"": 18, ""165"": 4, ""93"": 14, ""167"": 5, ""160"": 5, ""161"": 5, ""162"": 5, ""163"": 4, ""11"": 111, ""10"": 100, ""13"": 95, ""12"": 87, ""15"": 119, ""14"": 80, ""17"": 96, ""16"": 84, ""19"": 101, ""18"": 100, ""117"": 12, ""116"": 9, ""274"": 2, ""204"": 1, ""501"": 2, ""388"": 1, ""151"": 6, ""150"": 6, ""153"": 4, ""322"": 1, ""601"": 1, ""154"": 6, ""157"": 5, ""156"": 4, ""159"": 8, ""158"": 3, ""238"": 1, ""235"": 1, ""236"": 1, ""237"": 1, ""152"": 6, ""399"": 1, ""276"": 1, ""233"": 1, ""600"": 1, ""48"": 40, ""49"": 34, ""46"": 49, ""86"": 31, ""44"": 41, ""45"": 39, ""42"": 48, ""43"": 54, ""40"": 33, ""87"": 17, ""1"": 1559, ""5"": 99, ""9"": 94, ""155"": 8, ""146"": 9, ""200"": 42, ""144"": 8, ""145"": 9, ""205"": 2, ""143"": 6, ""140"": 9, ""177"": 4, ""209"": 1, ""148"": 7, ""149"": 9, ""77"": 23, ""76"": 37, ""75"": 31, ""74"": 28, ""73"": 23, ""72"": 32, ""71"": 31, ""70"": 31, ""79"": 27, ""78"": 23, ""282"": 1, ""262"": 2, ""261"": 1, ""357"": 1, ""47"": 36}",,"1,2,3,7,8,9",,
+635,/sampa/home/bholt/snb/social_network_scale1_up64,retwis,,1,1000,100,0,v0.17.1-38-g6fa7360,1e-05,,4,,"# -------------------------------------
+# -------------------------------------
+# ----- LDBC Driver Configuration -----
+# -------------------------------------
+# -------------------------------------
+
+# ***********************
+# *** driver defaults ***
+# ***********************
+
+# status display interval (intermittently show status during benchmark execution)
+# INT-32 (seconds)
+# COMMAND: -s/--status
+status=2
+
+# thread pool size to use for executing operation handlers
+# INT-32
+# COMMAND: -tc/--thread_count
+thread_count=32
+
+# number of operations to execute during warmup phase of workload
+# INT-64
+# COMMAND: -wu/--warmup
+warmup=0
+
+# name of the benchmark run
+# STRING
+# COMMAND: -nm/--name
+name=LDBC
+
+# path specifying where to write the benchmark results file
+# STRING
+# COMMAND: -rd/--results_dir
+results_dir=results
+
+# create a csv file containing simple data about the execution of every operation in the workload
+# BOOLEAN
+# COMMAND: -rl/--results_log
+results_log=false
+
+# time unit to use for measuring performance metrics (e.g., query response time)
+# ENUM ([NANOSECONDS, MICROSECONDS, MILLISECONDS, SECONDS, MINUTES])
+# COMMAND: -tu/--time_unit
+time_unit=MICROSECONDS
+
+# used to 'compress'/'stretch' durations between operation start times to increase/decrease benchmark load
+# e.g. 2.0 = run benchmark 2x slower, 0.1 = run benchmark 10x faster
+# DOUBLE
+# COMMAND: -tcr/--time_compression_ratio
+time_compression_ratio=1.0E-5
+
+# NOT USED AT PRESENT - reserved for distributed driver mode
+# specifies the addresses of other driver processes, so they can find each other
+# LIST (e.g., peer1|peer2|peer3)
+# COMMAND: -pids/--peer_identifiers
+peer_identifiers=
+
+# enable validation that will check if the provided database implementation is correct
+# parameter value specifies where to find the validation parameters file
+# STRING
+# COMMAND: -vdb/--validate_database
+# validate_database=
+
+# generate validation parameters file for validating correctness of database implementations
+# parameter values specify: (1) where to create the validation parameters file (2) how many validation parameters to generate
+# STRING|INT-32 (e.g., validation_parameters.csv|1000)
+# COMMAND: -cvp/--create_validation_parameters
+# create_validation_parameters=
+
+# enable validation that will check if the provided workload implementation is correct
+# BOOLEAN
+# COMMAND: -vw/--validate_workload
+validate_workload=false
+
+# calculate & display workload statistics (operation mix, etc.)
+# BOOLEAN
+# COMMAND: -stats/--workload_statistics
+workload_statistics=false
+
+# sleep duration (ms) injected into busy wait loops (to reduce CPU consumption)
+# INT-64 (milliseconds)
+# COMMAND: -sw/--spinner_wait_duration
+spinner_wait_duration=0
+
+# print help string - usage instructions
+# BOOLEAN
+# COMMAND: -help
+help=false
+
+# executes operations as fast as possible, ignoring their scheduled start times
+# BOOLEAN
+# COMMAND: -ignore_scheduled_start_times
+ignore_scheduled_start_times=false
+
+# ***************************************************************
+# *** the following should be set by workload implementations ***
+# ***************************************************************
+
+# fully qualified class name of the Workload (class) implementation to execute
+# STRING (e.g., com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcSnbInteractiveWorkload)
+# COMMAND: -w/--workload
+workload=com.ldbc.driver.workloads.ldbc.snb.interactive.LdbcSnbInteractiveWorkload
+
+# number of operations to generate during benchmark execution
+# INT-64
+# COMMAND: -oc/--operation_count
+operation_count=20000
+
+# ************************************************************************************
+# *** the following should be set by vendor implementations for specific workloads ***
+# ************************************************************************************
+
+# fully qualified class name of the Db (class) implementation to execute
+# STRING (e.g., com.ldbc.driver.workloads.ldbc.snb.interactive.db.DummyLdbcSnbInteractiveDb)
+# COMMAND: -db/--database
+database=edu.uw.ldbc.ClaretSnbInteractiveDb
+
+# ************************************************************************************
+# *** non-core configuration parameters ***
+# ************************************************************************************
+
+claret.config_path=/sampa/home/bholt/snb/claret/src/tools/shard
+claret.nshards=4
+ldbc.snb.interactive.LdbcQuery10_enable=false
+ldbc.snb.interactive.LdbcQuery10_freq=30
+ldbc.snb.interactive.LdbcQuery10_interleave=164190
+ldbc.snb.interactive.LdbcQuery11_enable=false
+ldbc.snb.interactive.LdbcQuery11_freq=16
+ldbc.snb.interactive.LdbcQuery11_interleave=87568
+ldbc.snb.interactive.LdbcQuery12_enable=false
+ldbc.snb.interactive.LdbcQuery12_freq=44
+ldbc.snb.interactive.LdbcQuery12_interleave=240812
+ldbc.snb.interactive.LdbcQuery13_enable=false
+ldbc.snb.interactive.LdbcQuery13_freq=19
+ldbc.snb.interactive.LdbcQuery13_interleave=103987
+ldbc.snb.interactive.LdbcQuery14_enable=false
+ldbc.snb.interactive.LdbcQuery14_freq=49
+ldbc.snb.interactive.LdbcQuery14_interleave=268177
+ldbc.snb.interactive.LdbcQuery1_enable=true
+ldbc.snb.interactive.LdbcQuery1_freq=26
+ldbc.snb.interactive.LdbcQuery1_interleave=142298
+ldbc.snb.interactive.LdbcQuery2_enable=true
+ldbc.snb.interactive.LdbcQuery2_freq=37
+ldbc.snb.interactive.LdbcQuery2_interleave=202501
+ldbc.snb.interactive.LdbcQuery3_enable=true
+ldbc.snb.interactive.LdbcQuery3_freq=69
+ldbc.snb.interactive.LdbcQuery3_interleave=377637
+ldbc.snb.interactive.LdbcQuery4_enable=false
+ldbc.snb.interactive.LdbcQuery4_freq=36
+ldbc.snb.interactive.LdbcQuery4_interleave=197028
+ldbc.snb.interactive.LdbcQuery5_enable=false
+ldbc.snb.interactive.LdbcQuery5_freq=57
+ldbc.snb.interactive.LdbcQuery5_interleave=311961
+ldbc.snb.interactive.LdbcQuery6_enable=false
+ldbc.snb.interactive.LdbcQuery6_freq=129
+ldbc.snb.interactive.LdbcQuery6_interleave=706017
+ldbc.snb.interactive.LdbcQuery7_enable=true
+ldbc.snb.interactive.LdbcQuery7_freq=87
+ldbc.snb.interactive.LdbcQuery7_interleave=476151
+ldbc.snb.interactive.LdbcQuery8_enable=true
+ldbc.snb.interactive.LdbcQuery8_freq=45
+ldbc.snb.interactive.LdbcQuery8_interleave=246285
+ldbc.snb.interactive.LdbcQuery9_enable=true
+ldbc.snb.interactive.LdbcQuery9_freq=157
+ldbc.snb.interactive.LdbcQuery9_interleave=859261
+ldbc.snb.interactive.LdbcShortQuery1PersonProfile_enable=false
+ldbc.snb.interactive.LdbcShortQuery2PersonPosts_enable=false
+ldbc.snb.interactive.LdbcShortQuery3PersonFriends_enable=false
+ldbc.snb.interactive.LdbcShortQuery4MessageContent_enable=false
+ldbc.snb.interactive.LdbcShortQuery5MessageCreator_enable=false
+ldbc.snb.interactive.LdbcShortQuery6MessageForum_enable=false
+ldbc.snb.interactive.LdbcShortQuery7MessageReplies_enable=false
+ldbc.snb.interactive.LdbcUpdate1AddPerson_enable=true
+ldbc.snb.interactive.LdbcUpdate2AddPostLike_enable=true
+ldbc.snb.interactive.LdbcUpdate3AddCommentLike_enable=true
+ldbc.snb.interactive.LdbcUpdate4AddForum_enable=true
+ldbc.snb.interactive.LdbcUpdate5AddForumMembership_enable=true
+ldbc.snb.interactive.LdbcUpdate6AddPost_enable=true
+ldbc.snb.interactive.LdbcUpdate7AddComment_enable=true
+ldbc.snb.interactive.LdbcUpdate8AddFriendship_enable=true
+ldbc.snb.interactive.gct_delta_duration=10000
+ldbc.snb.interactive.max_write_event_start_time=1359705599762
+ldbc.snb.interactive.min_write_event_start_time=1312660810917
+ldbc.snb.interactive.num_events=8595305
+ldbc.snb.interactive.parameters_dir=/sampa/home/bholt/snb/social_network_scale1_up64/substitution_parameters
+ldbc.snb.interactive.short_read_dissipation=0.2
+ldbc.snb.interactive.update_interleave=5473
+ldbc.snb.interactive.updates_dir=/sampa/home/bholt/snb/social_network_scale1_up64
+metrics.path=/sampa/home/bholt/snb/claret/src/bench/ldbc/results/client_metrics.json
+",32,,,20000,1000,update_heavy,1024,8,,,ds-l,,,,0.6,,none,dsstore,none,,simple,10,ldbc,,,"{""unit"":""MICROSECONDS"",""throughput"":614.3072150382405,""all_metrics"":[{""name"":""LdbcQuery1"",""count"":1781,""unit"":""MICROSECONDS"",""run_time"":{""name"":""Runtime"",""unit"":""MICROSECONDS"",""count"":1781,""mean"":549288.3885457608,""min"":68168,""max"":2961536,""50th_percentile"":461264,""90th_percentile"":931616,""95th_percentile"":1190208,""99th_percentile"":1794304}},{""name"":""LdbcQuery2"",""count"":1251,""unit"":""MICROSECONDS"",""run_time"":{""name"":""Runtime"",""unit"":""MICROSECONDS"",""count"":1251,""mean"":31857.847322142286,""min"":293,""max"":506208,""50th_percentile"":27588,""90th_percentile"":43710,""95th_percentile"":54088,""99th_percentile"":84756}},{""name"":""LdbcQuery3"",""count"":671,""unit"":""MICROSECONDS"",""run_time"":{""name"":""Runtime"",""unit"":""MICROSECONDS"",""count"":671,""mean"":9421.12518628912,""min"":1089,""max"":504912,""50th_percentile"":5151,""90th_percentile"":11039,""95th_percentile"":15416,""99th_percentile"":82584}},{""name"":""LdbcQuery7"",""count"":532,""unit"":""MICROSECONDS"",""run_time"":{""name"":""Runtime"",""unit"":""MICROSECONDS"",""count"":532,""mean"":8149.806390977444,""min"":225,""max"":408992,""50th_percentile"":2189,""90th_percentile"":16264,""95th_percentile"":22930,""99th_percentile"":52476}},{""name"":""LdbcQuery8"",""count"":1029,""unit"":""MICROSECONDS"",""run_time"":{""name"":""Runtime"",""unit"":""MICROSECONDS"",""count"":1029,""mean"":3696.1078717201167,""min"":227,""max"":512288,""50th_percentile"":870,""90th_percentile"":2205,""95th_percentile"":2930,""99th_percentile"":5576}},{""name"":""LdbcQuery9"",""count"":294,""unit"":""MICROSECONDS"",""run_time"":{""name"":""Runtime"",""unit"":""MICROSECONDS"",""count"":294,""mean"":20518.05442176871,""min"":3170,""max"":405216,""50th_percentile"":16065,""90th_percentile"":39086,""95th_percentile"":44902,""99th_percentile"":51782}},{""name"":""LdbcUpdate1AddPerson"",""count"":34,""unit"":""MICROSECONDS"",""run_time"":{""name"":""Runtime"",""unit"":""MICROSECONDS"",""count"":34,""mean"":52114.44117647059,""min"":534,""max"":427120,""50th_percentile"":3400,""90th_percentile"":279936,""95th_percentile"":294384,""99th_percentile"":427120}},{""name"":""LdbcUpdate2AddPostLike"",""count"":1271,""unit"":""MICROSECONDS"",""run_time"":{""name"":""Runtime"",""unit"":""MICROSECONDS"",""count"":1271,""mean"":7358.467348544453,""min"":625,""max"":509424,""50th_percentile"":2819,""90th_percentile"":7648,""95th_percentile"":8898,""99th_percentile"":87316}},{""name"":""LdbcUpdate3AddCommentLike"",""count"":2776,""unit"":""MICROSECONDS"",""run_time"":{""name"":""Runtime"",""unit"":""MICROSECONDS"",""count"":2776,""mean"":6188.216498559078,""min"":593,""max"":511136,""50th_percentile"":2150,""90th_percentile"":6864,""95th_percentile"":8332,""99th_percentile"":83836}},{""name"":""LdbcUpdate4AddForum"",""count"":303,""unit"":""MICROSECONDS"",""run_time"":{""name"":""Runtime"",""unit"":""MICROSECONDS"",""count"":303,""mean"":3289.841584158416,""min"":390,""max"":410752,""50th_percentile"":1259,""90th_percentile"":4022,""95th_percentile"":4457,""99th_percentile"":8731}},{""name"":""LdbcUpdate5AddForumMembership"",""count"":2832,""unit"":""MICROSECONDS"",""run_time"":{""name"":""Runtime"",""unit"":""MICROSECONDS"",""count"":2832,""mean"":3436.088276836158,""min"":301,""max"":415648,""50th_percentile"":1338,""90th_percentile"":3859,""95th_percentile"":4418,""99th_percentile"":16465}},{""name"":""LdbcUpdate6AddPost"",""count"":3044,""unit"":""MICROSECONDS"",""run_time"":{""name"":""Runtime"",""unit"":""MICROSECONDS"",""count"":3044,""mean"":9378.44776609724,""min"":1401,""max"":412064,""50th_percentile"":7295,""90th_percentile"":16529,""95th_percentile"":19909,""99th_percentile"":29525}},{""name"":""LdbcUpdate7AddComment"",""count"":3004,""unit"":""MICROSECONDS"",""run_time"":{""name"":""Runtime"",""unit"":""MICROSECONDS"",""count"":3004,""mean"":15888.478695073236,""min"":2572,""max"":506080,""50th_percentile"":10364,""90th_percentile"":22983,""95th_percentile"":28290,""99th_percentile"":102144}},{""name"":""LdbcUpdate8AddFriendship"",""count"":1178,""unit"":""MICROSECONDS"",""run_time"":{""name"":""Runtime"",""unit"":""MICROSECONDS"",""count"":1178,""mean"":440037.8039049236,""min"":1025,""max"":1013344,""50th_percentile"":366672,""90th_percentile"":687232,""95th_percentile"":716544,""99th_percentile"":756832}}],""format_version"":3,""start_time"":1431905826697000,""latest_finish_time"":1431905859254000,""total_duration"":32557000,""total_count"":20000}
+",0,,,n20:51728 n22:51728 n21:51728 n19:51728 n20:51729,,1,0,0,,/shared/bholt/claret-data/snb/up64,,,ldbc,n18.sampa,1,"{""members_potential_any"": 32, ""commentLikes_total"": 365, ""commentLikes_total_ro"": 0, ""friends_actual_ro"": 0, ""membership_total_ro"": 0, ""commentLikes_potential_ro"": 0, ""membership_potential_add"": 21, ""personPosts_actual_ro"": 0, ""friends_actual_add"": 0, ""forumPosts_potential_any"": 17446, ""moderates_potential_any"": 3, ""visited_actual_ro"": 0, ""forumPosts_potential_ro"": 0, ""moderates_actual_add"": 0, ""commentLikes_actual_ro"": 0, ""postLikes_total"": 261, ""commentLikes_total_add"": 365, ""visited_potential_ro"": 0, ""moderates_total_ro"": 0, ""personComments_potential_ro"": 0, ""commentLikes_potential_any"": 1593, ""forumPosts_actual_add"": 0, ""postLikes_total_add"": 261, ""moderates_potential_ro"": 0, ""friendNames_total_add"": 5744, ""moderates_total_add"": 37, ""membership_total"": 40, ""recent_total_ro"": 4201, ""personPosts_total_add"": 213, ""friendNames_potential_ro"": 23718, ""postLikes_actual_ro"": 0, ""recent_potential_add"": 13207830, ""personComments_total_ro"": 0, ""members_total"": 276, ""friends_potential_ro"": 702, ""recent_actual_add"": 10, ""members_actual_ro"": 0, ""moderates_actual_ro"": 0, ""foreign_total_add"": 2488, ""foreign_potential_add"": 9994, ""recent_potential_ro"": 152262, ""friendNames_total_ro"": 59, ""friends_total_ro"": 2, ""membership_potential_any"": 21, ""forumPosts_total_ro"": 0, ""friends_total"": 5546, ""recent_total_add"": 266803, ""moderates_potential_add"": 3, ""visited_total_add"": 164, ""membership_actual_ro"": 0, ""members_potential_add"": 32, ""commentLikes_potential_add"": 1593, ""recent_potential_any"": 13439326, ""personPosts_potential_any"": 1528, ""foreign_actual_ro"": 0, ""personPosts_total"": 213, ""personComments_potential_any"": 3, ""visited_total"": 249, ""personPosts_actual_add"": 0, ""forumPosts_total"": 2752, ""foreign_potential_any"": 9994, ""foreign_potential_ro"": 0, ""foreign_total"": 2488, ""membership_total_add"": 40, ""members_actual_add"": 0, ""friendNames_potential_add"": 804732, ""members_total_add"": 276, ""membership_actual_add"": 0, ""friendNames_actual_ro"": 200, ""postLikes_potential_ro"": 0, ""foreign_actual_add"": 0, ""members_potential_ro"": 0, ""visited_potential_any"": 1237, ""personComments_potential_add"": 3, ""commentLikes_actual_add"": 0, ""moderates_total"": 37, ""count"": 289062, ""postLikes_potential_any"": 1427, ""postLikes_actual_add"": 0, ""visited_total_ro"": 85, ""personComments_actual_add"": 0, ""friends_total_add"": 5544, ""personPosts_total_ro"": 0, ""personPosts_potential_add"": 1528, ""members_total_ro"": 0, ""membership_potential_ro"": 0, ""personComments_total_add"": 28, ""personPosts_potential_ro"": 0, ""forumPosts_total_add"": 2752, ""personComments_actual_ro"": 0, ""forumPosts_potential_add"": 17446, ""visited_actual_add"": 0, ""visited_potential_add"": 958, ""friends_potential_any"": 745134, ""postLikes_total_ro"": 0, ""friendNames_total"": 5803, ""friends_potential_add"": 744432, ""foreign_total_ro"": 0, ""personComments_total"": 28, ""recent_total"": 271004, ""friendNames_potential_any"": 830161, ""postLikes_potential_add"": 1427, ""friendNames_actual_add"": 5, ""recent_actual_ro"": 1, ""forumPosts_actual_ro"": 0}","{""217"": 2, ""214"": 1, ""215"": 3, ""212"": 1, ""213"": 2, ""165"": 2, ""178"": 1, ""218"": 1, ""133"": 9, ""132"": 6, ""131"": 9, ""130"": 5, ""137"": 4, ""136"": 8, ""135"": 1, ""134"": 7, ""139"": 10, ""138"": 12, ""166"": 3, ""24"": 58, ""25"": 48, ""26"": 65, ""27"": 61, ""20"": 74, ""21"": 72, ""22"": 53, ""23"": 71, ""160"": 3, ""28"": 53, ""29"": 49, ""94"": 18, ""289"": 1, ""0"": 8, ""346"": 1, ""4"": 115, ""281"": 1, ""8"": 109, ""96"": 15, ""287"": 1, ""286"": 1, ""75"": 34, ""7"": 105, ""120"": 8, ""121"": 15, ""261"": 1, ""123"": 16, ""124"": 11, ""125"": 11, ""126"": 7, ""127"": 8, ""128"": 10, ""129"": 7, ""220"": 1, ""91"": 20, ""59"": 34, ""58"": 40, ""55"": 35, ""54"": 37, ""57"": 29, ""56"": 43, ""51"": 38, ""50"": 27, ""53"": 29, ""52"": 41, ""378"": 1, ""298"": 2, ""372"": 1, ""290"": 1, ""376"": 1, ""146"": 10, ""199"": 1, ""68"": 34, ""147"": 10, ""195"": 2, ""194"": 2, ""197"": 1, ""196"": 2, ""191"": 3, ""190"": 4, ""192"": 5, ""115"": 14, ""114"": 16, ""88"": 17, ""89"": 20, ""111"": 8, ""110"": 15, ""113"": 11, ""112"": 11, ""82"": 22, ""83"": 20, ""399"": 1, ""81"": 25, ""119"": 9, ""118"": 8, ""84"": 23, ""85"": 27, ""117"": 11, ""198"": 3, ""173"": 2, ""3"": 132, ""171"": 3, ""368"": 1, ""366"": 1, ""423"": 1, ""170"": 4, ""301"": 2, ""440"": 1, ""306"": 1, ""245"": 1, ""244"": 2, ""108"": 17, ""109"": 15, ""386"": 1, ""102"": 13, ""103"": 17, ""100"": 14, ""101"": 11, ""106"": 15, ""107"": 12, ""104"": 20, ""105"": 14, ""380"": 1, ""39"": 36, ""38"": 50, ""230"": 1, ""381"": 2, ""33"": 55, ""32"": 55, ""31"": 53, ""30"": 69, ""37"": 53, ""36"": 48, ""35"": 54, ""34"": 43, ""252"": 1, ""205"": 2, ""176"": 2, ""60"": 26, ""61"": 32, ""62"": 34, ""63"": 28, ""64"": 28, ""65"": 41, ""66"": 32, ""67"": 41, ""177"": 3, ""69"": 35, ""250"": 1, ""256"": 1, ""172"": 5, ""254"": 2, ""154"": 5, ""203"": 1, ""407"": 1, ""288"": 1, ""181"": 1, ""183"": 1, ""180"": 2, ""2"": 104, ""186"": 3, ""184"": 1, ""6"": 105, ""188"": 1, ""189"": 3, ""502"": 1, ""503"": 1, ""202"": 1, ""341"": 1, ""179"": 2, ""97"": 20, ""185"": 2, ""461"": 1, ""99"": 16, ""98"": 16, ""168"": 4, ""169"": 4, ""164"": 5, ""226"": 1, ""93"": 17, ""167"": 3, ""95"": 22, ""161"": 5, ""162"": 7, ""163"": 4, ""11"": 112, ""10"": 99, ""13"": 92, ""12"": 88, ""15"": 121, ""14"": 83, ""17"": 90, ""16"": 86, ""19"": 97, ""18"": 107, ""272"": 1, ""116"": 11, ""274"": 1, ""388"": 1, ""275"": 1, ""151"": 4, ""150"": 6, ""153"": 5, ""92"": 20, ""155"": 11, ""395"": 1, ""157"": 4, ""156"": 7, ""159"": 6, ""158"": 3, ""90"": 23, ""238"": 1, ""239"": 1, ""235"": 1, ""237"": 2, ""152"": 4, ""80"": 28, ""233"": 1, ""600"": 2, ""48"": 39, ""49"": 36, ""46"": 49, ""86"": 28, ""44"": 38, ""45"": 41, ""42"": 44, ""43"": 57, ""40"": 36, ""87"": 20, ""322"": 1, ""5"": 103, ""9"": 93, ""201"": 1, ""200"": 41, ""144"": 8, ""145"": 12, ""142"": 3, ""143"": 5, ""140"": 11, ""141"": 5, ""209"": 1, ""208"": 1, ""148"": 8, ""149"": 6, ""77"": 29, ""76"": 35, ""231"": 1, ""74"": 29, ""73"": 24, ""72"": 30, ""71"": 31, ""70"": 33, ""79"": 26, ""78"": 24, ""282"": 1, ""262"": 1, ""122"": 7, ""357"": 1, ""41"": 33, ""1"": 1559, ""47"": 38}",,"1,2,3,7,8,9",,"{ ""atomic_retries"": ""593"", ""cc_check_count"": ""0"", ""cc_check_failed"": ""0"", ""cc_check_set_count"": ""0"", ""cc_check_set_failed"": ""0"", ""cc_check_set_success"": ""-nan"", ""cc_check_success"": ""-nan"", ""denied_reset"": ""0"", ""op_count"": ""2063177"", ""op_retries"": ""288"", ""ops_denied"": ""0"", ""ops_read"": ""0"", ""ops_write"": ""0"", ""prepare_retries"": ""114248"", ""prepare_time"": ""233.615"", ""prepare_timeouts"": ""0"", ""prepares_skipped"": ""60297"", ""set_add_exists"": ""0"", ""snb_comment_count"": ""3004"", ""snb_comment_failed"": ""0"", ""snb_comment_latency"": ""39.6731"", ""snb_comment_like_count"": ""2776"", ""snb_comment_like_failed"": ""0"", ""snb_comment_like_latency"": ""9.10682"", ""snb_comment_like_retries"": ""0"", ""snb_comment_like_success"": ""1.00000000"", ""snb_comment_retries"": ""1"", ""snb_comment_success"": ""1.00000000"", ""snb_forum_count"": ""303"", ""snb_forum_failed"": ""0"", ""snb_forum_latency"": ""0.614987"", ""snb_forum_membership_count"": ""2832"", ""snb_forum_membership_failed"": ""0"", ""snb_forum_membership_latency"": ""5.4912"", ""snb_forum_membership_retries"": ""0"", ""snb_forum_membership_success"": ""1.00000000"", ""snb_forum_retries"": ""0"", ""snb_forum_success"": ""1.00000000"", ""snb_friendship_count"": ""1178"", ""snb_friendship_failed"": ""1139"", ""snb_friendship_latency"": ""2.15907"", ""snb_friendship_retries"": ""22846"", ""snb_friendship_success"": ""0.03310696"", ""snb_getperson_count"": ""0"", ""snb_getperson_failed"": ""0"", ""snb_getperson_latency"": ""0"", ""snb_getperson_retries"": ""0"", ""snb_getperson_success"": ""-nan"", ""snb_person_count"": ""34"", ""snb_person_failed"": ""0"", ""snb_person_latency"": ""0.214079"", ""snb_person_retries"": ""0"", ""snb_person_success"": ""1.00000000"", ""snb_post_count"": ""3044"", ""snb_post_failed"": ""0"", ""snb_post_latency"": ""27.1345"", ""snb_post_like_count"": ""1271"", ""snb_post_like_failed"": ""0"", ""snb_post_like_latency"": ""4.94166"", ""snb_post_like_retries"": ""0"", ""snb_post_like_success"": ""1.00000000"", ""snb_post_retries"": ""0"", ""snb_post_success"": ""1.00000000"", ""snb_query1a_count"": ""1781"", ""snb_query1a_failed"": ""0"", ""snb_query1a_latency"": ""972.998"", ""snb_query1a_retries"": ""38"", ""snb_query1a_success"": ""1.00000000"", ""snb_query1b_count"": ""301"", ""snb_query1b_failed"": ""0"", ""snb_query1b_latency"": ""1.16767"", ""snb_query1b_retries"": ""0"", ""snb_query1b_success"": ""1.00000000"", ""snb_query2a_count"": ""1251"", ""snb_query2a_failed"": ""0"", ""snb_query2a_latency"": ""1.25566"", ""snb_query2a_retries"": ""1"", ""snb_query2a_success"": ""1.00000000"", ""snb_query2b_count"": ""23135"", ""snb_query2b_failed"": ""0"", ""snb_query2b_latency"": ""35.6788"", ""snb_query2b_retries"": ""0"", ""snb_query2b_success"": ""1.00000000"", ""snb_query3a_count"": ""671"", ""snb_query3a_failed"": ""0"", ""snb_query3a_latency"": ""3.47258"", ""snb_query3a_retries"": ""0"", ""snb_query3a_success"": ""1.00000000"", ""snb_query3b_count"": ""657"", ""snb_query3b_failed"": ""0"", ""snb_query3b_latency"": ""0.944382"", ""snb_query3b_retries"": ""0"", ""snb_query3b_success"": ""1.00000000"", ""snb_query7a_count"": ""532"", ""snb_query7a_failed"": ""0"", ""snb_query7a_latency"": ""0.5445"", ""snb_query7a_retries"": ""0"", ""snb_query7a_success"": ""1.00000000"", ""snb_query7b_count"": ""1170"", ""snb_query7b_failed"": ""0"", ""snb_query7b_latency"": ""2.69103"", ""snb_query7b_retries"": ""0"", ""snb_query7b_success"": ""1.00000000"", ""snb_query8a_count"": ""1029"", ""snb_query8a_failed"": ""0"", ""snb_query8a_latency"": ""1.40581"", ""snb_query8a_retries"": ""0"", ""snb_query8a_success"": ""1.00000000"", ""snb_query8b_count"": ""0"", ""snb_query8b_failed"": ""0"", ""snb_query8b_latency"": ""0"", ""snb_query8b_retries"": ""0"", ""snb_query8b_success"": ""-nan"", ""snb_query9a_count"": ""294"", ""snb_query9a_failed"": ""0"", ""snb_query9a_latency"": ""2.36762"", ""snb_query9a_retries"": ""0"", ""snb_query9a_success"": ""1.00000000"", ""snb_query9b_count"": ""2394"", ""snb_query9b_failed"": ""0"", ""snb_query9b_latency"": ""3.15173"", ""snb_query9b_retries"": ""0"", ""snb_query9b_success"": ""1.00000000"", ""txn_count"": ""46518"", ""txn_failed"": ""1139"", ""txn_retries"": ""22886"", ""txn_time"": ""1115.01"" }
+"
