@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
-DATA.MODE <- 'local'
+# DATA.MODE <- 'local'
 source('common.r')
-d <- data.retwis(where="nshards = 4 and nclients = 4 and rate != 0 and rate <= 1000 and nthreads = 32")
+d <- data.retwis(where="nshards = 4 and nclients = 4 and rate != 0 and rate <= 1000 and nthreads = 32 and duration = 60 and name like '%v0.17%'")
 
 tags <- c('newuser','post','repost','timeline','follow')
 
@@ -80,7 +80,7 @@ save(
   expand_limits(y=0)+
   cc_scales()+
   theme(legend.position="top")+
-  facet_wrap(~facet, ncol=2, scales="free")+
+  facet_wrap(~facet, ncol=2)+ #, scales="free")+
   my_theme()
 , name='plot/retwis_tput', w=8, h=10)
 

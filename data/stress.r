@@ -7,8 +7,8 @@ source('common.r')
 #   cc_scales()
 # )
 
-d <- data.stress(where="nclients = 4 and nshards = 4 and nkeys = 10000 and nthreads = 32 and duration = 60 and name like '%v0.17%' and approx = 0 and rate < 1000")
-d$facet <- with(d, sprintf("%s\n%s\nl:%s", machines, zmix, length))
+d <- data.stress(where="nclients = 4 and nshards = 4 and nthreads = 32 and duration = 60 and name like '%v0.17.1%' and approx = 0 and rate < 1000 and alpha != '-1'")
+d$facet <- with(d, sprintf("%s\n%s\nlen:%s, nkeys:%d", machines, zmix, length, nkeys))
 
 save(
   ggplot(d, aes(
@@ -33,7 +33,7 @@ save(
 
 save(
   ggplot(d, aes(
-    x = rate,
+    x = rate * num(nthreads) * num(nclients),
     y = throughput,
     group = cc,
     fill = cc,

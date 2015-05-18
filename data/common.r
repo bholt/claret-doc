@@ -33,11 +33,24 @@ num <- function(var) as.numeric(as.character(var))
 x <- function(...) paste(..., sep='#')
 p <- function(...) paste(..., sep='')
 
+"+" = function(x,y) {
+    if(is.character(x) | is.character(y)) {
+        return(paste(x , y, sep=""))
+    } else {
+        .Primitive("+")(x,y)
+    }
+}
+
+
 capply <- function(col, func) unlist(lapply(col, func))
+
+vals <- function(lst) unlist(lst, use.names=F)
+
 
 df.histogram <- function(json, version="none") {
   d <- fromJSON(json)
-  return(data.frame(x=num(names(d)), y=num(unlist(d)), version=version))
+  dd <- data.frame(x=num(names(d)), y=num(unlist(d)), version=version)
+  dd[order(dd$x),]
 }
 
 
@@ -66,7 +79,12 @@ geom_meanbar <- function(labeller=label_pretty) {
 
 mean_path <- function(d, x, y, grp) eval(parse(text=sprintf('ddply(d, grp, summarize, x=mean(%s), y=mean(%s))', as.character(substitute(x)), as.character(substitute(y)))))
 
-geom_mean_path <- function(d, x, y, groupby) geom_path(data=mean_path(d, x, y, groupby), aes(x=x,y=y))
+geom_mean_path <- function(d, x, y, groupby) eval(parse(text=sprintf(
+  'geom_path(data=mean_path(d, %s, %s, groupby), aes(x=x, y=y))',
+  as.character(substitute(x)),
+  as.character(substitute(y))
+)))
+ # geom_path(data=mean_path(d, x, y, groupby), aes(x=x,y=y))
 
 c.blue   <- "#0072B2"
 c.yellow <- "#E69F00"
@@ -78,6 +96,7 @@ c.gray   <- "#999999"
 my_palette <- c(
   'rw'=c.yellow,
   'simple'=c.blue,
+  'comm'=c.blue,
   
   'approx'=c.green,
   'precise'=c.blue,
@@ -179,6 +198,11 @@ data.retwis <- function(select="*", where="client = 'dsretwis'") {
   )), levels=c(COMM,RW))
   d$`Concurrency Control` <- d$cc
   
+  d$cca <- factor(revalue(d$ccmode, c(
+    'rw'='rw',
+    'simple'='co'
+  )), levels=c('co','rw'))
+  
   d$variant <- factor(revalue(sprintf('%s:%s', d$ccmode, d$approx), c(
     # 'rw:1'='reader/writer',
     'rw:0'='Locking / OCC',
@@ -249,15 +273,16 @@ data.papoc <- function(where) {
   return(d)
 }
 
-data.ldbc <- function(where = "ldbc_config is not null") {
-  d.all <- 
+data.ldbc <- function(where = "ldbc_config is not null", melt='ldbc_results') {
+  d <- 
     if(exists("DATA.MODE") && DATA.MODE == 'local') {
-      d_ldbc <- do.call("rbind", fromJSON("ldbc.json"))
-      sqldf(sprintf("select * from d_ldbc where ldbc_results is not null and %s",where), drv="SQLite")
+      d_ldbc <- read.delim('freeze/ldbc.csv', sep=',')
+      d_ldbc$ldbc_results <- as.character(d_ldbc$ldbc_results)
+      d_ldbc$client_metrics <- as.character(d_ldbc$client_metrics)
+      sql(sprintf("select * from d_ldbc where ldbc_results is not null and %s",where))
     } else {
       db(sprintf("select * from ldbc where ldbc_results is not null and ldbc_results != \"\" and %s", where))
     }
-  d <- subset(d.all, grepl("\\s*\\{",ldbc_results))
   
   d$cc <- factor(revalue(d$ccmode, c(
     'rw'=RW,
@@ -269,24 +294,55 @@ data.ldbc <- function(where = "ldbc_config is not null") {
   ccmap[[RW]] <- 'r/w'
   d$cca <- revalue(d$cc, ccmap)
   
-  d <- adply(d, 1, function(r){
-    o <- fromJSON(r$ldbc_results)
-    m <- o$all_metrics
-    mr <- m$run_time
-    colnames(mr) <- sprintf("time_%s", colnames(mr))
+  if (melt == 'ldbc_results') {
+    d <- adply(d, 1, function(r){
+      o <- fromJSON(r$ldbc_results)
+      m <- o$all_metrics
+      mr <- m$run_time
+      wavg_mean_latency <- sum(mr$mean * mr$count) / sum(mr$count) / 1e6
+      colnames(mr) <- sprintf("time_%s", colnames(mr))
     
-    data.frame(
-      throughput=as.numeric(r$ntotal)/as.numeric(o$total_duration)*1e6,
-      total_time=o$total_duration,
-      name=o$all_metrics$name,
-      count=o$all_metrics$count,
-      mr
-    )
-  })
-  
-  d$name <- gsub('^.*(?:(Query\\d)|\\d(.*))$','\\1\\2',d$name)
-  
-  d
+      cm <- fromJSON(r$client_metrics)
+    
+      data.frame(
+        throughput=as.numeric(r$ntotal)/as.numeric(o$total_duration)*1e6,
+        total_time=o$total_duration,
+        wavg_mean_latency=wavg_mean_latency,
+        name=o$all_metrics$name,
+        count=o$all_metrics$count,
+        mr
+      )
+    })
+    d$per_tput <- as.numeric(d$count) / d$total_time
+    d$name <- gsub('^.*(?:(Query\\d)|\\d(.*))$','\\1\\2',d$name)
+    d
+  } else if (melt == 'client_metrics') {
+    d <- adply(d, 1, function(r){
+      o <- fromJSON(r$ldbc_results)
+      cm <- fromJSON(r$client_metrics)
+      data.frame(
+        throughput=as.numeric(r$ntotal)/as.numeric(o$total_duration)*1e6,
+        total_time=o$total_duration,
+        count=r$ntotal,
+        cm
+      )
+    })
+    d$per_tput <- as.numeric(d$count) / d$total_time
+    d
+  } else {
+    d <- adply(d, 1, function(r){
+      o <- fromJSON(r$ldbc_results)
+      cm <- fromJSON(r$client_metrics)
+      data.frame(
+        throughput=as.numeric(r$ntotal)/as.numeric(o$total_duration)*1e6,
+        total_time=o$total_duration,
+        count=r$ntotal,
+        cm
+      )
+    })
+    d$per_tput <- as.numeric(d$count) / d$total_time
+    d
+  }
 }
 
 data.stress <- function(where="clientmode = 'stress'") {
@@ -314,6 +370,12 @@ data.stress <- function(where="clientmode = 'stress'") {
     'mostly_update'='35% read / 65% update',
     'update_heavy'='50% read / 50% update',
     'read_heavy'='90% read / 10% update'
+  )))
+
+  d$workload <- factor(revalue(d$mix, c(
+    'mostly_update'='update-heavy',
+    'update_heavy'='mixed',
+    'read_heavy'='read-heavy'
   )))
 
   d$zmix <- sprintf('%s/%s', d$mix, d$alpha)
