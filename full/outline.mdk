@@ -1,0 +1,29 @@
+# Outline
+## Intro
+- Contention is a problem for traditional data stores
+  - very common, result of real-time services, network effects, etc
+  - data stores blindly treating the data as a black box can't cope
+- People use NoSQL because they want *flexibility* and *control* over performance
+  - but they also want to re-use common data structures!
+- **Data stores should leverage data types to allow *strong consistency* under high contention.**
+- Many common data types, but users can add their own (or *compose* them out of existing ones)
+- Teach the system properties about the data types, such as operation commutativity lattices, how to combine operations, etc
+- System uses these properties to efficiently execute transactions
+
+## Commutativity
+
+## Leveraging commutativity
+### Boosting
+### Combining
+
+## Expressing data type properties, composing data types
+### Gatekeepers
+### Operation combiners
+
+## Evaluation
+### How much can commutativity help?
+- Sweep raw operation mixes with varying degrees of commutativity to show scaling properties with/without boosting & combining
+
+### How much commutativity is in real applications?
+#### Interactive graph applications
+#### Auction website
