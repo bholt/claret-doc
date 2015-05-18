@@ -3,9 +3,10 @@ common:
   prefix: .
   format: csv
 exports:
-  - filename: ldbc.json
-    format: json
+  - filename: ldbc.csv
     query: |
       SELECT * from ldbc
       WHERE ldbc_results is not null AND ldbc_results != ''
-      AND name not like '%sampa'
+      AND name LIKE '%v0.18%'
+      AND loaddir LIKE '%up64%'
+      AND snb_queries = '1,2,3,7,8,9'
