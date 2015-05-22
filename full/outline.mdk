@@ -2,7 +2,7 @@
 ## Intro
 - Contention is a problem for traditional data stores
   - very common, result of real-time services, network effects, etc
-  - data stores blindly treating the data as a black box can't cope
+  - data stores which blindly treat the data as a black box can't cope
 - People use NoSQL because they want *flexibility* and *control* over performance
   - but they also want to re-use common data structures!
 - **Data stores should leverage data types to allow *strong consistency* under high contention.**
@@ -24,6 +24,6 @@
 ### How much can commutativity help?
 - Sweep raw operation mixes with varying degrees of commutativity to show scaling properties with/without boosting & combining
 
-### How much commutativity is in real applications?
+### How much contention / commutativity is in real applications?
 #### Interactive graph applications
 #### Auction website

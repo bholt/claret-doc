@@ -1,0 +1,9 @@
+# Introduction {#intro}
+
+The move to non-relational (NoSQL) databases was motivated by a desire for scalability and flexibility. People found that by giving up strong consistency, they could better scale services to millions or billions of users while meeting tight performance goals.
+Because of inherent uncertainty in timing and connectivity, in many cases users are likely to accept minor inconsistencies such as two tweets being out of temporal order or needing to retry an action. In such cases, relaxed consistency feels like a natural solution, but it leaves much to chance: there is likely no guarantee that more significant inconsistencies are impossible.
+When consistency is critical, developers can enforce stronger guarantees manually, or use serializable transactions in systems like Google's Spanner [@Spanner], but this leaves them with two extremes with a significant performance gap.
+If certain parts of an application can tolerate imprecision, why not capture those properties in the programming model? Is there a way programmers can express the semantics they desire succinctly and precisely, helping the database optimize performance and scalability, without sacrificing flexibility?
+
+We propose abstract data types (ADTs) as the solution. Rather than limiting the records in databases to primitive types like strings or integers, raising them to more complex data types provides a richer interface, exposing ample opportunities for optimization to the database and a precise mechanism to express the intentions of programmers. In this work we explore several ways of leveraging commutativity and data types to improve database performance and allow programmers to make tradeoffs between performance and precision, starting by demonstrating one way of using commutativity to reduce transaction aborts.
+

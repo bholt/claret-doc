@@ -1,0 +1,68 @@
+title:       Claret: Abstract Data Types in Data Stores
+
+author:      Brandon Holt, Irene Zhang, Dan Ports, Mark Oskin, Luis Ceze
+affiliation: University of Washington
+email:       {bholt,iyzhang,dkrp,oskin,luisceze}\@cs.uw.edu
+
+Heading Base: 2
+Bib style:    plainnat
+Bibliography: refs.bib
+doc class:    [preprint,nocopyrightspace]style/sigplanconf.cls
+css:          style/style.css
+Logo: False
+
+~Pre, ~Code: font-family="Inconsolata" font-size=10pt
+
+~Fig: label='Figure [@fig]{.figure-label}' replace='&source;&nl;[[**&label;.** ]{.caption-before}&caption;]{.figure-caption html-elem=fig-caption}&nl;{notag}&nl;'
+
+~ TexRaw
+\cssClassRuleDo{fig}{%
+  \cssDoBefore{\begin{figure}[t]}%
+     \cssDoAfter{\end{figure}}%
+}
+~
+
+[TITLE]
+
+~ Abstract
+
+Out of the many NoSQL databases in use today, some that provide simple data structures for records, such as Redis and MongoDB, are now becoming popular. Building applications out of these complex data types provides a way to communicate intent to the database system without sacrificing flexibility or committing to a fixed schema. Currently this capability is leveraged in limited ways, such as to ensure related values are co-located, or for atomic updates. There are many ways data types can be used to make databases more efficient that are not yet being exploited.
+
+We explore several ways of leveraging abstract data type (ADT) semantics in databases, focusing primarily on commutativity. Using a Twitter clone as a case study, we show that using commutativity can reduce transaction abort rates for high-contention, update-heavy workloads that arise in real social networks. We conclude that ADTs are a good abstraction for database records, providing a safe and expressive programming model with ample opportunities for optimization, making databases more safe and scalable.
+~
+
+[INCLUDE="intro"]
+
+# Commutativity {#comm}
+
+Commutativity is well known, especially in distributed systems, for enabling important optimizations. Since the 80s, commutativity has been exploited by database systems designers [@Weihl:1988;@Fekete:90] within the safe confines of relational models, where complete control of the data structures allows systems to determine when transactions may conflict. Recently, commutativity has seen a resurgence in systems without a predefined data model, such as NoSQL databases and transactional memory.
+Eventually consistent databases use commutativity for convergence in work such as RedBlue consistency [@Li:OSDI12] and conflict-free replicated data types (CRDTs) [@Shapiro:SSS11]. Other systems specialize for commutative operations to improve transaction processing, such as Lynx [@Zhang:SOSP13] for tracking serializability, Doppel [@Narula:OSDI14] for executing operations in parallel on highly contended records, and HyFlow [@Kim:EuroPar13] for reordering operations in the context of distributed transactional memory. We propose unifying and generalizing these under the abstraction afforded by ADTs.
+
+~ Fig { caption="Code snippet." hello="foo" }
+```ruby
+def hello(name)
+  puts "Hello, #{name}!"
+end
+```
+~
+
+~ Fig { #fig-test  caption="Code snippet." }
+```ruby
+def hello(name)
+  puts "Hello, #{name}!"
+end
+```
+~
+
+
+# Evaluation {#eval}
+
+To demonstrate the efficacy of leveraging commutative operations in transactions, we built a simple prototype key-value store, modeled after Redis, that supports complex data types for records, each with their own set of operations. Our experiments were carried out with 4 shards on 4 local nodes, each with 8-core 2GHz Xeon E5335 processors and standard ethernet connecting them.
+
+## Transaction protocol
+
+## Case study: Retwis
+To understand performance on a typical web workload, we use *Retwis*, a simplified Twitter clone designed originally for Redis [@redis]. Data structures such as sets are used track each user's followers and posts and keep a materialized up-to-date timeline for each user (represented as a sorted set). On top of Retwis's basic functionality, we added a "repost" action that behaves like Twitter's "retweet".
+
+# References {-}
+[BIB]
