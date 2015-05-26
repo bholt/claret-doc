@@ -8,11 +8,31 @@ Luckily, many of these high-contention cases share other properties which can sa
 
 Consider the case of an online auction service: the most popular auctions will have orders of magnitude more bids than the average case, with bids coming faster as closing time approaches. Represented naively as a couple records tracking the item information and current maximum bid leads to extreme contention as all the clients attempt to win the bid. The datastore, not knowing the semantics of the operations, must serialize them. Regardless of the implementation of the storage system, this is clearly a bottleneck, leading to backed-up queues, fewer bids, and a worse experience for users. If the datastore knew that the operations commuted, it could potentially process them in parallel, eliminating some bids before they ever reach the contended record.
 
-The challenge is how to express these application properties to the datastore in a way that it can use the knowledge to improve processing under contention, without giving up the flexibility or scalability these systems espouse. The solution is an interface that will help both programmers and systems: *abstract data types (ADTs).* Rather than flattening everything down to keys and primitive values, it's easier for programmers to build applications out of more complex data types. At the same time, expressing high-level properties of ADT operations to the datastore allows it to perform common optimizations to expose more concurrency and avoid contention. Finally, an extensible library of datatypes allows for more re-use of common structures and migration of application logic into the datastore.
+The challenge is how to express these application properties to the datastore in a way that it can use the knowledge to improve processing under contention, without giving up the flexibility or scalability these systems espouse. We propose a richer interface already familiar to programmers and systems alike: *abstract data types* (ADTs). Datastores should expose an extensible library of complex data structures as their interface rather than restricting values to strings of bytes.
+This programming model has several advantages for users:
+
+- *Flexibility:* ADTs retain the flexibility of key-value stores, still no need for global schemas
+- *Semantics:* Programmers express application semantics by choosing or implementing specific ADTs
+- *Modularity:* Common data structures can be *reused* or *composed* in new applications, leveraging prior optimization effort.
+
+The abstraction also affords opportunities to the datastore:
+
+- High-level properties of ADT operations (e.g. commutativity) expose more concurrency and flexibility.
+- Common properties can be leveraged to perform the same optimizations to many different ADTs.
+- ADTs implement modular logic to help the datastore parallelize their operations.
+
+Some datastores are already moving in this direction; several already support more complex datatypes like sorted sets. Redis, currently the most popular key-value store, supports a large number of operations on records of various types. However, to the best of our knowledge, these datatypes are used for little more than supporting more complex atomic operations like set addition. The higher-level properties of operations such as their commutativity are not leveraged by the system to distribute processing of a single record or otherwise avoid contention. Developers are still required to build their own mechanisms for avoid contention into their applications. In addition, they rarely support extending them with new data types, which restricts opportunities for tailoring data types to the use case at hand.
+
+In this work, we explore what the ADT programming model has to offer datastores. We describe some properties of ADTs and show how they could be expressed to the datastore. We then show how these properties could be used by optimizations to avoid contention, specifically *transaction boosting* and *combining* and evaluate the performance benefits of each. Finally, we identify contention problems in benchmarks based on real applications and demonstrate how the techniques we have described allow the datastore to mitigate them.
+
+
+
+We need a richer interface that can capture the high-level application semantics and programmer intent and represent them in a way that the system can perform common optimizations under the hood. 
+
+Rather than flattening everything down to keys and primitive values, it's easier for programmers to build applications out of more complex data types. At the same time, expressing high-level properties of ADT operations to the datastore allows it to perform common optimizations to expose more concurrency and avoid contention. Finally, an extensible library of datatypes allows for more re-use of common structures and migration of application logic into the datastore.
 
 ADTs can be of varying levels of complexity: from relatively low-level *sets* with inserts that commute to complex application-specific datatypes like an *auction*.
 
-Datastores are already moving in this direction; several already support more complex datatypes like sorted sets. Redis, currently the most popular key-value store, supports a large number of operations on records of various types. However, to the best of our knowledge, these datatypes are used for little more than supporting more complex atomic operations like set addition. The higher-level properties of operations such as their commutativity are not leveraged by the system to distribute processing of a single record or otherwise avoid contention. Developers are still required to build their own mechanisms for avoid contention into their applications. In addition, they rarely support extending them with new data types, which restricts opportunities for tailoring data types to the use case at hand.
 
 
 
