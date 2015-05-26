@@ -24,35 +24,3 @@ The abstraction also affords opportunities to the datastore:
 Some datastores are already moving in this direction; several already support more complex datatypes like sorted sets. Redis, currently the most popular key-value store, supports a large number of operations on records of various types. However, to the best of our knowledge, these datatypes are used for little more than supporting more complex atomic operations like set addition. The higher-level properties of operations such as their commutativity are not leveraged by the system to distribute processing of a single record or otherwise avoid contention. Developers are still required to build their own mechanisms for avoid contention into their applications. In addition, they rarely support extending them with new data types, which restricts opportunities for tailoring data types to the use case at hand.
 
 In this work, we explore what the ADT programming model has to offer datastores. We describe some properties of ADTs and show how they could be expressed to the datastore. We then show how these properties could be used by optimizations to avoid contention, specifically *transaction boosting* and *combining* and evaluate the performance benefits of each. Finally, we identify contention problems in benchmarks based on real applications and demonstrate how the techniques we have described allow the datastore to mitigate them.
-
-
-
-We need a richer interface that can capture the high-level application semantics and programmer intent and represent them in a way that the system can perform common optimizations under the hood. 
-
-Rather than flattening everything down to keys and primitive values, it's easier for programmers to build applications out of more complex data types. At the same time, expressing high-level properties of ADT operations to the datastore allows it to perform common optimizations to expose more concurrency and avoid contention. Finally, an extensible library of datatypes allows for more re-use of common structures and migration of application logic into the datastore.
-
-ADTs can be of varying levels of complexity: from relatively low-level *sets* with inserts that commute to complex application-specific datatypes like an *auction*.
-
-
-
-
-The process of writing applications using distributed datastores typically involves mapping the objects and data structures in an application down to the primitive datatypes supported by the datastore, then figuring out what secondary indexes or materialized views should be maintained for efficient retrieval. 
-
-The move to key-value stores and non-relational (NoSQL) databases was motivated by a desire for scalability and flexibility. The lower-level interface of key-value stores frees developers from committing to a fixed schema. The vastly simplified data storage engine gives more predictable performance when scaling out but puts optimization almost completely in the hands of developers, who are now responsible for implementing indices and materializations themselves.
-
-
-Experienced systems programmers can tune their applications to achieve excellent performance, exploiting those higher-level properties of the application through the use of auxiliary data structures
-
-
-; by specializing for one particular use case they can achieve excellent performance. However, the low-level key-value interface can obscure useful opportunities for optimization from programmers and system alike.
-
-
-However, the design of these interfaces — targeted for specific applications on particular datastores — often leads to non-modular or un-reusable code. 
-
-People found that by giving up strong consistency, they could better scale services to millions or billions of users while meeting tight performance goals.
-Because of inherent uncertainty in timing and connectivity, in many cases users are likely to accept minor inconsistencies such as two tweets being out of temporal order or needing to retry an action. In such cases, relaxed consistency feels like a natural solution, but it leaves much to chance: there is likely no guarantee that more significant inconsistencies are impossible.
-When consistency is critical, developers can enforce stronger guarantees manually, or use serializable transactions in systems like Google's Spanner [@Spanner], but this leaves them with two extremes with a significant performance gap.
-If certain parts of an application can tolerate imprecision, why not capture those properties in the programming model? Is there a way programmers can express the semantics they desire succinctly and precisely, helping the database optimize performance and scalability, without sacrificing flexibility?
-
-We propose abstract data types (ADTs) as the solution. Rather than limiting the records in databases to primitive types like strings or integers, raising them to more complex data types provides a richer interface, exposing ample opportunities for optimization to the database and a precise mechanism to express the intentions of programmers. In this work we explore several ways of leveraging commutativity and data types to improve database performance and allow programmers to make tradeoffs between performance and precision, starting by demonstrating one way of using commutativity to reduce transaction aborts.
-
