@@ -8,6 +8,7 @@ suppressPackageStartupMessages(library(jsonlite))
 suppressPackageStartupMessages(library(scales))
 suppressPackageStartupMessages(require(grid))
 suppressPackageStartupMessages(require(plyr))
+suppressPackageStartupMessages(require(yaml))
 
 COMM <- "boosting (commutative)"
 RW <- "reader/writer locks"
@@ -41,6 +42,12 @@ p <- function(...) paste(..., sep='')
     }
 }
 
+mgsub <- function(myrepl, mystring){
+  gsub2 <- function(l, x){
+   do.call('gsub', list(x = x, pattern = l[1], replacement = l[2]))
+  }
+  Reduce(gsub2, myrepl, init = mystring, right = T) 
+}
 
 capply <- function(col, func) unlist(lapply(col, func))
 
@@ -53,13 +60,26 @@ df.histogram <- function(json, version="none") {
   dd[order(dd$x),]
 }
 
+jsfix <- function(str) gsub("'", "\"", str)
+
+replace_txn_codes <- function(orig,codes) Reduce(function(o,k){ gsub("(['\"(,])"+codes[[k]]+"(?=['\",)])", "\\1"+k+"\\2", o, perl=T) }, names(codes), init=jsfix(orig))
+
+parse_txn_conflicts <- function(str, codes) {
+  c <- fromJSON(gsub("'","\"",str))
+  names(c) <- replace_txn_codes(names(c), codes)
+  c
+}
+
+unmarshal <- function(str) fromJSON(gsub("'","\"",str))
+  
+pp <- function(row) cat(as.yaml(row))  
 
 save <- function(g, name=FILE_BASE, file=sprintf("%s/%s.pdf",FILE_DIR,name), w=3.3, h=3.1) {
   ggsave(plot=g, filename=file, width=w, height=h)
   print(sprintf("saved: %s", file))
 }
 
-prettify <- function(str) gsub('_',' ',gsub('([a-z])([a-z]+)',"\\U\\1\\E\\2",str,perl=TRUE))
+# prettify <- function(str) gsub('_',' ',gsub('([a-z])([a-z]+)',"\\U\\1\\E\\2",str,perl=TRUE))
 
 regex_match <- function(reg,str) length(grep(reg,str)) > 0
 
@@ -226,6 +246,49 @@ data.retwis <- function(select="*", where="client = 'dsretwis'") {
   return(d)
 }
 
+data.rubis <- function(select="*", where="client = 'rubis'") {
+  d <- 
+    if(exists("DATA.MODE") && DATA.MODE == 'local') {
+      d.tmp <- do.call("rbind", fromJSON("freeze/rubis.csv"))
+      sql(sprintf("select * from `d.tmp` where total_time is not null and %s",where))
+    } else {
+      db(sprintf("select * from rubis where total_time is not null and %s", where),
+        factors=c('nshards', 'nclients'),
+        numeric=c('total_time', 'txn_count', 'nthreads')
+      )
+    }
+
+  d$state <- gsub('.*/(.*)', '\\1', d$loaddir)
+    
+  d$cc <- factor(revalue(d$ccmode, c(
+    'rw'=RW,
+    'simple'=COMM
+  )), levels=c(COMM,RW))
+  
+  d$cca <- factor(revalue(d$ccmode, c(
+    'rw'='rw',
+    'simple'='co'
+  )), levels=c('co','rw'))
+  
+  d$zmix <- sprintf('%s/%s', d$mix, d$alpha)
+  
+  # fields intended to be totals rather than averages should be mult. by nclients
+  fields <- names(d)[grepl(".*(_count|_retries|_failed|_latency)$", names(d))]
+  for (f in fields) d[[f]] <- num(d$nclients) * d[[f]]
+  cat("# computing total for fields: "); cat(fields); cat("\n")
+  d$prepare_total <- d$prepare_retries + d$txn_count
+  d$prepare_retry_rate <- d$prepare_retries / d$prepare_total
+  
+  # compute avg latencies for each txn type
+  txns <- gsub('rubis_(.*)_count', '\\1', names(d[,grepl('rubis_(.*)_count',names(d))]))
+  for (t in txns) d[["rubis_"+t+"_avg_latency_ms"]] <- d[["rubis_"+t+"_latency"]] / d[["rubis_"+t+"_count"]]
+        
+  d$throughput <- d$txn_count / d$total_time
+  d$avg_latency_ms <- d$txn_time / d$txn_count * 1000
+  
+  return(d)
+}
+
 data.papoc <- function(where) {
   d <- db(
     sprintf("select * from tapir where total_time is not null and %s", where),
@@ -276,10 +339,11 @@ data.papoc <- function(where) {
 data.ldbc <- function(where = "ldbc_config is not null", melt='ldbc_results') {
   d <- 
     if(exists("DATA.MODE") && DATA.MODE == 'local') {
+      print(getwd())
       d_ldbc <- read.delim('freeze/ldbc.csv', sep=',')
       d_ldbc$ldbc_results <- as.character(d_ldbc$ldbc_results)
       d_ldbc$client_metrics <- as.character(d_ldbc$client_metrics)
-      sql(sprintf("select * from d_ldbc where ldbc_results is not null and %s",where))
+      sql(sprintf("select * from `d_ldbc` where ldbc_results is not null and %s",where))
     } else {
       db(sprintf("select * from ldbc where ldbc_results is not null and ldbc_results != \"\" and %s", where))
     }
