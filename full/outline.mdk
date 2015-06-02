@@ -10,15 +10,30 @@
 - Teach the system properties about the data types, such as operation commutativity lattices, how to combine operations, etc
 - System uses these properties to efficiently execute transactions
 
-## Commutativity
+## Contention in applications: auctions
+- Use auction as motivating example
+- Cite the existing measurement studies
+- Background section on the workloads
+- Show how much performance improvement is available 
+- False contention, etc.
+- Diagram of Rubis txns
 
 ## Leveraging commutativity
-### Boosting
-### Combining
+### Boosting: commutativity
+### Combining: associativity
+### Phasing: associativity / another ity?
 
 ## Expressing data type properties, composing data types
 ### Gatekeepers
+- For specifying commutativity for a given data type
+- Tells whether a given proposed operation can proceed or not
+- Typically 
+
 ### Operation combiners
+- Specify how to take two operations and combine them into 1 new one.
+
+### Phasing
+- 
 
 ## Evaluation
 ### How much can commutativity help?
