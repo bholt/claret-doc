@@ -7,14 +7,21 @@ SRCS := style refs.bib *.mdk
 # 	cd out && Rscript --slave -e "library(knitr); source('../../data/common.r'); knit('../"$<"')"
 # 	cd out && mv $(subst .rmdk,.txt,$<) $(subst .rmdk,.mdk,$<)
 
+PLOTS := plots/*.r
+
+PLOT_PDFS := $(PLOTS:%.r=%.pdf)
+
+$(PLOT_PDFS): %.pdf: %.r common.r Makefile
+	Rscript $< 
+
 out/style:
 	cd out && ln -s ../style
 
-out/paper.pdf: $(SRCS) Makefile
+out/paper.pdf: $(SRCS) $(PLOT_PDFS) Makefile
 	madoko -v --pdf --odir=out --tex paper.mdk
 
 pdf: out/paper.pdf
-	
+
 final: pdf
 	cd out && pdfstill paper.pdf && mv paper.still.pdf claret.pdf
 
