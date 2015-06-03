@@ -27,13 +27,15 @@
 ### Gatekeepers
 - For specifying commutativity for a given data type
 - Tells whether a given proposed operation can proceed or not
-- Typically 
+- Typically has a set of prepared txns and a *mode* (e.g. read-only, append, etc)
 
 ### Operation combiners
-- Specify how to take two operations and combine them into 1 new one.
+- Specify how to take two operations and combine them into 1 new one
+- Can have extra state
+- e.g. TopK: keep no more than K items when combining, but also keep track of lowest value (stale) in global topK and prune any that aren't above
 
 ### Phasing
-- 
+- expose modes from gatekeepers
 
 ## Evaluation
 ### How much can commutativity help?
