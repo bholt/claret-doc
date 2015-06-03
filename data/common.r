@@ -13,6 +13,12 @@ suppressPackageStartupMessages(require(yaml))
 COMM <- "boosting (commutative)"
 RW <- "reader/writer locks"
 
+parse.args <- function() {
+  options <- commandArgs(trailingOnly=TRUE)
+  list(fname=options[1])
+}
+
+
 json.to.df <- function(jstr) {
   d <- fromJSON(jstr)
   return(data.frame(x=names(d),y=unlist(d)))
