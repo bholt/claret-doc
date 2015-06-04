@@ -2,3 +2,4 @@ out/
 figure/
 .web.*
 plots/*.pdf
+plots/*.svg

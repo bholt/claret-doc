@@ -11,9 +11,11 @@ doc class:    [preprint,nocopyrightspace]style/sigplanconf.cls
 css:          style/style.css
 Logo: False
 
+.onecol: width=3.3in
+
 ~Pre, ~Code: font-family="Inconsolata" font-size=10pt
 
-~Fig: label='Figure [@fig]{.figure-label}' replace='&source;&nl;[[**&label;.** ]{.caption-before}&caption;]{.figure-caption html-elem=fig-caption}&nl;{notag}&nl;'
+~Fig: label='Figure [@fig]{.figure-label}' replace='&source;&nl;&nl;[[**&label;.** ]{.caption-before}&caption;]{.figure-caption html-elem=fig-caption}&nl;{notag}&nl;'
 
 ~ TexRaw
 \cssClassRuleDo{fig}{%

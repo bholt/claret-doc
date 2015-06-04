@@ -8,3 +8,7 @@ body.madoko {
   font-size: 80%;
   text-rendering: optimizeLegibility;
 }
+
+.madoko p {
+  text-align: inherit;
+}
