@@ -9,7 +9,7 @@ DEPS := refs.bib out/style Makefile
 # 	cd out && Rscript --slave -e "library(knitr); source('../../data/common.r'); knit('../"$<"')"
 # 	cd out && mv $(subst .rmdk,.txt,$<) $(subst .rmdk,.mdk,$<)
 
-PLOTS := plots/*.r
+PLOTS := $(wildcard plots/*.r)
 
 PLOT_PDFS := $(PLOTS:%.r=%.pdf)
 SVG_SRCS := $(SRCS:%.mdk=out/%.mdk)
@@ -36,7 +36,7 @@ final: pdf
 pdf-view: pdf
 	open -a Skim out/paper.pdf
 
-out/paper.html: $(SVG_SRCS) $(DEPS)
+out/paper.html: $(SVG_SRCS) $(DEPS) $(PLOT_PDFS)
 	./pdf2svg.sh
 	mv out/paper.mdk .web.paper.mdk
 	madoko -v --odir=out .web.paper.mdk
@@ -48,6 +48,6 @@ web-view: web
 	open -a Safari out/paper.html
 
 clean:
-	rm -r out .web.*
+	rm -r out .web.paper.mdk plots/*.pdf plots/*.svg
 
 .PHONY: all clean pdf web pdf-view web-view
