@@ -1,4 +1,4 @@
-# Background
+# Contention I.R.L.
 
 Though not part of the original specification for the RUBiS benchmark, studies measuring online auctions have shown that auctions also exhibit power-law properties as well [@Menasce:2007]. The number of bids per item roughly follows a power-law or zipfian distribution: many auctions have very few bids, while a few have a very large number of bids. Furthermore, the frequency of bidding increases as an auction nears its close. 
 
