@@ -13,6 +13,10 @@ Logo: False
 
 .onecol: width=3.3in
 
+#todo: color=red font-size=x-small font-family=HelveticaNeue-Light before='[' after=']'
+
+~P,~Span: replace="/\[(?:TODO|todo):\s*(.*?)\]/[\1]{#todo}/g"
+
 ~Pre, ~Code: font-family="Inconsolata" font-size=10pt
 
 ~Fig: label='Figure [@fig]{.figure-label}' replace='&source;&nl;&nl;[[**&label;.** ]{.caption-before}&caption;]{.figure-caption html-elem=fig-caption}&nl;{notag}&nl;'
