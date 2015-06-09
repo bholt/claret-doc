@@ -1,0 +1,35 @@
+<!--
+  Outline:
+    - where does contention come from?
+      - power-law distributions
+      - live events focus things in time
+    - why do we care?
+      - most of the time, things are fine
+      - but high-contention times are probably also your most important
+    - modeling real workloads
+      - twitter: power-law degree (followers), retweet popular tweets you see
+      - auction: power-law num of bids per item, more bids near end of auction
+-->
+
+# Real world contention
+
+## Power laws everywhere
+
+Properties of real-world systems often follow power-law distributions due to a variety of common effects. The connectivity of social networks are a well-known example, where a small number of nodes (people) account for a large fraction of the connections, while most people have relatively few connections. These power laws can play off of each other, leading to other interesting properties, such as low diameter or *small-world* networks (colloquially the "six degrees of separation" property). Other network effects serve to amplify small signals into massive amounts of activity, such as occurs when a topic "goes viral".
+
+If not taken into account in the design, these properties can easily bring systems crashing down, or slowing to a standstill. This is partly due to load spikes, where traffic jumps significantly higher than the typical base rate. However, the actual *shape* of the traffic – what records are being accessed and the nature of the operations being performed – is also partly to blame.
+
+To discuss this more concretely, we use an online auction service as an example. We start from a well-known benchmark modeling an eBay-like auction website, RUBiS [@Amza:02]. At its core, this service allows users to put items up for auction, browse items by region and category, and place bids on open auctions. The original specification of the benchmark describes a workload with a mix of bidding and browsing (and opening and closing auctions), and specifies an average number of bids per auction. However, RUBiS never specified a *distribution* of bids per item, nor for any of the entities in the benchmark, which turns out to be a major factor.
+
+~ Fig { #bid-dist caption="Distribution of bids over time when auction is open." page-align=top text-align=center }
+![Bid distribution](plots/bid-dist.pdf){ .onecol }
+~
+
+Surveys of real-world auction sites [@Menasce:07;@Akula:04] can give us an idea of what these distributions should be. Akula and Menascé [@Akula:04] observed that not only do the number of bids per item roughly follow Zipf's Law (a *zipfian* distribution), so too do the number of bids per bidder, amount of revenue per seller, number of auction wins per bidder, and others. Furthermore, they observed that the majority of bids arrive near the end of the auction window as bidders attempt to out-bid one another, as shown in [#bid-dist]. [todo: find more measurement studies?]
+
+To mitigate the contention caused by power-law bidding behavior focused near the auction closing time, prior work suggested shifting auction closing times to not coincide with one another. However, today's online auctions operate at a significantly larger scale [todo: citation for this?], so the load of even a single auction has the potential to overload a single machine, and the quantity and unpredictability of auctions makes it nearly impossible to guarantee that multiple popular auctions won't end up in competition for resources.
+
+## Commutativity is common
+
+Luckily, in some cases, the high-contention situations also share other – more useful – properties like commutativity and associativity. Looking at the auction example, we can see that
+
