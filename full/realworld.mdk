@@ -27,12 +27,20 @@ To discuss this more concretely, we use an online auction service as an example.
 
 Surveys of real-world auction sites [@Menasce:07;@Akula:04] can give us an idea of what these distributions should be. Akula and Menascé [@Akula:04] observed that not only do the number of bids per item roughly follow Zipf's Law (a *zipfian* distribution), so too do the number of bids per bidder, amount of revenue per seller, number of auction wins per bidder, and others. Furthermore, they observed that the majority of bids arrive near the end of the auction window as bidders attempt to out-bid one another, as shown in [#bid-dist]. [todo: find more measurement studies?]
 
+We model these power law properties in our modified RUBiS workload. Specifically, we draw categories and regions from a zipfian distribution when choosing where to add items to and browse, which results in the expected skewed distribution of bids per item. When bidding, clients can preferentially choose items that are closing the item is chosen randomly using another zipfian distribution.
+
+As part of this work, we implemented an new version of the RUBiS benchmark that specifically models these power laws. In particular, our benchmark driver
+
 To mitigate the contention caused by power-law bidding behavior focused near the auction closing time, prior work suggested shifting auction closing times to not coincide with one another. However, today's online auctions operate at a significantly larger scale [todo: citation for this?], so the load of even a single auction has the potential to overload a single machine, and the quantity and unpredictability of auctions makes it nearly impossible to guarantee that multiple popular auctions won't end up in competition for resources.
 
 ## Commutativity is common
 
-Luckily, in some cases, the high-contention situations also share other – more useful – properties like commutativity and associativity. Looking at the auction example, we can see that
+Luckily, in some cases, the high-contention situations also share other – more useful – properties like commutativity and associativity. At a high level, it should be clear that bids placed on an item can be reordered provided that the correct maximum bid can still be tracked. Whenever a browse action observes the maximum bid, or the auction closes, that must impose an ordering that bids cannot move beyond, but bids themselves can be reordered with each other. That is to say, bids *commute* with one another because conceptually, there is an ordered *set* of bids and we only care about the *maximum* value in the set.
 
-~ Fig { #auction-conflicts caption="Conflicts between auction transactions, without/with commutativity. The majority of conflicts (between bids) are completely eliminated by recognizing that they commute with one another." }
+Modeling the power law properties described above, we generated a new RUBiS workload that is more indicative of real-world auctions. With this simulation, we can measure all of the conflicts that would occur between auction transactions under this workload when executed naively. Using a number of techniques which will be described in the rest of this paper, we found which transactions actually commute with one another, and measured those as well. [#auction-conflicts] shows the results of this simulation for four of the most important transaction types. We can see that the bid-to-bid conflicts are the most significant, but commutativity completely eliminates them.
+
+~ Fig { #auction-conflicts caption="Conflicts between 4 important auction transactions, without/with commutativity. The majority of conflicts (between bids) are completely eliminated by recognizing that they commute with one another. [todo: find better way to show this that doesn't look like comm. makes some things worse...]" }
 ![Auction conflicts](out/rubis-conflicts.pdf){.onecol}
 ~
+
+The rest of this paper will tackle how we can use this information in the datastore to execute fast even under high contention and how programmers can express these properties to the datastore for their applications.
