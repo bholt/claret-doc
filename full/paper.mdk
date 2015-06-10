@@ -17,9 +17,14 @@ Logo: False
 
 ~P,~Span: replace="/\[(?:TODO|todo):\s*(.*?)\]/[\1]{#todo}/g"
 
-~Pre, ~Code: font-family="Inconsolata" font-size=10pt
+~Pre, ~Code: font-family="Inconsolata" font-size=medium
+~Pre: font-size=small
+
 
 ~Fig: page-align=top text-align=center label='Figure [@fig]{.figure-label}' replace='&source;&nl;&nl;[[**&label;.** ]{.caption-before}&caption;]{.figure-caption html-elem=fig-caption}&nl;{notag}&nl;'
+
+~Listing: page-align=top text-align=center label='Listing [@listing]{.figure-label}' replace='&source;&nl;&nl;[[**&label;.** ]{.caption-before}&caption;]{.figure-caption html-elem=listing-caption}&nl;{notag}&nl;'
+
 
 ~ TexRaw
 \cssClassRuleDo{fig}{%
@@ -36,6 +41,7 @@ Logo: False
 
 [INCLUDE="intro"]
 [INCLUDE="realworld"]
+[INCLUDE="leveraging"]
 [INCLUDE="evaluation"]
 # References {-}
 [BIB]
