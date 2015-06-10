@@ -19,7 +19,7 @@ Logo: False
 
 ~Pre, ~Code: font-family="Inconsolata" font-size=10pt
 
-~Fig: label='Figure [@fig]{.figure-label}' replace='&source;&nl;&nl;[[**&label;.** ]{.caption-before}&caption;]{.figure-caption html-elem=fig-caption}&nl;{notag}&nl;'
+~Fig: page-align=top text-align=center label='Figure [@fig]{.figure-label}' replace='&source;&nl;&nl;[[**&label;.** ]{.caption-before}&caption;]{.figure-caption html-elem=fig-caption}&nl;{notag}&nl;'
 
 ~ TexRaw
 \cssClassRuleDo{fig}{%
