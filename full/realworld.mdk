@@ -21,7 +21,7 @@ If not taken into account in the design, these properties can easily bring syste
 
 To discuss this more concretely, we use an online auction service as an example. We start from a well-known benchmark modeling an eBay-like auction website, RUBiS [@Amza:02]. At its core, this service allows users to put items up for auction, browse items by region and category, and place bids on open auctions. The original specification of the benchmark describes a workload with a mix of bidding and browsing (and opening and closing auctions), and specifies an average number of bids per auction. However, RUBiS never specified a *distribution* of bids per item, nor for any of the entities in the benchmark, which turns out to be a major factor.
 
-~ Fig { #bid-dist caption="Distribution of bids over time when auction is open." page-align=top text-align=center }
+~ Fig { #bid-dist caption="Distribution of bids over time when auction is open." }
 ![Bid distribution](plots/bid-dist.pdf){ .onecol }
 ~
 
@@ -33,3 +33,6 @@ To mitigate the contention caused by power-law bidding behavior focused near the
 
 Luckily, in some cases, the high-contention situations also share other – more useful – properties like commutativity and associativity. Looking at the auction example, we can see that
 
+~ Fig { #auction-conflicts caption="Conflicts between auction transactions, without/with commutativity. The majority of conflicts (between bids) are completely eliminated by recognizing that they commute with one another." }
+![Auction conflicts](out/rubis-conflicts.pdf){.onecol}
+~

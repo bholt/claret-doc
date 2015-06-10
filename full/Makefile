@@ -4,14 +4,15 @@ SRCS := $(wildcard *.mdk)
 
 DEPS := refs.bib out/style Makefile
 
-# out/%.mdk: %.rmdk
-# 	mkdir -p out
-# 	cd out && Rscript --slave -e "library(knitr); source('../../data/common.r'); knit('../"$<"')"
-# 	cd out && mv $(subst .rmdk,.txt,$<) $(subst .rmdk,.mdk,$<)
+FIGS := rubis-conflicts
+
+out/rubis-conflicts.pdf: ../Rubis.graffle
+	omnigraffle-export -c Conflicts ../Rubis.graffle $@
 
 PLOTS := $(wildcard plots/*.r)
 
 PLOT_PDFS := $(PLOTS:%.r=%.pdf)
+FIG_PDFS := $(FIGS:%=out/%.pdf)
 SVG_SRCS := $(SRCS:%.mdk=out/%.mdk)
 
 $(PLOT_PDFS): %.pdf: %.r common.r Makefile
@@ -25,7 +26,7 @@ out/style:
 	mkdir -p out
 	cd out && ln -s ../style
 
-out/paper.pdf: $(SRCS) $(PLOT_PDFS) $(DEPS)
+out/paper.pdf: $(SRCS) $(PLOT_PDFS) $(DEPS) $(FIG_PDFS)
 	madoko -v --pdf --odir=out --tex paper.mdk
 
 pdf: out/paper.pdf
