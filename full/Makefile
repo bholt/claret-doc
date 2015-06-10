@@ -1,3 +1,9 @@
+define graffleFigure
+	$(eval SVG := $(subst .pdf,.svg,$(3)))
+	omnigraffle-export -c $(2) $(1) $(3)
+	pdf2svg $(3) $(SVG)
+endef
+
 all: web-view
 
 SRCS := $(wildcard *.mdk)
@@ -7,12 +13,12 @@ DEPS := refs.bib out/style Makefile
 FIGS := rubis-conflicts
 
 out/rubis-conflicts.pdf: ../Rubis.graffle
-	omnigraffle-export -c Conflicts ../Rubis.graffle $@
+	$(call graffleFigure,$<,Conflicts,$@)
 
 PLOTS := $(wildcard plots/*.r)
 
 PLOT_PDFS := $(PLOTS:%.r=%.pdf)
-FIG_PDFS := $(FIGS:%=out/%.pdf)
+FIGS_OUT := $(FIGS:%=out/%.pdf)
 SVG_SRCS := $(SRCS:%.mdk=out/%.mdk)
 
 $(PLOT_PDFS): %.pdf: %.r common.r Makefile
@@ -26,7 +32,7 @@ out/style:
 	mkdir -p out
 	cd out && ln -s ../style
 
-out/paper.pdf: $(SRCS) $(PLOT_PDFS) $(DEPS) $(FIG_PDFS)
+out/paper.pdf: $(SRCS) $(PLOT_PDFS) $(DEPS) $(FIGS_OUT)
 	madoko -v --pdf --odir=out --tex paper.mdk
 
 pdf: out/paper.pdf
@@ -37,7 +43,7 @@ final: pdf
 pdf-view: pdf
 	open -a Skim out/paper.pdf
 
-out/paper.html: $(SVG_SRCS) $(DEPS) $(PLOT_PDFS)
+out/paper.html: $(SVG_SRCS) $(DEPS) $(PLOT_PDFS) $(FIGS_OUT)
 	./pdf2svg.sh
 	mv out/paper.mdk .web.paper.mdk
 	madoko -v --odir=out .web.paper.mdk
