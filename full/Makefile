@@ -12,17 +12,20 @@ DEPS := refs.bib out/style Makefile
 
 FIGS := rubis-conflicts
 
-out/rubis-conflicts.pdf: ../Rubis.graffle
+fig/rubis-conflicts.pdf: ../Rubis.graffle fig/
 	$(call graffleFigure,$<,Conflicts,$@)
 
 PLOTS := $(wildcard plots/*.r)
 
 PLOT_PDFS := $(PLOTS:%.r=%.pdf)
-FIGS_OUT := $(FIGS:%=out/%.pdf)
+FIGS_OUT := $(FIGS:%=fig/%.pdf)
 SVG_SRCS := $(SRCS:%.mdk=out/%.mdk)
 
 $(PLOT_PDFS): %.pdf: %.r common.r Makefile
 	Rscript $< 
+
+fig/:
+	mkdir -p fig/
 
 out/%.mdk: %.mdk
 	mkdir -p out

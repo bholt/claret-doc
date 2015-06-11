@@ -40,7 +40,7 @@ Luckily, in some cases, the high-contention situations also share other – more
 Modeling the power law properties described above, we generated a new RUBiS workload that is more indicative of real-world auctions. With this simulation, we can measure all of the conflicts that would occur between auction transactions under this workload when executed naively. Using a number of techniques which will be described in the rest of this paper, we found which transactions actually commute with one another, and measured those as well. [#auction-conflicts] shows the results of this simulation for four of the most important transaction types. We can see that the bid-to-bid conflicts are the most significant, but commutativity completely eliminates them.
 
 ~ Fig { #auction-conflicts caption="Conflicts between 4 important auction transactions, without/with commutativity. The majority of conflicts (between bids) are completely eliminated by recognizing that they commute with one another. [todo: find better way to show this that doesn't look like comm. makes some things worse...]" }
-![Auction conflicts](out/rubis-conflicts.pdf){.onecol}
+![Auction conflicts](fig/rubis-conflicts.pdf){.onecol}
 ~
 
 The rest of this paper will tackle how we can use this information in the datastore to execute fast even under high contention and how programmers can express these properties to the datastore for their applications.
