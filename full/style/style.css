@@ -1,14 +1,29 @@
 body.madoko {
   font-family: 'Helvetica Neue';
+  font-size: 14px;
   font-weight: 300;
 }
 
 .madoko code, .madoko pre {
   font-family: Hasklig;
-  font-size: 80%;
+  font-size: 13px;
   text-rendering: optimizeLegibility;
 }
 
 .madoko p {
   text-align: inherit;
+}
+
+.listing, .fig {
+  margin-left: 1em;
+  margin-right: 1em;
+}
+
+.figure-caption {
+  text-align: left;
+}
+
+.onecol {
+  display: block;
+  margin: 0 auto
 }

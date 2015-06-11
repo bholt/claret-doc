@@ -11,23 +11,23 @@ doc class:    [preprint,nocopyrightspace]style/sigplanconf.cls
 css:          style/style.css
 Logo: False
 
-.onecol: width=3.3in
+.onecol: tex-width=3.3in css-width=80% text-align=center
 
 #todo: color=red font-size=x-small font-family=HelveticaNeue-Light before='[' after=']'
 
 ~P,~Span: replace="/\[(?:TODO|todo):\s*(.*?)\]/[\1]{#todo}/g"
 
-~Pre, ~Code: font-family="Inconsolata" font-size=medium
-~Pre: font-size=small
+~Pre, ~Code: tex-font-family="Inconsolata" tex-font-size=medium
+~Pre: tex-font-size=small
 
 
 ~H1: label='[§@h1]{.heading-label}' replace="/§//"
 ~H2: label='[§@h1.@h1-h2]{.heading-label}' replace="/§//"
 
 
-~Fig: page-align=top text-align=center label='Figure\ [@fig]{.figure-label}' replace='&source;&nl;&nl;[[**&label;.** ]{.caption-before}&caption;]{.figure-caption html-elem=fig-caption}&nl;{notag}&nl;'
+~Fig: page-align=top label='Figure\ [@fig]{.figure-label}' replace='&source;&nl;&nl;[[**&label;.** ]{.caption-before}&caption;]{.figure-caption html-elem=fig-caption}&nl;{notag}&nl;'
 
-~Listing: page-align=top text-align=center label='Listing [@listing]{.figure-label}' replace='&source;&nl;&nl;[[**&label;.** ]{.caption-before}&caption;]{.figure-caption html-elem=listing-caption}&nl;{notag}&nl;'
+~Listing: page-align=top label='Listing [@listing]{.figure-label}' replace='&source;&nl;&nl;[[**&label;.** ]{.caption-before}&caption;]{.figure-caption html-elem=listing-caption}&nl;{notag}&nl;'
 
 
 ~ TexRaw
@@ -35,6 +35,9 @@ Logo: False
   \cssDoBefore{\begin{figure}[t]}%
      \cssDoAfter{\end{figure}}%
 }
+~
+~ HtmlRaw
+<script async defer src="//hypothes.is/embed.js"></script>
 ~
 
 [TITLE]
