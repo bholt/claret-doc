@@ -2,3 +2,19 @@
 
 ## Commutativity Specification {#sec-commutativity-spec}
 
+~ Fig { #fig-spec caption="Abstract Commutativity Specification for Set." }
+| **method:** | **commutes with:** | **when:** |
+|:---|:---|:---|
+|`add(x): void` | `add(y)` | $\forall x, y$ |
+|`remove(x): void` | `remove(y)` | $\forall x, y$ |
+|    | `add(y)` | $x \ne y$ |
+|`size(): int` | `add(x)` | $x \in Set$ |
+|    | `remove(x)` | $x \notin Set$ |
+|`contains(x): bool` | `add(y)` | $x \ne y \lor y \in Set$ |
+|    | `remove(y)` | $x \ne y \lor y \notin Set$ |
+|    | `size()` | $\forall x$ |
+|---|---|---|
+~
+
+Though *commutativity* is often discussed in terms of an operation commuting with all other operations, it is actually more nuanced. If a pair of operations commute, then executing them in either order will produce the same result. Using the definitions from [@Kulkarni:PLDI11], whether or not a pair of method invocations commute is a function of the methods, their arguments, their return values, and the *abstract* state of their target. We call the full set of commutativity rules for an ADT its *commutativity specification.* An example specification for a *Set* is shown in [#fig-spec]. There are actually many valid specifications which expose less than the maximum commutativity, but may be cheaper to implement.
+

@@ -55,5 +55,7 @@ if (screen && screen.width > 480) {
 [INCLUDE="leveraging"]
 [INCLUDE="expressing"]
 [INCLUDE="evaluation"]
+[INCLUDE="related"]
+
 # References {-}
 [BIB]

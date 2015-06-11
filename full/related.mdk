@@ -1,0 +1,7 @@
+# Related Work
+
+## Commutativity
+
+Commutativity is well known, especially in distributed systems, for enabling important optimizations. Since the 80s, commutativity has been exploited by database systems designers [@Weihl:1988;@Fekete:90] within the safe confines of relational models, where complete control of the data structures allows systems to determine when transactions may conflict. Recently, commutativity has seen a resurgence in systems without a predefined data model, such as NoSQL databases and transactional memory.
+
+Eventually consistent databases use commutativity for convergence in work such as RedBlue consistency [@Li:OSDI12] and conflict-free replicated data types (CRDTs) [@Shapiro:SSS11]. Other systems specialize for commutative operations to improve transaction processing, such as Lynx [@Zhang:SOSP13] for tracking serializability, Doppel [@Narula:OSDI14] for executing operations in parallel on highly contended records, and HyFlow [@Kim:EuroPar13] for reordering operations in the context of distributed transactional memory. We propose unifying and generalizing these under the abstraction afforded by ADTs.
