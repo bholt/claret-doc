@@ -10,6 +10,10 @@ body.madoko {
   text-rendering: optimizeLegibility;
 }
 
+.madoko pre {
+  overflow-x: scroll;
+}
+
 .madoko p {
   text-align: inherit;
 }
