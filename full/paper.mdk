@@ -37,7 +37,11 @@ Logo: False
 }
 ~
 ~ HtmlRaw
-<script async defer src="//hypothes.is/embed.js"></script>
+<script>
+if (screen && screen.width > 480) {
+  document.write('<script async defer src="//hypothes.is/embed.js"><\/script>');
+}
+</script>
 ~
 
 [TITLE]
