@@ -25,7 +25,7 @@ Logo: False
 ~H2: label='[§@h1.@h1-h2]{.heading-label}' replace="/§//"
 
 
-~Fig: page-align=top text-align=center label='Figure [@fig]{.figure-label}' replace='&source;&nl;&nl;[[**&label;.** ]{.caption-before}&caption;]{.figure-caption html-elem=fig-caption}&nl;{notag}&nl;'
+~Fig: page-align=top text-align=center label='Figure\ [@fig]{.figure-label}' replace='&source;&nl;&nl;[[**&label;.** ]{.caption-before}&caption;]{.figure-caption html-elem=fig-caption}&nl;{notag}&nl;'
 
 ~Listing: page-align=top text-align=center label='Listing [@listing]{.figure-label}' replace='&source;&nl;&nl;[[**&label;.** ]{.caption-before}&caption;]{.figure-caption html-elem=listing-caption}&nl;{notag}&nl;'
 
