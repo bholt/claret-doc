@@ -15,7 +15,7 @@ FIGS := rubis-conflicts
 fig/rubis-conflicts.pdf: ../Rubis.graffle fig/
 	$(call graffleFigure,$<,Conflicts,$@)
 
-PLOTS := $(wildcard plots/*.r)
+PLOTS := $(filter-out plots/common.r, $(wildcard plots/*.r))
 
 PLOT_PDFS := $(PLOTS:%.r=%.pdf)
 FIGS_OUT := $(FIGS:%=fig/%.pdf)
