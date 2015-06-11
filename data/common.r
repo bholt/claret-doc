@@ -281,7 +281,7 @@ data.rubis <- function(select="*", where="client = 'rubis'") {
   # fields intended to be totals rather than averages should be mult. by nclients
   fields <- names(d)[grepl(".*(_count|_retries|_failed|_latency)$", names(d))]
   for (f in fields) d[[f]] <- num(d$nclients) * d[[f]]
-  cat("# computing total for fields: "); cat(fields); cat("\n")
+  # cat("# computing total for fields: "); cat(fields); cat("\n")
   d$prepare_total <- d$prepare_retries + d$txn_count
   d$prepare_retry_rate <- d$prepare_retries / d$prepare_total
   
