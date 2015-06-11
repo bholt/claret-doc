@@ -21,6 +21,10 @@ Logo: False
 ~Pre: font-size=small
 
 
+~H1: label='[§@h1]{.heading-label}' replace="/§//"
+~H2: label='[§@h1.@h1-h2]{.heading-label}' replace="/§//"
+
+
 ~Fig: page-align=top text-align=center label='Figure [@fig]{.figure-label}' replace='&source;&nl;&nl;[[**&label;.** ]{.caption-before}&caption;]{.figure-caption html-elem=fig-caption}&nl;{notag}&nl;'
 
 ~Listing: page-align=top text-align=center label='Listing [@listing]{.figure-label}' replace='&source;&nl;&nl;[[**&label;.** ]{.caption-before}&caption;]{.figure-caption html-elem=listing-caption}&nl;{notag}&nl;'
@@ -42,6 +46,7 @@ Logo: False
 [INCLUDE="intro"]
 [INCLUDE="realworld"]
 [INCLUDE="leveraging"]
+[INCLUDE="expressing"]
 [INCLUDE="evaluation"]
 # References {-}
 [BIB]
