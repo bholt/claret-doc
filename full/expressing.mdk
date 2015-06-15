@@ -2,7 +2,7 @@
 
 ## Commutativity Specification {#sec-commutativity-spec}
 
-~ Fig { #fig-spec caption="Abstract Commutativity Specification for Set." }
+~ Fig { #fig:spec caption="Abstract Commutativity Specification for Set." }
 | **method:** | **commutes with:** | **when:** |
 |:---|:---|:---|
 |`add(x): void` | `add(y)` | $\forall x, y$ |
@@ -16,5 +16,33 @@
 |---|---|---|
 ~
 
-Though *commutativity* is often discussed in terms of an operation commuting with all other operations, it is actually more nuanced. If a pair of operations commute, then executing them in either order will produce the same result. Using the definitions from [@Kulkarni:PLDI11], whether or not a pair of method invocations commute is a function of the methods, their arguments, their return values, and the *abstract* state of their target. We call the full set of commutativity rules for an ADT its *commutativity specification.* An example specification for a *Set* is shown in [#fig-spec]. There are actually many valid specifications which expose less than the maximum commutativity, but may be cheaper to implement.
+Though *commutativity* is often discussed in terms of an operation commuting with all other operations, it is actually more nuanced. If a pair of operations commute, then executing them in either order will produce the same result. Using the definitions from [@Kulkarni:PLDI11], whether or not a pair of method invocations commute is a function of the methods, their arguments, their return values, and the *abstract* state of their target. We call the full set of commutativity rules for an ADT its *commutativity specification.* An example specification for a *Set* is shown in [#fig:spec]. There are actually many valid specifications which expose less than the maximum commutativity but may be cheaper to implement.
+
+### Abstract lock interface
+
+~ Fig { #fig:lock-interface caption="Interface for expressing commutativity for a data type. Typical implementations use *modes* to easily determine sets of allowed operations, and a *set* of lock-holders to keep track ." }
+```cpp
+class AbstractLock {
+  // determine if given op can execute concurrently with other current lock holders
+  bool acquire(TransactionID tid, Operation *op);
+  
+  // remove ops from tracking when transaction commits
+  bool release(TransactionID tid);
+  
+  // [optional] typical way of tracking who holds the lock
+  set<TransactionID> holders;
+};
+```
+~
+
+In Claret, each data type must describe its commutativity to the datastore by implementing the *abstract lock* interface shown in [#fig:lock-interface]. This imperative interface allows data types data types to be arbitrarily introspective when determining commutativity. In a pessimistic (locking) implementation, the client must acquire locks for its operations before executing them. When the datastore receives a lock request for an operation on a record, the concurrency controller queries the abstract lock associated with the record using its `acquire` method, which checks the new operation against the other operations currently holding the lock to determine if it can execute concurrently (commutes) with all of them.
+
+A traditional reader/writer lock can be implemented in this way by tracking all the transactions currently reading a record when it's in *reading* mode, only allowing writes (*exclusive* mode) when all readers have released their locks. More permissive abstract locks exposing commutativity can be implemented most simply by adding additional modes, such as *appending* for sets or lists, which allow all *insert* operations. More fine-grained commutativity tracking can be done with more specialized implementations. For instance, a *sorted set* could track a range of reads  which might track which values are being inserted, or reading ranges
+
+
+More permissive abstract locks implementing commutativity may still 
+Abstract locks must do the same, but may allow more operations to be concurrent. Typical implementations use 
+
+
+### Transaction boosting
 
