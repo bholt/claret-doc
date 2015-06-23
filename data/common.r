@@ -10,8 +10,9 @@ suppressPackageStartupMessages(require(grid))
 suppressPackageStartupMessages(require(plyr))
 suppressPackageStartupMessages(require(yaml))
 
-COMM <- "boosting (commutative)"
-RW <- "reader/writer locks"
+COMB <- "combining"
+COMM <- "boosting"
+RW <- "baseline"
 
 parse.args <- function() {
   options <- commandArgs(trailingOnly=TRUE)
@@ -30,6 +31,35 @@ db <- function(query, factors=c(), numeric=c()) {
   d <- sqldf(query)
   d[factors] <- lapply(d[factors], factor)
   d[numeric] <- lapply(d[numeric], as.numeric)
+  
+  if ( 'combining' %in% colnames(d) ) {
+    
+    d$cc <- factor(revalue(x(d$ccmode,d$combining), c(
+      'rw#0'=RW,
+      'simple#0'=COMM,
+      'simple#1'=COMB
+    )), levels=c(RW,COMM,COMB))
+    
+    d$cca <- factor(revalue(x(d$ccmode,d$combining), c(
+      'rw#0'='rw',
+      'simple#0'='bo',
+      'simple#1'='cb'
+    )), levels=c('rw','bo','cb'))
+    
+  } else if ( 'ccmode' %in% colnames(d) ) {
+
+    d$cc <- factor(revalue(d$ccmode, c(
+      'rw'=RW,
+      'simple'=COMM
+    )), levels=c(COMM,RW))  
+
+    d$cca <- factor(revalue(d$ccmode, c(
+      'rw'='rw',
+      'simple'='co'
+    )), levels=c('co','rw'))
+    
+  }
+  
   return(d)
 }
 
@@ -151,6 +181,7 @@ my_palette <- c(
 
 my_palette[[RW]] <- c.yellow
 my_palette[[COMM]] <- c.blue
+my_palette[[COMB]] <- c.green
 
 # The palette with grey:
 cbPalette <- c("#0072B2", "#E69F00", "#009E73", "#D55E00", "#CC79A7", "#56B4E9", "#F0E442", "#999999")
@@ -195,6 +226,7 @@ theme_mine <- list(
   my_theme()
 )
 
+
 data.retwis <- function(select="*", where="client = 'dsretwis'") {
   d <- 
     if(exists("DATA.MODE") && DATA.MODE == 'local') {
@@ -217,18 +249,7 @@ data.retwis <- function(select="*", where="client = 'dsretwis'") {
 
   d$prepare_total <- d$prepare_retries + d$txn_count
   d$prepare_retry_rate <- d$prepare_retries / d$prepare_total
-  
-  d$cc <- factor(revalue(d$ccmode, c(
-    'rw'=RW,
-    'simple'=COMM
-  )), levels=c(COMM,RW))
-  d$`Concurrency Control` <- d$cc
-  
-  d$cca <- factor(revalue(d$ccmode, c(
-    'rw'='rw',
-    'simple'='co'
-  )), levels=c('co','rw'))
-  
+      
   d$variant <- factor(revalue(sprintf('%s:%s', d$ccmode, d$approx), c(
     # 'rw:1'='reader/writer',
     'rw:0'='Locking / OCC',
@@ -266,16 +287,6 @@ data.rubis <- function(select="*", where="client = 'rubis'") {
 
   d$state <- gsub('.*/(.*)', '\\1', d$loaddir)
     
-  d$cc <- factor(revalue(d$ccmode, c(
-    'rw'=RW,
-    'simple'=COMM
-  )), levels=c(COMM,RW))
-  
-  d$cca <- factor(revalue(d$ccmode, c(
-    'rw'='rw',
-    'simple'='co'
-  )), levels=c('co','rw'))
-  
   d$zmix <- sprintf('%s/%s', d$mix, d$alpha)
   
   # fields intended to be totals rather than averages should be mult. by nclients
@@ -309,21 +320,7 @@ data.papoc <- function(where) {
   
   d$prepare_total <- d$prepare_retries + d$txn_count
   d$prepare_retry_rate <- d$prepare_retries / d$prepare_total
-  
-  # d$cc <- revalue(d$ccmode, c(
-  #   'bottom'='base (none)',
-  #   'rw'='reader/writer',
-  #   'simple'='commutative'
-  # ))
-  
-  d$ccf <- factor(d$ccmode, levels=c('simple','rw','bottom'))
-  
-  d$cc <- factor(revalue(d$ccmode, c(
-    'rw'=RW,
-    'simple'=COMM
-  )), levels=c(COMM,RW))
-  d$`Concurrency Control` <- d$cc
-  
+    
   d$Graph <- capply(d$gen, function(s) gsub('kronecker:.+','kronecker',s))
   
   
@@ -353,16 +350,6 @@ data.ldbc <- function(where = "ldbc_config is not null", melt='ldbc_results') {
     } else {
       db(sprintf("select * from ldbc where ldbc_results is not null and ldbc_results != \"\" and %s", where))
     }
-  
-  d$cc <- factor(revalue(d$ccmode, c(
-    'rw'=RW,
-    'simple'=COMM
-  )), levels=c(COMM,RW))
-  
-  ccmap <- c()
-  ccmap[[COMM]] <- 'comm'
-  ccmap[[RW]] <- 'r/w'
-  d$cca <- revalue(d$cc, ccmap)
   
   if (melt == 'ldbc_results') {
     d <- adply(d, 1, function(r){
@@ -415,6 +402,38 @@ data.ldbc <- function(where = "ldbc_config is not null", melt='ldbc_results') {
   }
 }
 
+data.rawmix <- function(where="total_time is not null") {
+  d <- db(sprintf("select * from rawmix where total_time is not null and %s", where),
+    factors=c('nshards'),
+    numeric=c('total_time', 'txn_count')
+  )
+  
+  d$zmix <- sprintf('%s%% – α %s', num(d$commute_ratio)*100, d$alpha)
+  
+  # fields intended to be totals rather than averages should be mult. by nclients
+  fields <- names(d)[grepl(".*(_count|_retries|_failed|_latency)$", names(d))]
+  for (f in fields) d[[f]] <- num(d$nclients) * d[[f]]
+  # cat("# computing total for fields: "); cat(fields); cat("\n")
+  d$prepare_total <- d$prepare_retries + d$txn_count
+  d$prepare_retry_rate <- d$prepare_retries / d$prepare_total
+  
+  # compute avg latencies for each txn type
+  txns <- c('add','card')
+  for (t in txns) 
+    d[["raw_"+t+"_avg_latency_ms"]] <- d[["raw_"+t+"_time"]] / d[["raw_"+t+"_count"]]
+  
+  d$throughput <- d$txn_count / d$total_time
+  d$avg_latency_ms <- d$txn_time / d$txn_count * 1000
+  
+  d$failure_rate <- d$txn_failed / (d$txn_count + d$txn_failed)
+  d$throughput <- d$txn_count * num(d$nclients) / d$total_time
+  d$avg_latency_ms <- d$txn_time / d$txn_count * 1000
+  
+  d$op_retry_ratio <- d$op_retries / d$op_count
+    
+  return(d)
+}
+
 data.stress <- function(where="clientmode = 'stress'") {
   d <- db(paste("select * from stress where total_time is not null and ", where),
     factors=c('nshards', 'nclients'),
@@ -429,12 +448,6 @@ data.stress <- function(where="clientmode = 'stress'") {
 
   d$op_retries_total <- d$op_retries * num(d$nclients)
   d$op_retry_ratio <- d$op_retries / d$op_count
-
-  d$cc <- factor(revalue(d$ccmode, c(
-    'rw'=RW,
-    'simple'=COMM
-  )), levels=c(COMM,RW))
-  d$`Concurrency Control` <- d$cc
 
   d$opmix <- factor(revalue(d$mix, c(
     'mostly_update'='35% read / 65% update',

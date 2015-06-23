@@ -9,9 +9,10 @@ d1 <- d[1,]
 l1 <- as.list(fromJSON(jsfix(d1$server_bid_time_hist)))
 df1 <- data.frame(x=num(names(l1))+0.02, y=vals(l1))
 df1 <- df1[order(df1$x),]
+df1v <- as.vector(rep(df1$x,  df1$y))
 
 save(
-  ggplot(data.frame(x=as.vector(rep(df1$x,  df1$y))), aes(x=x))+
+  ggplot(data.frame(x=df1v, aes(x=x))+
     # geom_histogram(binwidth=0.02, fill=c.blue)+
     stat_ecdf(color=c.blue)+
     # geom_line()+

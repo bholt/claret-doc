@@ -40,10 +40,13 @@ json_to_hist <- function(str,...) {
 #   cat(bid_time_hist(r))
 # }
 
-d <- data.rubis(where="duration = 60 and name like 'v0.21%' and nclients = 4 and nthreads = 32 and rate = 100")
+d <- data.rubis(where="duration = 30 and name like 'v0.22.1%' and nclients = 4 and nthreads = 64 and rate = 50")
 d1 <- d[1,]
 l1 <- as.list(fromJSON(jsfix(d1$server_bid_time_hist)))
 df1 <- data.frame(x=num(names(l1)), y=vals(l1))
+df1 <- df1[order(df1$x),]
+df1v <- as.vector(rep(df1$x,  df1$y))
+
 save(
   ggplot(df1, aes(x=x,weight=y))+
     geom_histogram(binwidth=0.02, fill=c.blue)+
@@ -65,7 +68,7 @@ save(
 # d$x <- d$rate * d$nthreads * num(d$nclients)
 # odir <- 'plot/rubis/rates'
 
-d <- data.rubis(where="duration = 60 and name like 'v0.21%'")
+d <- data.rubis(where="duration = 30 and name like 'v0.22%' and nclients = 4")
 d$x <- d$nthreads * num(d$nclients)
 d$label <- d$nthreads * num(d$nclients) + "x" + d$rate
 odir <- 'plot/rubis/threads'
@@ -99,12 +102,27 @@ save(
   ))+
   geom_point()+
   stat_summary(geom='line', fun.y=mean)+
-  expand_limits(y=0)+
+  expand_limits(y=0, x=0)+
   facet_wrap(~facet, scales="free")+
   cc_scales()+
   my_theme()+theme(legend.position='bottom')
 , name=odir+'/rubis_retries', w=5, h=4)
 
+save(
+  ggplot(subset(d), aes(
+    x = x,
+    y = combined_adds,
+    group = cc,
+    fill = cc,
+    color = cc,
+  ))+
+  geom_point()+
+  stat_summary(geom='line', fun.y=mean)+
+  expand_limits(y=0, x=0)+
+  facet_wrap(~facet, scales="free")+
+  cc_scales()+
+  my_theme()+theme(legend.position='bottom')
+, name=odir+'/rubis_combining', w=5, h=4)
 
 save(
   ggplot(subset(d), aes(
@@ -118,7 +136,7 @@ save(
   # geom_point()+
   geom_text(aes(label=label), size=1.7)+
   geom_mean_path(d, throughput, avg_latency_ms, .(cc,x,facet))+
-  expand_limits(y=0)+
+  expand_limits(y=0, x=0)+
   facet_wrap(~facet, scales="free")+
   cc_scales()+
   my_theme()+theme(legend.position='bottom')
