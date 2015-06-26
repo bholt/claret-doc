@@ -27,11 +27,15 @@ Logo: False
 
 ~Fig: page-align=top label='Figure\ [@fig]{.figure-label}' replace='&source;&nl;&nl;[[**&label;.** ]{.caption-before}&caption;]{.figure-caption html-elem=fig-caption}&nl;{notag}&nl;'
 
-~Listing: page-align=top label='Listing [@listing]{.figure-label}' replace='&source;&nl;&nl;[[**&label;.** ]{.caption-before}&caption;]{.figure-caption html-elem=listing-caption}&nl;{notag}&nl;'
+~Listing: page-align=top label='Listing\ [@listing]{.figure-label}' replace='&source;&nl;&nl;[[**&label;.** ]{.caption-before}&caption;]{.figure-caption html-elem=fig-caption}&nl;{notag}&nl;'
 
 
 ~ TexRaw
 \cssClassRuleDo{fig}{%
+  \cssDoBefore{\begin{figure}[t]}%
+     \cssDoAfter{\end{figure}}%
+}
+\cssClassRuleDo{listing}{%
   \cssDoBefore{\begin{figure}[t]}%
      \cssDoAfter{\end{figure}}%
 }
