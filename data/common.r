@@ -37,13 +37,17 @@ db <- function(query, factors=c(), numeric=c()) {
     d$cc <- factor(revalue(x(d$ccmode,d$combining), c(
       'rw#0'=RW,
       'simple#0'=COMM,
-      'simple#1'=COMB
+      'simple#1'=COMB,
+      'rw#NA'=RW,
+      'simple#NA'=COMM
     )), levels=c(RW,COMM,COMB))
     
     d$cca <- factor(revalue(x(d$ccmode,d$combining), c(
       'rw#0'='rw',
       'simple#0'='bo',
-      'simple#1'='cb'
+      'simple#1'='cb',
+      'rw#NA'='rw',
+      'simple#NA'='bo'
     )), levels=c('rw','bo','cb'))
     
   } else if ( 'ccmode' %in% colnames(d) ) {

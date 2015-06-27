@@ -25,7 +25,7 @@ save(
   geom_point()+
   stat_summary(geom='line', fun.y=mean)+
   expand_limits(y=0)+
-  facet_wrap(~facet, scales="free")+
+  facet_wrap(~facet)+ #, scales="free")+
   cc_scales()+
   my_theme()+theme(legend.position='bottom')
 , name='plot/raw_explore', w=8, h=7)
