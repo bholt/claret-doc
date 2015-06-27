@@ -30,7 +30,7 @@ class AbstractLock {
   // remove ops from tracking when transaction commits
   bool release(TransactionID tid);
   
-  // [optional] typical way of tracking who holds the lock
+  // [typical] track who currently holds the lock
   set<TransactionID> holders;
 };
 ```
