@@ -37,7 +37,7 @@ Luckily, high-contention situations often share other, more useful, properties l
 
 Modeling the power law properties described above, we generated a new RUBiS workload that is more indicative of real-world auctions. With this simulation, we can measure all of the conflicts that would occur between auction transactions under this workload when executed naively. Using techniques which will be described in the rest of this paper, we found which transactions actually commute with one another, and measured those as well. [#auction-conflicts] shows the results of this simulation for four of the most important transaction types. We can see that the bid-to-bid conflicts are the most significant, but commutativity completely eliminates them.
 
-~ Fig { #auction-conflicts caption="Conflicts between 4 important auction transactions, without/with commutativity. The majority of conflicts (between bids) are completely eliminated by recognizing that they commute with one another. [todo: find better way to show this that doesn't look like comm. makes some things worse...]" }
+~ Fig { #auction-conflicts caption="Conflicts between 4 important auction transactions, without/with commutativity. The majority of conflicts (between bids) are completely eliminated by recognizing that they commute with one another. [todo: collect numbers for *potential/theoretical* conflicts, not actual]" }
 <!-- ![Auction conflicts](fig/rubis-conflicts.pdf){.onecol} -->
 |              | OpenAuction   | PlaceBid    |  BrowseItems  |  CloseAuction  |
 |:---------------+:-----------:|:-----------:|:-------------:|:--------------:|
