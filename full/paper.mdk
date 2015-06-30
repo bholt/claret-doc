@@ -17,8 +17,8 @@ Logo: False
 
 ~P,~Span: replace="/\[(?:TODO|todo):\s*(.*?)\]/[\1]{#todo}/g"
 
-~Pre, ~Code: tex-font-family="Inconsolata" tex-font-size=medium
-~Pre: tex-font-size=small
+~Pre, ~Code: tex-font-family="SourceCodePro-Light" tex-font-size=small
+~Pre: tex-font-size=x-small
 
 
 ~H1: label='[§@h1]{.heading-label}' replace="/§//"
