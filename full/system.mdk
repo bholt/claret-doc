@@ -9,7 +9,7 @@ We assume same-datacenter latency and bandwidth between hosts (i.e. not geo-repl
 
 Despite having far more actual operations than traditional put/get key value stores, Claret's programming model is still quite straightforward. For those familiar with Redis, we adopt a very similar model. Each ADT has a number of operations available on it. Each record has a type, determined by a tag associated with its key so invalid operations are prevented on the client. The particular client bindings are irrelevant to this work — in code examples we use Python-like syntax and make the `client` argument implicit.
 
-## ConsistencyModel
+## Consistency Model
 
 Rather than relying on weaker consistency models, Claret aims to leverage high-level semantics to make strong consistency practical. Instead of guarding actions in case of inconsistency, application programmers instead focus on which ADTs expose more concurrency, or shrinking the scope of transactions.
 
