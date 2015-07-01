@@ -1,15 +1,15 @@
-# System Model
+# System model
 
 Our Claret prototype is designed with a particular system model in mind, though the concept of an ADT-store could be applied similarly in other situations. At the highest level, our model consists of a number of datastore servers, arranged in a typical in-memory key-value store design: records are sharded among instances of the datastore running on different hosts (nodes or cores) by key using a static consistent hash function.
 We assume same-datacenter latency and bandwidth between hosts (i.e. not geo-replicated).
 
 *Clients* in our system are front-end application servers or backend proxy services which will likely be mediating large numbers of concurrent end-user requests. These should be thought of as having same-datacenter latency and bandwidth as well. End-users, submitting requests via typical web or mobile APIs, would need to see none of the changes we make.
 
-## Programming Model
+## Programming model
 
 Despite having far more actual operations than traditional put/get key value stores, Claret's programming model is still quite straightforward. For those familiar with Redis, we adopt a very similar model. Each ADT has a number of operations available on it. Each record has a type, determined by a tag associated with its key so invalid operations are prevented on the client. The particular client bindings are irrelevant to this work — in code examples we use Python-like syntax and make the `client` argument implicit.
 
-## Consistency Model
+## Consistency model
 
 Rather than relying on weaker consistency models, Claret aims to leverage high-level semantics to make strong consistency practical. Instead of guarding actions in case of inconsistency, application programmers instead focus on which ADTs expose more concurrency, or shrinking the scope of transactions.
 

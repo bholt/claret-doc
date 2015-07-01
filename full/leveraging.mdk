@@ -1,4 +1,4 @@
-# Leveraging Data Types
+# Leveraging data types
 
 At the application level, actions like `PlaceBid` may obviously commute with one another, but once these actions have been broken down into individual `put` and `get` operations, that knowledge is lost. The datastore no longer has any way to see that which reorderings are allowable, so adding multiple items to a `Set`, for instance, just looks like a series of writes with some implicit order. We need some way to communicate these higher-level properties about the application to the storage and execution system.
 
@@ -30,7 +30,7 @@ def transactionPlaceBid_C(item, bidder, price):
 
 Considering that we know the abstract semantics of operations on data types, how can we leverage them specifically in datastores? The next few sections will describe some existing techniques which can be applied to ADT-aware datastores.
 
-## Transaction Boosting
+## Transaction boosting
 
 To ensure serializability, executing transactions requires some form of concurrency control. A common approach is two-phase-locking (2PL), where a transaction must acquire locks on all the records it is accessing before performing any irreversible changes. Typically these locks are reader/writer locks, so multiple read operations can be executed concurrently in different transactions. This means that transactions need not abort if they are reading a record already being read by other transactions, but writes cause transactions to abort. This behavior is the same with optimistic concurrency control.
 
@@ -38,7 +38,7 @@ To ensure serializability, executing transactions requires some form of concurre
 
 If we can express the *commutativity* of our ADT operations to the concurrency control system via abstract locks, then it could avoid aborting many more transactions, especially on highly contended records. This idea of raising the level of reasoning to higher-level ADT operations is known as *transaction boosting* [@Herlihy:PPoPP08] in the transactional memory community.
 
-## Operation Combining
+## Combining
 
 Another useful property on operations is *associativity*. If we think of *commutativity*, used in boosting above, as allowing operations to be executed in a different order on a given record, then *associativity* allows us to merge some of those operations together *before* applying them to the record. This technique, known as *combining* [@flatCombining; @yew:combining-trees; @funnels] can drastically reduce contention on shared data structures and improve performance in situations where applying the combined operation is cheaper than applying the operations one-by-one. In distributed settings this is very often the case [@flat-combining-pgas13], especially when it allows eliminating a round-trip from the client to the datastore.
 
