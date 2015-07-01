@@ -5,12 +5,17 @@ We assume same-datacenter latency and bandwidth between hosts (i.e. not geo-repl
 
 *Clients* in our system are front-end application servers or backend proxy services which will likely be mediating large numbers of concurrent end-user requests. These should be thought of as having same-datacenter latency and bandwidth as well. End-users, submitting requests via typical web or mobile APIs, would need to see none of the changes we make.
 
-## Consistency Model
+## Programming Model
+
+Despite having far more actual operations than traditional put/get key value stores, Claret's programming model is still quite straightforward. For those familiar with Redis, we adopt a very similar model. Each ADT has a number of operations available on it. Each record has a type, determined by a tag associated with its key so invalid operations are prevented on the client. The particular client bindings are irrelevant to this work — in code examples we use Python-like syntax and make the `client` argument implicit.
+
+## ConsistencyModel
+
 Rather than relying on weaker consistency models, Claret aims to leverage high-level semantics to make strong consistency practical. Instead of guarding actions in case of inconsistency, application programmers instead focus on which ADTs expose more concurrency, or shrinking the scope of transactions.
 
 Individual operations are strictly linearizable, committing atomically on the shard that owns the record. Atomicity is determined by the granularity of individual ADT operations, a single ADT record, including containers, is conceptually a single object living on one shard (though it need not be implemented in exactly that way). If an application developer desires, any amount of complex application logic can be performed in an operation on a custom ADT. In practice, complex application state and actions are composed from more general data structures with transactions.
 
 ## Transactions
 
-Claret implements full distributed transactions with strong isolation guarantees.
+Claret implements full distributed transactions with strong isolation guarantees. 
 

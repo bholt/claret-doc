@@ -8,21 +8,21 @@ Reasoning at the level of ADTs is good for programmers and datastores alike. Hig
 
 General transactions allow ADT operations to be composed to perform more complex actions. The level of complexity of the data types is up to the programmer and can affect performance. Consider three implementations shown in [#placebid]. The first, using generic records, is correct but doesn't expose commutativity. The second and third ones express commutativity, but the third uses a custom `Auction` data type, while the second uses a standard Redis-style `SortedSet` ADT, whose `add` operations naturally commute. In this case, these last two should have roughly the same `PlaceBid` performance, but in other cases a single built-in data type is not sufficient, but may still express significant concurrency.
 
-~ Listing { #placebid caption="Three different pseudocode implementations of `PlaceBid`, showing various levels of ADT complexity. [todo: what's a good standard datastore interface to use to write these kinds of operations? maybe look at Redis bindings?]" }
+~ Listing { #placebid caption="Three different pseudocode implementations of `PlaceBid`, showing various levels of ADT complexity. [todo: are these (made-up) bindings intuitive?]" }
 ```python
-# Generic records: not expressing commutativity
+# Generic records: not commutative
 def transactionPlaceBid_A(item, bidder, price):
-  UserBids(bidder+":"+item).put(item)
-  if price > MaxBid(item).get():
-    MaxBid(item).put(price)
-    MaxBidder(item).put(bidder)
+  Record('UserBid:'+bidder+item).put(item)
+  if price > Record('MaxBid:'+item).get():
+    Record('MaxBid:'+item).put(price)
+    Record('MaxBidder:'+item).put(bidder)
 
-# SortedSet: expresses commutativity, generally reusable
+# Built-in ADTs: expresses commutativity, reusable
 def transactionPlaceBid_B(item, bidder, price):
-  ItemBids(item).add((price, bidder)) # SortedSet
-  UserBids(bidder).add(item)        # Set
+  SortedSet('ItemBid:'+item).add(price, bidder)
+  Set('UserBid:'+bidder).add(item)
 
-# Custom Auction ADT: commutative, but app-specific
+# Custom ADT: maximum expressivity, app-specific
 def transactionPlaceBid_C(item, bidder, price):
   Auction(item).placeBid(price, bidder)
 ```
