@@ -10,9 +10,16 @@ suppressPackageStartupMessages(require(grid))
 suppressPackageStartupMessages(require(plyr))
 suppressPackageStartupMessages(require(yaml))
 
+library('sitools')
+
+fmt.label <- function(...) { function(x) gsub(" ", "", f2si(x,...)) }
+
 COMB <- "combining"
 COMM <- "boosting"
-RW <- "baseline"
+RW   <- "baseline"
+PH   <- "phasing"
+ALL  <- "all"
+COMM_PH <- "boosting\n+\nphasing"
 
 parse.args <- function() {
   options <- commandArgs(trailingOnly=TRUE)
@@ -32,6 +39,10 @@ db <- function(query, factors=c(), numeric=c()) {
   d[factors] <- lapply(d[factors], factor)
   d[numeric] <- lapply(d[numeric], as.numeric)
   
+  if ('phasing' %in% colnames(d)) {
+    d$phase <- factor(revalue(factor(d$phasing), c('0'='no','1'='yes')))
+  }
+  
   if ( 'combining' %in% colnames(d) ) {
     
     d$cc <- factor(revalue(x(d$ccmode,d$combining), c(
@@ -49,6 +60,15 @@ db <- function(query, factors=c(), numeric=c()) {
       'rw#NA'='rw',
       'simple#NA'='bo'
     )), levels=c('rw','bo','cb'))
+    
+    if ('phasing' %in% colnames(d)) {
+      d$cc_ph <- factor(revalue(x(d$ccmode,d$combining,d$phasing), c(
+        'rw#0#0'=RW,
+        'simple#0#0'=COMM,
+        'simple#1#0'=COMB,
+        'simple#1#1'=PH
+      )), levels=c(RW,COMM,COMB,PH))
+    }
     
   } else if ( 'ccmode' %in% colnames(d) ) {
 
@@ -183,12 +203,21 @@ my_palette <- c(
   'none'=c.gray  
 )
 
-my_palette[[RW]] <- c.yellow
+my_palette[[RW]]   <- c.gray
 my_palette[[COMM]] <- c.blue
 my_palette[[COMB]] <- c.green
+my_palette[[PH]]   <- c.pink
+my_palette[[ALL]]  <- c.yellow
 
 # The palette with grey:
 cbPalette <- c("#0072B2", "#E69F00", "#009E73", "#D55E00", "#CC79A7", "#56B4E9", "#F0E442", "#999999")
+
+color_scales <- function(title, palette)
+  list(
+    scale_fill_manual(values=palette, name=title),
+    scale_color_manual(values=palette, name=title)
+  )
+
 
 my_colors <- function(title="") list(
   scale_fill_manual(values=my_palette, name=title),
@@ -206,6 +235,8 @@ cc_scales <- function(field=cc, title="Concurrency control:") {
     scale_linetype_manual(name=title, values=linetype_map)
   )
 }
+
+phase.linetype <- function() scale_linetype_manual(name='Phasing', values=c('yes'=1, 'no'=2))
 
 my_theme <- function() theme(
   panel.background = element_rect(fill="white"),

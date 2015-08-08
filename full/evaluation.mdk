@@ -2,6 +2,10 @@
 
 ## Raw Operation Mix
 
+~ Fig { #plot-zipf caption="Peak throughput with varying workload skew. Higher zipfian results in greater contention; abstract locks, used in boosting and phasing, perform better. Phasing alone is ineffetual." }
+![Varying zipfian](plots/rawmix-zipf.pdf){ .onecol }
+~
+
 ### Boosting
 
 ### Phasing
