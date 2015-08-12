@@ -68,7 +68,7 @@ json_to_hist <- function(str,...) {
 # d$x <- d$rate * d$nthreads * num(d$nclients)
 # odir <- 'plot/rubis/rates'
 
-d <- data.rubis(where="duration = 30 and name like 'v0.23%' and nthreads < 96")
+d <- data.rubis(where="duration = 30 and name like 'v0.24%'")
 d$x <- d$nthreads * num(d$nclients)
 d$label <- d$nthreads * num(d$nclients) + "@" + d$rate + "#" + d$phasing
 odir <- 'plot/rubis/threads'
@@ -78,16 +78,17 @@ d$facet <- with(d, state+" (z:"+alpha+") | "+mix )
 save(
   ggplot(subset(d), aes(
     x = x,
-    y = throughput,
-    group = cc,
+    y = txn_failed,
+    group = x(cc,phasing),
     fill = cc,
     color = cc,
+    linetype = phasing
   ))+
   geom_point()+
   stat_summary(geom='line', fun.y=mean)+
   expand_limits(y=0)+
   facet_wrap(~facet, scales="free")+
-  cc_scales()+
+  cc_scales()+phasing.linetype()+
   my_theme()+theme(legend.position='bottom')
 , name=odir+'/rubis_explore', w=5, h=4)
 
@@ -95,93 +96,94 @@ save(
   ggplot(subset(d), aes(
     x = x,
     y = txn_retries / txn_count,
-    group = cc,
+    group = x(cc,phasing),
     fill = cc,
     color = cc,
+    linetype = phasing
   ))+
   geom_point()+
   stat_summary(geom='line', fun.y=mean)+
   expand_limits(y=0, x=0)+
   facet_wrap(~facet, scales="free")+
-  cc_scales()+
+  cc_scales()+phasing.linetype()+
   my_theme()+theme(legend.position='bottom')
 , name=odir+'/rubis_retries', w=5, h=4)
 
-save(
-  ggplot(subset(d), aes(
-    x = x,
-    y = combined_adds,
-    group = cc,
-    fill = cc,
-    color = cc,
-  ))+
-  geom_point()+
-  stat_summary(geom='line', fun.y=mean)+
-  expand_limits(y=0, x=0)+
-  facet_wrap(~facet, scales="free")+
-  cc_scales()+
-  my_theme()+theme(legend.position='bottom')
-, name=odir+'/rubis_combining', w=5, h=4)
+# save(
+#   ggplot(subset(d), aes(
+#     x = x,
+#     y = combined_adds,
+#     group = cc,
+#     fill = cc,
+#     color = cc,
+#   ))+
+#   geom_point()+
+#   stat_summary(geom='line', fun.y=mean)+
+#   expand_limits(y=0, x=0)+
+#   facet_wrap(~facet, scales="free")+
+#   cc_scales()+
+#   my_theme()+theme(legend.position='bottom')
+# , name=odir+'/rubis_combining', w=5, h=4)
 
 save(
   ggplot(subset(d, combining == 0), aes(
     x = throughput,
     y = avg_latency_ms,
-    group = x(cc,phase),
+    group = x(cc,phasing),
     fill = cc,
     color = cc,
-    linetype = phase,
+    linetype = phasing,
   ))+
   xlab('Throughput (txns/sec)')+ylab('Mean latency (ms)')+
   # geom_point()+
   geom_text(aes(label=label), size=1.7)+
-  geom_mean_path(subset(d, combining == 0), throughput, avg_latency_ms, .(cc,x,facet,phase))+
+  geom_mean_path(subset(d, combining == 0), throughput, avg_latency_ms, .(cc,x,facet,phasing))+
   expand_limits(y=0, x=0)+
   facet_wrap(~facet, scales="free")+
   cc_scales()+
-  phase.linetype()+
+  phasing.linetype()+
   my_theme()+theme(legend.position='bottom')
 , name=odir+'/rubis_tput_v_lat', w=8, h=7)
 
-dm <- melt(d, measure=p('rubis_',txns,'_avg_latency_ms'))
-dm$latency_ms <- dm$value
-dm$txn <- unlist(lapply(dm$variable, function(s) gsub('rubis_(.*)_avg_latency_ms','\\1', s)))
-dm$facet <- dm$txn
-save(
-  ggplot(dm, aes(
-    x = throughput,
-    y = latency_ms,
-    group = cc,
-    fill = cc,
-    color = cc,
-    shape = cc,
-  ))+
-  xlab('Throughput (txns/sec)')+ylab('Mean latency (ms)')+
-  geom_point()+
-  geom_mean_path(dm, throughput, latency_ms, .(cc,x,facet))+
-  expand_limits(y=0)+
-  facet_wrap(~facet, ncol=4)+
-  cc_scales()+
-  theme(legend.position='bottom')+
-  my_theme()
-, name=odir+'/rubis_tput_v_lat_breakdown', w=10, h=8)
-
-dm <- melt(d, measure=p('rubis_',txns,'_retries'))
-dm$txn <- unlist(lapply(dm$variable, function(s) gsub('rubis_(.*)_retries','\\1', s)))
-dm$retries <- dm$value
-save(
-  ggplot(dm, aes(
-    x = x,
-    y = retries,
-    group = txn,
-    fill = txn,
-    color = txn,
-  ))+
-  geom_point()+
-  stat_summary(geom='line', fun.y=mean)+
-  expand_limits(y=0)+
-  facet_wrap(~cc, scales="free")+
-  # cc_scales()+
-  my_theme()+theme(legend.position='bottom')
-, name=odir+'/rubis_retries_breakdown', w=8, h=7)
-
+# dm <- melt(d, measure=p('rubis_',txns,'_avg_latency_ms'))
+# dm$latency_ms <- dm$value
+# dm$txn <- unlist(lapply(dm$variable, function(s) gsub('rubis_(.*)_avg_latency_ms','\\1', s)))
+# dm$facet <- dm$txn
+# save(
+#   ggplot(dm, aes(
+#     x = throughput,
+#     y = latency_ms,
+#     group = cc,
+#     fill = cc,
+#     color = cc,
+#     shape = cc,
+#   ))+
+#   xlab('Throughput (txns/sec)')+ylab('Mean latency (ms)')+
+#   geom_point()+
+#   geom_mean_path(dm, throughput, latency_ms, .(cc,x,facet))+
+#   expand_limits(y=0)+
+#   facet_wrap(~facet, ncol=4)+
+#   cc_scales()+
+#   theme(legend.position='bottom')+
+#   my_theme()
+# , name=odir+'/rubis_tput_v_lat_breakdown', w=10, h=8)
+#
+# dm <- melt(d, measure=p('rubis_',txns,'_retries'))
+# dm$txn <- unlist(lapply(dm$variable, function(s) gsub('rubis_(.*)_retries','\\1', s)))
+# dm$retries <- dm$value
+# save(
+#   ggplot(dm, aes(
+#     x = x,
+#     y = retries,
+#     group = txn,
+#     fill = txn,
+#     color = txn,
+#   ))+
+#   geom_point()+
+#   stat_summary(geom='line', fun.y=mean)+
+#   expand_limits(y=0)+
+#   facet_wrap(~cc, scales="free")+
+#   # cc_scales()+
+#   my_theme()+theme(legend.position='bottom')
+# , name=odir+'/rubis_retries_breakdown', w=8, h=7)
+#

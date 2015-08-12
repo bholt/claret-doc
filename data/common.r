@@ -12,7 +12,7 @@ suppressPackageStartupMessages(require(yaml))
 
 library('sitools')
 
-fmt.label <- function(...) { function(x) gsub(" ", "", f2si(x,...)) }
+si.labels <- function(...) { function(x) gsub(" ", "", f2si(x,...)) }
 
 COMB <- "combining"
 COMM <- "boosting"
@@ -40,7 +40,7 @@ db <- function(query, factors=c(), numeric=c()) {
   d[numeric] <- lapply(d[numeric], as.numeric)
   
   if ('phasing' %in% colnames(d)) {
-    d$phase <- factor(revalue(factor(d$phasing), c('0'='no','1'='yes')))
+    d$phasing <- factor(revalue(factor(d$phasing), c('0'='no','1'='yes')))
   }
   
   if ( 'combining' %in% colnames(d) ) {
@@ -218,6 +218,12 @@ color_scales <- function(title, palette)
     scale_color_manual(values=palette, name=title)
   )
 
+legend.bottom <- function() theme(
+    legend.position='bottom',
+    legend.margin=unit(0,'pt'),
+    legend.box='horizontal',
+    legend.title.align=1
+  )
 
 my_colors <- function(title="") list(
   scale_fill_manual(values=my_palette, name=title),
@@ -236,7 +242,8 @@ cc_scales <- function(field=cc, title="Concurrency control:") {
   )
 }
 
-phase.linetype <- function() scale_linetype_manual(name='Phasing', values=c('yes'=1, 'no'=2))
+phasing.linetype <- function(title="Phasing:")
+  scale_linetype_manual(name=title, values=c('yes'=2, 'no'=1))
 
 my_theme <- function() theme(
   panel.background = element_rect(fill="white"),

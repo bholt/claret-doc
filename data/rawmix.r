@@ -14,7 +14,7 @@ d$facet <- with(d, "zipf:"+alpha+", keys:"+nkeys+"\n"+num(commute_ratio)*100+"% 
 d <- subset(d, rate == 100); d$x <- d$nthreads
 # d <- subset(d, nthreads == 32); d$x <- d$rate
 
-d$grp <- x(d$cc,d$phase)
+d$grp <- x(d$cc,d$phasing)
 
 d$label <- d$nthreads + "/" + d$rate
 
@@ -22,7 +22,7 @@ save(
   ggplot(d, aes(
     x = x,
     y = throughput,
-    linetype = phase,
+    linetype = phasing,
     group = grp,
     fill = cc,
     color = cc,
@@ -32,7 +32,7 @@ save(
   expand_limits(y=0)+
   facet_wrap(~facet)+ #, scales="free")+
   cc_scales()+
-  phase.linetype()+
+  phasing.linetype()+
   my_theme()+theme(legend.position='bottom')
 , name='plot/raw_explore', w=8, h=7)
 
@@ -40,7 +40,7 @@ save(
   ggplot(d, aes(
     x = throughput,
     y = avg_latency_ms,
-    linetype = phase,
+    linetype = phasing,
     group = grp,
     fill = cc,
     color = cc,
@@ -49,11 +49,11 @@ save(
   # geom_point()+
   # geom_text(aes(label=label), size=1.7)+
   geom_point()+
-  geom_mean_path(d, throughput, avg_latency_ms, .(grp,x,facet,phase,cc))+
+  geom_mean_path(d, throughput, avg_latency_ms, .(grp,x,facet,phasing,cc))+
   expand_limits(y=0)+
   coord_cartesian(ylim=c(0,25))+
   facet_wrap(~facet)+ #, scales="free")+
   cc_scales()+
-  phase.linetype()+
+  phasing.linetype()+
   my_theme()+theme(legend.position='bottom')
 , name='plot/raw_tput_v_lat', w=8, h=7)

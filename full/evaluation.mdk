@@ -2,8 +2,17 @@
 
 ## Raw Operation Mix
 
+~ Fig { #plot-rawmix caption="Performance of raw mix workload (50% read, zipf: 0.8) while increasing number of clients, plotted as throughput versus latency. We can see that boosting and phasing together acheive significantly higher throughput before reaching saturation. [todo: get combining into this plot (if I can make it work)]" }
+![Raw mix throughput versus latency](plots/rawmix-tput-vs-lat.pdf){ .onecol }
+~
+
+
 ~ Fig { #plot-zipf caption="Peak throughput with varying workload skew. Higher zipfian results in greater contention; abstract locks, used in boosting and phasing, perform better. Phasing alone is ineffetual." }
 ![Varying zipfian](plots/rawmix-zipf.pdf){ .onecol }
+~
+
+~ Fig { #plot-mix caption="Peak throughput, varying operation mix. For read-heavy workloads, using commutativity (boosting) is irrelevant, but with a greater fraction of commutative updates, reader/writer locking falls over while boosting maintains high throughput." }
+![Varying mix](plots/rawmix-mix.pdf){ .onecol }
 ~
 
 ### Boosting
