@@ -9,7 +9,10 @@ suppressPackageStartupMessages(library(scales))
 suppressPackageStartupMessages(require(grid))
 suppressPackageStartupMessages(require(plyr))
 suppressPackageStartupMessages(require(yaml))
+suppressPackageStartupMessages(require(extrafont))
 
+library('Unicode')
+library('Cairo')
 library('sitools')
 
 si.labels <- function(...) { function(x) gsub(" ", "", f2si(x,...)) }
@@ -40,7 +43,7 @@ db <- function(query, factors=c(), numeric=c()) {
   d[numeric] <- lapply(d[numeric], as.numeric)
   
   if ('phasing' %in% colnames(d)) {
-    d$phasing <- factor(revalue(factor(d$phasing), c('0'='no','1'='yes')))
+    d$phasing <- factor(revalue(factor(d$phasing), c('0'='off','1'='on')))
   }
   
   if ( 'combining' %in% colnames(d) ) {
@@ -135,7 +138,11 @@ unmarshal <- function(str) fromJSON(gsub("'","\"",str))
 pp <- function(row) cat(as.yaml(row))  
 
 save <- function(g, name=FILE_BASE, file=sprintf("%s/%s.pdf",FILE_DIR,name), w=3.3, h=3.1) {
-  ggsave(plot=g, filename=file, width=w, height=h)
+  
+  ggsave(plot=g, filename=file, width=w, height=h, device=cairo_pdf, family='Open Sans')
+  # cairo_pdf(file='test.pdf', width=w, height=h, family='Helvetica Neue')
+  # g
+  # dev.off()
   print(sprintf("saved: %s", file))
 }
 
@@ -242,10 +249,12 @@ cc_scales <- function(field=cc, title="Concurrency control:") {
   )
 }
 
-phasing.linetype <- function(title="Phasing:") list(
+phasing.linetype <- function(title="Phasing:") {
   # scale_linetype_manual(name=title, values=c('yes'=2, 'no'=1)),
-  scale_linetype_manual(name=title, values=c('yes'=2, 'no'=1))
-)  
+  scale_linetype_manual(name=title, values=c('on'=2, 'off'=1))
+    # labels=c('\u2713','\u2717'))
+    # labels=c(as.u_char('2713'), as.u_char('2717')))
+}
 
 my_theme <- function() theme(
   panel.background = element_rect(fill="white"),

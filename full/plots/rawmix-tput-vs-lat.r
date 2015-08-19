@@ -2,11 +2,19 @@
 source('common.r')
 a <- parse.args()
 
-d <- data.rawmix(where="name like 'v0.23-%' and nclients = 2 and duration = 30 and length = 4")
+d <- data.rawmix(where="name like 'v0.26.1%' and nclients = 2 and duration = 30 and length = 4")
 d$x <- d$nthreads * num(d$nclients)
 d$label <- d$nthreads * num(d$nclients) + "x" + d$rate
 
-d <- subset(d, commute_ratio == 0.5 & alpha == 0.8 & rate == 100 & combining == 0)
+d <- subset(d, commute_ratio == 0.5 & alpha == 0.6 & rate == 100 & combining == 0)
+
+# ✓
+# CHECK MARK
+# Unicode: U+2713, UTF-8: E2 9C 93
+#
+# ✗
+# BALLOT X
+# Unicode: U+2717, UTF-8: E2 9C 97
 
 # d$cc_ph <- factor(revalue(x(d$ccmode,d$combining,d$phasing), c(
 #   'rw#0#no'=RW,
@@ -34,4 +42,4 @@ save(
   # color_scales('', my_palette)+
   phasing.linetype(title='Phasing:')+
   my_theme()+legend.bottom()
-, w=4, h=4)
+, w=4, h=3.5)
