@@ -242,8 +242,10 @@ cc_scales <- function(field=cc, title="Concurrency control:") {
   )
 }
 
-phasing.linetype <- function(title="Phasing:")
+phasing.linetype <- function(title="Phasing:") list(
+  # scale_linetype_manual(name=title, values=c('yes'=2, 'no'=1)),
   scale_linetype_manual(name=title, values=c('yes'=2, 'no'=1))
+)  
 
 my_theme <- function() theme(
   panel.background = element_rect(fill="white"),

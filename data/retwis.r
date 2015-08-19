@@ -1,37 +1,34 @@
 #!/usr/bin/env Rscript
 # DATA.MODE <- 'local'
 source('common.r')
-d <- data.retwis(where="nshards = 4 and nclients = 4 and rate != 0 and rate <= 1000 and nthreads = 32 and duration = 60 and name like '%v0.17%'")
+d <- data.retwis(where="name like 'v0.24%'")
 
 tags <- c('newuser','post','repost','timeline','follow')
 
-sub <- function(d=d) subset(d, mix == 'geom_repost' & is.na(machines))
 
-# save(
-#   ggplot(melt(
-#     sub(d),
-#     measure=c('throughput','avg_latency_ms')
-#   ), aes(
-#     x = rate,
-#     y = value,
-#     group = cc,
-#     fill = cc,
-#     color = cc,
-#     label = rate,
-#   ))+
-#   geom_point()+
-#   # geom_text(size=1.7)+
-#   # stat_summary(aes(label=ntotal), fun.y=mean, geom="text")+
-#   # stat_smooth()+
-#   expand_limits(y=0)+
-#   facet_wrap(~variable, scales="free_y")+
-#   # scale_x_log10(breaks=trans_breaks("log10", function(x) 10^x),
-#   #               labels=trans_format("log10", math_format(10^.x)))+
-#   cc_scales()+
-#   my_theme()
-# , name='plot/retwis', w=10, h=8)
+d$x <- d$nthreads * num(d$nclients)
+d$label <- d$nthreads * num(d$nclients) + "@" + d$rate + "#" + d$phasing
+odir <- 'plot/retwis'
 
-# d$throughput <- d$retwis_txn_count * num(d$nclients) / d$total_time;
+d$facet <- with(d, "scale " + scale + ", " + mix)
+
+save(
+  ggplot(subset(d), aes(
+    x = x,
+    y = throughput,
+    group = x(cc,phasing),
+    fill = cc,
+    color = cc,
+    linetype = phasing
+  ))+
+  geom_point()+
+  stat_summary(geom='line', fun.y=mean)+
+  expand_limits(y=0)+
+  facet_wrap(~facet, scales="free")+
+  cc_scales()+phasing.linetype()+
+  my_theme()+theme(legend.position='bottom')
+, name=odir+'/tput', w=5, h=4)
+
 
 d$client_machines <- factor(d$machines)
 
