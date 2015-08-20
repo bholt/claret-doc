@@ -5,6 +5,9 @@ name := $(shell echo $(rawname) | sed "s/\#/-/")
 
 dest := bicycle:/cse/web/homes/bholt
 
+all:
+	$(MAKE) -C full
+
 deploy:
 	$(MAKE) -C papoc final
 	$(MAKE) -C full final web

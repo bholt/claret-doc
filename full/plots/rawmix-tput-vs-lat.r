@@ -2,19 +2,11 @@
 source('common.r')
 a <- parse.args()
 
-d <- data.rawmix(where="name like 'v0.26.1%' and nclients = 2 and duration = 30 and length = 4")
+d <- data.rawmix(where="name like 'v0.26.1%' and nclients = 4 and duration = 30 and length = 4")
 d$x <- d$nthreads * num(d$nclients)
 d$label <- d$nthreads * num(d$nclients) + "x" + d$rate
 
 d <- subset(d, commute_ratio == 0.5 & alpha == 0.6 & rate == 100 & combining == 0)
-
-# ✓
-# CHECK MARK
-# Unicode: U+2713, UTF-8: E2 9C 93
-#
-# ✗
-# BALLOT X
-# Unicode: U+2717, UTF-8: E2 9C 97
 
 # d$cc_ph <- factor(revalue(x(d$ccmode,d$combining,d$phasing), c(
 #   'rw#0#no'=RW,
@@ -38,8 +30,25 @@ save(
   # geom_point()+
   geom_mean_path(d, throughput, avg_latency_ms, .(x,cc,phasing))+
   expand_limits(y=0)+
+  coord_cartesian(ylim=c(0,10))+
   cc_scales(title='Concurrency\ncontrol:')+
   # color_scales('', my_palette)+
   phasing.linetype(title='Phasing:')+
   my_theme()+legend.bottom()
-, w=4, h=3.5)
+, w=4, h=3)
+
+
+# save(
+#   ggplot(d, aes(
+#     x = x,
+#     y = txns_behind_schedule,
+#     group = x(cc,phasing),
+#     fill = cc, color = cc,
+#     linetype = phasing,
+#   ))+
+#   stat_summary(geom='line', fun.y=mean)+
+#   expand_limits(y=0)+
+#   cc_scales(title='Concurrency\ncontrol:')+
+#   phasing.linetype(title='Phasing:')+
+#   my_theme()+legend.bottom()
+# , 'rawmix-explore', w=4, h=3.5)

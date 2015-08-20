@@ -4,7 +4,7 @@ define graffleFigure
 	pdf2svg $(3) $(SVG)
 endef
 
-all: web-view
+all: pdf-view
 
 SRCS := $(wildcard *.mdk)
 
