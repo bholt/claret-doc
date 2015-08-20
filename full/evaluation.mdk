@@ -26,5 +26,10 @@
 
 ## Retwis
 
+~ Fig { #plot-retwis caption="Throughput vs latency plot on Retwis with a bid-heavy workload modelling the behavior when a topic is trending." }
+![Retwis](plots/retwis-tput-vs-lat.pdf){ .onecol }
+~
+
+
 ## Social Network Benchmark
 (??)
