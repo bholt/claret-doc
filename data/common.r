@@ -17,9 +17,9 @@ library('sitools')
 
 si.labels <- function(...) { function(x) gsub(" ", "", f2si(x,...)) }
 
-COMB <- "combining"
+COMB <- "+combining"
 COMM <- "boosting"
-RW   <- "baseline"
+RW   <- "r/w locks"
 PH   <- "phasing"
 ALL  <- "all"
 COMM_PH <- "boosting\n+\nphasing"
@@ -225,12 +225,15 @@ color_scales <- function(title, palette)
     scale_color_manual(values=palette, name=title)
   )
 
-legend.bottom <- function() theme(
-    legend.position='bottom',
-    legend.margin=unit(0,'pt'),
-    legend.box='horizontal',
-    legend.title.align=1
+legend.bottom <- function() list(
+  theme(
+    legend.position = 'bottom',
+    legend.key.size = unit(14,'pt'),
+    legend.margin = unit(0,'pt'),
+    legend.box = 'horizontal',
+    legend.title.align = 1
   )
+)
 
 my_colors <- function(title="") list(
   scale_fill_manual(values=my_palette, name=title),
@@ -238,20 +241,20 @@ my_colors <- function(title="") list(
   scale_color_manual(values=my_palette, name=title)
 )
 
-cc_scales <- function(field=cc, title="Concurrency control:") {
+cc_scales <- function(title="Concurrency control:", ...) {
   linetype_map <- c()
   linetype_map[[COMM]] <- 1
   linetype_map[[RW]] <- 2
   list(
-    scale_fill_manual(values=my_palette, name=title),
-    scale_color_manual(values=my_palette, name=title),
-    scale_linetype_manual(name=title, values=linetype_map)
+    scale_fill_manual(values=my_palette, name=title, ...),
+    scale_color_manual(values=my_palette, name=title, ...),
+    scale_linetype_manual(name=title, values=linetype_map, ...)
   )
 }
 
-phasing.linetype <- function(title="Phasing:") {
+phasing.linetype <- function(title="Phasing:", ...) {
   # scale_linetype_manual(name=title, values=c('yes'=2, 'no'=1)),
-  scale_linetype_manual(name=title, values=c('on'=2, 'off'=1))
+  scale_linetype_manual(name=title, values=c('on'=2, 'off'=1), ...)
     # labels=c('\u2713','\u2717'))
     # labels=c(as.u_char('2713'), as.u_char('2717')))
 }
