@@ -3,7 +3,7 @@ library('sitools')
 source('common.r')
 a <- parse.args()
 
-d <- data.rawmix(where="name like 'v0.26.1%' and nclients = 4 and duration = 30 and length = 4")
+d <- data.rawmix(where="name like 'v0.27-%' and nclients = 4 and duration = 30 and length = 4")
 d$facet <-  num(d$commute_ratio)*100 + "% update\nzipf: " + d$alpha
 
 d$zipf <- num(d$alpha)
@@ -84,11 +84,11 @@ save(
   scale_x_continuous(breaks=c(0.2,0.4,0.6,0.8,1.0,1.2))+
   scale_y_continuous(labels=si.labels())+
   # facet_wrap(~facet, ncol=6)+ #, scales="free")+
-  cc_scales(title='Concurrency\ncontrol:')+
+  cc_scales(title='Mode:', guide = guide_legend(nrow = 3))+
   # color_scales('', my_palette)+
-  phasing.linetype(title='Phasing:')+
-  my_theme()+legend.bottom()
-, w=4, h=3)
+  phasing.linetype(title='Phasing:', guide = guide_legend(nrow = 2))+
+  my_theme() #+legend.bottom()
+, w=5, h=3)
 
 save(
   ggplot(subset(d.mix.mean, commute_ratio != 0.5), aes(
@@ -107,7 +107,7 @@ save(
   # scale_x_continuous(breaks=c(0.2,0.4,0.6,0.8,1.0,1.2))+
   scale_y_continuous(labels=si.labels())+
   # color_scales('', my_palette)+
-  cc_scales(title='Concurrency\ncontrol:')+
-  phasing.linetype()+
-  my_theme()+legend.bottom()
-, 'rawmix-mix', w=4, h=3)
+  cc_scales(title='Mode:', guide = guide_legend(nrow = 3))+
+  phasing.linetype(guide = guide_legend(nrow = 2))+
+  my_theme() #+legend.bottom()
+, 'rawmix-mix', w=5, h=3)

@@ -30,7 +30,7 @@ save(
   cc_scales()+
   phasing.linetype()+
   my_theme()+theme(legend.position='bottom')
-, w=6, h=4.5)
+, w=6, h=6)
 
 save(
   ggplot(subset(d), aes(
@@ -40,12 +40,12 @@ save(
     fill = cc, color = cc,
     linetype = phasing, shape = phasing
   ))+
-  # geom_point()+
+  geom_point()+
   stat_summary(geom='line', fun.y=mean)+
   expand_limits(y=0)+
   scale_y_continuous(labels=function(x){ x/1000+'k' })+
   facet_wrap(~facet, scales="free")+
   cc_scales()+phasing.linetype()+
   my_theme()+theme(legend.position='bottom')
-, 'retwis-explore', w=5, h=4)
+, 'retwis-explore', w=5, h=6)
 
