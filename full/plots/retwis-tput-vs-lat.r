@@ -2,11 +2,23 @@
 source('common.r')
 a <- parse.args()
 
-d <- data.retwis(where="name like '%v0.26.1%' and nclients = 2")
-d <- subset(d, avg_latency_ms < 50)
+d <- tryCatch(
+  {
+    d <- data.retwis(where="name like '%v0.27%' and nclients = 2")
+    d <- subset(d, avg_latency_ms < 50)
+    write.csv(subset(d, select = c('name', 'nclients', 'nthreads', 'cc', 'rate', 'scale', 'mix', 'alpha', 'phasing', 'timeout_scaling', 'throughput', 'op_timeouts', 'avg_latency_ms')), file = 'retwis-tput-vs-lat.csv')
+    d
+  }, error = function(e) {
+    d <- read.csv(file = 'retwis-tput-vs-lat.csv')
+  }
+)
+
+# d <- subset(d, grepl('v0.27.1', name))
+
 d$x <- d$nthreads * num(d$nclients)
 d$label <- d$nthreads * num(d$nclients) + "x" + d$rate
 d$facet <- with(d, "scale " + scale + ", " + mix)
+
 
 save(
   ggplot(d, aes(
@@ -24,7 +36,7 @@ save(
   # scale_x_continuous(labels=si.labels())+
   scale_x_continuous(labels=function(x){ x/1000+'k' })+
   geom_point()+
-  geom_mean_path(d, throughput, avg_latency_ms, .(x,facet,cc,phasing,cc_ph))+
+  geom_mean_path(d, throughput, avg_latency_ms, .(x,facet,cc,phasing))+
   expand_limits(y=0)+
   facet_wrap(~facet)+ #, scales="free")+
   cc_scales()+
