@@ -3,14 +3,14 @@ library('sitools')
 source('common.r')
 a <- parse.args()
 
-d <- data.rawmix(where="name like 'v0.27-%' and nclients = 4 and duration = 30 and length = 4")
+d <- data.rawmix(where="name like 'v0.27%' and nclients = 4 and duration = 30 and length = 4")
 d$facet <-  num(d$commute_ratio)*100 + "% update\nzipf: " + d$alpha
 
 d$zipf <- num(d$alpha)
 
 # d <- subset(d, nthreads == 32*2); d$x <- d$rate
 
-d$label <- d$nthreads + "@" + d$rate
+d$label <- d$nthreads + "@" + d$rate + " <" + d$op_timeouts + ">"
 
 # PH <- 'phasing\n(R/W locks)'
 BOTH <- 'boosting+phasing'
@@ -25,10 +25,10 @@ BOTH <- 'boosting+phasing'
 # my_palette[[BOTH]] <- c.yellow
 
 d.zipf <- subset(d, nkeys == 1000 & commute_ratio == 0.5)
-d.zipf.mean <- ddply(d.zipf, .(facet,rate,nthreads,cc_ph,zipf,label,phasing,cc), summarize, throughput=mean(throughput))
+d.zipf.mean <- ddply(d.zipf, .(facet,rate,nthreads,cc_ph,zipf,label,phasing,cc,timeout_scaling), summarize, throughput=mean(throughput), op_timeouts=mean(op_timeouts))
 
 d.mix <- subset(d, nkeys == 1000 & zipf == 0.6) # & txn_failed < 1000)
-d.mix.mean <- ddply(d.mix, .(facet,rate,nthreads,cc_ph,zipf,label,commute_ratio,phasing,cc), summarize, throughput=mean(throughput))
+d.mix.mean <- ddply(d.mix, .(facet,rate,nthreads,cc_ph,zipf,label,commute_ratio,phasing,cc,timeout_scaling), summarize, throughput=mean(throughput), op_timeouts=mean(op_timeouts))
 
 # save(
 #   ggplot(d, aes(
@@ -102,9 +102,9 @@ save(
   xlab('Operation mix (% update)')+ylab('Peak throughput (txn/s)')+
   stat_summary(geom='line', fun.y=max)+
   stat_summary(geom='point', fun.y=max)+
-  # geom_text(size=1.2)+
+  # stat_summary(geom='text', fun.y=max, size=1.2)+
   expand_limits(y=0)+
-  # scale_x_continuous(breaks=c(0.2,0.4,0.6,0.8,1.0,1.2))+
+  scale_x_continuous(breaks=c(0.0,0.2,0.4,0.6,0.8,1.0))+
   scale_y_continuous(labels=si.labels())+
   # color_scales('', my_palette)+
   cc_scales(title='Mode:', guide = guide_legend(nrow = 3))+

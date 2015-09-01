@@ -33,12 +33,12 @@ save(
   # geom_point()+
   geom_mean_path(d, throughput, avg_latency_ms, .(x,cc,phasing))+
   expand_limits(y=0)+
-  coord_cartesian(ylim=c(0,10))+
+  coord_cartesian(ylim=c(0,15))+
   cc_scales(title='Mode:', guide = g.cc)+
   # color_scales('', my_palette)+
   phasing.linetype(title='Phasing:', guide = g.phasing)+
   my_theme() #+legend.bottom()
-, w=4, h=3)
+, w=5, h=3)
 
 
 # save(
