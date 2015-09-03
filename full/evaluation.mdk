@@ -25,10 +25,14 @@
 
 ## Retwis
 
-~ Fig { #plot-retwis caption="Throughput vs latency plot on Retwis with a bid-heavy workload modelling the behavior when a topic is trending." }
+~ Fig { #plot-retwis caption="[todo: v1 (w/ async opt.)] Throughput vs latency plot of Retwis. While mostly reading, performance is fine, but during high-contention events (*repost-heavy* workload), boosting and especially phasing are effective for keeping throughput up." }
 ![Retwis](plots/retwis-tput-vs-lat.pdf){ .onecol }
 ~
 
+
+~ Fig { #plot-retwis-no-async caption="[todo: v2 (no async opt.)] Throughput vs latency plot of Retwis. Even for steady-state read-heavy workload, boosting and combining are essential for acheiving good throughput. Data points with exceedingly high failure rate are left out (almost all non-phasing)." }
+![Retwis](plots/retwis-tput-vs-lat-no-async.pdf){ .onecol }
+~
 
 ## Social Network Benchmark
 (??)

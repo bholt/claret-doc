@@ -43,9 +43,7 @@ save(
   ggplot(d.zipf.mean, aes(
     x = zipf,
     y = throughput,
-    group = x(cc,phasing),
-    fill = cc, color = cc,
-    linetype = phasing,
+    group = cc_ph, fill = cc_ph, color = cc_ph, linetype = cc_ph,
     label = label
   ))+
   xlab('Zipfian parameter')+ylab('Peak throughput (txn/s)')+
@@ -56,9 +54,10 @@ save(
   scale_x_continuous(breaks=c(0.2,0.4,0.6,0.8,1.0,1.2))+
   scale_y_continuous(labels=si.labels())+
   # facet_wrap(~facet, ncol=6)+ #, scales="free")+
-  cc_scales(title='Mode:', guide = guide_legend(nrow = 3))+
+  # cc_scales(title='Mode:', guide = guide_legend(nrow = 3))+
   # color_scales('', my_palette)+
-  phasing.linetype(title='Phasing:', guide = guide_legend(nrow = 2))+
+  # phasing.linetype(title='Phasing:', guide = guide_legend(nrow = 2))+
+  cc_ph_scales()+
   my_theme() #+legend.bottom()
 , w=5, h=3)
 
@@ -66,9 +65,7 @@ save(
   ggplot(subset(d.mix.mean, commute_ratio != 0.5), aes(
     x = num(commute_ratio),
     y = throughput,
-    group = x(cc,phasing),
-    fill = cc, color = cc,
-    linetype = phasing,
+    group = cc_ph, fill = cc_ph, color = cc_ph, linetype = cc_ph,
     label = label
   ))+
   xlab('Operation mix (% update)')+ylab('Peak throughput (txn/s)')+
@@ -79,7 +76,8 @@ save(
   scale_x_continuous(breaks=c(0.0,0.2,0.4,0.6,0.8,1.0))+
   scale_y_continuous(labels=si.labels())+
   # color_scales('', my_palette)+
-  cc_scales(title='Mode:', guide = guide_legend(nrow = 3))+
-  phasing.linetype(guide = guide_legend(nrow = 2))+
+  # cc_scales(title='Mode:', guide = guide_legend(nrow = 3))+
+  # phasing.linetype(guide = guide_legend(nrow = 2))+
+  cc_ph_scales()+
   my_theme() #+legend.bottom()
 , 'rawmix-mix', w=5, h=3)

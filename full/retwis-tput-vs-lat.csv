@@ -1,0 +1,787 @@
+"","name","nclients","nthreads","cc","rate","scale","mix","alpha","phasing","cc_ph","timeout_scaling","throughput","op_timeouts","avg_latency_ms"
+"174","v0.27.3-sampa","2",4,"r/w locks",50,"16","read_heavy","-1","off","r/w locks",1000,1945.93009500388,0,1.28648195081855
+"175","v0.27.3-sampa","2",4,"boosting",50,"16","read_heavy","-1","off","boosting",1000,1952.64980816358,0,1.29459081291379
+"176","v0.27.3-sampa","2",4,"r/w locks",50,"16","read_heavy","-1","on","r/w locks
+ + phasing",1000,1953.23420384023,0,1.22040123509442
+"177","v0.27.3-sampa","2",4,"boosting",50,"16","read_heavy","-1","on","boosting
+ + phasing",1000,1931.10410683228,0,1.20308839006884
+"180","v0.27.3-sampa","2",4,"boosting
+ + combining",50,"16","read_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,1924.71351884495,0,1.2380198054084
+"185","v0.27.3-sampa","2",8,"r/w locks",50,"16","read_heavy","-1","off","r/w locks",1000,4026.34446403044,0,1.14290206983307
+"186","v0.27.3-sampa","2",8,"boosting",50,"16","read_heavy","-1","off","boosting",1000,4066.37414333643,0,1.14852807432958
+"187","v0.27.3-sampa","2",8,"r/w locks",50,"16","read_heavy","-1","on","r/w locks
+ + phasing",1000,4050.14445521888,0,1.12556153428444
+"188","v0.27.3-sampa","2",8,"boosting",50,"16","read_heavy","-1","on","boosting
+ + phasing",1000,4105.41433003122,0,1.13778326082722
+"191","v0.27.3-sampa","2",8,"boosting
+ + combining",50,"16","read_heavy","-1","off","boosting
+ + combining",1000,4072.11307778429,0,1.17034751941346
+"192","v0.27.3-sampa","2",8,"boosting
+ + combining",50,"16","read_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,4016.5552817447,0,1.140926400677
+"197","v0.27.3-sampa","2",16,"r/w locks",50,"16","read_heavy","-1","off","r/w locks",1000,8691.44695305095,0,1.07723800068233
+"198","v0.27.3-sampa","2",16,"boosting",50,"16","read_heavy","-1","off","boosting",1000,8621.4490127031,0,1.05897968962532
+"199","v0.27.3-sampa","2",16,"r/w locks",50,"16","read_heavy","-1","on","r/w locks
+ + phasing",1000,8668.30362051101,0,1.06315627642401
+"200","v0.27.3-sampa","2",16,"boosting",50,"16","read_heavy","-1","on","boosting
+ + phasing",1000,8750.03539914409,0,1.08064166073312
+"203","v0.27.3-sampa","2",16,"boosting
+ + combining",50,"16","read_heavy","-1","off","boosting
+ + combining",1000,8126.18489926066,0,1.05670542699228
+"204","v0.27.3-sampa","2",16,"boosting
+ + combining",50,"16","read_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,8674.55708054687,1,1.07382467839267
+"209","v0.27.3-sampa","2",32,"r/w locks",50,"16","read_heavy","-1","off","r/w locks",1000,17510.5275782572,0,1.75288192799508
+"210","v0.27.3-sampa","2",32,"boosting",50,"16","read_heavy","-1","off","boosting",1000,17405.5946851823,0,1.96234794177043
+"211","v0.27.3-sampa","2",32,"r/w locks",50,"16","read_heavy","-1","on","r/w locks
+ + phasing",1000,17172.4477998821,0,2.00693028390494
+"212","v0.27.3-sampa","2",32,"boosting",50,"16","read_heavy","-1","on","boosting
+ + phasing",1000,18047.3600479764,0,1.72941015752639
+"215","v0.27.3-sampa","2",32,"boosting
+ + combining",50,"16","read_heavy","-1","off","boosting
+ + combining",1000,17655.5857620704,169,1.84815914164354
+"216","v0.27.3-sampa","2",32,"boosting
+ + combining",50,"16","read_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,17424.6639236395,0,1.95307929102694
+"221","v0.27.3-sampa","2",64,"r/w locks",50,"16","read_heavy","-1","off","r/w locks",1000,17817.4435975026,0,6.33337944494087
+"222","v0.27.3-sampa","2",64,"boosting",50,"16","read_heavy","-1","off","boosting",1000,21245.1675418647,0,5.27024231215322
+"223","v0.27.3-sampa","2",64,"r/w locks",50,"16","read_heavy","-1","on","r/w locks
+ + phasing",1000,20414.1826586823,0,5.58377274269754
+"224","v0.27.3-sampa","2",64,"boosting",50,"16","read_heavy","-1","on","boosting
+ + phasing",1000,20473.1697812181,0,5.54111413171685
+"227","v0.27.3-sampa","2",64,"boosting
+ + combining",50,"16","read_heavy","-1","off","boosting
+ + combining",1000,21003.1726997926,0,5.33331113056497
+"228","v0.27.3-sampa","2",64,"boosting
+ + combining",50,"16","read_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,19134.0572832895,0,6.07850815363999
+"233","v0.27.3-sampa","2",4,"r/w locks",50,"16","read_heavy","-1","off","r/w locks",1000,1918.81426981493,0,1.28791504584607
+"234","v0.27.3-sampa","2",4,"boosting",50,"16","read_heavy","-1","off","boosting",1000,1933.32244919718,0,1.3124722102542
+"235","v0.27.3-sampa","2",4,"r/w locks",50,"16","read_heavy","-1","on","r/w locks
+ + phasing",1000,1933.1471868107,0,1.21294253507532
+"236","v0.27.3-sampa","2",4,"boosting",50,"16","read_heavy","-1","on","boosting
+ + phasing",1000,1939.5104656258,0,1.22743406923804
+"239","v0.27.3-sampa","2",4,"boosting
+ + combining",50,"16","read_heavy","-1","off","boosting
+ + combining",1000,1931.47507548339,0,1.29737391514399
+"240","v0.27.3-sampa","2",4,"boosting
+ + combining",50,"16","read_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,1936.35454848384,0,1.21858544140423
+"245","v0.27.3-sampa","2",8,"r/w locks",50,"16","read_heavy","-1","off","r/w locks",1000,4060.7149936783,0,1.15796857693728
+"246","v0.27.3-sampa","2",8,"boosting",50,"16","read_heavy","-1","off","boosting",1000,4031.78596120047,0,1.16713082714223
+"247","v0.27.3-sampa","2",8,"r/w locks",50,"16","read_heavy","-1","on","r/w locks
+ + phasing",1000,4083.12050073554,0,1.13135088377862
+"248","v0.27.3-sampa","2",8,"boosting",50,"16","read_heavy","-1","on","boosting
+ + phasing",1000,4023.98449904285,0,1.14373488788049
+"251","v0.27.3-sampa","2",8,"boosting
+ + combining",50,"16","read_heavy","-1","off","boosting
+ + combining",1000,4048.1556813809,0,1.16480667621352
+"252","v0.27.3-sampa","2",8,"boosting
+ + combining",50,"16","read_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,4026.59341428188,0,1.13961012096841
+"257","v0.27.3-sampa","2",16,"r/w locks",50,"16","read_heavy","-1","off","r/w locks",1000,8631.31274427159,0,1.07555327370497
+"258","v0.27.3-sampa","2",16,"boosting",50,"16","read_heavy","-1","off","boosting",1000,8697.49348171966,0,1.07672386381485
+"259","v0.27.3-sampa","2",16,"r/w locks",50,"16","read_heavy","-1","on","r/w locks
+ + phasing",1000,8702.10263637484,0,1.08051196251019
+"260","v0.27.3-sampa","2",16,"boosting",50,"16","read_heavy","-1","on","boosting
+ + phasing",1000,8735.60843960584,0,1.06838327281604
+"263","v0.27.3-sampa","2",16,"boosting
+ + combining",50,"16","read_heavy","-1","off","boosting
+ + combining",1000,8744.68393461302,0,1.10750439092783
+"264","v0.27.3-sampa","2",16,"boosting
+ + combining",50,"16","read_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,8683.41916168662,0,1.07508384432967
+"269","v0.27.3-sampa","2",32,"r/w locks",50,"16","read_heavy","-1","off","r/w locks",1000,17538.1273415727,0,1.81698863409695
+"270","v0.27.3-sampa","2",32,"boosting",50,"16","read_heavy","-1","off","boosting",1000,17402.1747096723,0,1.9482938502034
+"271","v0.27.3-sampa","2",32,"r/w locks",50,"16","read_heavy","-1","on","r/w locks
+ + phasing",1000,17535.2227637834,0,1.84179207696941
+"272","v0.27.3-sampa","2",32,"boosting",50,"16","read_heavy","-1","on","boosting
+ + phasing",1000,17498.5464995211,0,1.79882786839986
+"275","v0.27.3-sampa","2",32,"boosting
+ + combining",50,"16","read_heavy","-1","off","boosting
+ + combining",1000,17006.7313314244,0,2.04554536906441
+"276","v0.27.3-sampa","2",32,"boosting
+ + combining",50,"16","read_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,17121.7966657338,0,2.10855364929629
+"281","v0.27.3-sampa","2",64,"r/w locks",50,"16","read_heavy","-1","off","r/w locks",1000,19180.971954585,0,5.93630770139155
+"282","v0.27.3-sampa","2",64,"r/w locks",50,"16","read_heavy","-1","on","r/w locks
+ + phasing",1000,22535.4443209711,4205,1.28319257832292
+"283","v0.27.3-sampa","2",64,"boosting",50,"16","read_heavy","-1","on","boosting
+ + phasing",1000,18842.026021438,0,6.2160575889574
+"286","v0.27.3-sampa","2",64,"boosting
+ + combining",50,"16","read_heavy","-1","off","boosting
+ + combining",1000,21318.2329183495,0,5.23315625
+"287","v0.27.3-sampa","2",64,"boosting
+ + combining",50,"16","read_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,19432.4141135405,0,5.96556239630325
+"292","v0.27.3-sampa","2",4,"r/w locks",50,"16","read_heavy","-1","off","r/w locks",1000,1943.87896194071,0,1.28756148981026
+"293","v0.27.3-sampa","2",4,"boosting",50,"16","read_heavy","-1","off","boosting",1000,1933.81773468779,0,1.27155411576172
+"294","v0.27.3-sampa","2",4,"r/w locks",50,"16","read_heavy","-1","on","r/w locks
+ + phasing",1000,1929.16337608589,0,1.19089024769406
+"295","v0.27.3-sampa","2",4,"boosting",50,"16","read_heavy","-1","on","boosting
+ + phasing",1000,1925.36691822013,0,1.23274611936941
+"298","v0.27.3-sampa","2",4,"boosting
+ + combining",50,"16","read_heavy","-1","off","boosting
+ + combining",1000,1929.47001717683,0,1.24163299139985
+"299","v0.27.3-sampa","2",4,"boosting
+ + combining",50,"16","read_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,1943.78080110359,0,1.20499528584898
+"304","v0.27.3-sampa","2",8,"r/w locks",50,"16","read_heavy","-1","off","r/w locks",1000,4044.44511088785,0,1.15459653632574
+"305","v0.27.3-sampa","2",8,"boosting",50,"16","read_heavy","-1","off","boosting",1000,3993.62347520601,0,1.14268315064151
+"306","v0.27.3-sampa","2",8,"r/w locks",50,"16","read_heavy","-1","on","r/w locks
+ + phasing",1000,4026.33600058643,0,1.12727678977813
+"307","v0.27.3-sampa","2",8,"boosting",50,"16","read_heavy","-1","on","boosting
+ + phasing",1000,4059.37443247233,0,1.14741421769824
+"310","v0.27.3-sampa","2",8,"boosting
+ + combining",50,"16","read_heavy","-1","off","boosting
+ + combining",1000,4060.49135480775,0,1.16346761420987
+"311","v0.27.3-sampa","2",8,"boosting
+ + combining",50,"16","read_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,4021.31087184323,0,1.12106950808262
+"316","v0.27.3-sampa","2",16,"r/w locks",50,"16","read_heavy","-1","off","r/w locks",1000,8569.69606103767,0,1.07431972722996
+"317","v0.27.3-sampa","2",16,"boosting",50,"16","read_heavy","-1","off","boosting",1000,8661.14188148086,0,1.06981440523127
+"318","v0.27.3-sampa","2",16,"r/w locks",50,"16","read_heavy","-1","on","r/w locks
+ + phasing",1000,8620.42540714876,0,1.06343292235149
+"319","v0.27.3-sampa","2",16,"boosting",50,"16","read_heavy","-1","on","boosting
+ + phasing",1000,8779.40208744617,0,1.0725291657495
+"322","v0.27.3-sampa","2",16,"boosting
+ + combining",50,"16","read_heavy","-1","off","boosting
+ + combining",1000,8585.50417508014,0,1.07460132032927
+"323","v0.27.3-sampa","2",16,"boosting
+ + combining",50,"16","read_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,8687.30924551185,0,1.05951435792994
+"328","v0.27.3-sampa","2",32,"r/w locks",50,"16","read_heavy","-1","off","r/w locks",1000,17665.9320229689,0,1.77829452978396
+"329","v0.27.3-sampa","2",32,"boosting",50,"16","read_heavy","-1","off","boosting",1000,17552.2823664247,0,1.83809767856804
+"330","v0.27.3-sampa","2",32,"r/w locks",50,"16","read_heavy","-1","on","r/w locks
+ + phasing",1000,17257.8173410713,0,2.06003231529224
+"331","v0.27.3-sampa","2",32,"boosting",50,"16","read_heavy","-1","on","boosting
+ + phasing",1000,18036.0414986973,0,1.77236177841322
+"334","v0.27.3-sampa","2",32,"boosting
+ + combining",50,"16","read_heavy","-1","off","boosting
+ + combining",1000,17213.2608576145,0,2.00342591696506
+"335","v0.27.3-sampa","2",32,"boosting
+ + combining",50,"16","read_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,17756.3595355136,0,1.76730572223035
+"340","v0.27.3-sampa","2",64,"r/w locks",50,"16","read_heavy","-1","off","r/w locks",1000,19484.2362973203,0,5.70180837205486
+"341","v0.27.3-sampa","2",64,"boosting",50,"16","read_heavy","-1","off","boosting",1000,17984.219869376,0,6.54565556374519
+"342","v0.27.3-sampa","2",64,"r/w locks",50,"16","read_heavy","-1","on","r/w locks
+ + phasing",1000,18775.7793984654,0,6.22014696333722
+"343","v0.27.3-sampa","2",64,"boosting",50,"16","read_heavy","-1","on","boosting
+ + phasing",1000,18375.882202083,0,6.38033940945003
+"346","v0.27.3-sampa","2",64,"boosting
+ + combining",50,"16","read_heavy","-1","off","boosting
+ + combining",1000,19130.7026717379,0,6.08288199830434
+"347","v0.27.3-sampa","2",64,"boosting
+ + combining",50,"16","read_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,20559.6481088851,0,5.52714293583749
+"352","v0.27.3-sampa","2",64,"r/w locks",50,"16","geom_heavy","-1","on","r/w locks
+ + phasing",1000,8647.64055766372,1,13.8467358782613
+"353","v0.27.3-sampa","2",64,"boosting",50,"16","geom_heavy","-1","on","boosting
+ + phasing",1000,11519.1581085319,0,10.8598749052858
+"354","v0.27.3-sampa","2",4,"r/w locks",50,"16","geom_heavy","-1","off","r/w locks",1000,2236.70271242679,0,1.76738159070599
+"355","v0.27.3-sampa","2",4,"boosting",50,"16","geom_heavy","-1","off","boosting",1000,2393.54879547976,0,1.5783422645974
+"356","v0.27.3-sampa","2",4,"r/w locks",50,"16","geom_heavy","-1","on","r/w locks
+ + phasing",1000,2366.88815872783,0,1.52209723063061
+"357","v0.27.3-sampa","2",4,"boosting",50,"16","geom_heavy","-1","on","boosting
+ + phasing",1000,2371.82925894705,0,1.55850249350284
+"358","v0.27.3-sampa","2",4,"boosting
+ + combining",50,"16","geom_heavy","-1","off","boosting
+ + combining",1000,2444.73805663901,0,1.42145437197574
+"359","v0.27.3-sampa","2",4,"boosting
+ + combining",50,"16","geom_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,2432.4337831917,0,1.44681871104719
+"360","v0.27.3-sampa","2",8,"r/w locks",50,"16","geom_heavy","-1","off","r/w locks",1000,1405.14332514333,2,6.21980788958314
+"361","v0.27.3-sampa","2",8,"boosting",50,"16","geom_heavy","-1","off","boosting",1000,5178.90395717365,0,1.64382980091982
+"362","v0.27.3-sampa","2",8,"r/w locks",50,"16","geom_heavy","-1","on","r/w locks
+ + phasing",1000,4964.49317842677,0,1.74821867074594
+"363","v0.27.3-sampa","2",8,"boosting",50,"16","geom_heavy","-1","on","boosting
+ + phasing",1000,5254.2996704155,0,1.50542003702107
+"364","v0.27.3-sampa","2",64,"boosting",50,"16","geom_heavy","-1","on","boosting
+ + phasing",1000,5787.35911834716,0,20.8998670650927
+"365","v0.27.3-sampa","2",8,"boosting
+ + combining",50,"16","geom_heavy","-1","off","boosting
+ + combining",1000,5236.69038262599,0,1.60912717347737
+"366","v0.27.3-sampa","2",64,"r/w locks",50,"16","geom_heavy","-1","on","r/w locks
+ + phasing",1000,981.300149809714,253,122.709084012896
+"367","v0.27.3-sampa","2",8,"boosting
+ + combining",50,"16","geom_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,5228.70983002512,0,1.62714564245027
+"368","v0.27.3-sampa","2",16,"r/w locks",50,"16","geom_heavy","-1","off","r/w locks",1000,1132.20728514439,0,9.65094285219999
+"369","v0.27.3-sampa","2",64,"boosting
+ + combining",50,"16","geom_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,5896.79031012211,3,20.5097518965892
+"370","v0.27.3-sampa","2",64,"r/w locks",50,"16","geom_heavy","-1","on","r/w locks
+ + phasing",12,7569.99636297805,331794,9.47451879365545
+"371","v0.27.3-sampa","2",16,"boosting",50,"16","geom_heavy","-1","off","boosting",1000,3019.13927141498,23067,1.7387738839299
+"372","v0.27.3-sampa","2",16,"r/w locks",50,"16","geom_heavy","-1","on","r/w locks
+ + phasing",1000,8249.13393478138,6,2.75587371512482
+"373","v0.27.3-sampa","2",16,"boosting",50,"16","geom_heavy","-1","on","boosting
+ + phasing",1000,9470.15115467924,0,2.31851312722171
+"374","v0.27.3-sampa","2",16,"boosting
+ + combining",50,"16","geom_heavy","-1","off","boosting
+ + combining",1000,9178.97392963014,2,2.43934212196493
+"375","v0.27.3-sampa","2",16,"boosting
+ + combining",50,"16","geom_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,9421.4581466541,0,2.33535453532979
+"376","v0.27.3-sampa","2",32,"r/w locks",50,"16","geom_heavy","-1","off","r/w locks",1000,1147.6809997999,0,15.5021687976639
+"377","v0.27.3-sampa","2",32,"boosting",50,"16","geom_heavy","-1","off","boosting",1000,11362.4580411446,0,4.89225909296986
+"378","v0.27.3-sampa","2",32,"boosting",50,"16","geom_heavy","-1","on","boosting
+ + phasing",1000,11983.3550735779,1,4.61491978875221
+"379","v0.27.3-sampa","2",32,"boosting
+ + combining",50,"16","geom_heavy","-1","off","boosting
+ + combining",1000,11031.386552804,0,5.1711165414668
+"380","v0.27.3-sampa","2",64,"r/w locks",50,"16","geom_heavy","-1","on","r/w locks
+ + phasing",1000,966.186635579744,188,127.335737704918
+"381","v0.27.3-sampa","2",32,"boosting
+ + combining",50,"16","geom_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,12065.0613671935,0,4.60340349503427
+"382","v0.27.3-sampa","2",64,"r/w locks",50,"16","geom_heavy","-1","off","r/w locks",1000,979.945806168069,131,28.8213631482534
+"383","v0.27.3-sampa","2",64,"boosting",50,"16","geom_heavy","-1","off","boosting",1000,10806.6148836544,0,11.5927031100994
+"384","v0.27.3-sampa","2",64,"boosting
+ + combining",50,"16","geom_heavy","-1","off","boosting
+ + combining",1000,10818.0867355847,0,11.3275949522741
+"386","v0.27.3-sampa","2",64,"boosting
+ + combining",50,"16","geom_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,12934.6466541588,0,9.47864239219609
+"388","v0.27.3-sampa","2",4,"r/w locks",50,"16","geom_heavy","-1","off","r/w locks",1000,2214.20493063433,0,1.77918365504687
+"390","v0.27.3-sampa","2",4,"boosting",50,"16","geom_heavy","-1","off","boosting",1000,2370.35556665834,0,1.63075431397898
+"392","v0.27.3-sampa","2",4,"r/w locks",50,"16","geom_heavy","-1","on","r/w locks
+ + phasing",1000,2358.79380581379,0,1.53326272682341
+"393","v0.27.4-sampa","2",4,"r/w locks",50,"16","read_heavy","-1","off","r/w locks",1000,1866.17922972077,0,1.38150324112931
+"394","v0.27.3-sampa","2",4,"boosting",50,"16","geom_heavy","-1","on","boosting
+ + phasing",1000,2387.92890891038,0,1.47967683871238
+"395","v0.27.4-sampa","2",4,"boosting",50,"16","read_heavy","-1","off","boosting",1000,1858.61392802582,0,1.39124970868217
+"396","v0.27.3-sampa","2",4,"boosting
+ + combining",50,"16","geom_heavy","-1","off","boosting
+ + combining",1000,2406.11349346768,0,1.57461952833977
+"397","v0.27.4-sampa","2",4,"r/w locks",50,"16","read_heavy","-1","on","r/w locks
+ + phasing",1000,1795.86793511656,2,1.55403074754743
+"398","v0.27.3-sampa","2",4,"boosting
+ + combining",50,"16","geom_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,2368.4618293965,0,1.53693229782205
+"399","v0.27.4-sampa","2",4,"boosting",50,"16","read_heavy","-1","on","boosting
+ + phasing",1000,1840.85081284084,5,1.39384164222874
+"400","v0.27.3-sampa","2",8,"r/w locks",50,"16","geom_heavy","-1","off","r/w locks",1000,2521.68509920922,0,3.75636824859951
+"401","v0.27.4-sampa","2",4,"r/w locks",50,"16","geom_heavy","-1","off","r/w locks",1000,1426.98728259024,0,2.67625781760478
+"402","v0.27.3-sampa","2",8,"boosting",50,"16","geom_heavy","-1","off","boosting",1000,5217.51127408365,0,1.53930407855081
+"403","v0.27.4-sampa","2",4,"boosting",50,"16","geom_heavy","-1","off","boosting",1000,1464.21637031536,0,2.95928579551916
+"404","v0.27.3-sampa","2",8,"r/w locks",50,"16","geom_heavy","-1","on","r/w locks
+ + phasing",1000,4976.64361014487,0,1.70729421216483
+"405","v0.27.4-sampa","2",4,"r/w locks",50,"16","geom_heavy","-1","on","r/w locks
+ + phasing",1000,736.845082514071,11,8.65227601156069
+"406","v0.27.3-sampa","2",8,"boosting",50,"16","geom_heavy","-1","on","boosting
+ + phasing",1000,5181.61844077088,0,1.59299085819937
+"407","v0.27.4-sampa","2",4,"boosting",50,"16","geom_heavy","-1","on","boosting
+ + phasing",1000,1287.44830201105,2,4.18447906171691
+"408","v0.27.3-sampa","2",8,"boosting
+ + combining",50,"16","geom_heavy","-1","off","boosting
+ + combining",1000,5159.93147333978,0,1.58998752940874
+"410","v0.27.3-sampa","2",8,"boosting
+ + combining",50,"16","geom_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,5210.12826919873,0,1.6157102479825
+"412","v0.27.3-sampa","2",16,"r/w locks",50,"16","geom_heavy","-1","off","r/w locks",1000,1025.24547854396,0,10.5121234386481
+"413","v0.27.4-sampa","2",4,"boosting
+ + combining",50,"16","read_heavy","-1","off","boosting
+ + combining",1000,1862.45286885587,0,1.39254799520495
+"414","v0.27.3-sampa","2",16,"boosting",50,"16","geom_heavy","-1","off","boosting",1000,9312.00474215372,1,2.36343544591705
+"415","v0.27.4-sampa","2",4,"boosting
+ + combining",50,"16","read_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,1848.83527176992,2,1.41859295576625
+"416","v0.27.3-sampa","2",16,"r/w locks",50,"16","geom_heavy","-1","on","r/w locks
+ + phasing",1000,8140.24415635468,0,2.84309865725943
+"417","v0.27.4-sampa","2",4,"boosting
+ + combining",50,"16","geom_heavy","-1","off","boosting
+ + combining",1000,1572.14389597625,0,2.70861934230257
+"418","v0.27.3-sampa","2",16,"boosting",50,"16","geom_heavy","-1","on","boosting
+ + phasing",1000,9071.63378917265,0,2.46354031429313
+"419","v0.27.3-sampa","2",16,"boosting
+ + combining",50,"16","geom_heavy","-1","off","boosting
+ + combining",1000,9362.50102032487,0,2.33811006529901
+"420","v0.27.4-sampa","2",4,"boosting
+ + combining",50,"16","geom_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,1388.38350355819,0,3.70332695069411
+"421","v0.27.3-sampa","2",16,"boosting
+ + combining",50,"16","geom_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,10690.8814832574,0,1.50443530804211
+"423","v0.27.3-sampa","2",32,"r/w locks",50,"16","geom_heavy","-1","off","r/w locks",1000,1016.16151518034,0,16.3294827039035
+"425","v0.27.3-sampa","2",32,"boosting",50,"16","geom_heavy","-1","off","boosting",1000,11547.6121105164,19,4.85601003474675
+"427","v0.27.3-sampa","2",32,"r/w locks",50,"16","geom_heavy","-1","on","r/w locks
+ + phasing",1000,9175.7834198718,0,6.04495791312922
+"429","v0.27.3-sampa","2",32,"boosting",50,"16","geom_heavy","-1","on","boosting
+ + phasing",1000,11945.7317997199,0,4.67064432486687
+"430","v0.27.4-sampa","2",8,"r/w locks",50,"16","read_heavy","-1","off","r/w locks",1000,3856.07273320885,0,1.25803915470081
+"431","v0.27.3-sampa","2",32,"boosting
+ + combining",50,"16","geom_heavy","-1","off","boosting
+ + combining",1000,11510.6945861935,0,4.79680864604668
+"432","v0.27.4-sampa","2",8,"boosting",50,"16","read_heavy","-1","off","boosting",1000,3928.7784596318,0,1.26372247237698
+"433","v0.27.3-sampa","2",32,"boosting
+ + combining",50,"16","geom_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,12344.6384106313,0,4.48644654664696
+"434","v0.27.4-sampa","2",8,"r/w locks",50,"16","read_heavy","-1","on","r/w locks
+ + phasing",1000,3642.90301007796,32,1.53640515115536
+"435","v0.27.3-sampa","2",64,"r/w locks",50,"16","geom_heavy","-1","off","r/w locks",1000,1022.18722327253,59,28.791067146283
+"436","v0.27.4-sampa","2",8,"boosting",50,"16","read_heavy","-1","on","boosting
+ + phasing",1000,3799.5541501028,17,1.3992983994738
+"437","v0.27.3-sampa","2",64,"boosting",50,"16","geom_heavy","-1","off","boosting",1000,10745.9692844004,0,11.6838309266224
+"438","v0.27.4-sampa","2",8,"r/w locks",50,"16","geom_heavy","-1","off","r/w locks",1000,2833.02125639538,0,2.52465731108474
+"439","v0.27.3-sampa","2",64,"r/w locks",50,"16","geom_heavy","-1","on","r/w locks
+ + phasing",1000,9054.97005432007,0,13.2022457507627
+"440","v0.27.4-sampa","2",8,"boosting",50,"16","geom_heavy","-1","off","boosting",1000,2838.91007197826,0,2.88469631084304
+"441","v0.27.3-sampa","2",64,"boosting",50,"16","geom_heavy","-1","on","boosting
+ + phasing",1000,13261.9273301738,0,9.37234328017595
+"442","v0.27.4-sampa","2",8,"r/w locks",50,"16","geom_heavy","-1","on","r/w locks
+ + phasing",1000,799.460978020286,13,17.8333057235153
+"443","v0.27.3-sampa","2",64,"boosting
+ + combining",50,"16","geom_heavy","-1","off","boosting
+ + combining",1000,12042.7971874423,0,10.3064508554269
+"444","v0.27.4-sampa","2",8,"boosting",50,"16","geom_heavy","-1","on","boosting
+ + phasing",1000,1999.31155702852,5,6.20919903518257
+"445","v0.27.3-sampa","2",64,"boosting
+ + combining",50,"16","geom_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,13151.1249208241,0,9.31511455631235
+"447","v0.27.3-sampa","2",4,"r/w locks",50,"16","geom_heavy","-1","off","r/w locks",1000,2207.6961272757,0,1.83496611167298
+"449","v0.27.3-sampa","2",4,"boosting",50,"16","geom_heavy","-1","off","boosting",1000,2356.97201068671,0,1.57784122228033
+"450","v0.27.4-sampa","2",8,"boosting
+ + combining",50,"16","read_heavy","-1","off","boosting
+ + combining",1000,3875.14660411558,0,1.28294813591966
+"451","v0.27.3-sampa","2",4,"r/w locks",50,"16","geom_heavy","-1","on","r/w locks
+ + phasing",1000,2371.6220943598,0,1.55258204090807
+"452","v0.27.4-sampa","2",8,"boosting
+ + combining",50,"16","read_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,3791.40476757688,48,1.40806910854893
+"453","v0.27.3-sampa","2",4,"boosting",50,"16","geom_heavy","-1","on","boosting
+ + phasing",1000,2382.13366431481,0,1.52084149275443
+"454","v0.27.4-sampa","2",8,"boosting
+ + combining",50,"16","geom_heavy","-1","off","boosting
+ + combining",1000,2965.54951102585,0,2.83489617842263
+"455","v0.27.3-sampa","2",4,"boosting
+ + combining",50,"16","geom_heavy","-1","off","boosting
+ + combining",1000,2381.83699344728,0,1.59072467823167
+"456","v0.27.4-sampa","2",8,"boosting
+ + combining",50,"16","geom_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,2482.35657145132,6,4.72141950143688
+"457","v0.27.3-sampa","2",4,"boosting
+ + combining",50,"16","geom_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,2411.54813667183,0,1.48923030160682
+"459","v0.27.3-sampa","2",8,"r/w locks",50,"16","geom_heavy","-1","off","r/w locks",1000,2301.79826449241,0,3.86944543572907
+"461","v0.27.3-sampa","2",8,"boosting",50,"16","geom_heavy","-1","off","boosting",1000,5196.51265327854,0,1.58904478013358
+"463","v0.27.3-sampa","2",8,"r/w locks",50,"16","geom_heavy","-1","on","r/w locks
+ + phasing",1000,4967.30088186007,0,1.70017907564772
+"465","v0.27.3-sampa","2",8,"boosting",50,"16","geom_heavy","-1","on","boosting
+ + phasing",1000,5209.98435675267,0,1.62098780433212
+"466","v0.27.4-sampa","2",16,"r/w locks",50,"16","read_heavy","-1","off","r/w locks",1000,7952.44592606661,0,1.13970754598399
+"467","v0.27.3-sampa","2",8,"boosting
+ + combining",50,"16","geom_heavy","-1","off","boosting
+ + combining",1000,5200.7377263195,0,1.57522288023944
+"468","v0.27.4-sampa","2",16,"boosting",50,"16","read_heavy","-1","off","boosting",1000,8054.39212040637,0,1.24950150170027
+"469","v0.27.3-sampa","2",8,"boosting
+ + combining",50,"16","geom_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,5200.10595461611,0,1.61302620618953
+"470","v0.27.4-sampa","2",16,"r/w locks",50,"16","read_heavy","-1","on","r/w locks
+ + phasing",1000,5860.00426024789,163,2.86698094453753
+"471","v0.27.3-sampa","2",16,"r/w locks",50,"16","geom_heavy","-1","off","r/w locks",1000,963.17003557884,2,11.2969352547189
+"472","v0.27.4-sampa","2",16,"boosting",50,"16","read_heavy","-1","on","boosting
+ + phasing",1000,7299.60856167236,144,1.7488818707899
+"473","v0.27.3-sampa","2",16,"boosting",50,"16","geom_heavy","-1","off","boosting",1000,9365.75764035064,0,2.36262157500756
+"474","v0.27.4-sampa","2",16,"r/w locks",50,"16","geom_heavy","-1","off","r/w locks",1000,5187.33949961694,0,3.13358814916234
+"475","v0.27.3-sampa","2",16,"r/w locks",50,"16","geom_heavy","-1","on","r/w locks
+ + phasing",1000,8552.50470063336,0,2.62609437313061
+"476","v0.27.4-sampa","2",16,"boosting",50,"16","geom_heavy","-1","off","boosting",1000,3342.7517632595,0,5.09251814129863
+"477","v0.27.3-sampa","2",16,"boosting",50,"16","geom_heavy","-1","on","boosting
+ + phasing",1000,9292.26538008834,0,2.36659189611432
+"478","v0.27.3-sampa","2",16,"boosting
+ + combining",50,"16","geom_heavy","-1","off","boosting
+ + combining",1000,9419.29685874766,0,2.29691050245414
+"479","v0.27.4-sampa","2",16,"r/w locks",50,"16","geom_heavy","-1","on","r/w locks
+ + phasing",1000,513.218662205752,823,7.81823144104804
+"480","v0.27.3-sampa","2",16,"boosting
+ + combining",50,"16","geom_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,9511.19481828906,0,2.30521745519174
+"481","v0.27.4-sampa","2",16,"boosting",50,"16","geom_heavy","-1","on","boosting
+ + phasing",1000,3544.60819905033,0,7.44892169579783
+"482","v0.27.3-sampa","2",32,"r/w locks",50,"16","geom_heavy","-1","off","r/w locks",1000,1163.56351522646,0,15.173938646178
+"484","v0.27.3-sampa","2",32,"boosting",50,"16","geom_heavy","-1","off","boosting",1000,11899.7267514037,0,4.66386789655925
+"486","v0.27.3-sampa","2",32,"r/w locks",50,"16","geom_heavy","-1","on","r/w locks
+ + phasing",1000,9409.15048333766,0,5.86464490765619
+"487","v0.27.4-sampa","2",16,"boosting
+ + combining",50,"16","read_heavy","-1","off","boosting
+ + combining",1000,8236.41509402532,0,1.19764746807538
+"488","v0.27.3-sampa","2",32,"boosting",50,"16","geom_heavy","-1","on","boosting
+ + phasing",1000,11923.7546318096,0,4.67546530547315
+"489","v0.27.4-sampa","2",16,"boosting
+ + combining",50,"16","read_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,7896.5787064014,33,1.40924462585493
+"490","v0.27.3-sampa","2",32,"boosting
+ + combining",50,"16","geom_heavy","-1","off","boosting
+ + combining",1000,18034.5812499584,0,2.37898432481523
+"491","v0.27.4-sampa","2",16,"boosting
+ + combining",50,"16","geom_heavy","-1","off","boosting
+ + combining",1000,3706.12033975359,0,4.7767021135772
+"492","v0.27.3-sampa","2",32,"boosting
+ + combining",50,"16","geom_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,12010.5873833682,0,4.64034350944013
+"493","v0.27.4-sampa","2",16,"boosting
+ + combining",50,"16","geom_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,3593.71085668591,3,7.35954610086237
+"494","v0.27.3-sampa","2",64,"r/w locks",50,"16","geom_heavy","-1","off","r/w locks",1000,993.548121774259,101,29.4405387334034
+"496","v0.27.3-sampa","2",64,"boosting",50,"16","geom_heavy","-1","off","boosting",1000,11390.1818912505,0,10.962900540323
+"498","v0.27.3-sampa","2",64,"r/w locks",50,"16","geom_heavy","-1","on","r/w locks
+ + phasing",1000,8719.37924949052,0,13.7346208761164
+"500","v0.27.3-sampa","2",64,"boosting",50,"16","geom_heavy","-1","on","boosting
+ + phasing",1000,12206.4118462567,0,10.2478530748761
+"502","v0.27.3-sampa","2",64,"boosting
+ + combining",50,"16","geom_heavy","-1","off","boosting
+ + combining",1000,11438.1877108758,0,10.9680627115293
+"503","v0.27.4-sampa","2",32,"r/w locks",50,"16","read_heavy","-1","off","r/w locks",1000,15518.8051568248,0,1.66365250015561
+"504","v0.27.3-sampa","2",64,"boosting
+ + combining",50,"16","geom_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,12879.736260667,0,9.67681226765799
+"505","v0.27.4-sampa","2",32,"boosting",50,"16","read_heavy","-1","off","boosting",1000,12972.9477689611,0,2.7685640641206
+"506","v0.27.4-sampa","2",32,"r/w locks",50,"16","read_heavy","-1","on","r/w locks
+ + phasing",1000,8323.09485555871,24,5.4831666600263
+"507","v0.27.4-sampa","2",32,"boosting",50,"16","read_heavy","-1","on","boosting
+ + phasing",1000,14085.8777641083,208,2.50804253739987
+"508","v0.27.4-sampa","2",32,"r/w locks",50,"16","geom_heavy","-1","off","r/w locks",1000,6077.87595515059,0,6.39068752666454
+"509","v0.27.4-sampa","2",32,"boosting",50,"16","geom_heavy","-1","off","boosting",1000,3091.75339547529,0,11.3050751761778
+"510","v0.27.4-sampa","2",32,"r/w locks",50,"16","geom_heavy","-1","on","r/w locks
+ + phasing",1000,867.627847319541,117,69.3911519929917
+"511","v0.27.4-sampa","2",32,"boosting",50,"16","geom_heavy","-1","on","boosting
+ + phasing",1000,4607.6255400103,6,12.5200349805743
+"514","v0.27.4-sampa","2",32,"boosting
+ + combining",50,"16","read_heavy","-1","off","boosting
+ + combining",1000,14528.810016012,0,2.27522431285572
+"515","v0.27.4-sampa","2",32,"boosting
+ + combining",50,"16","read_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,15209.8533614991,71,2.29361934989603
+"516","v0.27.4-sampa","2",32,"boosting
+ + combining",50,"16","geom_heavy","-1","off","boosting
+ + combining",1000,3194.27075544717,0,12.2468360942484
+"517","v0.27.4-sampa","2",32,"boosting
+ + combining",50,"16","geom_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,4751.28876677187,0,11.9570803099755
+"522","v0.27.4-sampa","2",64,"r/w locks",50,"16","read_heavy","-1","off","r/w locks",1000,18974.150769154,0,5.67422420763331
+"523","v0.27.4-sampa","2",64,"boosting",50,"16","read_heavy","-1","off","boosting",1000,13892.2514233251,0,6.79237783269161
+"524","v0.27.4-sampa","2",64,"r/w locks",50,"16","read_heavy","-1","on","r/w locks
+ + phasing",1000,8180.80878721691,63,13.6547499432794
+"525","v0.27.4-sampa","2",64,"boosting",50,"16","read_heavy","-1","on","boosting
+ + phasing",1000,15741.1161102951,14,6.96932722551772
+"526","v0.27.4-sampa","2",64,"r/w locks",50,"16","geom_heavy","-1","off","r/w locks",1000,6402.06214323101,0,12.3629998308482
+"527","v0.27.4-sampa","2",64,"boosting",50,"16","geom_heavy","-1","off","boosting",1000,3111.34810472355,0,25.743786011692
+"528","v0.27.4-sampa","2",64,"r/w locks",50,"16","geom_heavy","-1","on","r/w locks
+ + phasing",1000,798.106188704768,158,152.265691509945
+"529","v0.27.4-sampa","2",64,"boosting",50,"16","geom_heavy","-1","on","boosting
+ + phasing",1000,5780.54709187072,0,20.4739156639954
+"532","v0.27.4-sampa","2",64,"boosting
+ + combining",50,"16","read_heavy","-1","off","boosting
+ + combining",1000,14716.9321804729,0,6.82464883434474
+"533","v0.27.4-sampa","2",64,"boosting
+ + combining",50,"16","read_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,17345.7254515556,2,6.30069318103309
+"534","v0.27.4-sampa","2",64,"boosting
+ + combining",50,"16","geom_heavy","-1","off","boosting
+ + combining",1000,3608.57749091765,1,20.9538363288021
+"535","v0.27.4-sampa","2",64,"boosting
+ + combining",50,"16","geom_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,5843.94680910109,31,20.4985027598382
+"540","v0.27.4-sampa","2",4,"r/w locks",50,"16","read_heavy","-1","off","r/w locks",1000,1850.15471218872,0,1.41349094965634
+"541","v0.27.4-sampa","2",4,"boosting",50,"16","read_heavy","-1","off","boosting",1000,1851.55998793794,0,1.45143247912468
+"542","v0.27.4-sampa","2",4,"r/w locks",50,"16","read_heavy","-1","on","r/w locks
+ + phasing",1000,1808.97390191812,5,1.46996353188198
+"543","v0.27.4-sampa","2",4,"boosting",50,"16","read_heavy","-1","on","boosting
+ + phasing",1000,1840.67664437179,11,1.40664457842232
+"544","v0.27.4-sampa","2",4,"r/w locks",50,"16","geom_heavy","-1","off","r/w locks",1000,1326.71456129848,0,2.7880368021259
+"545","v0.27.4-sampa","2",4,"boosting",50,"16","geom_heavy","-1","off","boosting",1000,1532.36767762912,0,2.83701465281099
+"546","v0.27.4-sampa","2",4,"r/w locks",50,"16","geom_heavy","-1","on","r/w locks
+ + phasing",1000,832.071761531321,12,7.42050543825976
+"547","v0.27.4-sampa","2",4,"boosting",50,"16","geom_heavy","-1","on","boosting
+ + phasing",1000,1393.6584030721,5,3.673895448486
+"550","v0.27.4-sampa","2",4,"boosting
+ + combining",50,"16","read_heavy","-1","off","boosting
+ + combining",1000,1852.46523135862,0,1.38213234238116
+"551","v0.27.4-sampa","2",4,"boosting
+ + combining",50,"16","read_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,1838.65353065117,15,1.45070205634568
+"552","v0.27.4-sampa","2",4,"boosting
+ + combining",50,"16","geom_heavy","-1","off","boosting
+ + combining",1000,1520.22744950424,0,2.8042377895129
+"553","v0.27.4-sampa","2",4,"boosting
+ + combining",50,"16","geom_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,1385.6679513737,9,3.70746873138773
+"558","v0.27.4-sampa","2",8,"r/w locks",50,"16","read_heavy","-1","off","r/w locks",1000,3854.11721593417,0,1.22740945630564
+"559","v0.27.4-sampa","2",8,"boosting",50,"16","read_heavy","-1","off","boosting",1000,3893.97982059046,0,1.2514627887083
+"560","v0.27.4-sampa","2",8,"r/w locks",50,"16","read_heavy","-1","on","r/w locks
+ + phasing",1000,3576.00382488809,27,1.6284077145253
+"561","v0.27.4-sampa","2",8,"boosting",50,"16","read_heavy","-1","on","boosting
+ + phasing",1000,3864.27107150648,13,1.31824724408091
+"562","v0.27.4-sampa","2",8,"r/w locks",50,"16","geom_heavy","-1","off","r/w locks",1000,2739.37509328006,0,2.57794594853496
+"563","v0.27.4-sampa","2",8,"boosting",50,"16","geom_heavy","-1","off","boosting",1000,2772.45772931793,0,2.98072907917157
+"564","v0.27.4-sampa","2",8,"r/w locks",50,"16","geom_heavy","-1","on","r/w locks
+ + phasing",1000,825.516196752677,16,17.2481088041204
+"565","v0.27.4-sampa","2",8,"boosting",50,"16","geom_heavy","-1","on","boosting
+ + phasing",1000,2175.67711028836,1,5.56100089965081
+"568","v0.27.4-sampa","2",8,"boosting
+ + combining",50,"16","read_heavy","-1","off","boosting
+ + combining",1000,3935.35406027536,0,1.2666017691624
+"569","v0.27.4-sampa","2",8,"boosting
+ + combining",50,"16","read_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,3867.35858329238,3,1.27295988696671
+"570","v0.27.4-sampa","2",8,"boosting
+ + combining",50,"16","geom_heavy","-1","off","boosting
+ + combining",1000,2898.83349315535,0,2.8560306376343
+"571","v0.27.4-sampa","2",8,"boosting
+ + combining",50,"16","geom_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,2218.2861278681,3,5.4171817705605
+"576","v0.27.4-sampa","2",16,"r/w locks",50,"16","read_heavy","-1","off","r/w locks",1000,8026.66626687256,0,1.12445003403563
+"577","v0.27.4-sampa","2",16,"boosting",50,"16","read_heavy","-1","off","boosting",1000,7806.44151032661,0,1.13880874746061
+"578","v0.27.4-sampa","2",16,"r/w locks",50,"16","read_heavy","-1","on","r/w locks
+ + phasing",1000,5493.06804814192,152,3.17398799794796
+"579","v0.27.4-sampa","2",16,"boosting",50,"16","read_heavy","-1","on","boosting
+ + phasing",1000,8032.72170083634,14,1.33488946236915
+"580","v0.27.4-sampa","2",16,"r/w locks",50,"16","geom_heavy","-1","off","r/w locks",1000,5229.65201821455,0,3.08563017783458
+"581","v0.27.4-sampa","2",16,"boosting",50,"16","geom_heavy","-1","off","boosting",1000,3437.6890602666,0,5.16368840411542
+"582","v0.27.4-sampa","2",16,"r/w locks",50,"16","geom_heavy","-1","on","r/w locks
+ + phasing",1000,896.22289728687,28,33.510891674988
+"583","v0.27.4-sampa","2",16,"boosting",50,"16","geom_heavy","-1","on","boosting
+ + phasing",1000,3195.9132402073,2,8.38050602434432
+"586","v0.27.4-sampa","2",16,"boosting
+ + combining",50,"16","read_heavy","-1","off","boosting
+ + combining",1000,8076.44381659348,0,1.20764578726775
+"587","v0.27.4-sampa","2",16,"boosting
+ + combining",50,"16","read_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,7966.27390625052,71,1.4171510533843
+"588","v0.27.4-sampa","2",16,"boosting
+ + combining",50,"16","geom_heavy","-1","off","boosting
+ + combining",1000,3812.54556299291,0,4.85788535917605
+"589","v0.27.4-sampa","2",16,"boosting
+ + combining",50,"16","geom_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,3487.19693803553,10,7.60372710822257
+"594","v0.27.4-sampa","2",32,"r/w locks",50,"16","read_heavy","-1","off","r/w locks",1000,15832.0676286023,0,1.59794918402854
+"595","v0.27.4-sampa","2",32,"boosting",50,"16","read_heavy","-1","off","boosting",1000,12070.001714749,0,2.80564406008193
+"596","v0.27.4-sampa","2",32,"r/w locks",50,"16","read_heavy","-1","on","r/w locks
+ + phasing",1000,9201.71151987084,31,4.66314546787057
+"597","v0.27.4-sampa","2",32,"boosting",50,"16","read_heavy","-1","on","boosting
+ + phasing",1000,14499.5689239076,170,2.40631521432195
+"598","v0.27.4-sampa","2",32,"r/w locks",50,"16","geom_heavy","-1","off","r/w locks",1000,6200.96920524182,0,6.22815082507374
+"599","v0.27.4-sampa","2",32,"boosting",50,"16","geom_heavy","-1","off","boosting",1000,2882.68222884599,0,14.304055758076
+"600","v0.27.4-sampa","2",32,"r/w locks",50,"16","geom_heavy","-1","on","r/w locks
+ + phasing",1000,845.70403305547,137,72.9183120402633
+"601","v0.27.4-sampa","2",32,"boosting",50,"16","geom_heavy","-1","on","boosting
+ + phasing",1000,4419.0728704518,6,13.1058809447217
+"604","v0.27.4-sampa","2",32,"boosting
+ + combining",50,"16","read_heavy","-1","off","boosting
+ + combining",1000,13373.581389157,0,2.57179545884391
+"605","v0.27.4-sampa","2",32,"boosting
+ + combining",50,"16","read_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,14492.2268659103,141,2.42382376537605
+"606","v0.27.4-sampa","2",32,"boosting
+ + combining",50,"16","geom_heavy","-1","off","boosting
+ + combining",1000,3568.11976012804,0,10.8504152596514
+"607","v0.27.4-sampa","2",32,"boosting
+ + combining",50,"16","geom_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,4714.82927442042,20,12.2238737949167
+"612","v0.27.4-sampa","2",64,"r/w locks",50,"16","read_heavy","-1","off","r/w locks",1000,18449.9374800468,0,5.88090779149851
+"613","v0.27.4-sampa","2",64,"boosting",50,"16","read_heavy","-1","off","boosting",1000,13991.2704096129,0,6.86918107543226
+"614","v0.27.4-sampa","2",64,"r/w locks",50,"16","read_heavy","-1","on","r/w locks
+ + phasing",1000,8432.93705014331,179,13.1129066303914
+"615","v0.27.4-sampa","2",64,"boosting",50,"16","read_heavy","-1","on","boosting
+ + phasing",1000,16084.1667455647,16,6.87596041043605
+"616","v0.27.4-sampa","2",64,"r/w locks",50,"16","geom_heavy","-1","off","r/w locks",1000,6458.00220478141,0,12.1626097457821
+"617","v0.27.4-sampa","2",64,"boosting",50,"16","geom_heavy","-1","off","boosting",1000,3011.2643845948,0,25.9244417154122
+"618","v0.27.4-sampa","2",64,"r/w locks",50,"16","geom_heavy","-1","on","r/w locks
+ + phasing",1000,939.400273639404,147,130.706988975422
+"619","v0.27.4-sampa","2",64,"boosting",50,"16","geom_heavy","-1","on","boosting
+ + phasing",1000,5429.98252608583,1,21.8845308135734
+"622","v0.27.4-sampa","2",64,"boosting
+ + combining",50,"16","read_heavy","-1","off","boosting
+ + combining",1000,12398.3079723093,0,7.67299695148927
+"623","v0.27.4-sampa","2",64,"boosting
+ + combining",50,"16","read_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,16730.3843787979,10,6.58320929024893
+"624","v0.27.4-sampa","2",64,"boosting
+ + combining",50,"16","geom_heavy","-1","off","boosting
+ + combining",1000,7042.57323407429,49,10.7017657932136
+"625","v0.27.4-sampa","2",64,"boosting
+ + combining",50,"16","geom_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,6122.8905876182,5,19.6081896158164
+"630","v0.27.4-sampa","2",4,"r/w locks",50,"16","read_heavy","-1","off","r/w locks",1000,1851.11629456848,0,1.42385692684332
+"631","v0.27.4-sampa","2",4,"boosting",50,"16","read_heavy","-1","off","boosting",1000,1857.58173506244,0,1.42510897056449
+"632","v0.27.4-sampa","2",4,"r/w locks",50,"16","read_heavy","-1","on","r/w locks
+ + phasing",1000,1809.15675659463,4,1.47818302387268
+"633","v0.27.4-sampa","2",4,"boosting",50,"16","read_heavy","-1","on","boosting
+ + phasing",1000,1847.70890161582,12,1.41240012264849
+"634","v0.27.4-sampa","2",4,"r/w locks",50,"16","geom_heavy","-1","off","r/w locks",1000,1409.52691701987,0,2.67499704736034
+"635","v0.27.4-sampa","2",4,"boosting",50,"16","geom_heavy","-1","off","boosting",1000,1554.92846506347,0,2.6874708994709
+"636","v0.27.4-sampa","2",4,"r/w locks",50,"16","geom_heavy","-1","on","r/w locks
+ + phasing",1000,801.910181533803,14,7.86977632070382
+"637","v0.27.4-sampa","2",4,"boosting",50,"16","geom_heavy","-1","on","boosting
+ + phasing",1000,1151.31180684206,16,4.88443919444524
+"640","v0.27.4-sampa","2",4,"boosting
+ + combining",50,"16","read_heavy","-1","off","boosting
+ + combining",1000,1852.67274447436,0,1.4005654078116
+"641","v0.27.4-sampa","2",4,"boosting
+ + combining",50,"16","read_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,1855.91067820251,0,1.39138490789403
+"642","v0.27.4-sampa","2",4,"boosting
+ + combining",50,"16","geom_heavy","-1","off","boosting
+ + combining",1000,1535.15425739819,0,2.71853018599232
+"643","v0.27.4-sampa","2",4,"boosting
+ + combining",50,"16","geom_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,1199.64608879984,6,4.64562461947197
+"648","v0.27.4-sampa","2",8,"r/w locks",50,"16","read_heavy","-1","off","r/w locks",1000,3845.60424095358,0,1.28508198283254
+"649","v0.27.4-sampa","2",8,"boosting",50,"16","read_heavy","-1","off","boosting",1000,3898.79487622873,0,1.30219288145134
+"650","v0.27.4-sampa","2",8,"r/w locks",50,"16","read_heavy","-1","on","r/w locks
+ + phasing",1000,3570.37431907911,20,1.65709246661628
+"651","v0.27.4-sampa","2",8,"boosting",50,"16","read_heavy","-1","on","boosting
+ + phasing",1000,3715.03764408022,51,1.53787729335175
+"652","v0.27.4-sampa","2",8,"r/w locks",50,"16","geom_heavy","-1","off","r/w locks",1000,2848.91483450249,0,2.47402271480431
+"653","v0.27.4-sampa","2",8,"boosting",50,"16","geom_heavy","-1","off","boosting",1000,2831.74803254082,0,2.88369178146378
+"654","v0.27.4-sampa","2",8,"r/w locks",50,"16","geom_heavy","-1","on","r/w locks
+ + phasing",1000,876.801359598095,16,16.1870528109029
+"655","v0.27.4-sampa","2",8,"boosting",50,"16","geom_heavy","-1","on","boosting
+ + phasing",1000,2121.22976689399,9,5.76983168363425
+"658","v0.27.4-sampa","2",8,"boosting
+ + combining",50,"16","read_heavy","-1","off","boosting
+ + combining",1000,3885.46585713215,0,1.2804228721352
+"659","v0.27.4-sampa","2",8,"boosting
+ + combining",50,"16","read_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,3785.68382333342,28,1.4471053141117
+"660","v0.27.4-sampa","2",8,"boosting
+ + combining",50,"16","geom_heavy","-1","off","boosting
+ + combining",1000,2880.35646253996,0,2.91249640577376
+"661","v0.27.4-sampa","2",8,"boosting
+ + combining",50,"16","geom_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,2296.56852954101,0,5.18532208500029
+"666","v0.27.4-sampa","2",16,"r/w locks",50,"16","read_heavy","-1","off","r/w locks",1000,8042.90169527668,1,1.12295455486971
+"667","v0.27.4-sampa","2",16,"boosting",50,"16","read_heavy","-1","off","boosting",1000,8088.82817445773,0,1.23996375169914
+"668","v0.27.4-sampa","2",16,"r/w locks",50,"16","read_heavy","-1","on","r/w locks
+ + phasing",1000,5988.31698519122,50,2.72528441221476
+"669","v0.27.4-sampa","2",16,"boosting",50,"16","read_heavy","-1","on","boosting
+ + phasing",1000,7838.20033022381,80,1.43319134101962
+"670","v0.27.4-sampa","2",16,"r/w locks",50,"16","geom_heavy","-1","off","r/w locks",1000,5221.51038247017,0,3.08682674660079
+"671","v0.27.4-sampa","2",16,"boosting",50,"16","geom_heavy","-1","off","boosting",1000,5960.1909143794,0,2.71620767294063
+"672","v0.27.4-sampa","2",16,"r/w locks",50,"16","geom_heavy","-1","on","r/w locks
+ + phasing",1000,1113.95766848828,61,26.5299789984323
+"673","v0.27.4-sampa","2",16,"boosting",50,"16","geom_heavy","-1","on","boosting
+ + phasing",1000,3246.28567353728,0,8.24693489721689
+"676","v0.27.4-sampa","2",16,"boosting
+ + combining",50,"16","read_heavy","-1","off","boosting
+ + combining",1000,8009.63985450282,0,1.24029460323797
+"677","v0.27.4-sampa","2",16,"boosting
+ + combining",50,"16","read_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,7561.82854982515,114,1.64046417184533
+"678","v0.27.4-sampa","2",16,"boosting
+ + combining",50,"16","geom_heavy","-1","off","boosting
+ + combining",1000,3862.73543501239,0,4.72989621636482
+"679","v0.27.4-sampa","2",16,"boosting
+ + combining",50,"16","geom_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,3313.1042316023,13,8.07407665783022
+"684","v0.27.4-sampa","2",32,"r/w locks",50,"16","read_heavy","-1","off","r/w locks",1000,15110.8543342746,0,1.79988540828807
+"685","v0.27.4-sampa","2",32,"boosting",50,"16","read_heavy","-1","off","boosting",1000,14442.7213381817,0,2.31176979412952
+"686","v0.27.4-sampa","2",32,"r/w locks",50,"16","read_heavy","-1","on","r/w locks
+ + phasing",1000,8341.14774803782,94,5.36490439142806
+"687","v0.27.4-sampa","2",32,"boosting",50,"16","read_heavy","-1","on","boosting
+ + phasing",1000,14176.6161449643,128,2.60744649111885
+"688","v0.27.4-sampa","2",32,"r/w locks",50,"16","geom_heavy","-1","off","r/w locks",1000,6255.78020606507,0,6.03670315518352
+"689","v0.27.4-sampa","2",32,"boosting",50,"16","geom_heavy","-1","off","boosting",1000,3234.76980758836,0,11.1309312176837
+"690","v0.27.4-sampa","2",32,"r/w locks",50,"16","geom_heavy","-1","on","r/w locks
+ + phasing",1000,852.90082487398,89,69.9927460012332
+"691","v0.27.4-sampa","2",32,"boosting",50,"16","geom_heavy","-1","on","boosting
+ + phasing",1000,4726.73001408634,0,12.101053656501
+"694","v0.27.4-sampa","2",32,"boosting
+ + combining",50,"16","read_heavy","-1","off","boosting
+ + combining",1000,12726.370379746,0,2.50405412479062
+"695","v0.27.4-sampa","2",32,"boosting
+ + combining",50,"16","read_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,13314.6860580612,300,2.85735314664378
+"696","v0.27.4-sampa","2",32,"boosting
+ + combining",50,"16","geom_heavy","-1","off","boosting
+ + combining",1000,3839.98388212815,0,9.80406492177219
+"697","v0.27.4-sampa","2",32,"boosting
+ + combining",50,"16","geom_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,4809.48343407659,8,11.7079469578366
+"702","v0.27.4-sampa","2",64,"r/w locks",50,"16","read_heavy","-1","off","r/w locks",1000,18131.6869564065,0,6.00668945223256
+"703","v0.27.4-sampa","2",64,"boosting",50,"16","read_heavy","-1","off","boosting",1000,12962.0892923434,0,7.33564164935002
+"704","v0.27.4-sampa","2",64,"r/w locks",50,"16","read_heavy","-1","on","r/w locks
+ + phasing",1000,7884.50560147833,69,14.2158569658821
+"705","v0.27.4-sampa","2",64,"boosting",50,"16","read_heavy","-1","on","boosting
+ + phasing",1000,16744.3733086925,2,6.45801635040639
+"706","v0.27.4-sampa","2",64,"r/w locks",50,"16","geom_heavy","-1","off","r/w locks",1000,6525.34435890993,0,11.9753253118092
+"707","v0.27.4-sampa","2",64,"boosting",50,"16","geom_heavy","-1","off","boosting",1000,2870.36357916938,0,26.2852340609172
+"708","v0.27.4-sampa","2",64,"r/w locks",50,"16","geom_heavy","-1","on","r/w locks
+ + phasing",1000,851.272759525107,228,144.461933467292
+"709","v0.27.4-sampa","2",64,"boosting",50,"16","geom_heavy","-1","on","boosting
+ + phasing",1000,5362.66361160965,5,22.3066401994723
+"712","v0.27.4-sampa","2",64,"boosting
+ + combining",50,"16","read_heavy","-1","off","boosting
+ + combining",1000,13853.2287461602,0,6.8939834915788
+"713","v0.27.4-sampa","2",64,"boosting
+ + combining",50,"16","read_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,16231.6327871907,11,6.81843436259003
+"714","v0.27.4-sampa","2",64,"boosting
+ + combining",50,"16","geom_heavy","-1","off","boosting
+ + combining",1000,3192.33245258973,9,24.6965856261738
+"715","v0.27.4-sampa","2",64,"boosting
+ + combining",50,"16","geom_heavy","-1","on","boosting
+ + combining
+ + phasing",1000,6305.99593327933,0,19.1667715280399

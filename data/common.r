@@ -17,10 +17,10 @@ library('sitools')
 
 si.labels <- function(...) { function(x) gsub(" ", "", f2si(x,...)) }
 
-COMB <- "+combining"
+COMB <- "boosting\n + combining"
 COMM <- "boosting"
 RW   <- "r/w locks"
-PH   <- "phasing"
+PH   <- "\n + phasing"
 ALL  <- "all"
 COMM_PH <- "boosting\n+\nphasing"
 
@@ -36,6 +36,32 @@ json.to.df <- function(jstr) {
 }
 
 vgrep <- function(regex, values) grep(regex, values, value=T)
+
+sql <- function(...) sqldf(..., drv="SQLite")
+
+num <- function(var) as.numeric(as.character(var))
+
+x <- function(...) paste(..., sep='#')
+p <- function(...) paste(..., sep='')
+
+"+" = function(x, y) {
+  if(is.character(x) | is.character(y)) {
+    return(paste(x , y, sep=""))
+  } else {
+    .Primitive("+")(x,y)
+  }
+}
+
+mgsub <- function(myrepl, mystring){
+  gsub2 <- function(l, x){
+   do.call('gsub', list(x = x, pattern = l[1], replacement = l[2]))
+  }
+  Reduce(gsub2, myrepl, init = mystring, right = T) 
+}
+
+capply <- function(col, func) unlist(lapply(col, func))
+
+vals <- function(lst) unlist(lst, use.names=F)
 
 db <- function(query, factors=c(), numeric=c()) {
   d <- sqldf(query)
@@ -66,11 +92,13 @@ db <- function(query, factors=c(), numeric=c()) {
     
     if ('phasing' %in% colnames(d)) {
       d$cc_ph <- factor(revalue(x(d$ccmode,d$combining,d$phasing), c(
-        'rw#0#0'=RW,
-        'simple#0#0'=COMM,
-        'simple#1#0'=COMB,
-        'simple#1#1'=PH
-      )), levels=c(RW,COMM,COMB,PH))
+        'rw#0#off'=RW,
+        'simple#0#off'=COMM,
+        'simple#1#off'=COMB,
+        'rw#0#on'=RW+PH,
+        'simple#0#on'=COMM+PH,
+        'simple#1#on'=COMB+PH
+      )), levels=c(RW,COMM,COMB,RW+PH,COMM+PH,COMB+PH))
     }
     
   } else if ( 'ccmode' %in% colnames(d) ) {
@@ -89,33 +117,6 @@ db <- function(query, factors=c(), numeric=c()) {
   
   return(d)
 }
-
-sql <- function(...) sqldf(..., drv="SQLite")
-
-num <- function(var) as.numeric(as.character(var))
-
-x <- function(...) paste(..., sep='#')
-p <- function(...) paste(..., sep='')
-
-"+" = function(x,y) {
-    if(is.character(x) | is.character(y)) {
-        return(paste(x , y, sep=""))
-    } else {
-        .Primitive("+")(x,y)
-    }
-}
-
-mgsub <- function(myrepl, mystring){
-  gsub2 <- function(l, x){
-   do.call('gsub', list(x = x, pattern = l[1], replacement = l[2]))
-  }
-  Reduce(gsub2, myrepl, init = mystring, right = T) 
-}
-
-capply <- function(col, func) unlist(lapply(col, func))
-
-vals <- function(lst) unlist(lst, use.names=F)
-
 
 df.histogram <- function(json, version="none") {
   d <- fromJSON(json)
@@ -259,6 +260,33 @@ phasing.linetype <- function(title="Phasing:", ...) {
     # labels=c(as.u_char('2713'), as.u_char('2717')))
 }
 
+cc_ph_scales <- function(...) {
+  colors <- c()
+  colors[[RW]] <- c.gray
+  colors[[RW+PH]] <- c.gray
+  colors[[COMM]] <- c.blue
+  colors[[COMM+PH]] <- c.blue
+  colors[[COMB]] <- c.green
+  colors[[COMB+PH]] <- c.green
+  
+  lines <- c()
+  lines[[RW]] <- 1
+  lines[[RW+PH]] <- 2
+  lines[[COMM]] <- 1
+  lines[[COMM+PH]] <- 2
+  lines[[COMB]] <- 1
+  lines[[COMB+PH]] <- 2
+  
+  g <- guide_legend(nrow = 6)
+  
+  list(
+    scale_fill_manual(values=colors, name='Mode', guide = g, ...),
+    scale_color_manual(values=colors, name='Mode', guide = g, ...),
+    scale_linetype_manual(values=lines, name='Mode', guide = g, ...)
+  )
+}
+
+
 my_theme <- function() theme(
   panel.background = element_rect(fill="white"),
   panel.border = element_rect(fill=NA, color="grey50"),
@@ -270,7 +298,12 @@ my_theme <- function() theme(
   panel.grid = element_line(colour="black"),
   axis.text.y = element_text(colour="black"),
   axis.text.x = element_text(colour="black"),
-  text = element_text(size=9, family="Helvetica")
+  text = element_text(size=9, family="Helvetica"),
+  legend.key = element_rect(fill=NA, color=NA),
+  legend.text = element_text(lineheight=0.9),
+  legend.key.height = unit(24,'pt'),
+  legend.title.align = 0.5,
+  legend.title = element_text(size=10)
 )
 
 theme_mine <- list(
@@ -318,6 +351,7 @@ data.retwis <- function(select="*", where="client = 'dsretwis'") {
   
   d$workload <- factor(revalue(d$mix, c(
     'geom_repost'='repost-heavy',
+    'geom_heavy'='repost-heavy',
     'read_heavy'='read-heavy',
     'update_heavy'='mixed'
   )), levels=c('read-heavy','repost-heavy','mixed'))
