@@ -12,8 +12,8 @@ DEPS := refs.bib out/style Makefile
 
 FIGS := rubis-conflicts
 
-fig/rubis-conflicts.pdf: ../Rubis.graffle fig/
-	$(call graffleFigure,$<,Conflicts,$@)
+# fig/rubis-conflicts.pdf: ../Rubis.graffle fig/
+# 	$(call graffleFigure,$<,Conflicts,$@)
 
 PLOTS := $(filter-out plots/common.r, $(wildcard plots/*.r))
 
