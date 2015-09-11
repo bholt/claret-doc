@@ -4,7 +4,7 @@ source('common.r')
 a <- parse.args()
 
 d.zipf <- tryCatch({
-  d <- data.rawmix(where="name like 'v0.27%' and nclients = 4 and duration = 30 and length = 4")
+  d <- data.rawmix(where="name like 'v0.27.5%' and nclients = 4 and duration = 30 and length = 4")
 
   d$facet <-  num(d$commute_ratio)*100 + "% update\nzipf: " + d$alpha
   d$zipf <- num(d$alpha)
@@ -12,15 +12,15 @@ d.zipf <- tryCatch({
   
   d.zipf <- subset(d, nkeys == 1000 & commute_ratio == 0.5)
   
-  write.csv(subset(d.zipf, select = c('name', 'nclients', 'nthreads', 'cc', 'phasing', 'rate', 'facet',  'zipf', 'commute_ratio', 'timeout_scaling', 'throughput', 'op_timeouts')), file = 'rawmix-zipf.csv')
+  write.csv(subset(d.zipf, select = c('name', 'nclients', 'nthreads', 'cc', 'phasing', 'rate', 'facet',  'zipf', 'commute_ratio', 'timeout_scaling', 'throughput', 'op_timeouts')), file = 'data/rawmix-zipf.csv')
   d.zipf
 }, error = function(e) {
-  d.zipf <- read.csv(file = 'rawmix-zipf.csv')
+  d.zipf <- read.csv(file = 'data/rawmix-zipf.csv')
 })
 
 d.mix <- tryCatch(
 {
-  d <- data.rawmix(where="name like 'v0.27%' and nclients = 4 and duration = 30 and length = 4")
+  d <- data.rawmix(where="name like 'v0.27.5%' and nclients = 4 and duration = 30 and length = 4")
 
   d$facet <-  num(d$commute_ratio)*100 + "% update\nzipf: " + d$alpha
   d$zipf <- num(d$alpha)
@@ -28,10 +28,10 @@ d.mix <- tryCatch(
   
   d.mix <- subset(d, nkeys == 1000 & zipf == 0.6) # & txn_failed < 1000
 
-  write.csv(subset(d.mix, select = c('facet', 'rate', 'nthreads', 'cc_ph', 'cc', 'zipf', 'label', 'commute_ratio', 'phasing', 'timeout_scaling', 'throughput', 'op_timeouts')), file = 'rawmix-mix.csv')
+  write.csv(subset(d.mix, select = c('facet', 'rate', 'nthreads', 'cc_ph', 'cc', 'zipf', 'label', 'commute_ratio', 'phasing', 'timeout_scaling', 'throughput', 'op_timeouts')), file = 'data/rawmix-mix.csv')
   d.mix
 }, error = function(e){
-  d.mix <- read.csv(file = 'rawmix-mix.csv')
+  d.mix <- read.csv(file = 'data/rawmix-mix.csv')
 })
 
 
@@ -52,7 +52,8 @@ save(
   # geom_text(size=1.2)+
   expand_limits(y=0)+
   scale_x_continuous(breaks=c(0.2,0.4,0.6,0.8,1.0,1.2))+
-  scale_y_continuous(labels=si.labels())+
+  # scale_y_continuous(labels=si.labels())+
+  scale_y_continuous(labels=function(x){ x/1000+'k' })+
   # facet_wrap(~facet, ncol=6)+ #, scales="free")+
   # cc_scales(title='Mode:', guide = guide_legend(nrow = 3))+
   # color_scales('', my_palette)+
@@ -74,7 +75,7 @@ save(
   # stat_summary(geom='text', fun.y=max, size=1.2)+
   expand_limits(y=0)+
   scale_x_continuous(breaks=c(0.0,0.2,0.4,0.6,0.8,1.0))+
-  scale_y_continuous(labels=si.labels())+
+  scale_y_continuous(labels=function(x){ x/1000+'k' })+
   # color_scales('', my_palette)+
   # cc_scales(title='Mode:', guide = guide_legend(nrow = 3))+
   # phasing.linetype(guide = guide_legend(nrow = 2))+

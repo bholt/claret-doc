@@ -322,10 +322,10 @@ data.retwis <- function(select="*", where="client = 'dsretwis'") {
       d.tmp <- do.call("rbind", fromJSON("freeze/retwis.json"))
       sql(sprintf("select * from `d.tmp` where total_time is not null and %s",where))
     } else {
-      db(sprintf("select * from retwis where total_time is not null and %s", where),
+      suppressWarnings(db(sprintf("select * from retwis where total_time is not null and %s", where),
         factors=c('nshards', 'nclients'),
         numeric=c('total_time', 'txn_count', 'nthreads')
-      )
+      ))
     }
 
   d$scale <- gsub('.*/(\\d+)', '\\1', d$loaddir)
@@ -369,10 +369,10 @@ data.rubis <- function(select="*", where="client = 'rubis'") {
       d.tmp <- do.call("rbind", fromJSON("freeze/rubis.csv"))
       sql(sprintf("select * from `d.tmp` where total_time is not null and %s",where))
     } else {
-      db(sprintf("select * from rubis where total_time is not null and %s", where),
+      suppressWarnings(db(sprintf("select * from rubis where total_time is not null and %s", where),
         factors=c('nshards', 'nclients'),
         numeric=c('total_time', 'txn_count', 'nthreads')
-      )
+      ))
     }
 
   d$state <- gsub('.*/(.*)', '\\1', d$loaddir)
@@ -389,9 +389,11 @@ data.rubis <- function(select="*", where="client = 'rubis'") {
   # compute avg latencies for each txn type
   txns <- gsub('rubis_(.*)_count', '\\1', names(d[,grepl('rubis_(.*)_count',names(d))]))
   for (t in txns) d[["rubis_"+t+"_avg_latency_ms"]] <- d[["rubis_"+t+"_latency"]] / d[["rubis_"+t+"_count"]]
-        
+  
   d$throughput <- d$txn_count / d$total_time
   d$avg_latency_ms <- d$txn_time / d$txn_count * 1000
+  
+  d$rubis_txn_count <- with(d, rubis_AddUser_count + rubis_BrowseItems_count + rubis_CloseAuction_count + rubis_NewBid_count + rubis_NewComment_count + rubis_OpenAuction_count + rubis_UserSummary_count + rubis_ViewAuction_count)
   
   return(d)
 }
@@ -414,11 +416,11 @@ data.papoc <- function(where) {
   d$Graph <- capply(d$gen, function(s) gsub('kronecker:.+','kronecker',s))
   
   
-  d$workload <- factor(revalue(d$mix, c(
+  d$workload <- suppressWarnings(factor(revalue(d$mix, c(
     'geom_repost'='repost-heavy',
     'read_heavy'='read-heavy',
     'update_heavy'='mixed'
-  )), levels=c('repost-heavy','read-heavy','mixed'))
+  )), levels=c('repost-heavy','read-heavy','mixed')))
   
   d$zmix <- sprintf('%s/%s', d$mix, d$alpha)
   
@@ -515,10 +517,7 @@ data.rawmix <- function(where="total_time is not null") {
   d$throughput <- d$txn_count / d$total_time
   d$avg_latency_ms <- d$txn_time / d$txn_count * 1000
   
-  d$failure_rate <- d$txn_failed / (d$txn_count + d$txn_failed)
-  d$throughput <- d$txn_count * num(d$nclients) / d$total_time
-  d$avg_latency_ms <- d$txn_time / d$txn_count * 1000
-  
+  d$failure_rate <- d$txn_failed / (d$txn_count + d$txn_failed)  
   d$op_retry_ratio <- d$op_retries / d$op_count
     
   return(d)

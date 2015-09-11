@@ -6,8 +6,8 @@ txns <- c('follow','newuser','post','repost','timeline')
 
 d <- tryCatch(
   {
-    d <- data.retwis(where="name like '%v0.27%' and nclients = 2")
-    d <- subset(d, grepl("\\.(3|4)", name) & grepl('_heavy',mix) )
+    d <- data.retwis(where="name like '%v0.27.5%' and nclients = 2")
+    # d <- subset(d, grepl("\\.(3|4)", name) & grepl('_heavy',mix) & max_retries == 100)
     # d <- subset(d, avg_latency_ms < 50)
     
     d$throughtput <- d$retwis_txn_count * num(d$nclients) / d$total_time
@@ -21,10 +21,12 @@ d <- tryCatch(
     #   / total_time
     # ))
     
-    write.csv(subset(d, select = c('name', 'nclients', 'nthreads', 'cc', 'rate', 'scale', 'mix', 'alpha', 'phasing', 'cc_ph', 'timeout_scaling', 'throughput', 'op_timeouts', 'avg_latency_ms')), file = 'retwis-tput-vs-lat.csv')
+    write.csv(subset(d, select = c('name', 'nclients', 'nthreads', 'cc', 'rate', 'scale', 'mix', 'workload', 'alpha', 'phasing', 'cc_ph', 'timeout_scaling', 'throughput', 'op_timeouts', 'avg_latency_ms')), file = 'data/retwis-tput-vs-lat.csv')
     d
   }, error = function(e) {
-    d <- read.csv(file = 'retwis-tput-vs-lat.csv')
+    write("\n!! Database unreachable. Reading stashed results from CSV.\n", stderr())
+    print("!!")
+    d <- read.csv(file = 'data/retwis-tput-vs-lat.csv')
   }
 )
 
@@ -32,7 +34,7 @@ d <- tryCatch(
 
 d$x <- d$nthreads * num(d$nclients)
 d$label <- d$nthreads * num(d$nclients) + "x" + d$rate
-d$facet <- with(d, "scale " + scale + ", " + workload)
+d$facet <- with(d, workload)
 
 plot <- function(suffix, d, layers) {
 
@@ -50,7 +52,7 @@ plot <- function(suffix, d, layers) {
     # geom_point()+
     geom_mean_path(d, throughput, avg_latency_ms, .(x,facet,cc,phasing,cc_ph))+
     expand_limits(y=0)+
-    facet_wrap(~facet)+ #, scales="free")+
+    facet_wrap(~facet, scales="free_x")+
     # cc_scales()+phasing.linetype()+
     cc_ph_scales()+
     my_theme()+layers #+theme(legend.position='bottom')
@@ -75,5 +77,5 @@ plot <- function(suffix, d, layers) {
 
 }
 
-plot('', subset(d, async == 1), list(coord_cartesian(ylim=c(0,15))))
-plot('-no-async', subset(d, async == 0 & txn_failed < 500), list(coord_cartesian(ylim=c(0,30))))
+# plot('', subset(d, async == 1 & txn_failed < 100), list(coord_cartesian(ylim=c(0,15))))
+plot('-no-async', subset(d, async == 0 & txn_failed < 20 & total_time > 60 & total_time < 65), list(coord_cartesian(ylim=c(0,30))))

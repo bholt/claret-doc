@@ -4,16 +4,16 @@ a <- parse.args()
 
 d <- tryCatch(
   {
-    d <- data.rawmix(where="name like 'v0.27-%' and nclients = 4 and duration = 30 and length = 4")
+    d <- data.rawmix(where="name like 'v0.27.5%' and nclients = 4 and duration = 30 and length = 4")
         
     d <- subset(d, commute_ratio == 0.5 & alpha == 0.6 & rate == 100)
     
-    write.csv(subset(d, select = c('name', 'nclients', 'nthreads', 'cc', 'phasing', 'cc_ph', 'rate', 'alpha', 'commute_ratio', 'timeout_scaling', 'throughput', 'op_timeouts', 'avg_latency_ms')), file = 'rawmix-tput-vs-lat.csv')
+    write.csv(subset(d, select = c('name', 'nclients', 'nthreads', 'cc', 'phasing', 'cc_ph', 'rate', 'alpha', 'commute_ratio', 'timeout_scaling', 'throughput', 'op_timeouts', 'avg_latency_ms')), file = 'data/rawmix-tput-vs-lat.csv')
     
     d
   }, error = function(e) {
     write("!! Database unreachable. Reading stashed results from CSV.\n")
-    d <- read.csv(file = 'rawmix-tput-vs-lat.csv')
+    d <- read.csv(file = 'data/rawmix-tput-vs-lat.csv')
   }
 )
 
