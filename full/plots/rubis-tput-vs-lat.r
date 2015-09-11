@@ -35,13 +35,12 @@ save(
     group = cc_ph, fill = cc_ph, color = cc_ph, linetype = cc_ph
   ))+
   xlab('Throughput (txn/s)')+ylab('Mean latency (ms)')+
-  # geom_point()+
   scale_x_continuous(breaks = c(0, 5000, 10000), labels = function(x){ x/1000+'k' })+
   geom_mean_path(d, throughput, avg_latency_ms, .(x,facet,cc,phasing,cc_ph))+
   expand_limits(x=0, y=0)+
   facet_wrap(~facet, scales="free_x")+
   cc_ph_scales()+
-  my_theme()+coord_cartesian(y=c(0,10))
+  my_theme()+coord_cartesian(y=c(0,15))
 , 'rubis-tput-vs-lat', w=5, h=3)
 
 save(

@@ -21,16 +21,15 @@
 ### Combining
 
 
-## RUBiS
+## Rubis
+
+~ Fig { #plot-rubis caption="Throughput vs latency plot of Rubis (auction site). Contention between bids on popular auctions, especially close to their closing time, causes performance to drop for reader/writer locks, but tracking top bids is commutative, so boosted transactions maintain high throughput and lower latency." }
+![Rubis](plots/rubis-tput-vs-lat.pdf){ .onecol }
+~
 
 ## Retwis
 
-~ Fig { #plot-retwis caption="[todo: v1 (w/ async opt.)] Throughput vs latency plot of Retwis. While mostly reading, performance is fine, but during high-contention events (*repost-heavy* workload), boosting and especially phasing are effective for keeping throughput up." }
-![Retwis](plots/retwis-tput-vs-lat.pdf){ .onecol }
-~
-
-
-~ Fig { #plot-retwis-no-async caption="[todo: v2 (no async opt.)] Throughput vs latency plot of Retwis. Even for steady-state read-heavy workload, boosting and combining are essential for acheiving good throughput. Data points with exceedingly high failure rate are left out (almost all non-phasing)." }
+~ Fig { #plot-retwis-no-async caption="Throughput vs latency plot of Retwis. Even for steady-state read-heavy workload, boosting and combining are essential for acheiving good throughput. Data points with exceedingly high failure rate are left out (almost all non-phasing)." }
 ![Retwis](plots/retwis-tput-vs-lat-no-async.pdf){ .onecol }
 ~
 
