@@ -21,7 +21,7 @@ d <- tryCatch(
     #   / total_time
     # ))
     
-    write.csv(subset(d, select = c('name', 'nclients', 'nthreads', 'cc', 'rate', 'scale', 'mix', 'workload', 'alpha', 'phasing', 'cc_ph', 'timeout_scaling', 'throughput', 'op_timeouts', 'avg_latency_ms')), file = 'data/retwis-tput-vs-lat.csv')
+    write.csv(subset(d, select = c('name', 'nclients', 'nthreads', 'cc', 'rate', 'scale', 'mix', 'workload', 'alpha', 'phasing', 'async', 'cc_ph', 'timeout_scaling', 'throughput', 'op_timeouts', 'avg_latency_ms', 'txn_failed', 'total_time')), file = 'data/retwis-tput-vs-lat.csv')
     d
   }, error = function(e) {
     write("\n!! Database unreachable. Reading stashed results from CSV.\n", stderr())
@@ -48,7 +48,7 @@ plot <- function(suffix, d, layers) {
     # geom_point()+
     # geom_text(aes(label=label), size=1.7)+
     # scale_x_continuous(labels=si.labels())+
-    scale_x_continuous(labels=function(x){ x/1000+'k' })+
+    scale_x_continuous(labels = function(x){ x/1000+'k' })+
     # geom_point()+
     geom_mean_path(d, throughput, avg_latency_ms, .(x,facet,cc,phasing,cc_ph))+
     expand_limits(y=0)+

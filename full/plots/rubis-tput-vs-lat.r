@@ -19,7 +19,12 @@ d$label <- d$nthreads * num(d$nclients) + "x" + d$rate
 
 # d$throughput <- d$rubis_txn_count / d$total_time
 
-d$facet <- with(d, state+" (z:"+alpha+") | "+mix )
+d$workload <- factor(revalue(d$mix, c(
+  'bid-heavy' = 'mixed',
+  'no-browse' = 'bid-heavy'
+)), levels = c('mixed', 'bid-heavy'))
+
+d$facet <- with(d, workload)
 
 d <- subset(d, lambda == 20)
 
@@ -30,8 +35,8 @@ save(
     group = cc_ph, fill = cc_ph, color = cc_ph, linetype = cc_ph
   ))+
   xlab('Throughput (txn/s)')+ylab('Mean latency (ms)')+
-  geom_point()+
-  scale_x_continuous(labels=function(x){ x/1000+'k' })+
+  # geom_point()+
+  scale_x_continuous(breaks = c(0, 5000, 10000), labels = function(x){ x/1000+'k' })+
   geom_mean_path(d, throughput, avg_latency_ms, .(x,facet,cc,phasing,cc_ph))+
   expand_limits(x=0, y=0)+
   facet_wrap(~facet, scales="free_x")+

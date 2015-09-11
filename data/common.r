@@ -126,6 +126,12 @@ df.histogram <- function(json, version="none") {
 
 jsfix <- function(str) gsub("'", "\"", str)
 
+to.hist <- function(j) {
+  l1 <- as.list(fromJSON(j))
+  df1 <- data.frame(x=num(names(l1)), y=vals(l1))
+  df1 <- df1[order(df1$x),]
+}
+
 replace_txn_codes <- function(orig,codes) Reduce(function(o,k){ gsub("(['\"(,])"+codes[[k]]+"(?=['\",)])", "\\1"+k+"\\2", o, perl=T) }, names(codes), init=jsfix(orig))
 
 parse_txn_conflicts <- function(str, codes) {
