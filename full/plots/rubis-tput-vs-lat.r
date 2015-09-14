@@ -43,18 +43,18 @@ save(
   my_theme()+coord_cartesian(y=c(0,15))
 , 'rubis-tput-vs-lat', w=5, h=3)
 
-save(
-  ggplot(subset(d), aes(
-    x = x,
-    y = throughput,
-    group = x(cc,phasing),
-    fill = cc_ph, color = cc_ph, linetype = cc_ph
-  ))+
-  # geom_point()+
-  stat_summary(geom='line', fun.y=mean)+
-  expand_limits(y=0)+
-  scale_y_continuous(labels=function(x){ x/1000+'k' })+
-  facet_wrap(~facet)+ #, scales="free")+
-  cc_ph_scales()+
-  my_theme()
-, 'rubis-explore', w=8, h=6)
+# save(
+#   ggplot(subset(d), aes(
+#     x = x,
+#     y = throughput,
+#     group = x(cc,phasing),
+#     fill = cc_ph, color = cc_ph, linetype = cc_ph
+#   ))+
+#   # geom_point()+
+#   stat_summary(geom='line', fun.y=mean)+
+#   expand_limits(y=0)+
+#   scale_y_continuous(labels=function(x){ x/1000+'k' })+
+#   facet_wrap(~facet)+ #, scales="free")+
+#   cc_ph_scales()+
+#   my_theme()
+# , 'rubis-explore', w=8, h=6)

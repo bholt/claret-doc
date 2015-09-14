@@ -8,23 +8,20 @@ d <- tryCatch(
         
     d <- subset(d, commute_ratio == 0.5 & alpha == 0.6 & rate == 100)
     
-    write.csv(subset(d, select = c('name', 'nclients', 'nthreads', 'cc', 'phasing', 'cc_ph', 'rate', 'alpha', 'commute_ratio', 'timeout_scaling', 'throughput', 'op_timeouts', 'avg_latency_ms')), file = 'data/rawmix-tput-vs-lat.csv')
+    write.csv(subset(d, select = c('name', 'nclients', 'nthreads', 'cc', 'phasing', 'cc_ph', 'rate', 'alpha', 'commute_ratio', 'timeout_scaling', 'throughput', 'op_timeouts', 'avg_latency_ms', 'txn_failed')), file = 'data/rawmix-tput-vs-lat.csv')
     
     d
   }, error = function(e) {
-    write("!! Database unreachable. Reading stashed results from CSV.\n")
+    write("!! Database unreachable. Reading stashed results from CSV.\n", stderr())
     d <- read.csv(file = 'data/rawmix-tput-vs-lat.csv')
   }
 )
-
-print(d$cc_ph)
 
 d$label <- d$nthreads * num(d$nclients) + "x" + d$rate
 
 d$x <- d$nthreads * num(d$nclients)
 
 g.cc_ph <- guide_legend(nrow = 6)
-# g.phasing <- guide_legend(title = "Phasing:", nrow = 2)
 
 
 save(

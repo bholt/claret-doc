@@ -8,13 +8,13 @@ d.zipf <- tryCatch({
 
   d$facet <-  num(d$commute_ratio)*100 + "% update\nzipf: " + d$alpha
   d$zipf <- num(d$alpha)
-  d$label <- d$nthreads + "@" + d$rate + " <" + d$op_timeouts + ">"  
   
   d.zipf <- subset(d, nkeys == 1000 & commute_ratio == 0.5)
   
-  write.csv(subset(d.zipf, select = c('name', 'nclients', 'nthreads', 'cc', 'phasing', 'rate', 'facet',  'zipf', 'commute_ratio', 'timeout_scaling', 'throughput', 'op_timeouts')), file = 'data/rawmix-zipf.csv')
+  write.csv(subset(d.zipf, select = c('name', 'nclients', 'nthreads', 'cc', 'phasing', 'cc_ph', 'rate', 'facet',  'zipf', 'commute_ratio', 'timeout_scaling', 'throughput', 'op_timeouts', 'txn_failed')), file = 'data/rawmix-zipf.csv')
   d.zipf
 }, error = function(e) {
+  write("!! Database unreachable. Reading stashed results from CSV.\n", stderr())
   d.zipf <- read.csv(file = 'data/rawmix-zipf.csv')
 })
 
@@ -24,27 +24,26 @@ d.mix <- tryCatch(
 
   d$facet <-  num(d$commute_ratio)*100 + "% update\nzipf: " + d$alpha
   d$zipf <- num(d$alpha)
-  d$label <- d$nthreads + "@" + d$rate + " <" + d$op_timeouts + ">"  
   
   d.mix <- subset(d, nkeys == 1000 & zipf == 0.6) # & txn_failed < 1000
 
   write.csv(subset(d.mix, select = c('facet', 'rate', 'nthreads', 'cc_ph', 'cc', 'zipf', 'label', 'commute_ratio', 'phasing', 'timeout_scaling', 'throughput', 'op_timeouts')), file = 'data/rawmix-mix.csv')
   d.mix
 }, error = function(e){
+  write("!! Database unreachable. Reading stashed results from CSV.\n", stderr())
   d.mix <- read.csv(file = 'data/rawmix-mix.csv')
 })
 
 
-d.zipf.mean <- ddply(d.zipf, .(facet,rate,nthreads,cc_ph,zipf,label,phasing,cc,timeout_scaling), summarize, throughput=mean(throughput), op_timeouts=mean(op_timeouts))
+d.zipf.mean <- ddply(d.zipf, .(facet,rate,nthreads,cc_ph,zipf,phasing,cc,timeout_scaling), summarize, throughput=mean(throughput), op_timeouts=mean(op_timeouts))
 
-d.mix.mean <- ddply(d.mix, .(facet,rate,nthreads,cc_ph,zipf,label,commute_ratio,phasing,cc,timeout_scaling), summarize, throughput=mean(throughput), op_timeouts=mean(op_timeouts))
+d.mix.mean <- ddply(d.mix, .(facet,rate,nthreads,cc_ph,zipf,commute_ratio,phasing,cc,timeout_scaling), summarize, throughput=mean(throughput), op_timeouts=mean(op_timeouts))
 
 save(
   ggplot(d.zipf.mean, aes(
     x = zipf,
     y = throughput,
-    group = cc_ph, fill = cc_ph, color = cc_ph, linetype = cc_ph,
-    label = label
+    group = cc_ph, fill = cc_ph, color = cc_ph, linetype = cc_ph
   ))+
   xlab('Zipfian parameter')+ylab('Peak throughput (txn/s)')+
   stat_summary(geom='line', fun.y=max)+
@@ -66,8 +65,7 @@ save(
   ggplot(subset(d.mix.mean, commute_ratio != 0.5), aes(
     x = num(commute_ratio),
     y = throughput,
-    group = cc_ph, fill = cc_ph, color = cc_ph, linetype = cc_ph,
-    label = label
+    group = cc_ph, fill = cc_ph, color = cc_ph, linetype = cc_ph
   ))+
   xlab('Operation mix (% update)')+ylab('Peak throughput (txn/s)')+
   stat_summary(geom='line', fun.y=max)+

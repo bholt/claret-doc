@@ -10,7 +10,7 @@ d <- tryCatch(
     # d <- subset(d, grepl("\\.(3|4)", name) & grepl('_heavy',mix) & max_retries == 100)
     # d <- subset(d, avg_latency_ms < 50)
     
-    d$throughtput <- d$retwis_txn_count * num(d$nclients) / d$total_time
+    # d$throughput <- d$retwis_txn_count * num(d$nclients) / d$total_time
     
     # d$throughput <- with(d, (
     #   (  retwis_follow_count +
@@ -21,7 +21,9 @@ d <- tryCatch(
     #   / total_time
     # ))
     
-    write.csv(subset(d, select = c('name', 'nclients', 'nthreads', 'cc', 'rate', 'scale', 'mix', 'workload', 'alpha', 'phasing', 'async', 'cc_ph', 'timeout_scaling', 'throughput', 'op_timeouts', 'avg_latency_ms', 'txn_failed', 'total_time')), file = 'data/retwis-tput-vs-lat.csv')
+    write.csv(subset(d,
+      select = c('name', 'nclients', 'nthreads', 'cc', 'rate', 'scale', 'mix', 'workload', 'alpha', 'phasing', 'async', 'cc_ph', 'timeout_scaling', 'throughput', 'op_timeouts', 'avg_latency_ms', 'txn_failed', 'total_time')), 
+      file = 'data/retwis-tput-vs-lat.csv')
     d
   }, error = function(e) {
     write("\n!! Database unreachable. Reading stashed results from CSV.\n", stderr())
@@ -58,22 +60,22 @@ plot <- function(suffix, d, layers) {
     my_theme()+layers #+theme(legend.position='bottom')
   , 'retwis-tput-vs-lat'+suffix, w=5, h=3)
 
-  save(
-    ggplot(subset(d), aes(
-      x = x,
-      y = throughput,
-      group = x(cc,phasing),
-      fill = cc_ph, color = cc_ph, linetype = cc_ph
-    ))+
-    # geom_point()+
-    stat_summary(geom='line', fun.y=mean)+
-    expand_limits(y=0)+
-    scale_y_continuous(labels=function(x){ x/1000+'k' })+
-    facet_wrap(~facet)+ #, scales="free")+
-    # cc_scales()+phasing.linetype()+
-    cc_ph_scales()+
-    my_theme() #+theme(legend.position='bottom')
-  , 'retwis-explore'+suffix, w=8, h=6)
+  # save(
+  #   ggplot(subset(d), aes(
+  #     x = x,
+  #     y = throughput,
+  #     group = x(cc,phasing),
+  #     fill = cc_ph, color = cc_ph, linetype = cc_ph
+  #   ))+
+  #   # geom_point()+
+  #   stat_summary(geom='line', fun.y=mean)+
+  #   expand_limits(y=0)+
+  #   scale_y_continuous(labels=function(x){ x/1000+'k' })+
+  #   facet_wrap(~facet)+ #, scales="free")+
+  #   # cc_scales()+phasing.linetype()+
+  #   cc_ph_scales()+
+  #   my_theme() #+theme(legend.position='bottom')
+  # , 'retwis-explore'+suffix, w=8, h=6)
 
 }
 

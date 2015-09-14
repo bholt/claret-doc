@@ -1,16 +1,17 @@
 #!/usr/bin/env Rscript
 source('common.r')
+a <- parse.args()
 
 d <- tryCatch({
-  d <- data.rubis(where="name like '%28.1%' and nclients = 4 and nthreads = 64 and mix = 'bid-heavy' and ccmode = 'simple'")  
-  write.csv(subset(d, select = c('name', 'nclients', 'nthreads', 'cc', 'phasing', 'cc_ph', 'rate', 'alpha', 'mix', 'timeout_scaling', 'max_timeout_ms', 'phase_limit', 'max_retries', 'max_op_retries', 'prepare_retries', 'lambda', 'throughput', 'avg_latency_ms', 'txn_count', 'txn_failed', 'stat_nbids_hist', 'server_bid_time_hist')), file = 'data/bid-dist.csv')
+  d <- data.rubis(where="name like '%28.1%' and nclients = 4 and nthreads = 64 and mix = 'bid-heavy' and ccmode = 'simple'")
+  write.csv(subset(d, select = c('id', 'name', 'nclients', 'nthreads', 'cc', 'phasing', 'cc_ph', 'rate', 'alpha', 'mix', 'timeout_scaling', 'max_timeout_ms', 'phase_limit', 'max_retries', 'max_op_retries', 'prepare_retries', 'lambda', 'throughput', 'avg_latency_ms', 'txn_count', 'txn_failed', 'stat_nbids_hist', 'server_bid_time_hist')), file = 'data/bid-dist.csv')
   d
 }, error = function(e) {
-  write("!! Database unreachable. Reading stashed results from CSV.\n")
-  read.csv(file = 'data/bid-dist.csv')
+  write("!! Database unreachable. Reading stashed results from CSV.\n", stderr())
+  d <- read.table(file = "data/bid-dist.csv", sep = ",", quote = "\"\"", header = T)
+  d$stat_nbids_hist <- as.character(d$stat_nbids_hist)
+  d
 })
-
-n <- nrow(d)
 
 nbid.hist <- adply(d, 1, function(r) {
   s <- subset(r, select=c('id','cc','phasing','nthreads','nclients','mix'))
