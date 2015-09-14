@@ -22,7 +22,7 @@ FIGS_OUT := $(FIGS:%=fig/%.pdf)
 SVG_SRCS := $(SRCS:%.mdk=out/%.mdk)
 
 $(PLOT_PDFS): %.pdf: %.r plots/common.r Makefile
-	Rscript $<
+	Rscript --slave $<
 
 fig/:
 	mkdir -p fig/

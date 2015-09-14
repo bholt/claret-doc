@@ -8,7 +8,7 @@ d <- tryCatch({
   d
 }, error = function(e) {
   write("!! Database unreachable. Reading stashed results from CSV.\n", stderr())
-  d <- read.table(file = "data/bid-dist.csv", sep = ",", quote = "\"\"", header = T)
+  d <- read.table(file = 'data/bid-dist.csv', sep = ",", quote = "\"\"", header = T)
   d$stat_nbids_hist <- as.character(d$stat_nbids_hist)
   d
 })
