@@ -1,21 +1,29 @@
 # System model
 
-Our Claret prototype is designed with a particular system model in mind, though the concept of an ADT-store could be applied similarly in other situations. At the highest level, our model consists of a number of datastore servers, arranged in a typical in-memory key-value store design: records are sharded among instances of the datastore running on different hosts (nodes or cores) by key using a static consistent hash function.
-We assume same-datacenter latency and bandwidth between hosts (i.e. not geo-replicated).
+~ Fig { #system-diagram caption="*System model:* End-user requests are handled by replicated stateless application servers which all share a sharded datastore. Claret operates between these two layers, extending the datastore with ADT-aware concurrency control (*Claret server*) and adding functionality to the app servers to perform ADT operations and coordinate transactions (*Claret client*)." }
+![Claret System Diagram](fig/system-diagram.pdf){.onecol}
+~
 
-*Clients* in our system are front-end application servers or backend proxy services which will likely be mediating large numbers of concurrent end-user requests. These should be thought of as having same-datacenter latency and bandwidth as well. End-users, submitting requests via typical web or mobile APIs, would need to see none of the changes we make.
+The concept of an ADT store could be applied to many systems, but in this work we focus on a particular, common model: stateless, replicated application servers sharing a datastore.
+For horizontal scalability, a typical datastore will consist of many shards each containing a subset of the key space, running on different hosts (nodes or cores). We assume a static consistent hashing scheme with all shards in the same datacenter (i.e. not geo-replicated).
+Frontend servers implement the core application logic and expose it via an API to end users which might be mobile clients or web servers. These servers are replicated to mitigate failures, but each instance may handle many concurrent end-user connections, mediating access to the backing datastore where application state resides.
+
+Claret operates between these frontend servers and the datastore. Application state can be modelled using ADTs in the datastore; application logic is implemented by the composition of ADT operations. Optimizations enabled by the ADT abstraction occur as these operations are applied on the datastore and as the datastore ensures consistency.
 
 ## Programming model
 
-Despite having far more actual operations than traditional put/get key value stores, Claret's programming model is still quite straightforward. For those familiar with Redis, we adopt a very similar model. Each ADT has a number of operations available on it. Each record has a type, determined by a tag associated with its key so invalid operations are prevented on the client. The particular client bindings are irrelevant to this work — in code examples we use Python-like syntax and make the `client` argument implicit.
+At its core, the Claret programming model is not significantly different than traditional key/value stores. Rather than just strings with two available operations, `get` and `set`, records can have any of a number of different types, each of which have operations associated with them. We adopt a model similar to Redis, where the first operation which initializes a record sets its type and from then on, only operations for that ADT are allowed.
+
+Despite having far more actual operations than traditional put/get key value stores, Claret's programming model is still quite straightforward, especially for those familiar with Redis. Each ADT has a number of operations available on it. Each record has a type, determined by a tag associated with its key so invalid operations are prevented on the client. The particular client bindings are irrelevant to this work — in code examples we use Python-like syntax and make the `client` argument implicit.
 
 ## Consistency model
 
-Rather than relying on weaker consistency models, Claret aims to leverage high-level semantics to make strong consistency practical. Instead of guarding actions in case of inconsistency, application programmers instead focus on which ADTs expose more concurrency, or shrinking the scope of transactions.
+Rather than relying on weaker consistency models, Claret aims to leverage high-level semantics to make strong consistency practical. Instead of guarding actions in case of inconsistency, application programmers instead focus on exposing concurrency by choosing ADTs that best represent 
+which ADTs expose more concurrency, or shrinking the scope of transactions.
 
-Individual operations are strictly linearizable, committing atomically on the shard that owns the record. Atomicity is determined by the granularity of individual ADT operations, a single ADT record, including containers, is conceptually a single object living on one shard (though it need not be implemented in exactly that way). If an application developer desires, any amount of complex application logic can be performed in an operation on a custom ADT. In practice, complex application state and actions are composed from more general data structures with transactions.
+Individual operations are strictly linearizable, committing atomically on the shard that owns the record. Each record, including aggregates, behaves as a single object living on one shard. Atomicity is determined by the granularity of individual ADT operations. Custom ADTs allow arbitrarily complex application logic to be performed atomically, provided they conceptually operate on a single "record". Composing actions between multiple objects requires transactions.
 
 ## Transactions
 
-Claret implements full distributed transactions with strong isolation guarantees. 
+Claret implements serializable distributed transactions with strong isolation guarantees. 
 

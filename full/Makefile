@@ -10,10 +10,10 @@ SRCS := $(wildcard *.mdk)
 
 DEPS := refs.bib out/style Makefile
 
-FIGS := rubis-conflicts
+FIGS := system-diagram
 
-# fig/rubis-conflicts.pdf: ../Rubis.graffle fig/
-# 	$(call graffleFigure,$<,Conflicts,$@)
+fig/system-diagram.pdf: ../Claret.graffle fig/ Makefile
+	$(call graffleFigure,$<,System,$@)
 
 PLOTS := $(filter-out plots/common.r, $(wildcard plots/*.r))
 

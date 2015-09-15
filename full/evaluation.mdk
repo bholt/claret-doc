@@ -32,6 +32,3 @@
 ~ Fig { #plot-retwis-no-async caption="Throughput vs latency plot of Retwis. Even for steady-state read-heavy workload, boosting and combining are essential for acheiving good throughput. Data points with exceedingly high failure rate are left out (almost all non-phasing)." }
 ![Retwis](plots/retwis-tput-vs-lat-no-async.pdf){ .onecol }
 ~
-
-## Social Network Benchmark
-(??)
