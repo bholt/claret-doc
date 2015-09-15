@@ -12,6 +12,8 @@ Claret operates between these frontend servers and the datastore. Application st
 
 ## Programming model
 
+[todo: Redis programming example here]
+
 At its core, the Claret programming model is not significantly different than traditional key/value stores. Rather than just strings with two available operations, `get` and `set`, records can have any of a number of different types, each of which have operations associated with them. We adopt a model similar to Redis, where the first operation which initializes a record sets its type and from then on, only operations for that ADT are allowed.
 
 Despite having far more actual operations than traditional put/get key value stores, Claret's programming model is still quite straightforward, especially for those familiar with Redis. Each ADT has a number of operations available on it. Each record has a type, determined by a tag associated with its key so invalid operations are prevented on the client. The particular client bindings are irrelevant to this work — in code examples we use Python-like syntax and make the `client` argument implicit.
@@ -26,4 +28,4 @@ Individual operations are strictly linearizable, committing atomically on the sh
 ## Transactions
 
 Claret implements serializable distributed transactions with strong isolation guarantees. 
-
+[todo: what else should we say about our transactions?]
