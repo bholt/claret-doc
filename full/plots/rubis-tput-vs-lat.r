@@ -4,7 +4,7 @@ a <- parse.args()
 
 d <- tryCatch(
   {
-    d <- data.rubis(where="duration = 60 and name like 'v0.28.1%'")
+    d <- data.rubis(where="duration = 60 and name like 'v0.28.1%' and nthreads <= 64")
     
     write.csv(subset(d, select = c('name', 'nclients', 'nthreads', 'cc', 'rate', 'mix', 'alpha', 'lambda', 'nusers', 'ncategories', 'nregions', 'phasing', 'cc_ph', 'timeout_scaling', 'throughput', 'state', 'avg_latency_ms')), file = 'data/rubis-tput-vs-lat.csv')
     d
@@ -20,13 +20,14 @@ d$label <- d$nthreads * num(d$nclients) + "x" + d$rate
 # d$throughput <- d$rubis_txn_count / d$total_time
 
 d$workload <- factor(revalue(d$mix, c(
+  'mixed'     = 'read-heavy',
   'bid-heavy' = 'mixed',
   'no-browse' = 'bid-heavy'
-)), levels = c('mixed', 'bid-heavy'))
+)), levels = c('read-heavy', 'mixed', 'bid-heavy'))
 
 d$facet <- with(d, workload)
 
-d <- subset(d, lambda == 20)
+d <- subset(d, lambda == 20 & grepl('heavy', workload))
 
 save(
   ggplot(d, aes(
@@ -40,7 +41,7 @@ save(
   expand_limits(x=0, y=0)+
   facet_wrap(~facet, scales="free_x")+
   cc_ph_scales()+
-  my_theme()+coord_cartesian(y=c(0,15))
+  my_theme()+coord_cartesian(y=c(0,10))
 , 'rubis-tput-vs-lat', w=5, h=3)
 
 # save(
