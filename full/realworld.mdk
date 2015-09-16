@@ -11,7 +11,7 @@
       - auction: power-law num of bids per item, more bids near end of auction
 -->
 
-# Real world contention
+# Real world contention {#sec-realworld}
 
 Some applications scale out well — more data provides more "room" to spread out and go without interaction. However, systems interacting with the real world often exhibit common patterns which are challenging: skewed access patterns, such as those resulting from low-diameter networks ("small-world" property of social networks), and activity spikes resulting from realtime events (tweets following a World Cup goal). When combined, network and timing effects can amplify small signals into massive bursts of activity, such as when a meme "goes viral".
 
