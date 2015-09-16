@@ -355,12 +355,19 @@ data.retwis <- function(select="*", where="client = 'dsretwis'") {
   
   d$graph <- mapply(function(g,d){ if(g == 'none') gsub('^.*/kronecker/([0-9]+)','kronecker:\\1',d) else g }, d$gen, d$loaddir)
   
+  
+  lvl <- c(
+    'read-heavy (~14% post/repost)',
+    'post-heavy (~45% post/repost)',
+    'mixed'
+  )
+  
   d$workload <- factor(revalue(d$mix, c(
-    'geom_repost'='repost-heavy',
-    'geom_heavy'='repost-heavy',
-    'read_heavy'='read-heavy',
-    'update_heavy'='mixed'
-  )), levels=c('read-heavy','repost-heavy','mixed'))
+    'geom_repost'=lvl[2],
+    'geom_heavy'=lvl[2],
+    'read_heavy'=lvl[1],
+    'update_heavy'=lvl[3]
+  )), levels=lvl)
   
   d$zmix <- sprintf('%s/%s', d$mix, d$alpha)
 

@@ -4,7 +4,7 @@ a <- parse.args()
 
 d <- tryCatch(
   {
-    d <- data.rubis(where="duration = 60 and name like 'v0.28.1%' and nthreads <= 64")
+    d <- data.rubis(where="duration = 60 and name like 'v0.28.1%' and nthreads < 96")
     
     write.csv(subset(d, select = c('name', 'nclients', 'nthreads', 'cc', 'rate', 'mix', 'alpha', 'lambda', 'nusers', 'ncategories', 'nregions', 'phasing', 'cc_ph', 'timeout_scaling', 'throughput', 'state', 'avg_latency_ms')), file = 'data/rubis-tput-vs-lat.csv')
     d
@@ -19,15 +19,19 @@ d$label <- d$nthreads * num(d$nclients) + "x" + d$rate
 
 # d$throughput <- d$rubis_txn_count / d$total_time
 
+read.heavy <- 'read-heavy (~10% bid)'
+mixed <- 'bid-heavy (~50% bid)'
+bid.heavy <- 'mostly bid'
+
 d$workload <- factor(revalue(d$mix, c(
-  'mixed'     = 'read-heavy',
-  'bid-heavy' = 'mixed',
-  'no-browse' = 'bid-heavy'
-)), levels = c('read-heavy', 'mixed', 'bid-heavy'))
+  'mixed'     = read.heavy,
+  'bid-heavy' = mixed,
+  'no-browse' = bid.heavy
+)), levels = c(read.heavy, mixed, bid.heavy))
 
 d$facet <- with(d, workload)
 
-d <- subset(d, lambda == 20 & grepl('heavy', workload))
+d <- subset(d, lambda == 20 & grepl('read-heavy|bid-heavy', workload))
 
 save(
   ggplot(d, aes(
@@ -37,6 +41,7 @@ save(
   ))+
   xlab('Throughput (txn/s)')+ylab('Mean latency (ms)')+
   scale_x_continuous(breaks = c(0, 5000, 10000), labels = function(x){ x/1000+'k' })+
+  # geom_text(aes(label = nthreads))+
   geom_mean_path(d, throughput, avg_latency_ms, .(x,facet,cc,phasing,cc_ph))+
   expand_limits(x=0, y=0)+
   facet_wrap(~facet, scales="free_x")+

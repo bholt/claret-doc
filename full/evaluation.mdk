@@ -1,25 +1,45 @@
 # Evaluation
 
+To understand the potential performance impact of the optimizations enabled by ADTs, we built a prototype in-memory ADT-store. This custom implementation, written in C++, uses UDP to transmit messages between clients (representing frontend servers) and servers. Records are kept in their in-memory representations; compared with most traditional key-value stores (with the exception of Redis) this saves time as serializing and deserializing is only performed on values being sent in or returned from operations.
+
+Our transaction processing implementation uses a standard two-phase locking scheme. Each record is associated with a lock. Operations are split into two parts: the first acquires the associated lock and performs any necessary reads. Once locks for all operations in a transaction have been acquired, a commit is sent to each participating shard which executes the second part of each operation, performing any mutation and releasing the lock. 
+
+The baseline uses reader/writer locks which allow any number of read-only operations in parallel, but requires an exclusive lock for operations that modify the record. When boosting is enabled, these are replaced with abstract locks, which allow any operations that commute with one another to hold the lock at the same time. By default, operations retry whenever they fail to acquire a lock; with phasing, replies are sent whenever the lock is finally acquired, so retries are only used to resolve deadlocks or lost packets.
+
+This prototype does not ensure fault-tolerance or durability. These could be implemented by replicating shards or logging operations to persistent storage. Mirroring operations to other replicas or waiting for filesystem syncs would be expected to increase the amount of time spent holding locks, which should be expected to exaggerate the results obtained in our experiments since the longer locks are held, the more concurrency is required.
+
+All the following experiments are run on our own cluster. Each node has dual 6-core 2.66 GHz Intel Xeon X5650 processors with 24 GB of memory, connected with a 40Gb Mellanox ConnectX-2 InfiniBand network. Unless otherwise noted, experiments are run with 4 single-threaded shards running on 4 different nodes, with 4 clients running on other nodes with variable numbers of threads. Average round-trip times between nodes for UDP packets are 150 µs.
+
+
 ## Raw Operation Mix
+
+To begin with, we explore the effects of each of the optimizations with transactions performing a random mix of operations similar to YCSB [@YCSB]. Each transaction executes a fixed number of operations, randomly selecting either a read operation (set `size`), or a commutative write operation (set `insert`), and keys selected randomly with a zipfian distribution from a pool of 10,000 keys. By varying the percentage of writes and the zipfian parameter, we can control the amount of contention in this artificial workload and quantify the impact of each optimization on performance. The zipfian parameter determines the shape of the distribution; a value of 1 corresponds to Zipf's Law, lower values are shallower and more uniform, higher values more extremely skewed.
 
 ~ Fig { #plot-rawmix caption="Performance of raw mix workload (50% read, zipf: 0.6) while increasing number of clients, plotted as throughput versus latency. We see that phasing helps all modes avoid latency spikes by ordering lock requests fairly, and when used with abstract locks and combining, results in much higher peak throughput, with no increase latency." }
 ![Raw mix throughput versus latency](plots/rawmix-tput-vs-lat.pdf){ .onecol }
 ~
 
+First, we start with a 50% read, 50% write workload and a modest zipfian parameter of 0.6, and vary the number of clients. [#plot-rawmix] shows a throughput versus latency plot with lines for each of the optimization conditions as we vary the number of clients (from 8 up to 256). As expected, each line maintains low latency until a saturation point when throughput begins to peak and latencies increase as clients have to wait longer for the overloaded server to respond. The more clients there are, the more chances for transactions to contend. We see that the baseline reader/writer locking scheme falls over very early on this reasonably contentious workload, as writes to the popular keys cause others to abort.
+
+We see that enabling phasing (the dashed lines) immediately helps even the reader/writer locks by ensuring that all clients get processed in order of arrival. However, enabling boosting, which switches to using abstract locks, prevents `insert` operations from aborting each other, nearly doubling throughput by exposing more concurrency, and combining adds a little more on top of that. Importantly, `insert` does not generally commute with `size` (except in the case where a duplicate is added), so there is still a significant chance for conflicts in this workload.
+
 ~ Fig { #plot-mix caption="Peak throughput, varying operation mix. For read-heavy workloads, using commutativity (boosting) is irrelevant, but with a greater fraction of commutative updates, reader/writer locking falls over while boosting maintains high throughput." }
 ![Varying mix](plots/rawmix-mix.pdf){ .onecol }
 ~
 
-~ Fig { #plot-zipf caption="Peak throughput with varying workload skew. Higher zipfian results in greater contention; abstract locks, used in boosting and phasing, perform better. Phasing alone is ineffetual." }
+### Varying operation mix
+
+[#plot-mix] shows throughput as we vary the percentage of commutative write operations (in this case, set insertions). Reader/writer locks and abstract locks are identical for an all-read workload, as the far-left data points demonstrate. However, as we move to the right, the more (commutative) writes there are, the more separation there is between the two, though overall, more writes involves more work, so overall throughput decreases. Phasing (dashed lines) is most important for the mixed workloads in the middle because it helps re-order operations so they can commute — without it, operations that commute must get lucky and arrive at nearly the same time. Finally, combining gives a slight advantage over just boosting as it reduces load on the servers.
+
+### Varying key distribution
+
+~ Fig { #plot-zipf caption="Peak throughput for varying key distribution. Higher zipfian results in greater contention; abstract locks, used in boosting and phasing, perform better. Phasing alone is ineffetual." }
 ![Varying zipfian](plots/rawmix-zipf.pdf){ .onecol }
 ~
 
-### Boosting
+Our final way to control contention is to vary the zipfian parameter used to select keys. [#plot-zipf] shows throughput results for a 50%-write workload with varying key distributions. At the smallest zipfian, our optimizations have only a modest impact (this is still a rather write-heavy workload), as most operations are concurrent simply because they fall on different records. As the distribution becomes more skewed toward fewer keys, there is less inter-record concurrency, so we rely more on our optimizations to extract concurrency within a record. Boosting exposes concurrency between insert operations, and phasing ensures that the hot records process operations as efficiently as possible. At especially high skew, combining finally becomes a significant help: when operations succeed in combining at the client side, it relieves the servers of some load. Because the "clients" in our model are likely to be application servers handling many concurrent end-user requests, it becomes feasible to maintain high throughput writes even under extreme contention, provided they commute.
 
-### Phasing
-
-### Combining
-
+Now that we understand how these optimizations perform under various degrees of contention, we turn to some benchmarks that model contention in real-world scenarios.
 
 ## Rubis
 
@@ -27,8 +47,30 @@
 ![Rubis](plots/rubis-tput-vs-lat.pdf){ .onecol }
 ~
 
+As detailed back in [#sec-realworld], Rubis imitates an online auction service similar to eBay. There are 8 different kinds of transactions: `OpenAuction`, `ViewAuction`, `Bid`, `CloseAuction`, `Browse`, `AddComment`, `AddUser`, `ViewUser`, but `ViewAuction` and `Bid` dominate the workload.
+
+Our modified implementation correctly models the bid distributions observed by other studies, with bids per item following a power law distribution (see [#plot-bids-per-item]) and the frequency of bids increasing near the end of an auction ([#plot-bid-time]). We set the parameters as those from [@Amza:02]: 30,000 items, divided into 62 regions and 40 categories, and 1M users and an average of 10 bids per item, though in our case this is distributed according to a zipfian distribution (with a parameter of 1.0).
+
+[#plot-rubis] shows the performance results for two different workloads: read-heavy (10% Bid transactions), and bid-heavy (50% bid transactions). For the read-heavy workload, phasing and boosting accomplish the same thing, both preventing the occasional performance breakdown which leads the baseline to suffer. In this case, reader/writer locks with phasing are sufficient because the workload is mostly reads. However, when there are more bids, performance begins to suffer for reader/writer locks, but boosting allows us to maintain nearly the same throughput.
+
 ## Retwis
 
-~ Fig { #plot-retwis-no-async caption="Throughput vs latency plot of Retwis. Even for steady-state read-heavy workload, boosting and combining are essential for acheiving good throughput. Data points with exceedingly high failure rate are left out (almost all non-phasing)." }
+Retwis is a simplified Twitter clone designed originally for Redis [@redis]. Data structures such as sets are used track each user's followers and posts and keep a materialized up-to-date timeline for each user (represented as a sorted set). On top of Retwis's basic functionality, we added a "repost" action that behaves like Twitter's "retweet". Not being a true benchmark itself, Retwis doesn't specify a workload, so we simulate a realistic workload using a synthetic graph with power-law degree distribution and a simple model for user behavior for posting and reposting.
+
+~ Fig { #plot-followers caption="Distribution of followers per user for Kronecker-generated graph." }
+![Retwis followers distribution](plots/retwis-followers.pdf){ .onecol }
+~
+
+~ Fig { #plot-reposts caption="Distribution of reposts per post generated by our user model, an approximation of real viral meme propagation." }
+![Retwis reposts distribution](plots/retwis-reposts.pdf){ .onecol }
+~
+
+For our synthetic graph, we use the Kronecker graph generator from the Graph 500 benchmark [@graph500]. This generator is designed to result in graphs with the same power-law degree distribution found in natural graphs. Our experiments use a Kronecker graph of approximately 65,000 users, with an average number of followers of 16 (scale 16 with an edge-factor of 16 in Graph500's terms). [#plot-followers] shows that the distribution of followers per user follows a power law as intended.
+
+We use a simple model of user behavior to determine when and which posts to repost. Each time we load the most recent posts in a timeline for a random user (uniformly selected), they are sorted by the number of times they have already been reposted, and a discrete geometric distribution (skewed toward 0) is used to select the number of these to repost. The distribution of reposts resulting from our model is shown in [#plot-reposts], which follows a power law distribution: a decent approximation of the "viral" propagation effect observed in real social networks. Note that a small number of posts are reposted so much that they end up on over a quarter of users' timelines.
+
+~ Fig { #plot-retwis caption="Throughput vs latency plot of Retwis. Even for steady-state read-heavy workload, boosting and combining are essential for acheiving good throughput. Data points with exceedingly high failure rate are left out (almost all non-phasing)." }
 ![Retwis](plots/retwis-tput-vs-lat-no-async.pdf){ .onecol }
 ~
+
+[#plot-retwis] shows the performance of Retwis on Claret. When most of the traffic is content consumption (reading timelines), both systems perform well enough. However, when we simulate a workload where clients repost popular posts from their timelines, we see a viral propagation effect, where a large fraction of the users get and share a post. As Twitter came to a standstill when Ellen DeGeneres's Oscar selfie set a retweeting record [@ellenselfie], so too does our baseline fall over. But with commutativity, performance continues to scale even under this highly contentious load.
