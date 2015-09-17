@@ -10,10 +10,14 @@ SRCS := $(wildcard *.mdk)
 
 DEPS := refs.bib out/style Makefile
 
-FIGS := system-diagram
+FIGS := system-diagram app-level
 
 fig/system-diagram.pdf: ../Claret.graffle fig/ Makefile
 	$(call graffleFigure,$<,System,$@)
+
+fig/app-level.pdf: ../Claret.graffle fig/ Makefile
+	$(call graffleFigure,$<,Levels,$@)
+
 
 PLOTS := $(filter-out plots/common.r, $(wildcard plots/*.r))
 
@@ -21,7 +25,7 @@ PLOT_PDFS := $(PLOTS:%.r=%.pdf)
 FIGS_OUT := $(FIGS:%=fig/%.pdf)
 SVG_SRCS := $(SRCS:%.mdk=out/%.mdk)
 
-$(PLOT_PDFS): %.pdf: %.r plots/common.r Makefile
+$(PLOT_PDFS): %.pdf: %.r plots/common.r
 	Rscript --slave $<
 
 fig/:
