@@ -266,7 +266,7 @@ phasing.linetype <- function(title="Phasing:", ...) {
     # labels=c(as.u_char('2713'), as.u_char('2717')))
 }
 
-cc_ph_scales <- function(...) {
+cc_ph_scales <- function(name = 'Mode', guide = guide_legend(nrow = 6), ...) {
   colors <- c()
   colors[[RW]] <- c.gray
   colors[[RW+PH]] <- c.gray
@@ -283,12 +283,10 @@ cc_ph_scales <- function(...) {
   lines[[COMB]] <- 1
   lines[[COMB+PH]] <- 2
   
-  g <- guide_legend(nrow = 6)
-  
   list(
-    scale_fill_manual(values=colors, name='Mode', guide = g, ...),
-    scale_color_manual(values=colors, name='Mode', guide = g, ...),
-    scale_linetype_manual(values=lines, name='Mode', guide = g, ...)
+    scale_fill_manual(values=colors, name = name, guide = guide, ...),
+    scale_color_manual(values=colors, name = name, guide = guide, ...),
+    scale_linetype_manual(values=lines, name = name, guide = guide, ...)
   )
 }
 

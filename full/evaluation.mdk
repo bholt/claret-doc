@@ -51,7 +51,14 @@ As detailed back in [#sec-realworld], Rubis imitates an online auction service s
 
 Our modified implementation correctly models the bid distributions observed by other studies, with bids per item following a power law distribution (see [#plot-bids-per-item]) and the frequency of bids increasing near the end of an auction ([#plot-bid-time]). We set the parameters as those from [@Amza:02]: 30,000 items, divided into 62 regions and 40 categories, and 1M users and an average of 10 bids per item, though in our case this is distributed according to a zipfian distribution (with a parameter of 1.0).
 
-[#plot-rubis] shows the performance results for two different workloads: read-heavy (10% Bid transactions), and bid-heavy (50% bid transactions). For the read-heavy workload, phasing and boosting accomplish the same thing, both preventing the occasional performance breakdown which leads the baseline to suffer. In this case, reader/writer locks with phasing are sufficient because the workload is mostly reads. However, when there are more bids, performance begins to suffer for reader/writer locks, but boosting allows us to maintain nearly the same throughput.
+[#plot-rubis] shows the performance results for two different workloads: read-heavy (10% Bid transactions), and bid-heavy (50% bid transactions). For the read-heavy workload, phasing and boosting accomplish the same thing, both preventing the occasional performance breakdown which leads the baseline to suffer. In this case, reader/writer locks with phasing are sufficient because the workload is mostly reads. However, in the more bid-heavy workload there is more contention, especially on the most popular auctions, which reader/writer locks are unable to cope with. By taking advantage of the fact that bids commute with each other, boosting maintains nearly the same throughput as on the read-heavy workload.
+
+~ Fig { #plot-rubis-samples caption="Trace of throughput over time for Rubis (all with phasing enabled). The auction workload is characterized by bursts of higher-contention bidding activity, reflected in the lower-throughput troughs which boosting and combining help avoid."}
+![Rubis sampled throughput](plots/rubis-samples.pdf){.onecol}
+~
+
+In fact, boosting and combining both serve to avoid performance breakdowns during high-contention times. [#plot-rubis-samples] shows some traces of executions (eliding the unrepresentative startup and tail ends). We can see that the baseline's throughput plummets periodically during bursts of bidding as popular auctions near close. Leveraging commutativity with boosting helps reduce these contention spikes, maintaining smoother performance.
+
 
 ## Retwis
 
