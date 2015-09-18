@@ -43,6 +43,8 @@ In [#fig-levels], we see that the maximum bid observed by the `View` action will
 
 The problem is that if we take the high-level `bid` action and implement it on a typical key/value store, we lose that knowledge. The individual `get` and `put` operations used to track the maximum bid conflict with one another.
 
+[todo: make red arrows point at each conflicting put/get in figure]
+
 [todo: add ADT example to fig-levels and explain it here]
 
 The rest of this paper will tackle how we can use this information in the datastore to execute fast even under high contention and how programmers can express these properties to the datastore for their applications.
