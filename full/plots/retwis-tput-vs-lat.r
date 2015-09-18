@@ -79,5 +79,4 @@ plot <- function(suffix, d, layers) {
 
 }
 
-# plot('', subset(d, async == 1 & txn_failed < 100), list(coord_cartesian(ylim=c(0,15))))
-plot('-no-async', subset(d, async == 0 & txn_failed < 20 & total_time > 60 & total_time < 65), list(coord_cartesian(ylim=c(0,30))))
+plot('', subset(d, async == 0 & txn_failed < 20 & total_time > 60 & total_time < 65), list(coord_cartesian(ylim=c(0,30))))

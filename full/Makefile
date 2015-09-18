@@ -12,10 +12,10 @@ DEPS := refs.bib out/style Makefile
 
 FIGS := system-diagram app-level
 
-fig/system-diagram.pdf: ../Claret.graffle fig/ Makefile
+fig/system-diagram.pdf: ../Claret.graffle
 	$(call graffleFigure,$<,System,$@)
 
-fig/app-level.pdf: ../Claret.graffle fig/ Makefile
+fig/app-level.pdf: ../Claret.graffle
 	$(call graffleFigure,$<,Levels,$@)
 
 
@@ -25,11 +25,8 @@ PLOT_PDFS := $(PLOTS:%.r=%.pdf)
 FIGS_OUT := $(FIGS:%=fig/%.pdf)
 SVG_SRCS := $(SRCS:%.mdk=out/%.mdk)
 
-$(PLOT_PDFS): %.pdf: %.r plots/common.r
+%.pdf: %.r plots/common.r
 	Rscript --slave $<
-
-fig/:
-	mkdir -p fig/
 
 out/%.mdk: %.mdk
 	mkdir -p out

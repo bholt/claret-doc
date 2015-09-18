@@ -77,7 +77,7 @@ For our synthetic graph, we use the Kronecker graph generator from the Graph 500
 We use a simple model of user behavior to determine when and which posts to repost. Each time we load the most recent posts in a timeline for a random user (uniformly selected), they are sorted by the number of times they have already been reposted, and a discrete geometric distribution (skewed toward 0) is used to select the number of these to repost. The distribution of reposts resulting from our model is shown in [#plot-reposts], which follows a power law distribution: a decent approximation of the "viral" propagation effect observed in real social networks. Note that a small number of posts are reposted so much that they end up on over a quarter of users' timelines.
 
 ~ Fig { #plot-retwis caption="Throughput vs latency plot of Retwis. Even for steady-state read-heavy workload, boosting and combining are essential for acheiving good throughput. Data points with exceedingly high failure rate are left out (almost all non-phasing)." }
-![Retwis](plots/retwis-tput-vs-lat-no-async.pdf){ .onecol }
+![Retwis](plots/retwis-tput-vs-lat.pdf){ .onecol }
 ~
 
 [#plot-retwis] shows the performance of Retwis on Claret. When most of the traffic is content consumption (reading timelines), both systems perform well enough. However, when we simulate a workload where clients repost popular posts from their timelines, we see a viral propagation effect, where a large fraction of the users get and share a post. As Twitter came to a standstill when Ellen DeGeneres's Oscar selfie set a retweeting record [@ellenselfie], so too does our baseline fall over. But with commutativity, performance continues to scale even under this highly contentious load.
