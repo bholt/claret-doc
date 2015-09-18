@@ -39,8 +39,6 @@ Luckily, auctions and many other applications share something besides power laws
 At the application level, it should be clear that bids on an item can be reordered with one another, provided that the correct maximum bid can still be tracked. When the auction closes, or whenever a someone views the current maximum bid, that imposes an ordering which bids cannot move beyond.
 In [#fig-levels], we see that the maximum bid observed by the `View` action will be the same if the two bids are executed in either order. That is to say, the bids *commute* with one another.
 
-The problem is that if we take the high-level `bid` action and implement it on a typical key/value store, we lose that knowledge. The individual `get` and `put` operations used to track the maximum bid conflict with one another.
+The problem is that if we take the high-level `bid` action and implement it on a typical key/value store, we lose that knowledge. The individual `get` and `put` operations used to track the maximum bid conflict with one another. A correct implementation of transactions will still get the right result but only by ensuring mutual exclusion on all the involved records for the duration of each transaction, serializing all bids.
 
-[todo: add ADT example to fig-levels and explain it here]
-
-The rest of this paper will tackle how we can use this information in the datastore to execute fast even under high contention and how programmers can express these properties to the datastore for their applications.
+The rest of this paper will demonstrate how ADTs can be used to express these application-level properties and how datastores can use that abstraction to efficiently execute distributed transactions.

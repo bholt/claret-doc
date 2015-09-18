@@ -10,7 +10,7 @@ SRCS := $(wildcard *.mdk)
 
 DEPS := refs.bib out/style Makefile
 
-FIGS := system-diagram app-level
+FIGS := system-diagram app-level adt-bid
 
 fig/system-diagram.pdf: ../Claret.graffle
 	$(call graffleFigure,$<,System,$@)
@@ -18,6 +18,8 @@ fig/system-diagram.pdf: ../Claret.graffle
 fig/app-level.pdf: ../Claret.graffle
 	$(call graffleFigure,$<,Levels,$@)
 
+fig/adt-bid.pdf: ../Claret.graffle
+	$(call graffleFigure,$<,ADT,$@)
 
 PLOTS := $(filter-out plots/common.r, $(wildcard plots/*.r))
 

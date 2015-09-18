@@ -25,6 +25,14 @@ def PlaceBid_B(item, bidder, price):
 # Custom ADT: maximum expressivity, app-specific
 def PlaceBid_C(item, bidder, price):
   auction_bid('Auction:{item}', price, bidder)
+  
+# scored set (unique items, ranked by a score associated with each item)
+class zset:
+  def add(score, item):
+  def remove(item):
+  def contains(item):
+  def size():
+  
 ```
 ~
 
