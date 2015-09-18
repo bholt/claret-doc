@@ -1,10 +1,11 @@
 # Leveraging data types
 
-At the application level, actions like `PlaceBid` may obviously commute with one another, but once these actions have been broken down into individual `put` and `get` operations, that knowledge is lost. The datastore no longer has any way to see that which reorderings are allowable, so adding multiple items to a `Set`, for instance, just looks like a series of writes with some implicit order. We need some way to communicate these higher-level properties about the application to the storage and execution system.
 
-As was alluded to earlier, data types hold the key. Specifically, the notion of *abstract data types* (ADTs) logically decouples the abstract behavior, where operations may be commutative, associative, monotonic, etc, from the low-level implementation that instantiates that behavior with lower-level reads and writes.
+<!-- At the application level, actions like `Bid` may obviously commute with one another, but once these actions have been broken down into individual `put` and `get` operations, that knowledge is lost. The datastore no longer has any way to see that which reorderings are allowable, so adding multiple items to a `Set`, for instance, just looks like a series of writes with some implicit order. We need some way to communicate these higher-level properties about the application to the storage and execution system. -->
 
-Reasoning at the level of ADTs is good for programmers and datastores alike. Higher-level ADT operations expose more flexibility to the datastore, such as chances for reordering or cheaper ways of executing them. At the same time, programmers enjoy re-using existing data structures and have control over which data types they use to build their applications, including designing their own. ADTs can range from simple primitive data types like `Set`, to fully application-specific types, like an `Auction` data type with commutative `PlaceBid` operations.
+As was alluded to earlier, data types hold the key. Specifically, the notion of *abstract data types* (ADTs) logically decouples the abstract behavior, where operations may be commutative, associative, monotonic, etc, from the low-level implementation that instantiates that behavior with reads and writes.
+
+Reasoning at the level of ADTs is good for programmers and datastores alike. Higher-level ADT operations expose more flexibility to the datastore, such as chances for reordering or cheaper ways of executing them. At the same time, programmers enjoy re-using existing data structures and have control over which data types they use to build their applications, including designing their own. ADTs can range from simple primitive data types like `Set`, to fully application-specific types, like an `Auction` data type with commutative `Bid` operations.
 
 General transactions allow ADT operations to be composed to perform more complex actions. The level of complexity of the data types is up to the programmer and can affect performance. Consider three implementations shown in [#placebid]. The first, using generic records, is correct but doesn't expose commutativity. The second and third ones express commutativity, but the third uses a custom `Auction` data type, while the second uses a standard Redis-style `SortedSet` ADT, whose `add` operations naturally commute. In this case, these last two should have roughly the same `PlaceBid` performance, but in other cases a single built-in data type is not sufficient, but may still express significant concurrency.
 
@@ -25,14 +26,6 @@ def PlaceBid_B(item, bidder, price):
 # Custom ADT: maximum expressivity, app-specific
 def PlaceBid_C(item, bidder, price):
   auction_bid('Auction:{item}', price, bidder)
-  
-# scored set (unique items, ranked by a score associated with each item)
-class zset:
-  def add(score, item):
-  def remove(item):
-  def contains(item):
-  def size():
-  
 ```
 ~
 
