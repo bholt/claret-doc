@@ -15,30 +15,34 @@
 
 <!--contention prevents scaling; contention comes from real-world interactions -->
 
-Systems interacting with the real world often exhibit common patterns which make scaling particularly challenging: skewed access patterns, such as those resulting from low-diameter networks ("small-world" property of social networks), and activity spikes resulting from realtime events (tweets following a World Cup goal). When combined, network and timing effects can amplify small signals into massive bursts of activity, such as when a meme "goes viral".
+Systems interacting with the real world often exhibit some common patterns which lead to contention: power-law distributions, network effects, and realtime events. However, much of this contention can be mitigated by understanding what semantics are desired at the application level.
+
+skewed access patterns, such as those resulting from low-diameter networks ("small-world" property of social networks), and activity spikes resulting from realtime events (tweets following a World Cup goal). When combined, network and timing effects can amplify small signals into massive bursts of activity, such as when a meme "goes viral".
 
 ## Power laws everywhere
 
-Many aspects of real-world systems follow power law distributions due to .
-Properties of real-world systems often follow power-law distributions due to a variety of common effects. The connectivity of social networks are a well-known example, where a small number of nodes (people) account for a large fraction of the connections, while most people have relatively few connections. These power laws can play off of each other, leading to other interesting properties, such as low diameter or *small-world* networks (colloquially, "six degrees of separation"). Other network effects serve to amplify small signals into massive amounts of activity, such as occurs when a topic "goes viral".
+Natural phenomena have a tendency to follow power law distributions, from physical systems to social groups.
+Zipf's Law is the observation that the frequency of words in a natural language follows a power law (specifically, frequency is inversely proportional to the rank).
+The connectivity of social networks is another well-known example: a small number of nodes (people) account for a large fraction of the connections, while most people have relatively few connections. Power laws can play off of each other, leading to other interesting properties, such as low diameter or *small-world* networks (colloquially, "six degrees of separation"). Network effects serve to amplify small signals into massive amounts of activity, such as occurs when a meme goes viral. Finally, systems with a real-time component end up with spikes of activity as events occur in real life. For example, goals during World Cup games cause spikes in Twitter traffic, famously causing the "fail whale" to appear [@failwhale].
 
-If not taken into account in the design, these properties can easily bring systems crashing down, or slowing to a standstill. Load spikes, when traffic jumps significantly higher than the norm, causes increased conflicts. More challenging, however, is the skewed popularity of keys or records — such *hot spots* end up funneling massive numbers of concurrent clients down to a small number of nodes which have the necessary data or are responsible for synchronization.
+To discuss this more concretely throughout the rest of this paper, we will use an eBay-like online auction service, based on the well-known RUBiS benchmark [@Amza:02]. At its core, this service allows users to put items up for auction, browse auctions by region and category, and place bids on open auctions. While running, an auction service is subjected to a mix of requests to open and close auctions but is dominated by bidding and browsing actions.
 
-[todo: take out discussion of RUBiS benchmark and focus on what we know about real apps]
+Studies of real-world auction sites [@Akula:04;@Akula:07;@Menasce:07] have observed that many aspects of them follow power laws. First of all, the number of bids per item roughly follow Zipf's Law (a *zipfian* distribution). However, so do the number of bids per bidder, amount of revenue per seller, number of auction wins per bidder, and more. Furthermore, there is a drastic increase in bidding near the end of an auction window as bidders attempt to out-bid one another, so there is also a realtime component. 
 
-To discuss this more concretely, we will use an eBay-like online auction service, based on the well-known RUBiS benchmark [@Amza:02], as our running example. At its core, this service allows users to put items up for auction, browse auctions by region and category, and place bids on open auctions. The original specification of the benchmark describes a workload with a mix of bidding and browsing (and opening and closing auctions), and specifies an average number of bids per auction. However, the *distribution* of bids (by item and time) was left unspecified, which can have an enormous impact on performance.
+An auction site's ability to handle these peak bidding times is crucial: a slow-down in service caused by a popular auction may prevent bidders from reaching their maximum price (especially considering the automation often employed by bidders). The ability to handle contentious bids will be directly related to revenue, as well as being responsible for user satisfaction. Additionally, this situation is not suitable for weaker consistency. Therefore, we must find ways to satisfy performance needs without sacrificing strong consistency.
 
-Surveys of real-world auction sites [@Akula:04;@Akula:07;@Menasce:07] have observed that many properties follow power law distributions. Not only do the number of bids per item roughly follow Zipf's Law (a *zipfian* distribution), so too do the number of bids per bidder, amount of revenue per seller, number of auction wins per bidder, and more. Furthermore, there is a drastic increase in bidding near the end of an auction window as bidders attempt to out-bid one another, 
- the majority of bids arrive near the end of the auction window as bidders attempt to out-bid one another, as shown in [#plot-bid-time]. [todo: find more measurement studies?] The number and frequency of bids for even single auction exceeds the capacity of a single machine. The ability to get bids in will be directly related to revenue of an auction site, as well as being responsible for user satisfaction, and this case, at least, is definitely not suitable for weaker consistency. Therefore, we need to find ways to satisfy performance needs without sacrificing strong consistency.
+## Application-level commutativity
 
-## Commutativity is common
-
-Luckily, high-contention situations often share other, more useful, properties like commutativity and associativity. At a high level, it should be clear that bids placed on an item can be reordered with one another, provided that the correct maximum bid can still be tracked. Whenever a browse action observes the maximum bid or the auction closes, that must impose an ordering that bids cannot move beyond, but bids themselves can be reordered with each other. That is to say, bids *commute* with one another because conceptually, there is an *ordered set* of bids and ultimately we only care about the maximum value.
-
-Modeling the power law properties described above, we generated a new RUBiS workload that is more indicative of real-world auctions. With this simulation, we can measure all of the conflicts that would occur between auction transactions under this workload when executed naively. Using techniques which will be described in the rest of this paper, we found which transactions actually commute with one another, and measured those as well. [#auction-conflicts] shows the results of this simulation for four of the most important transaction types. We can see that the bid-to-bid conflicts are the most significant, but commutativity completely eliminates them.
-
-~ Fig { #fig-levels caption="At the application level, many transactions should commute with one another, such as these Bid transactions, but when translated down to put and get operations, this knowledge is lost." }
+~ Fig { #fig-levels caption="At the application level, many transactions ought to commute with one another, such as these Bid transactions, but when translated down to put and get operations, this knowledge is lost." }
 ![Application-level versus key/value store level](fig/app-level.pdf){.onecol}
 ~
+
+Luckily, auctions and many other applications share something besides power laws: commutativity.
+At the application level, it should be clear that bids on an item can be reordered with one another, provided that the correct maximum bid can still be tracked. When the auction closes, or whenever a someone views the current maximum bid, that imposes an ordering which bids cannot move beyond.
+In [#fig-levels], we see that the maximum bid observed by the `View` action will be the same if the two bids are executed in either order. That is to say, the bids *commute* with one another.
+
+The problem is that if we take the high-level `bid` action and implement it on a typical key/value store, we lose that knowledge. The individual `get` and `put` operations used to track the maximum bid conflict with one another.
+
+[todo: add ADT example to fig-levels and explain it here]
 
 The rest of this paper will tackle how we can use this information in the datastore to execute fast even under high contention and how programmers can express these properties to the datastore for their applications.

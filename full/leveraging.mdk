@@ -11,20 +11,20 @@ General transactions allow ADT operations to be composed to perform more complex
 ~ Listing { #placebid caption="Three different pseudocode implementations of `PlaceBid`, showing various levels of ADT complexity. [todo: are these (made-up) bindings intuitive?]" }
 ```python
 # Generic records: not commutative
-def transactionPlaceBid_A(item, bidder, price):
-  Record('UserBid:'+bidder+item).put(item)
-  if price > Record('MaxBid:'+item).get():
-    Record('MaxBid:'+item).put(price)
-    Record('MaxBidder:'+item).put(bidder)
+def PlaceBid_A(item, bidder, price):
+  put('UserBid:{bidder}:{item}', price)
+  if price > get('MaxBid:{item}'):
+    put('MaxBid:{item}', price)
+    put('MaxBidder:{item}', bidder)
 
 # Built-in ADTs: expresses commutativity, reusable
-def transactionPlaceBid_B(item, bidder, price):
-  SortedSet('ItemBid:'+item).add(price, bidder)
-  Set('UserBid:'+bidder).add(item)
+def PlaceBid_B(item, bidder, price):
+  set_add('ItemBids:{item}').add(price, bidder)
+  set_add('UserBids:{item}').add(item)
 
 # Custom ADT: maximum expressivity, app-specific
-def transactionPlaceBid_C(item, bidder, price):
-  Auction(item).placeBid(price, bidder)
+def PlaceBid_C(item, bidder, price):
+  auction_bid('Auction:{item}', price, bidder)
 ```
 ~
 
