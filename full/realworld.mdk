@@ -17,8 +17,6 @@
 
 Systems interacting with the real world often exhibit some common patterns which lead to contention: power-law distributions, network effects, and realtime events. However, much of this contention can be mitigated by understanding what semantics are desired at the application level.
 
-skewed access patterns, such as those resulting from low-diameter networks ("small-world" property of social networks), and activity spikes resulting from realtime events (tweets following a World Cup goal). When combined, network and timing effects can amplify small signals into massive bursts of activity, such as when a meme "goes viral".
-
 ## Power laws everywhere
 
 Natural phenomena have a tendency to follow power law distributions, from physical systems to social groups.
@@ -27,7 +25,7 @@ The connectivity of social networks is another well-known example: a small numbe
 
 To discuss this more concretely throughout the rest of this paper, we will use an eBay-like online auction service, based on the well-known RUBiS benchmark [@Amza:02]. At its core, this service allows users to put items up for auction, browse auctions by region and category, and place bids on open auctions. While running, an auction service is subjected to a mix of requests to open and close auctions but is dominated by bidding and browsing actions.
 
-Studies of real-world auction sites [@Akula:04;@Akula:07;@Menasce:07] have observed that many aspects of them follow power laws. First of all, the number of bids per item roughly follow Zipf's Law (a *zipfian* distribution). However, so do the number of bids per bidder, amount of revenue per seller, number of auction wins per bidder, and more. Furthermore, there is a drastic increase in bidding near the end of an auction window as bidders attempt to out-bid one another, so there is also a realtime component. 
+Studies of real-world auction sites [@Akula:04;@Akula:07;@Menasce:07] have observed that many aspects of them follow power laws. First of all, the number of bids per item roughly follow Zipf's Law (a *zipfian* distribution). However, so do the number of bids per bidder, amount of revenue per seller, number of auction wins per bidder, and more. Furthermore, there is a drastic increase in bidding near the end of an auction window as bidders attempt to out-bid one another, so there is also a realtime component.
 
 An auction site's ability to handle these peak bidding times is crucial: a slow-down in service caused by a popular auction may prevent bidders from reaching their maximum price (especially considering the automation often employed by bidders). The ability to handle contentious bids will be directly related to revenue, as well as being responsible for user satisfaction. Additionally, this situation is not suitable for weaker consistency. Therefore, we must find ways to satisfy performance needs without sacrificing strong consistency.
 
@@ -42,8 +40,6 @@ At the application level, it should be clear that bids on an item can be reorder
 In [#fig-levels], we see that the maximum bid observed by the `View` action will be the same if the two bids are executed in either order. That is to say, the bids *commute* with one another.
 
 The problem is that if we take the high-level `bid` action and implement it on a typical key/value store, we lose that knowledge. The individual `get` and `put` operations used to track the maximum bid conflict with one another.
-
-[todo: make red arrows point at each conflicting put/get in figure]
 
 [todo: add ADT example to fig-levels and explain it here]
 
