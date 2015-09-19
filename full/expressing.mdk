@@ -1,5 +1,10 @@
 # Expressing data type properties
-[todo: unfinished, skip for now]
+
+For any given situation, there will be many different ways of implementing it with ADTs.
+Typically, the more specialized an ADT is, the more concurrency it can expose, so finding the closest match for each use case is essential.
+For example, an application needing to generate unique identifiers should not use a counter, which must return the next number in the sequence, because this is very difficult to scale (as implementers of TPC-C [@TPCC], which explicitly requires this, know well). Instead, a `UniqueID` type succinctly expresses that non-sequential IDs are okay, and can implement it in a way that is fully commutative.
+
+Reusing existing ADTs saves implementation time and effort, but may not always expose the maximum amount of concurrency. Some situations may call for custom ADTs which express more complex application-specific properties. [todo: A great example of this is a banking application...]
 
 ## Commutativity Specification {#sec-commutativity-spec}
 
