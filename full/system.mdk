@@ -12,13 +12,9 @@ Claret operates between these frontend servers and the datastore.
 Applications model their state using ADTs and the operations they provide; this application logic is implemented on the clients which in this case are the frontend servers.
 Clients are responsible for coordinating their transactions, retrying if necessary.
 A new, ADT-aware concurrency control system is added to each shard of the core datastore.
-ADT optimizations occur both in the concurrency control system and in the client as it issues operations and prepares transactions.
+ADT optimizations occur both in the concurrency control system and in the client as it issues operations and prepares transactions, which will be explained in more depth in [#sec-leveraging]
 
 ## Programming model
-
-~ Fig { #fig-adt-bid caption="Claret programming model example showing the ADT for a scored set and how it can be used to implement the Bid transaction from [#fig-levels]." }
-![Example ADT version of Bid transaction](fig/adt-bid.pdf){.onecol}
-~
 
 The Claret programming model is not significantly different than traditional key/value stores, especially for users of Redis [@redis]. Rather than just strings with two available operations, `put` and `get`, records can have any of a number of different types, each of which have operations associated with them.
 Each record has a type, determined by a tag associated with its key so invalid operations are prevented on the client.
@@ -32,6 +28,10 @@ Individual operations in Claret are strictly linearizable, committing atomically
 
 ## Transactions
 
-Claret implements serializable distributed transactions with strong isolation guarantees. [#fig-adt-bid] shows a possible client interface with `begin` and `commit`, though the retry logic is elided. Mutating operations are staged until the transaction commits to avoid rollbacks, so clients must be aware to not expect reads in the same transaction to observe those changes (similar to the behavior of Spanner [@Spanner]).
+Claret implements serializable distributed transactions with strong isolation. [#fig-adt-bid] shows a possible client interface with `begin` and `commit`, though the retry logic is elided. 
+During a transaction, each operation must acquire a lock on the record before returning.
+Mutating operations acquire locks as well, but their side-effects are staged until the transaction commits to avoid needing to rollback. However, this means that clients cannot expect reads in the same transaction to observe those changes (similar to the behavior of Spanner [@Spanner]). On commit, all the mutating operations are applied and locks are released.
+We use a lock-based approach rather than optimistic concurrency control (OCC), but OCC should also benefit in similar ways from Claret's optimizations.
 
-Note that there are no fundamental differences in programming model from Redis from the clients' view (with the exception of distributed transactions). All that is changed is that under the hood, Claret will be taking advantage of these ADTs in ways which we will describe next.
+Note that from the clients' view, there are no fundamental differences in programming model between Redis and Claret (with the exception of distributed transactions and custom types). 
+However, under the hood, Claret will be using its knowledge about the operations to improve performance in ways which we will describe next.
