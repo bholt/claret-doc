@@ -9,7 +9,7 @@ For horizontal scalability, datastores are typically divided into many shards, e
 Frontend servers implement the core application logic and expose it via an API to end users which might be mobile clients or web servers. These servers are replicated to mitigate failures, but each instance may handle many concurrent end-user connections, mediating access to the backing datastore where application state resides.
 
 Claret operates between these frontend servers and the datastore. 
-Applications model their state using ADTs and the operations they provide; this application logic is implemented on the clients which in this case are the frontend servers.
+Applications model their state using ADTs and the operations they provide; this application logic is implemented on the clients, which in this case are the frontend servers.
 Clients are responsible for coordinating their transactions, retrying if necessary.
 A new, ADT-aware concurrency control system is added to each shard of the core datastore.
 ADT optimizations occur both in the concurrency control system and in the client as it issues operations and prepares transactions, which will be explained in more depth in [#sec-leveraging]
