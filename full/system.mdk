@@ -28,9 +28,9 @@ Individual operations in Claret are strictly linearizable, committing atomically
 
 ## Transactions
 
-Claret implements interactive distributed transactions with strict serializable isolation, simiar to Spanner [@Spanner]. [#fig-adt-bid] shows a possible client interface with `begin` and `commit`, though the retry logic is elided. 
-Claret does not limit the transaction interface; clients are free to read and write to any record within the scope of the transaction. Claret uses strict two-phase locking and acquires locks for each record acessed during transaction execution.
-Writes acquire locks when they execute but are buffered at the client until commit. Similar to Spanner [@Spanner]), clients do not read their own writes. On commit, all the mutating operations are applied and locks are released.
+Claret implements interactive distributed transactions with strict serializable isolation, similar to Spanner [@Spanner]. [#fig-adt-bid] shows a possible client interface with `begin` and `commit`, though the retry logic is elided. 
+Claret does not limit the transaction interface; clients are free to read and write to any record within the scope of the transaction. Claret uses strict two-phase locking and acquires locks for each record accessed during transaction execution.
+Writes acquire locks when they execute but are buffered at the server until commit. Similar to Spanner [@Spanner]), clients do not read their own writes. On commit, all the mutating operations are applied and locks are released.
 We use a lock-based approach rather than optimistic concurrency control (OCC), but OCC should also benefit in similar ways from Claret's optimizations.
 
 Note that from the clients' view, there are no fundamental differences in programming model between Redis and Claret (with the exception of distributed transactions and custom types). 
