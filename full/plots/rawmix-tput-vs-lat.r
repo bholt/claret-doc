@@ -46,21 +46,39 @@ g.cc_ph <- guide_legend(nrow = 6)
 # , w=5, h=3)
 
 
-# save(
-#   ggplot(subset(d, cc_ph != COMB), aes(
-#     x = x,
-#     y = throughput,
-#     group = cc_ph, fill = cc_ph, color = cc_ph, linetype = cc_ph,
-#   ))+
-#   xlab('total clients')+ylab('throughput (txn/s)')+
-#   stat_summary(geom='line', fun.y=mean)+
-#   # stat_summary(fun.data=mean_cl_normal, geom='errorbar', width=0.2, aes(color='black'))+
-#   scale_x_continuous(trans=log2_trans(), breaks=c(16,32,64,128,256,384))+
-#   scale_y_continuous(labels=si.labels())+
-#   expand_limits(y=0)+
-#   cc_ph_scales()+
-#   my_theme()
-# , w=5, h=3.5)
+save(
+  ggplot(d, aes(
+    x = x,
+    y = throughput,
+    group = cc_ph, fill = cc_ph, color = cc_ph, linetype = cc_ph,
+  ))+
+  xlab('total clients')+ylab('throughput (txn/s)')+
+  stat_summary(geom='line', fun.y=mean)+
+  # stat_summary(geom='smooth', fun.data=mean_cl_normal)+
+  # stat_summary(fun.data=mean_cl_normal, geom='errorbar', width=0.2, aes(color='black'))+
+  scale_x_continuous(trans=log2_trans(), breaks=c(16,32,64,128,256,384))+
+  scale_y_continuous(labels=si.labels())+
+  expand_limits(y=0)+
+  cc_ph_scales()+
+  my_theme()
+, 'rawmix-tput', w=5, h=3.5)
+
+save(
+  ggplot(d, aes(
+    x = x,
+    y = avg_latency_ms,
+    group = cc_ph, fill = cc_ph, color = cc_ph, linetype = cc_ph,
+  ))+
+  xlab('total clients')+ylab('throughput (txn/s)')+
+  stat_summary(geom='line', fun.y=mean)+
+  # stat_summary(geom='smooth', fun.data=mean_cl_normal)+
+  # stat_summary(fun.data=mean_cl_normal, geom='errorbar', width=0.2, aes(color='black'))+
+  scale_x_continuous(breaks=c(16,32,64,128,256,384))+
+  scale_y_continuous(labels=si.labels())+
+  expand_limits(y=0)+
+  cc_ph_scales()+
+  my_theme()
+, 'rawmix-latency', w=5, h=3.5)
 
 cl_normal_min <- function(r) { mean_cl_normal(r)$ymin }
 cl_normal_max <- function(r) { mean_cl_normal(r)$ymax }
