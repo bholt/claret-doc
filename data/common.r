@@ -355,8 +355,8 @@ data.retwis <- function(select="*", where="client = 'dsretwis'") {
   
   
   lvl <- c(
-    'read-heavy (~14% post/repost)',
-    'post-heavy (~45% post/repost)',
+    'read-heavy: ~14% (re)post',
+    'post-heavy: ~45% (re)post',
     'mixed'
   )
   

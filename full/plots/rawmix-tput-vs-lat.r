@@ -52,10 +52,9 @@ save(
     y = throughput,
     group = cc_ph, fill = cc_ph, color = cc_ph, linetype = cc_ph,
   ))+
-  xlab('total clients')+ylab('throughput (txn/s)')+
+  xlab('Clients')+ylab('Throughput (txn/s)')+
   stat_summary(geom='line', fun.y=mean)+
-  # stat_summary(geom='smooth', fun.data=mean_cl_normal)+
-  # stat_summary(fun.data=mean_cl_normal, geom='errorbar', width=0.2, aes(color='black'))+
+  stat_summary(geom='point', fun.y=mean)+  
   scale_x_continuous(trans=log2_trans(), breaks=c(16,32,64,128,256,384))+
   scale_y_continuous(labels=si.labels())+
   expand_limits(y=0)+
@@ -69,8 +68,9 @@ save(
     y = avg_latency_ms,
     group = cc_ph, fill = cc_ph, color = cc_ph, linetype = cc_ph,
   ))+
-  xlab('total clients')+ylab('throughput (txn/s)')+
+  xlab('Clients')+ylab('Mean transaction latency (ms)')+
   stat_summary(geom='line', fun.y=mean)+
+  stat_summary(geom='point', fun.y=mean)+  
   # stat_summary(geom='smooth', fun.data=mean_cl_normal)+
   # stat_summary(fun.data=mean_cl_normal, geom='errorbar', width=0.2, aes(color='black'))+
   scale_x_continuous(breaks=c(16,32,64,128,256,384))+

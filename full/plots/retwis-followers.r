@@ -18,9 +18,7 @@ d <- tryCatch({
 
 r <- d[1,]
 
-save(
-  # ggplot(subset(nbid.hist, x != 0), aes(x=x, weight=y))+
-  ggplot(
+g.followers <- ggplot(
     subset(to.hist(r$server_followers_hist), x > 0),
     aes(x = x, y = y)
   )+
@@ -29,11 +27,11 @@ save(
     scale_x_log10(labels=si.labels())+ #, breaks=c(1,10,100,1000,10000))+
     scale_y_log10(labels=si.labels())+ #, breaks=c(1,10,100,1000,10000,100000))+
     my_theme()
-, 'retwis-followers', w=3.4, h=3.0)
 
-save(
-  # ggplot(subset(nbid.hist, x != 0), aes(x=x, weight=y))+
-  ggplot(
+save(g.followers, 'retwis-followers', w=3.4, h=3.0)
+
+
+g.followers.cdf <- ggplot(
     subset(to.hist(r$server_followers_hist), x > 0),
     aes(x = x, weight = y)
   )+
@@ -42,11 +40,10 @@ save(
     scale_x_log10(labels=si.labels(), breaks=c(10,50,100,1000))+
     scale_y_log10(breaks=c(0.10, 0.5, 1))+
     my_theme()
-, 'retwis-followers-cdf', w=3.4, h=3.0)
+    
+save(g.followers.cdf, 'retwis-followers-cdf', w=3.4, h=3.0)
 
-save(
-  # ggplot(subset(nbid.hist, x != 0), aes(x=x, weight=y))+
-  ggplot(
+g.reposts <- ggplot(
     subset(to.hist(r$server_reposts_hist), x > 0),
     aes(x = x, y = y)
   )+
@@ -55,4 +52,9 @@ save(
     scale_x_log10(labels=si.labels(), breaks=c(1,10,100,1000,10000))+
     scale_y_log10(labels=si.labels(), breaks=c(1,10,100,1000,10000))+
     my_theme()
-, 'retwis-reposts', w=3.4, h=3.0)
+
+save(g.reposts, 'retwis-reposts', w=3.4, h=3.0)
+
+# pdf('retwis-dists.pdf')
+# multiplot(g.followers, g.reposts, cols=2)
+# dev.off()

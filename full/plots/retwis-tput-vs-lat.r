@@ -60,22 +60,22 @@ plot <- function(suffix, d, layers) {
     my_theme()+layers #+theme(legend.position='bottom')
   , 'retwis-tput-vs-lat'+suffix, w=5, h=3)
 
-  # save(
-  #   ggplot(subset(d), aes(
-  #     x = x,
-  #     y = throughput,
-  #     group = x(cc,phasing),
-  #     fill = cc_ph, color = cc_ph, linetype = cc_ph
-  #   ))+
-  #   # geom_point()+
-  #   stat_summary(geom='line', fun.y=mean)+
-  #   expand_limits(y=0)+
-  #   scale_y_continuous(labels=function(x){ x/1000+'k' })+
-  #   facet_wrap(~facet)+ #, scales="free")+
-  #   # cc_scales()+phasing.linetype()+
-  #   cc_ph_scales()+
-  #   my_theme() #+theme(legend.position='bottom')
-  # , 'retwis-explore'+suffix, w=8, h=6)
+  save(
+    ggplot(subset(d, x <= 256), aes(
+      x = x,
+      y = throughput,
+      group = cc_ph, fill = cc_ph, color = cc_ph, linetype = cc_ph
+    ))+
+    xlab('Clients')+ylab('Throughput (txn/s)')+
+    stat_summary(geom='line', fun.y=mean)+
+    stat_summary(geom='point', fun.y=mean)+  
+    scale_x_continuous(trans=log2_trans(), breaks=c(8,16,32,64,128,256,384))+
+    scale_y_continuous(labels = function(x){ x/1000+'k' })+
+    expand_limits(x=0, y=0)+
+    facet_wrap(~facet, scales="free")+
+    cc_ph_scales()+
+    my_theme()
+  , 'retwis-tput', w=5, h=3)
 
 }
 

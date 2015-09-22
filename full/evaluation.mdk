@@ -16,7 +16,7 @@ All the following experiments are run on our own cluster. Each node has dual 6-c
 To begin with, we explore the effects of each of the optimizations with transactions performing a random mix of operations similar to YCSB [@YCSB]. Each transaction executes a fixed number of operations, randomly selecting either a read operation (set `size`), or a commutative write operation (set `insert`), and keys selected randomly with a zipfian distribution from a pool of 10,000 keys. By varying the percentage of writes and the zipfian parameter, we can control the amount of contention in this artificial workload and quantify the impact of each optimization on performance. The zipfian parameter determines the shape of the distribution; a value of 1 corresponds to Zipf's Law, lower values are shallower and more uniform, higher values more extremely skewed.
 
 ~ Fig { #plot-rawmix caption="Performance of raw mix workload (50% read, zipf: 0.6) while increasing number of clients, plotted as throughput versus latency. We see that phasing helps all modes avoid latency spikes by ordering lock requests fairly, and when used with abstract locks and combining, results in much higher peak throughput, with no increase latency." }
-![Raw mix throughput versus latency](plots/rawmix-tput-vs-lat.pdf){ .onecol }
+![Raw mix throughput versus latency](plots/rawmix-tput.pdf){ .onecol }
 ~
 
 First, we start with a 50% read, 50% write workload and a modest zipfian parameter of 0.6, and vary the number of clients. [#plot-rawmix] shows a throughput versus latency plot with lines for each of the optimization conditions as we vary the number of clients (from 8 up to 256). As expected, each line maintains low latency until a saturation point when throughput begins to peak and latencies increase as clients have to wait longer for the overloaded server to respond. The more clients there are, the more chances for transactions to contend. We see that the baseline reader/writer locking scheme falls over very early on this reasonably contentious workload, as writes to the popular keys cause others to abort.
@@ -44,7 +44,7 @@ Now that we understand how these optimizations perform under various degrees of 
 ## RUBiS
 
 ~ Fig { #plot-rubis caption="Throughput vs latency plot of Rubis (auction site). Contention between bids on popular auctions, especially close to their closing time, causes performance to drop for reader/writer locks, but tracking top bids is commutative, so boosted transactions maintain high throughput and lower latency." }
-![Rubis](plots/rubis-tput-vs-lat.pdf){ .onecol }
+![Rubis](plots/rubis-tput.pdf){ .onecol }
 ~
 
 The RUBiS [@Amza:02] benchmark imitates an online auction service similar to those described back in [#sec-realworld]. There are 8 different kinds of transactions: `OpenAuction`, `ViewAuction`, `CloseAuction`, `Bid`, `Browse`, `AddComment`, `AddUser`, `ViewUser`, but `ViewAuction` and `Bid` dominate the workload. The benchmark specifies a workload consisting of a mix of these transactions and the average number of bids per auction that should result. However, the *distribution* of bids (by item and time) was left unspecified.
@@ -85,7 +85,7 @@ For our synthetic graph, we use the Kronecker graph generator from the Graph 500
 We use a simple model of user behavior to determine when and which posts to repost. Each time we load the most recent posts in a timeline for a random user (uniformly selected), they are sorted by the number of times they have already been reposted, and a discrete geometric distribution (skewed toward 0) is used to select the number of these to repost. The distribution of reposts resulting from our model is shown in [#plot-reposts], which follows a power law distribution: a decent approximation of the "viral" propagation effect observed in real social networks. Note that a small number of posts are reposted so much that they end up on over a quarter of users' timelines.
 
 ~ Fig { #plot-retwis caption="Throughput vs latency plot of Retwis. Even for steady-state read-heavy workload, boosting and combining are essential for acheiving good throughput. Data points with exceedingly high failure rate are left out (almost all non-phasing)." }
-![Retwis](plots/retwis-tput-vs-lat.pdf){ .onecol }
+![Retwis](plots/retwis-tput.pdf){ .onecol }
 ~
 
 [#plot-retwis] shows the performance of Retwis on Claret. When most of the traffic is content consumption (reading timelines), both systems perform well enough. However, when we simulate a workload where clients repost popular posts from their timelines, we see a viral propagation effect, where a large fraction of the users get and share a post. As Twitter came to a standstill when Ellen DeGeneres's Oscar selfie set a retweeting record [@ellenselfie], so too does our baseline fall over. But with commutativity, performance continues to scale even under this highly contentious load.
