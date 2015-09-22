@@ -24,39 +24,66 @@ d$x <- d$nthreads * num(d$nclients)
 g.cc_ph <- guide_legend(nrow = 6)
 
 
-save(
-  ggplot(d, aes(
-    x = throughput,
-    y = avg_latency_ms,
-    group = cc_ph, fill = cc_ph, color = cc_ph, linetype = cc_ph
-  ))+
-  xlab('Throughput (txn/s)')+ylab('Mean latency (ms)')+
-  # geom_point()+
-  # geom_text(aes(label=label), size=1.7)+
-  scale_x_continuous(labels=si.labels())+
-  # geom_point()+
-  geom_mean_path(d, throughput, avg_latency_ms, .(x,cc,phasing,cc_ph))+
-  expand_limits(y=0)+
-  coord_cartesian(ylim=c(0,20))+
-  # cc_scales(title='Mode:', guide = g.cc)+
-  # color_scales('', my_palette)+
-  # phasing.linetype(title='Phasing:', guide = g.cc_ph)+
-  cc_ph_scales()+
-  my_theme() #+legend.bottom()
-, w=5, h=3)
+# save(
+#   ggplot(d, aes(
+#     x = throughput,
+#     y = avg_latency_ms,
+#     group = cc_ph, fill = cc_ph, color = cc_ph, linetype = cc_ph
+#   ))+
+#   xlab('Throughput (txn/s)')+ylab('Mean latency (ms)')+
+#   # geom_point()+
+#   # geom_text(aes(label=label), size=1.7)+
+#   scale_x_continuous(labels=si.labels())+
+#   # geom_point()+
+#   geom_mean_path(d, throughput, avg_latency_ms, .(x,cc,phasing,cc_ph))+
+#   expand_limits(y=0)+
+#   coord_cartesian(ylim=c(0,20))+
+#   # cc_scales(title='Mode:', guide = g.cc)+
+#   # color_scales('', my_palette)+
+#   # phasing.linetype(title='Phasing:', guide = g.cc_ph)+
+#   cc_ph_scales()+
+#   my_theme() #+legend.bottom()
+# , w=5, h=3)
 
 
 # save(
-#   ggplot(d, aes(
+#   ggplot(subset(d, cc_ph != COMB), aes(
 #     x = x,
-#     y = txns_behind_schedule,
-#     group = x(cc,phasing),
-#     fill = cc, color = cc,
-#     linetype = phasing,
+#     y = throughput,
+#     group = cc_ph, fill = cc_ph, color = cc_ph, linetype = cc_ph,
 #   ))+
+#   xlab('total clients')+ylab('throughput (txn/s)')+
 #   stat_summary(geom='line', fun.y=mean)+
+#   # stat_summary(fun.data=mean_cl_normal, geom='errorbar', width=0.2, aes(color='black'))+
+#   scale_x_continuous(trans=log2_trans(), breaks=c(16,32,64,128,256,384))+
+#   scale_y_continuous(labels=si.labels())+
 #   expand_limits(y=0)+
-#   cc_scales(title='Concurrency\ncontrol:')+
-#   phasing.linetype(title='Phasing:')+
-#   my_theme()+legend.bottom()
-# , 'rawmix-explore', w=4, h=3.5)
+#   cc_ph_scales()+
+#   my_theme()
+# , w=5, h=3.5)
+
+cl_normal_min <- function(r) { mean_cl_normal(r)$ymin }
+cl_normal_max <- function(r) { mean_cl_normal(r)$ymax }
+
+d.mean <- ddply(d, .(rate,nthreads,cc_ph,phasing,cc,timeout_scaling), summarise, y=mean(throughput), ymin=cl_normal_min(throughput), ymax=cl_normal_max(throughput))
+
+my.max <- function(r) { r[which.max(r$y),] }
+
+d.max <- ddply(d.mean, .(cc_ph), my.max)
+
+save(
+  ggplot(d.max, aes(
+    x = cc_ph,
+    y = y,
+    group = cc_ph, fill = cc_ph,
+  ))+
+  xlab('total clients')+ylab('throughput (txn/s)')+
+  geom_bar(stat="identity")+
+  geom_errorbar(aes(ymin=ymin,ymax=ymax), width=0.2)+
+  # scale_x_continuous(trans=log2_trans(), breaks=c(16,32,64,128,256,384))+
+  scale_y_continuous(labels=si.labels())+
+  expand_limits(y=0)+
+  cc_ph_scales()+
+  my_theme()+theme(legend.position='none')
+, w=4.5, h=3.5)
+
