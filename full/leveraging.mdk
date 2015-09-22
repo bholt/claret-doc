@@ -25,7 +25,7 @@ In Claret, programmers express application-level semantics through ADTs. We know
 Abstract data types decouple their abstract behavior from their low-level concrete implementation.
 Abstract operations can have properties such as commutativity, associativity, or monotonicity, which tell users how they can be reordered or executed concurrently, while the concrete implementation takes care of making it so by performing the necessary synchronization. 
 
-Knowledge of these properties of operations can be used by the datastore in many ways to improve performance. First, we will show how commutativity can be used in the concurrency control system to avoid false conflicts and ordering constraints. Then we will give an example of how associativity can be applied to reduce the load on the datastore.
+Knowledge of these properties of operations can be used by the datastore in many ways to improve performance. First, we will show how commutativity can be used in the concurrency control system to avoid false conflicts (*boosting*) and ordering constraints (*phasing*). Then we will give an example of how associativity can be applied to reduce the load on the datastore (*combining*).
 
 ## Transaction boosting
 
