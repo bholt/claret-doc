@@ -27,7 +27,7 @@ Abstract operations can have properties such as commutativity, associativity, or
 
 Knowledge of these properties of operations can be used by the datastore in many ways to improve performance. First, we will show how commutativity can be used in the concurrency control system to avoid false conflicts (*boosting*) and ordering constraints (*phasing*). Then we will give an example of how associativity can be applied to reduce the load on the datastore (*combining*).
 
-## Transaction boosting
+## Transaction boosting {#sec-boosting}
 
 To ensure strong isolation, all transactional storage systems implement some form of concurrency control. A common approach is strict two-phase-locking (S2PL), where a transaction acquires locks on all records in the execution phase before performing any irreversible changes. Typically these are reader/writer locks, so multiple read operations can execute concurrently in different transactions. This means that transactions need not block if they are reading a record already being read by other transactions, but writes cause other transactions to block.
 
@@ -40,7 +40,7 @@ In OCC-based systems, boosting reduces the abort rate because fewer operations c
 
 Boosting is especially important for highly contended records. In the case of auctions, when a particularly hot auction is near closing time, it can expect to receive a huge number of bids. If all of the bids conflict with each other and serialize, it may cause some of them to not complete in time. However, if the bids are represented using a `zset`, then they naturally commute, the transactions can execute concurrently, and everyone gets to place their bids.
 
-## Phasing
+## Phasing {#sec-phasing}
 
 Sometimes the order that operations happen to arrive causes problems with abstract locks. In particular, they only help if the operations that commute with each other arrive together. If they are interleaved in time with operations they do not commute with, then all of that cleverness is for naught. Borrowing the term from recent work on *phase reconciliation* [@Narula:OSDI14], *phasing* is the idea of reordering operations so that commuting operations execute together.
 
@@ -52,7 +52,7 @@ Reader/writer locks can also benefit from phasing; in that case, there are just 
 
 Due to phasing, the latency of some operations may increase as they are forced to wait for their phase to come. However, the benefits of reducing conflicts are often enough to reduce the latency of transactions overall.
 
-## Combining
+## Combining {#sec-combining}
 
 Another useful property on operations is *associativity*. If we think of *commutativity*, used in boosting above, as allowing operations to be executed in a different order on a given record, then *associativity* allows us to merge some of those operations together *before* applying them to the record. This technique, known as *combining* [@flatCombining; @yew:combining-trees; @funnels] can drastically reduce contention on shared data structures and improve performance in situations where applying the combined operation is cheaper than applying the operations one-by-one. In distributed settings, combining can be even more useful as it effectively distributes synchronization for a single data structure over multiple hosts [@flat-combining-pgas13].
 

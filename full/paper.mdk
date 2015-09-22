@@ -27,8 +27,7 @@ Logo: False
 
 ~Fig: page-align=top label='Figure\ [@fig]{.figure-label}' replace='&source;&nl;&nl;[[**&label;.** ]{.caption-before}&caption;]{.figure-caption html-elem=fig-caption}&nl;{notag}&nl;'
 
-~Listing: page-align=top label='Listing\ [@listing]{.figure-label}' replace='&source;&nl;&nl;[[**&label;.** ]{.caption-before}&caption;]{.figure-caption html-elem=fig-caption}&nl;{notag}&nl;'
-
+~Listing: page-align=top label='Listing\ [@listing]{.figure-label}' replace='&source;&nl;&nl;[[**&label;.** ]{.caption-before}&caption;]{.figure-caption html-elem=fig-caption}&nl;{notag}&nl;'              
 
 ~ TexRaw
 \cssClassRuleDo{fig}{%
@@ -39,6 +38,7 @@ Logo: False
   \cssDoBefore{\begin{figure}[t]}%
      \cssDoAfter{\end{figure}}%
 }
+\renewcommand{\arraystretch}{1.2}
 ~
 ~ HtmlRaw
 <script>
