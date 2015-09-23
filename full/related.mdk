@@ -13,3 +13,4 @@ Commutativity has been used in eventually consistent datastores to improve conve
 
 There is a recent trend toward supporting complex data types in NoSQL datastores. At the forefront is Redis [@redis], one of the most popular key/value stores, which supports many data types and complex operations on them, exposed through a very wide but fixed set of commands, but does not support distributed transactions. Hyperdex [@hyperdex;@hyperdex-web] supports atomic operations on lists, sets, and maps, as well as JSON-style documents. Hyperdex's Warp transaction system [@hyperdex-warp] reasons dynamically about dependencies between transactions to avoid unnecessary conflicts, but does not consider operation commutativity. Many other popular datastores such as MongoDB [@mongodb] support atomically updating parts of JSON documents, but do not leverage commutativity at all.
 
+
