@@ -1,4 +1,4 @@
-# Expressing data type properties
+# Expressing abstract behavior
 
 Just as in any software design, building Claret applications involves choosing the right data structures. There are many valid ways of composing ADTs within transactions for a correct implementation, but to achieve the best performance, the programmer must express as much of the high-level abstract behavior as possible through ADT operations, such as atomicity and commutativity.
 
