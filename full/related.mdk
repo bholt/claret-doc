@@ -19,3 +19,5 @@ There is a recent trend toward supporting complex data types in NoSQL datastores
 Programmers clearly appreciate being able to build their applications out of a library of provided data structures. Claret leverages those same data structures to expose concurrency optimizations, and provides interfaces for programmers to extend it with custom types.
 
 [todo: what else should go in the related work? section on transactions in general?]
+
+[todo: section on contention? include more detail about studies on real-world contention?]
