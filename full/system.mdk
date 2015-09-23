@@ -26,11 +26,15 @@ Rather than relying on weaker consistency models, Claret aims to use application
 
 Individual operations in Claret are strictly linearizable, committing atomically on the shard that owns the record. Each record, including aggregates, behaves as a single object living on one shard. Atomicity is determined by the granularity of individual ADT operations. Custom ADTs allow arbitrarily complex application logic to be performed atomically, provided they conceptually operate on a single "record". Composing actions between multiple objects requires transactions.
 
-## Transactions
+## Transactions {#sec-transactions}
 
 Claret implements interactive distributed transactions with strict serializable isolation, similar to Spanner [@Spanner]. [#fig-adt-bid] shows a possible client interface with `begin` and `commit`, though the retry logic is elided. 
-Claret does not limit the transaction interface; clients are free to read and write to any record within the scope of the transaction. Claret uses strict two-phase locking and acquires locks for each record accessed during transaction execution.
-Writes acquire locks when they execute but are buffered at the server until commit. Similar to Spanner [@Spanner]), clients do not read their own writes. On commit, all the mutating operations are applied and locks are released.
+Claret does not limit the transaction interface; clients are free to perform any operations on any records within the scope of the transaction. Claret uses strict two-phase locking and acquires locks for each record accessed during transaction execution.
+
+To support arbitrary ADT operations in transactions, each operation is split into two parts, *prepare* and *commit*, which are executed on the shard holding the record. *Prepare* always starts by attempting to acquire the lock for the record. When the lock has been acquired, *prepare* may read any data it wishes from the record to compute a *result* which will be returned to the calling transaction. Operations returning *void* typically do nothing after acquiring the lock, simply returning control to the calling transaction.
+Once locks for all operations in a transaction have been acquired, a transaction commit is sent to each participating shard, which executes the *commit* part of each of the *prepared* operations. The commit stage performs any necessary mutation on the record and releases the lock.
+
+Similar to Spanner [@Spanner]), clients do not read their own writes; due to the buffering of mutations, operations always observe the state prior to the beginning of the transaction.
 We use a lock-based approach rather than optimistic concurrency control (OCC), but OCC should also benefit in similar ways from Claret's optimizations.
 
 Note that from the clients' view, there are no fundamental differences in programming model between Redis and Claret (with the exception of distributed transactions and custom types). 
