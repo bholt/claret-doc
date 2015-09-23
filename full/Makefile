@@ -15,7 +15,8 @@ FIGS := \
 	app-level \
 	adt-bid \
 	abstract-lock \
-	phaser
+	phaser \
+	combiner
 
 fig/system-diagram.pdf: ../Claret.graffle
 	$(call graffleFigure,$<,System,$@)
@@ -31,6 +32,10 @@ fig/abstract-lock.pdf: ../Claret.graffle
 
 fig/phaser.pdf: ../Claret.graffle
 	$(call graffleFigure,$<,Phaser,$@)
+
+fig/combiner.pdf: ../Claret.graffle
+	$(call graffleFigure,$<,Combiner,$@)
+
 
 PLOTS := $(filter-out plots/common.r, $(wildcard plots/*.r))
 
