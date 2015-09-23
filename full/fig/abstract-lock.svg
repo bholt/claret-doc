@@ -153,6 +153,7 @@
 </defs>
 <g id="surface1">
 <rect x="0" y="0" width="372" height="378" style="fill:rgb(100%,100%,100%);fill-opacity:1;stroke:none;"/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 12 15 L 358 15 L 358 369 L 12 369 Z M 12 15 "/>
 <g style="fill:rgb(61.177063%,44.313049%,71.765137%);fill-opacity:1;">
   <use xlink:href="#glyph0-1" x="14" y="25"/>
   <use xlink:href="#glyph0-2" x="20.6" y="25"/>
