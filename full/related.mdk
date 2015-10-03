@@ -1,5 +1,11 @@
 # Related Work
 
+## Improving Transaction Concurrency
+
+Several recent systems have explored ways of exposing more concurrency between transactions. An old technique, transaction chopping [@Shasha:95], statically analyzes transactions and breaks them into smaller pieces that reduces the scope where locks are held, but potentially resulting in cascading rollbacks. A more recent system, Lynx [@Zhang:SOSP13], extends this with additional checks for commutative operations and allows conflicting transactions to interleave safely by enforcing consistent ordering. Salt [@Xie:14] borrows the notion of chopping, but allows programmers to choose some transactions to execute using weaker consistency and isolation (termed *BASE* transactions). By focusing on "baseifying" only the highly contentious transactions, programmers can get most of the benefits of NoSQL systems while maintaining the strong ACID guarantees on the rest. 
+
+Most recently, Callas [@Xie:15] introduced modular concurrency control which operates similarly to Salt but maintains ACID semantics for all transactions. Callas places transactions which may commute with each other into a separate group, which can use specialized concurrency control to execute them concurrently when it is safe to do so. Abstract locks, employed by Claret, cleanly expose concurrency among transactions, avoiding false conflicts from commuting operations, without needing to divide transactions into arbitrary groupings and without the complex multi-tiered locking strategy needed in Callas to manage inter-group dependencies. Other concurrency control techniques introduced by Callas, such as runtime pipelining are orthogonal and could usefully be applied in Claret.
+
 ## Commutativity
 
 Commutativity is well known, especially in distributed systems, for enabling important optimizations. Since the 80s, commutativity has been exploited by database systems designers [@Weihl:1988;@Fekete:90] within the safe confines of relational models, where complete control of the data structures allows systems to determine when transactions may conflict. Recently, commutativity has seen a resurgence in systems without a predefined data model, such as NoSQL databases and transactional memory.
@@ -11,6 +17,7 @@ Commutativity has been used in eventually consistent datastores to improve conve
 Claret's strictly linearizable model exposes concurrency without relaxing consistency because eventual consistency is notoriously difficult for programmers to reason about and CRDT behavior is often still counterintuitive.
 
 Bloom and BloomL [@Bloom;@BloomL] apply the CALM theorm to help programmers design applications in ways that do not require distributed coordination by restricting them in certain ways that ensure monotonicity. This lets programmers avoid reasoning about inconsistency, but not all programs can easy be expressed in this way, whereas Claret can support any design, making the question of commutativity a performance issue only.
+
 
 ## Complex datatypes in NoSQL
 
