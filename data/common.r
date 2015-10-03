@@ -12,7 +12,7 @@ suppressPackageStartupMessages(require(yaml))
 suppressPackageStartupMessages(require(extrafont))
 
 library('Unicode')
-library('Cairo')
+# library('Cairo')
 library('sitools')
 
 si.labels <- function(...) { function(x) gsub(" ", "", f2si(x,...)) }
@@ -23,6 +23,7 @@ RW   <- "r/w locks"
 PH   <- "\n + phasing"
 ALL  <- "all"
 COMM_PH <- "boosting\n+\nphasing"
+BASE <- "\n(baseline)"
 
 parse.args <- function() {
   options <- commandArgs(trailingOnly=TRUE)
@@ -92,13 +93,13 @@ db <- function(query, factors=c(), numeric=c()) {
     
     if ('phasing' %in% colnames(d)) {
       d$cc_ph <- factor(revalue(x(d$ccmode,d$combining,d$phasing), c(
-        'rw#0#off'=RW,
+        'rw#0#off'=RW+BASE,
         'simple#0#off'=COMM,
         'simple#1#off'=COMB,
         'rw#0#on'=RW+PH,
         'simple#0#on'=COMM+PH,
         'simple#1#on'=COMB+PH
-      )), levels=c(RW,COMM,COMB,RW+PH,COMM+PH,COMB+PH))
+      )), levels=c(COMB+PH,COMM+PH,RW+PH,COMB,COMM,RW+BASE))
     }
     
   } else if ( 'ccmode' %in% colnames(d) ) {
@@ -218,6 +219,7 @@ my_palette <- c(
 )
 
 my_palette[[RW]]   <- c.gray
+my_palette[[RW+BASE]]   <- c.gray
 my_palette[[COMM]] <- c.blue
 my_palette[[COMB]] <- c.green
 my_palette[[PH]]   <- c.pink
@@ -268,20 +270,21 @@ phasing.linetype <- function(title="Phasing:", ...) {
 
 cc_ph_scales <- function(name = 'Mode', guide = guide_legend(nrow = 6), ...) {
   colors <- c()
-  colors[[RW]] <- c.gray
+  colors[[RW+BASE]] <- c.gray
   colors[[RW+PH]] <- c.gray
   colors[[COMM]] <- c.blue
   colors[[COMM+PH]] <- c.blue
   colors[[COMB]] <- c.green
   colors[[COMB+PH]] <- c.green
   
+  dotted <- 2
   lines <- c()
-  lines[[RW]] <- 1
-  lines[[RW+PH]] <- 2
+  lines[[RW+BASE]] <- 1
+  lines[[RW+PH]] <- dotted
   lines[[COMM]] <- 1
-  lines[[COMM+PH]] <- 2
+  lines[[COMM+PH]] <- dotted
   lines[[COMB]] <- 1
-  lines[[COMB+PH]] <- 2
+  lines[[COMB+PH]] <- dotted
   
   list(
     scale_fill_manual(values=colors, name = name, guide = guide, ...),
@@ -306,7 +309,9 @@ my_theme <- function() theme(
   legend.key = element_rect(fill=NA, color=NA),
   legend.text = element_text(lineheight=0.9),
   legend.key.height = unit(24,'pt'),
+  legend.key.width = unit(26,'pt'),
   legend.title.align = 0.5,
+  legend.margin = unit(0,'pt'),
   legend.title = element_text(size=10)
 )
 
@@ -567,3 +572,9 @@ data.stress <- function(where="clientmode = 'stress'") {
   return(d)
 }
 
+
+error.database_unreachable <- function(e) {
+  write("\n!! Database unreachable. Reading stashed results from CSV.", stderr())
+  print(e)
+  write("", stderr())
+}

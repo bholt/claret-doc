@@ -14,7 +14,7 @@ d.zipf <- tryCatch({
   write.csv(subset(d.zipf, select = c('name', 'nclients', 'nthreads', 'cc', 'phasing', 'cc_ph', 'rate', 'facet',  'zipf', 'commute_ratio', 'timeout_scaling', 'throughput', 'op_timeouts', 'txn_failed')), file = 'data/rawmix-zipf.csv')
   d.zipf
 }, error = function(e) {
-  write("!! Database unreachable. Reading stashed results from CSV.\n", stderr())
+  error.database_unreachable()
   d.zipf <- read.csv(file = 'data/rawmix-zipf.csv')
 })
 
@@ -27,10 +27,10 @@ d.mix <- tryCatch(
   
   d.mix <- subset(d, nkeys == 1000 & zipf == 0.6) # & txn_failed < 1000
 
-  write.csv(subset(d.mix, select = c('facet', 'rate', 'nthreads', 'cc_ph', 'cc', 'zipf', 'label', 'commute_ratio', 'phasing', 'timeout_scaling', 'throughput', 'op_timeouts')), file = 'data/rawmix-mix.csv')
+  write.csv(subset(d.mix, select = c('facet', 'rate', 'nthreads', 'cc_ph', 'cc', 'zipf', 'commute_ratio', 'phasing', 'timeout_scaling', 'throughput', 'op_timeouts')), file = 'data/rawmix-mix.csv')
   d.mix
 }, error = function(e){
-  write("!! Database unreachable. Reading stashed results from CSV.\n", stderr())
+  error.database_unreachable()
   d.mix <- read.csv(file = 'data/rawmix-mix.csv')
 })
 

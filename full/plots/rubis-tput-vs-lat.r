@@ -4,12 +4,12 @@ a <- parse.args()
 
 d <- tryCatch(
   {
-    d <- data.rubis(where="duration = 60 and name like 'v0.28.1%' and nthreads < 96")
+    d <- data.rubis(where="duration = 60 and name like 'v0.28.1%' and nthreads <= 96")
     
     write.csv(subset(d, select = c('name', 'nclients', 'nthreads', 'cc', 'rate', 'mix', 'alpha', 'lambda', 'nusers', 'ncategories', 'nregions', 'phasing', 'cc_ph', 'timeout_scaling', 'throughput', 'state', 'avg_latency_ms')), file = 'data/rubis-tput-vs-lat.csv')
     d
   }, error = function(e) {
-    write("\n!! Database unreachable. Reading stashed results from CSV.\n", stderr())
+    error.database_unreachable()
     d <- read.csv(file = 'data/rubis-tput-vs-lat.csv')
   }
 )
@@ -57,7 +57,7 @@ save(
   ))+
   xlab('Clients')+ylab('Throughput (txn/s)')+
   stat_summary(geom='line', fun.y=mean)+
-  stat_summary(geom='point', fun.y=mean)+  
+  stat_summary(geom='point', fun.y=mean, guide=F)+
   scale_x_continuous(trans=log2_trans(), breaks=c(8,16,32,64,128,256,384))+
   scale_y_continuous(breaks = c(0, 5000, 10000), labels = si.labels())+
   expand_limits(x=0, y=0)+

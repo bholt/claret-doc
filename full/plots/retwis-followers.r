@@ -9,7 +9,7 @@ d <- tryCatch({
   write.csv(subset(d, select = c('id', 'name', 'nclients', 'nthreads', 'cc', 'phasing', 'cc_ph', 'rate', 'mix', 'timeout_scaling', 'max_timeout_ms', 'phase_limit', 'max_retries', 'max_op_retries', 'prepare_retries', 'throughput', 'avg_latency_ms', 'txn_count', 'txn_failed', 'server_followers_hist', 'server_reposts_hist')), file = 'data/retwis-dist.csv')
   d
 }, error = function(e) {
-  write("!! Database unreachable. Reading stashed results from CSV.\n", stderr())
+  error.database_unreachable()
   d <- read.table(file = 'data/retwis-dist.csv', sep = ",", quote = "\"\"", header = T)
   d$server_followers_hist <- as.character(d$server_followers_hist)
   d$server_reposts_hist <- as.character(d$server_reposts_hist)

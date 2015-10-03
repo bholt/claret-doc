@@ -1,1337 +1,1406 @@
-"","facet","rate","nthreads","cc_ph","cc","zipf","label","commute_ratio","phasing","timeout_scaling","throughput","op_timeouts"
+"","facet","rate","nthreads","cc_ph","cc","zipf","commute_ratio","phasing","timeout_scaling","throughput","op_timeouts"
 "1","40% update
 zipf: 0.6",100,64,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"64@100 <12>","0.4","on",1000,12344.9031786628,12
+ + combining",0.6,"0.4","on",1000,12344.9031786628,12
 "2","20% update
 zipf: 0.6",100,64,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"64@100 <10>","0.2","on",1000,14010.8798894741,10
+ + combining",0.6,"0.2","on",1000,14010.8798894741,10
 "3","60% update
 zipf: 0.6",100,64,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"64@100 <7>","0.6","on",1000,11403.6345293563,7
+ + combining",0.6,"0.6","on",1000,11403.6345293563,7
 "4","80% update
 zipf: 0.6",100,64,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"64@100 <11>","0.8","on",1000,10658.4262427849,11
+ + combining",0.6,"0.8","on",1000,10658.4262427849,11
 "5","100% update
 zipf: 0.6",100,64,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"64@100 <2>","1","on",1000,10503.4465575949,2
+ + combining",0.6,"1","on",1000,10503.4465575949,2
 "6","50% update
-zipf: 0.6",100,4,"r/w locks","r/w locks",0.6,"4@100 <0>","0.5","off",1000,1583.49740647831,0
+zipf: 0.6",100,4,"r/w locks
+(baseline)","r/w locks",0.6,"0.5","off",1000,1583.49740647831,0
 "7","50% update
-zipf: 0.6",100,16,"r/w locks","r/w locks",0.6,"16@100 <0>","0.5","off",1000,4302.43736922468,0
+zipf: 0.6",100,16,"r/w locks
+(baseline)","r/w locks",0.6,"0.5","off",1000,4302.43736922468,0
 "8","50% update
-zipf: 0.6",100,32,"r/w locks","r/w locks",0.6,"32@100 <0>","0.5","off",1000,2917.752779292,0
+zipf: 0.6",100,32,"r/w locks
+(baseline)","r/w locks",0.6,"0.5","off",1000,2917.752779292,0
 "9","50% update
-zipf: 0.6",100,64,"r/w locks","r/w locks",0.6,"64@100 <1>","0.5","off",1000,2161.50513321527,1
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.5","off",1000,2161.50513321527,1
 "10","50% update
-zipf: 0.6",100,96,"r/w locks","r/w locks",0.6,"96@100 <18>","0.5","off",1000,1838.13496297733,18
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.5","off",1000,1838.13496297733,18
 "11","50% update
-zipf: 0.6",100,4,"boosting","boosting",0.6,"4@100 <0>","0.5","off",1000,1583.82061405701,0
+zipf: 0.6",100,4,"boosting","boosting",0.6,"0.5","off",1000,1583.82061405701,0
 "12","50% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"16@100 <0>","0.5","off",1000,6344.65856151953,0
+zipf: 0.6",100,16,"boosting","boosting",0.6,"0.5","off",1000,6344.65856151953,0
 "13","50% update
-zipf: 0.6",100,32,"boosting","boosting",0.6,"32@100 <0>","0.5","off",1000,7009.68929720165,0
+zipf: 0.6",100,32,"boosting","boosting",0.6,"0.5","off",1000,7009.68929720165,0
 "14","50% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"64@100 <2>","0.5","off",1000,5893.76688377335,2
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.5","off",1000,5893.76688377335,2
 "15","50% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"96@100 <16>","0.5","off",1000,5483.37602644558,16
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.5","off",1000,5483.37602644558,16
 "16","50% update
 zipf: 0.6",100,4,"r/w locks
- + phasing","r/w locks",0.6,"4@100 <0>","0.5","on",1000,1583.65040547474,0
+ + phasing","r/w locks",0.6,"0.5","on",1000,1583.65040547474,0
 "17","50% update
 zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"16@100 <0>","0.5","on",1000,6288.4294576173,0
+ + phasing","r/w locks",0.6,"0.5","on",1000,6288.4294576173,0
 "18","50% update
 zipf: 0.6",100,32,"r/w locks
- + phasing","r/w locks",0.6,"32@100 <0>","0.5","on",1000,7394.48650876481,0
+ + phasing","r/w locks",0.6,"0.5","on",1000,7394.48650876481,0
 "19","50% update
 zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"64@100 <16>","0.5","on",1000,7475.93607592222,16
+ + phasing","r/w locks",0.6,"0.5","on",1000,7475.93607592222,16
 "20","50% update
 zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"96@100 <43>","0.5","on",1000,7544.89527166471,43
+ + phasing","r/w locks",0.6,"0.5","on",1000,7544.89527166471,43
 "21","50% update
 zipf: 0.6",100,4,"boosting
- + phasing","boosting",0.6,"4@100 <0>","0.5","on",1000,1584.06604939711,0
+ + phasing","boosting",0.6,"0.5","on",1000,1584.06604939711,0
 "22","50% update
 zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"16@100 <0>","0.5","on",1000,6342.92222540446,0
+ + phasing","boosting",0.6,"0.5","on",1000,6342.92222540446,0
 "23","50% update
 zipf: 0.6",100,32,"boosting
- + phasing","boosting",0.6,"32@100 <1>","0.5","on",1000,10780.6213957946,1
+ + phasing","boosting",0.6,"0.5","on",1000,10780.6213957946,1
 "24","50% update
 zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"64@100 <11>","0.5","on",1000,11159.652705148,11
+ + phasing","boosting",0.6,"0.5","on",1000,11159.652705148,11
 "25","50% update
 zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"96@100 <39>","0.5","on",1000,11289.971591191,39
+ + phasing","boosting",0.6,"0.5","on",1000,11289.971591191,39
 "26","50% update
 zipf: 0.6",100,4,"boosting
  + combining","boosting
- + combining",0.6,"4@100 <0>","0.5","off",1000,1584.17820838734,0
+ + combining",0.6,"0.5","off",1000,1584.17820838734,0
 "27","50% update
 zipf: 0.6",100,16,"boosting
  + combining","boosting
- + combining",0.6,"16@100 <0>","0.5","off",1000,6344.32595533234,0
+ + combining",0.6,"0.5","off",1000,6344.32595533234,0
 "28","50% update
 zipf: 0.6",100,32,"boosting
  + combining","boosting
- + combining",0.6,"32@100 <0>","0.5","off",1000,7570.16061424636,0
+ + combining",0.6,"0.5","off",1000,7570.16061424636,0
 "29","50% update
 zipf: 0.6",100,64,"boosting
  + combining","boosting
- + combining",0.6,"64@100 <0>","0.5","off",1000,6781.55732809535,0
+ + combining",0.6,"0.5","off",1000,6781.55732809535,0
 "30","50% update
 zipf: 0.6",100,96,"boosting
  + combining","boosting
- + combining",0.6,"96@100 <10>","0.5","off",1000,6451.46793992764,10
+ + combining",0.6,"0.5","off",1000,6451.46793992764,10
 "31","50% update
 zipf: 0.6",100,4,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"4@100 <0>","0.5","on",1000,1583.51576218608,0
+ + combining",0.6,"0.5","on",1000,1583.51576218608,0
 "32","50% update
 zipf: 0.6",100,16,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"16@100 <0>","0.5","on",1000,6342.75494809619,0
+ + combining",0.6,"0.5","on",1000,6342.75494809619,0
 "33","50% update
 zipf: 0.6",100,32,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"32@100 <0>","0.5","on",1000,11097.5041597338,0
+ + combining",0.6,"0.5","on",1000,11097.5041597338,0
 "34","50% update
 zipf: 0.6",100,64,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"64@100 <10>","0.5","on",1000,11818.8821591754,10
+ + combining",0.6,"0.5","on",1000,11818.8821591754,10
 "35","50% update
 zipf: 0.6",100,96,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"96@100 <40>","0.5","on",1000,12162.0180380701,40
+ + combining",0.6,"0.5","on",1000,12162.0180380701,40
 "36","0% update
-zipf: 0.6",100,16,"r/w locks","r/w locks",0.6,"16@100 <0>","0","off",1000,6345.33097576163,0
+zipf: 0.6",100,16,"r/w locks
+(baseline)","r/w locks",0.6,"0","off",1000,6345.33097576163,0
 "37","0% update
-zipf: 0.6",100,64,"r/w locks","r/w locks",0.6,"64@100 <0>","0","off",1000,15360.5217628091,0
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0","off",1000,15360.5217628091,0
 "38","0% update
-zipf: 0.6",100,96,"r/w locks","r/w locks",0.6,"96@100 <13>","0","off",1000,15706.9708828016,13
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0","off",1000,15706.9708828016,13
 "39","0% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"16@100 <0>","0","off",1000,6345.61397082086,0
+zipf: 0.6",100,16,"boosting","boosting",0.6,"0","off",1000,6345.61397082086,0
 "40","0% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"64@100 <0>","0","off",1000,15407.2627386895,0
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0","off",1000,15407.2627386895,0
 "41","0% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"96@100 <15>","0","off",1000,15794.7098930836,15
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0","off",1000,15794.7098930836,15
 "42","0% update
 zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"16@100 <0>","0","on",1000,6344.74767251369,0
+ + phasing","r/w locks",0.6,"0","on",1000,6344.74767251369,0
 "43","0% update
 zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"64@100 <0>","0","on",1000,15384.8809915105,0
+ + phasing","r/w locks",0.6,"0","on",1000,15384.8809915105,0
 "44","0% update
 zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"96@100 <11>","0","on",1000,15634.555484421,11
+ + phasing","r/w locks",0.6,"0","on",1000,15634.555484421,11
 "45","0% update
 zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"16@100 <0>","0","on",1000,6344.68612224783,0
+ + phasing","boosting",0.6,"0","on",1000,6344.68612224783,0
 "46","0% update
 zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"64@100 <0>","0","on",1000,15235.6594811838,0
+ + phasing","boosting",0.6,"0","on",1000,15235.6594811838,0
 "47","0% update
 zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"96@100 <14>","0","on",1000,15435.8453894782,14
+ + phasing","boosting",0.6,"0","on",1000,15435.8453894782,14
 "48","20% update
-zipf: 0.6",100,16,"r/w locks","r/w locks",0.6,"16@100 <0>","0.2","off",1000,6343.87404427631,0
+zipf: 0.6",100,16,"r/w locks
+(baseline)","r/w locks",0.6,"0.2","off",1000,6343.87404427631,0
 "49","20% update
-zipf: 0.6",100,64,"r/w locks","r/w locks",0.6,"64@100 <1>","0.2","off",1000,4180.48642941921,1
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.2","off",1000,4180.48642941921,1
 "50","20% update
-zipf: 0.6",100,96,"r/w locks","r/w locks",0.6,"96@100 <20>","0.2","off",1000,3530.22022547666,20
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.2","off",1000,3530.22022547666,20
 "51","20% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"16@100 <0>","0.2","off",1000,6343.78018318068,0
+zipf: 0.6",100,16,"boosting","boosting",0.6,"0.2","off",1000,6343.78018318068,0
 "52","20% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"64@100 <0>","0.2","off",1000,7287.84177502594,0
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.2","off",1000,7287.84177502594,0
 "53","20% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"96@100 <15>","0.2","off",1000,6756.62551902514,15
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.2","off",1000,6756.62551902514,15
 "54","20% update
 zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"16@100 <0>","0.2","on",1000,6341.85489698532,0
+ + phasing","r/w locks",0.6,"0.2","on",1000,6341.85489698532,0
 "55","20% update
 zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"64@100 <12>","0.2","on",1000,11064.9906533413,12
+ + phasing","r/w locks",0.6,"0.2","on",1000,11064.9906533413,12
 "56","20% update
 zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"96@100 <57>","0.2","on",1000,10981.4665276139,57
+ + phasing","r/w locks",0.6,"0.2","on",1000,10981.4665276139,57
 "57","20% update
 zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"16@100 <0>","0.2","on",1000,6343.51549307034,0
+ + phasing","boosting",0.6,"0.2","on",1000,6343.51549307034,0
 "58","20% update
 zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"64@100 <9>","0.2","on",1000,13144.0410103854,9
+ + phasing","boosting",0.6,"0.2","on",1000,13144.0410103854,9
 "59","20% update
 zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"96@100 <35>","0.2","on",1000,13226.8978292061,35
+ + phasing","boosting",0.6,"0.2","on",1000,13226.8978292061,35
 "60","40% update
-zipf: 0.6",100,16,"r/w locks","r/w locks",0.6,"16@100 <0>","0.4","off",1000,6157.83199131518,0
+zipf: 0.6",100,16,"r/w locks
+(baseline)","r/w locks",0.6,"0.4","off",1000,6157.83199131518,0
 "61","40% update
-zipf: 0.6",100,64,"r/w locks","r/w locks",0.6,"64@100 <0>","0.4","off",1000,2700.02125537516,0
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.4","off",1000,2700.02125537516,0
 "62","40% update
-zipf: 0.6",100,96,"r/w locks","r/w locks",0.6,"96@100 <26>","0.4","off",1000,2123.97851444389,26
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.4","off",1000,2123.97851444389,26
 "63","40% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"16@100 <0>","0.4","off",1000,6345.19321708782,0
+zipf: 0.6",100,16,"boosting","boosting",0.6,"0.4","off",1000,6345.19321708782,0
 "64","40% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"64@100 <1>","0.4","off",1000,6156.2820895028,1
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.4","off",1000,6156.2820895028,1
 "65","40% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"96@100 <18>","0.4","off",1000,5648.88212386582,18
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.4","off",1000,5648.88212386582,18
 "66","40% update
 zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"16@100 <0>","0.4","on",1000,6331.92906502373,0
+ + phasing","r/w locks",0.6,"0.4","on",1000,6331.92906502373,0
 "67","40% update
 zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"64@100 <18>","0.4","on",1000,8454.31368145731,18
+ + phasing","r/w locks",0.6,"0.4","on",1000,8454.31368145731,18
 "68","40% update
 zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"96@100 <37>","0.4","on",1000,8362.89638132563,37
+ + phasing","r/w locks",0.6,"0.4","on",1000,8362.89638132563,37
 "69","40% update
 zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"16@100 <0>","0.4","on",1000,6343.62231050754,0
+ + phasing","boosting",0.6,"0.4","on",1000,6343.62231050754,0
 "70","40% update
 zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"64@100 <11>","0.4","on",1000,11771.8000909824,11
+ + phasing","boosting",0.6,"0.4","on",1000,11771.8000909824,11
 "71","40% update
 zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"96@100 <41>","0.4","on",1000,11832.2766475194,41
+ + phasing","boosting",0.6,"0.4","on",1000,11832.2766475194,41
 "72","60% update
-zipf: 0.6",100,16,"r/w locks","r/w locks",0.6,"16@100 <0>","0.6","off",1000,3472.52761874981,0
+zipf: 0.6",100,16,"r/w locks
+(baseline)","r/w locks",0.6,"0.6","off",1000,3472.52761874981,0
 "73","60% update
-zipf: 0.6",100,64,"r/w locks","r/w locks",0.6,"64@100 <4>","0.6","off",1000,1977.33796250891,4
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.6","off",1000,1977.33796250891,4
 "74","60% update
-zipf: 0.6",100,96,"r/w locks","r/w locks",0.6,"96@100 <21>","0.6","off",1000,1578.54806894526,21
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.6","off",1000,1578.54806894526,21
 "75","60% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"16@100 <0>","0.6","off",1000,6344.23319646063,0
+zipf: 0.6",100,16,"boosting","boosting",0.6,"0.6","off",1000,6344.23319646063,0
 "76","60% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"64@100 <0>","0.6","off",1000,6063.07505812683,0
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.6","off",1000,6063.07505812683,0
 "77","60% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"96@100 <10>","0.6","off",1000,5290.96978966237,10
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.6","off",1000,5290.96978966237,10
 "78","60% update
 zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"16@100 <0>","0.6","on",1000,6148.31316996174,0
+ + phasing","r/w locks",0.6,"0.6","on",1000,6148.31316996174,0
 "79","60% update
 zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"64@100 <18>","0.6","on",1000,6870.12974154007,18
+ + phasing","r/w locks",0.6,"0.6","on",1000,6870.12974154007,18
 "80","60% update
 zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"96@100 <49>","0.6","on",1000,6759.8120490455,49
+ + phasing","r/w locks",0.6,"0.6","on",1000,6759.8120490455,49
 "81","60% update
 zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"16@100 <0>","0.6","on",1000,6344.48030213714,0
+ + phasing","boosting",0.6,"0.6","on",1000,6344.48030213714,0
 "82","60% update
 zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"64@100 <14>","0.6","on",1000,10784.7854291583,14
+ + phasing","boosting",0.6,"0.6","on",1000,10784.7854291583,14
 "83","60% update
 zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"96@100 <34>","0.6","on",1000,10841.8605575314,34
+ + phasing","boosting",0.6,"0.6","on",1000,10841.8605575314,34
 "84","80% update
-zipf: 0.6",100,16,"r/w locks","r/w locks",0.6,"16@100 <0>","0.8","off",1000,2963.27831122138,0
+zipf: 0.6",100,16,"r/w locks
+(baseline)","r/w locks",0.6,"0.8","off",1000,2963.27831122138,0
 "85","80% update
-zipf: 0.6",100,64,"r/w locks","r/w locks",0.6,"64@100 <0>","0.8","off",1000,1614.51365549646,0
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.8","off",1000,1614.51365549646,0
 "86","80% update
-zipf: 0.6",100,96,"r/w locks","r/w locks",0.6,"96@100 <19>","0.8","off",1000,1295.54394372929,19
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.8","off",1000,1295.54394372929,19
 "87","80% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"16@100 <0>","0.8","off",1000,6346.62457163981,0
+zipf: 0.6",100,16,"boosting","boosting",0.6,"0.8","off",1000,6346.62457163981,0
 "88","80% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"64@100 <1>","0.8","off",1000,6298.30081812461,1
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.8","off",1000,6298.30081812461,1
 "89","80% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"96@100 <25>","0.8","off",1000,5775.0416742313,25
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.8","off",1000,5775.0416742313,25
 "90","80% update
 zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"16@100 <0>","0.8","on",1000,5591.37207110916,0
+ + phasing","r/w locks",0.6,"0.8","on",1000,5591.37207110916,0
 "91","80% update
 zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"64@100 <21>","0.8","on",1000,5933.45857586693,21
+ + phasing","r/w locks",0.6,"0.8","on",1000,5933.45857586693,21
 "92","80% update
 zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"96@100 <43>","0.8","on",1000,5842.54777738428,43
+ + phasing","r/w locks",0.6,"0.8","on",1000,5842.54777738428,43
 "93","80% update
 zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"16@100 <0>","0.8","on",1000,6343.94743240048,0
+ + phasing","boosting",0.6,"0.8","on",1000,6343.94743240048,0
 "94","80% update
 zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"64@100 <10>","0.8","on",1000,9953.5494830721,10
+ + phasing","boosting",0.6,"0.8","on",1000,9953.5494830721,10
 "95","80% update
 zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"96@100 <40>","0.8","on",1000,10075.4793218453,40
+ + phasing","boosting",0.6,"0.8","on",1000,10075.4793218453,40
 "96","100% update
-zipf: 0.6",100,16,"r/w locks","r/w locks",0.6,"16@100 <0>","1","off",1000,2482.34871753959,0
+zipf: 0.6",100,16,"r/w locks
+(baseline)","r/w locks",0.6,"1","off",1000,2482.34871753959,0
 "97","100% update
-zipf: 0.6",100,64,"r/w locks","r/w locks",0.6,"64@100 <0>","1","off",1000,1423.34361811078,0
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"1","off",1000,1423.34361811078,0
 "98","100% update
-zipf: 0.6",100,96,"r/w locks","r/w locks",0.6,"96@100 <15>","1","off",1000,1077.75162049727,15
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"1","off",1000,1077.75162049727,15
 "99","100% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"16@100 <0>","1","off",1000,6342.49668613907,0
+zipf: 0.6",100,16,"boosting","boosting",0.6,"1","off",1000,6342.49668613907,0
 "100","100% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"64@100 <2>","1","off",1000,9447.69624289938,2
+zipf: 0.6",100,64,"boosting","boosting",0.6,"1","off",1000,9447.69624289938,2
 "101","100% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"96@100 <42429>","1","off",1000,4334.8538694107,42429
+zipf: 0.6",100,96,"boosting","boosting",0.6,"1","off",1000,4334.8538694107,42429
 "102","100% update
 zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"16@100 <0>","1","on",1000,5317.89367142553,0
+ + phasing","r/w locks",0.6,"1","on",1000,5317.89367142553,0
 "103","100% update
 zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"64@100 <12>","1","on",1000,5564.88781479867,12
+ + phasing","r/w locks",0.6,"1","on",1000,5564.88781479867,12
 "104","100% update
 zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"96@100 <49>","1","on",1000,5562.87564707311,49
+ + phasing","r/w locks",0.6,"1","on",1000,5562.87564707311,49
 "105","100% update
 zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"16@100 <0>","1","on",1000,6342.71440466278,0
+ + phasing","boosting",0.6,"1","on",1000,6342.71440466278,0
 "106","100% update
 zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"64@100 <2>","1","on",1000,9297.46822829127,2
+ + phasing","boosting",0.6,"1","on",1000,9297.46822829127,2
 "107","100% update
 zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"96@100 <25>","1","on",1000,4526.69359943527,25
+ + phasing","boosting",0.6,"1","on",1000,4526.69359943527,25
 "108","0% update
 zipf: 0.6",100,16,"boosting
  + combining","boosting
- + combining",0.6,"16@100 <0>","0","off",1000,6344.90567294404,0
+ + combining",0.6,"0","off",1000,6344.90567294404,0
 "109","0% update
 zipf: 0.6",100,64,"boosting
  + combining","boosting
- + combining",0.6,"64@100 <0>","0","off",1000,17153.8653159512,0
+ + combining",0.6,"0","off",1000,17153.8653159512,0
 "110","0% update
 zipf: 0.6",100,96,"boosting
  + combining","boosting
- + combining",0.6,"96@100 <15>","0","off",1000,18212.8393505697,15
+ + combining",0.6,"0","off",1000,18212.8393505697,15
 "111","0% update
 zipf: 0.6",100,16,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"16@100 <0>","0","on",1000,6344.86341400061,0
+ + combining",0.6,"0","on",1000,6344.86341400061,0
 "112","0% update
 zipf: 0.6",100,64,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"64@100 <1>","0","on",1000,17278.708670309,1
+ + combining",0.6,"0","on",1000,17278.708670309,1
 "113","0% update
 zipf: 0.6",100,96,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"96@100 <20>","0","on",1000,18243.7519693527,20
+ + combining",0.6,"0","on",1000,18243.7519693527,20
 "114","20% update
 zipf: 0.6",100,16,"boosting
  + combining","boosting
- + combining",0.6,"16@100 <0>","0.2","off",1000,6344.11001608676,0
+ + combining",0.6,"0.2","off",1000,6344.11001608676,0
 "115","20% update
 zipf: 0.6",100,64,"boosting
  + combining","boosting
- + combining",0.6,"64@100 <1>","0.2","off",1000,8543.07470263276,1
+ + combining",0.6,"0.2","off",1000,8543.07470263276,1
 "116","20% update
 zipf: 0.6",100,96,"boosting
  + combining","boosting
- + combining",0.6,"96@100 <8>","0.2","off",1000,8017.92038906803,8
+ + combining",0.6,"0.2","off",1000,8017.92038906803,8
 "117","20% update
 zipf: 0.6",100,16,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"16@100 <0>","0.2","on",1000,6342.09535988917,0
+ + combining",0.6,"0.2","on",1000,6342.09535988917,0
 "118","20% update
 zipf: 0.6",100,64,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"64@100 <8>","0.2","on",1000,13948.3235539262,8
+ + combining",0.6,"0.2","on",1000,13948.3235539262,8
 "119","20% update
 zipf: 0.6",100,96,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"96@100 <28>","0.2","on",1000,14361.0375579542,28
+ + combining",0.6,"0.2","on",1000,14361.0375579542,28
 "120","40% update
 zipf: 0.6",100,16,"boosting
  + combining","boosting
- + combining",0.6,"16@100 <0>","0.4","off",1000,6343.88161070697,0
+ + combining",0.6,"0.4","off",1000,6343.88161070697,0
 "121","40% update
 zipf: 0.6",100,64,"boosting
  + combining","boosting
- + combining",0.6,"64@100 <0>","0.4","off",1000,7194.02707971408,0
+ + combining",0.6,"0.4","off",1000,7194.02707971408,0
 "122","40% update
 zipf: 0.6",100,96,"boosting
  + combining","boosting
- + combining",0.6,"96@100 <16>","0.4","off",1000,6578.38305060142,16
+ + combining",0.6,"0.4","off",1000,6578.38305060142,16
 "123","40% update
 zipf: 0.6",100,16,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"16@100 <0>","0.4","on",1000,6343.53311042136,0
+ + combining",0.6,"0.4","on",1000,6343.53311042136,0
 "124","40% update
 zipf: 0.6",100,64,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"64@100 <7>","0.4","on",1000,12369.193576239,7
+ + combining",0.6,"0.4","on",1000,12369.193576239,7
 "125","40% update
 zipf: 0.6",100,96,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"96@100 <37>","0.4","on",1000,12874.0127468754,37
+ + combining",0.6,"0.4","on",1000,12874.0127468754,37
 "126","60% update
 zipf: 0.6",100,16,"boosting
  + combining","boosting
- + combining",0.6,"16@100 <0>","0.6","off",1000,6346.93965904815,0
+ + combining",0.6,"0.6","off",1000,6346.93965904815,0
 "127","60% update
 zipf: 0.6",100,64,"boosting
  + combining","boosting
- + combining",0.6,"64@100 <0>","0.6","off",1000,6770.30002387458,0
+ + combining",0.6,"0.6","off",1000,6770.30002387458,0
 "128","60% update
 zipf: 0.6",100,96,"boosting
  + combining","boosting
- + combining",0.6,"96@100 <17>","0.6","off",1000,6490.66416743118,17
+ + combining",0.6,"0.6","off",1000,6490.66416743118,17
 "129","60% update
 zipf: 0.6",100,16,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"16@100 <0>","0.6","on",1000,6343.90339747304,0
+ + combining",0.6,"0.6","on",1000,6343.90339747304,0
 "130","60% update
 zipf: 0.6",100,64,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"64@100 <6>","0.6","on",1000,11375.6740244907,6
+ + combining",0.6,"0.6","on",1000,11375.6740244907,6
 "131","60% update
 zipf: 0.6",100,96,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"96@100 <39>","0.6","on",1000,11596.4465238958,39
+ + combining",0.6,"0.6","on",1000,11596.4465238958,39
 "132","80% update
 zipf: 0.6",100,16,"boosting
  + combining","boosting
- + combining",0.6,"16@100 <0>","0.8","off",1000,6343.25848122259,0
+ + combining",0.6,"0.8","off",1000,6343.25848122259,0
 "133","80% update
 zipf: 0.6",100,64,"boosting
  + combining","boosting
- + combining",0.6,"64@100 <1>","0.8","off",1000,7344.71442304505,1
+ + combining",0.6,"0.8","off",1000,7344.71442304505,1
 "134","80% update
 zipf: 0.6",100,96,"boosting
  + combining","boosting
- + combining",0.6,"96@100 <22>","0.8","off",1000,7030.6793038539,22
+ + combining",0.6,"0.8","off",1000,7030.6793038539,22
 "135","80% update
 zipf: 0.6",100,16,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"16@100 <0>","0.8","on",1000,6343.80421788054,0
+ + combining",0.6,"0.8","on",1000,6343.80421788054,0
 "136","80% update
 zipf: 0.6",100,64,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"64@100 <8>","0.8","on",1000,10706.972791374,8
+ + combining",0.6,"0.8","on",1000,10706.972791374,8
 "137","80% update
 zipf: 0.6",100,96,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"96@100 <34>","0.8","on",1000,11055.5572109161,34
+ + combining",0.6,"0.8","on",1000,11055.5572109161,34
 "138","100% update
 zipf: 0.6",100,16,"boosting
  + combining","boosting
- + combining",0.6,"16@100 <0>","1","off",1000,6342.15223936269,0
+ + combining",0.6,"1","off",1000,6342.15223936269,0
 "139","100% update
 zipf: 0.6",100,64,"boosting
  + combining","boosting
- + combining",0.6,"64@100 <1>","1","off",1000,10410.003255576,1
+ + combining",0.6,"1","off",1000,10410.003255576,1
 "140","100% update
 zipf: 0.6",100,96,"boosting
  + combining","boosting
- + combining",0.6,"96@100 <36977>","1","off",1000,4604.63420293698,36977
+ + combining",0.6,"1","off",1000,4604.63420293698,36977
 "141","100% update
 zipf: 0.6",100,16,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"16@100 <0>","1","on",1000,6342.17336135321,0
+ + combining",0.6,"1","on",1000,6342.17336135321,0
 "142","100% update
 zipf: 0.6",100,64,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"64@100 <0>","1","on",1000,10474.6084795652,0
+ + combining",0.6,"1","on",1000,10474.6084795652,0
 "143","100% update
 zipf: 0.6",100,96,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"96@100 <22>","1","on",1000,4774.25899466602,22
+ + combining",0.6,"1","on",1000,4774.25899466602,22
 "234","50% update
-zipf: 0.6",100,4,"r/w locks","r/w locks",0.6,"4@100 <0>","0.5","off",1000,1584.07660501704,0
+zipf: 0.6",100,4,"r/w locks
+(baseline)","r/w locks",0.6,"0.5","off",1000,1584.07660501704,0
 "235","50% update
-zipf: 0.6",100,16,"r/w locks","r/w locks",0.6,"16@100 <0>","0.5","off",1000,4096.60113284485,0
+zipf: 0.6",100,16,"r/w locks
+(baseline)","r/w locks",0.6,"0.5","off",1000,4096.60113284485,0
 "236","50% update
-zipf: 0.6",100,32,"r/w locks","r/w locks",0.6,"32@100 <0>","0.5","off",1000,2946.22319752532,0
+zipf: 0.6",100,32,"r/w locks
+(baseline)","r/w locks",0.6,"0.5","off",1000,2946.22319752532,0
 "237","50% update
-zipf: 0.6",100,64,"r/w locks","r/w locks",0.6,"64@100 <1>","0.5","off",1000,2206.03374741404,1
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.5","off",1000,2206.03374741404,1
 "238","50% update
-zipf: 0.6",100,96,"r/w locks","r/w locks",0.6,"96@100 <17>","0.5","off",1000,1746.96595077649,17
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.5","off",1000,1746.96595077649,17
 "239","50% update
-zipf: 0.6",100,4,"boosting","boosting",0.6,"4@100 <0>","0.5","off",1000,1583.80478313309,0
+zipf: 0.6",100,4,"boosting","boosting",0.6,"0.5","off",1000,1583.80478313309,0
 "240","50% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"16@100 <0>","0.5","off",1000,6343.97967305047,0
+zipf: 0.6",100,16,"boosting","boosting",0.6,"0.5","off",1000,6343.97967305047,0
 "241","50% update
-zipf: 0.6",100,32,"boosting","boosting",0.6,"32@100 <0>","0.5","off",1000,6811.83221079367,0
+zipf: 0.6",100,32,"boosting","boosting",0.6,"0.5","off",1000,6811.83221079367,0
 "242","50% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"64@100 <1>","0.5","off",1000,5997.72471733095,1
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.5","off",1000,5997.72471733095,1
 "243","50% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"96@100 <11>","0.5","off",1000,5441.18228679156,11
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.5","off",1000,5441.18228679156,11
 "244","50% update
 zipf: 0.6",100,4,"r/w locks
- + phasing","r/w locks",0.6,"4@100 <0>","0.5","on",1000,1583.05789529801,0
+ + phasing","r/w locks",0.6,"0.5","on",1000,1583.05789529801,0
 "245","50% update
 zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"16@100 <0>","0.5","on",1000,6283.57185192091,0
+ + phasing","r/w locks",0.6,"0.5","on",1000,6283.57185192091,0
 "246","50% update
 zipf: 0.6",100,32,"r/w locks
- + phasing","r/w locks",0.6,"32@100 <1>","0.5","on",1000,7330.56128910028,1
+ + phasing","r/w locks",0.6,"0.5","on",1000,7330.56128910028,1
 "247","50% update
 zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"64@100 <12>","0.5","on",1000,7470.27719282032,12
+ + phasing","r/w locks",0.6,"0.5","on",1000,7470.27719282032,12
 "248","50% update
 zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"96@100 <41>","0.5","on",1000,7481.38827723603,41
+ + phasing","r/w locks",0.6,"0.5","on",1000,7481.38827723603,41
 "249","50% update
 zipf: 0.6",100,4,"boosting
- + phasing","boosting",0.6,"4@100 <0>","0.5","on",1000,1583.65040547474,0
+ + phasing","boosting",0.6,"0.5","on",1000,1583.65040547474,0
 "250","50% update
 zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"16@100 <0>","0.5","on",1000,6343.57536317798,0
+ + phasing","boosting",0.6,"0.5","on",1000,6343.57536317798,0
 "251","50% update
 zipf: 0.6",100,32,"boosting
- + phasing","boosting",0.6,"32@100 <0>","0.5","on",1000,10745.1640705332,0
+ + phasing","boosting",0.6,"0.5","on",1000,10745.1640705332,0
 "252","50% update
 zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"64@100 <15>","0.5","on",1000,11281.3228099755,15
+ + phasing","boosting",0.6,"0.5","on",1000,11281.3228099755,15
 "253","50% update
 zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"96@100 <45>","0.5","on",1000,11336.2261861746,45
+ + phasing","boosting",0.6,"0.5","on",1000,11336.2261861746,45
 "254","50% update
 zipf: 0.6",100,4,"boosting
  + combining","boosting
- + combining",0.6,"4@100 <0>","0.5","off",1000,1583.61874808428,0
+ + combining",0.6,"0.5","off",1000,1583.61874808428,0
 "255","50% update
 zipf: 0.6",100,16,"boosting
  + combining","boosting
- + combining",0.6,"16@100 <0>","0.5","off",1000,6344.04949815847,0
+ + combining",0.6,"0.5","off",1000,6344.04949815847,0
 "256","50% update
 zipf: 0.6",100,32,"boosting
  + combining","boosting
- + combining",0.6,"32@100 <0>","0.5","off",1000,7621.17073203193,0
+ + combining",0.6,"0.5","off",1000,7621.17073203193,0
 "257","50% update
 zipf: 0.6",100,64,"boosting
  + combining","boosting
- + combining",0.6,"64@100 <0>","0.5","off",1000,2474.91229144612,0
+ + combining",0.6,"0.5","off",1000,2474.91229144612,0
 "258","50% update
 zipf: 0.6",100,96,"boosting
  + combining","boosting
- + combining",0.6,"96@100 <8>","0.5","off",1000,4400.57517064551,8
+ + combining",0.6,"0.5","off",1000,4400.57517064551,8
 "259","50% update
 zipf: 0.6",100,4,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"4@100 <0>","0.5","on",1000,1582.95241014433,0
+ + combining",0.6,"0.5","on",1000,1582.95241014433,0
 "260","50% update
 zipf: 0.6",100,16,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"16@100 <0>","0.5","on",1000,6343.105877181,0
+ + combining",0.6,"0.5","on",1000,6343.105877181,0
 "261","50% update
 zipf: 0.6",100,32,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"32@100 <0>","0.5","on",1000,11107.2435216953,0
+ + combining",0.6,"0.5","on",1000,11107.2435216953,0
 "262","50% update
 zipf: 0.6",100,64,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"64@100 <10>","0.5","on",1000,11939.4064166506,10
+ + combining",0.6,"0.5","on",1000,11939.4064166506,10
 "263","50% update
 zipf: 0.6",100,96,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"96@100 <31>","0.5","on",1000,12222.5425958884,31
+ + combining",0.6,"0.5","on",1000,12222.5425958884,31
 "264","0% update
-zipf: 0.6",100,16,"r/w locks","r/w locks",0.6,"16@100 <0>","0","off",1000,6346.22493530887,0
+zipf: 0.6",100,16,"r/w locks
+(baseline)","r/w locks",0.6,"0","off",1000,6346.22493530887,0
 "265","0% update
-zipf: 0.6",100,64,"r/w locks","r/w locks",0.6,"64@100 <0>","0","off",1000,15615.6311759919,0
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0","off",1000,15615.6311759919,0
 "266","0% update
-zipf: 0.6",100,96,"r/w locks","r/w locks",0.6,"96@100 <13>","0","off",1000,15569.9720735242,13
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0","off",1000,15569.9720735242,13
 "267","0% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"16@100 <0>","0","off",1000,6345.16194554421,0
+zipf: 0.6",100,16,"boosting","boosting",0.6,"0","off",1000,6345.16194554421,0
 "268","0% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"64@100 <0>","0","off",1000,15651.0763527899,0
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0","off",1000,15651.0763527899,0
 "269","0% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"96@100 <12>","0","off",1000,15548.6346736185,12
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0","off",1000,15548.6346736185,12
 "270","0% update
 zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"16@100 <0>","0","on",1000,6345.29700497506,0
+ + phasing","r/w locks",0.6,"0","on",1000,6345.29700497506,0
 "271","0% update
 zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"64@100 <0>","0","on",1000,15654.1380856683,0
+ + phasing","r/w locks",0.6,"0","on",1000,15654.1380856683,0
 "272","0% update
 zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"96@100 <10>","0","on",1000,15502.1492252176,10
+ + phasing","r/w locks",0.6,"0","on",1000,15502.1492252176,10
 "273","0% update
 zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"16@100 <0>","0","on",1000,6346.03472735629,0
+ + phasing","boosting",0.6,"0","on",1000,6346.03472735629,0
 "274","0% update
 zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"64@100 <0>","0","on",1000,15446.5074567376,0
+ + phasing","boosting",0.6,"0","on",1000,15446.5074567376,0
 "275","0% update
 zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"96@100 <13>","0","on",1000,15491.163827416,13
+ + phasing","boosting",0.6,"0","on",1000,15491.163827416,13
 "276","20% update
-zipf: 0.6",100,16,"r/w locks","r/w locks",0.6,"16@100 <0>","0.2","off",1000,6344.39397370489,0
+zipf: 0.6",100,16,"r/w locks
+(baseline)","r/w locks",0.6,"0.2","off",1000,6344.39397370489,0
 "277","20% update
-zipf: 0.6",100,64,"r/w locks","r/w locks",0.6,"64@100 <1>","0.2","off",1000,4121.84031554257,1
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.2","off",1000,4121.84031554257,1
 "278","20% update
-zipf: 0.6",100,96,"r/w locks","r/w locks",0.6,"96@100 <15>","0.2","off",1000,3634.04924112043,15
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.2","off",1000,3634.04924112043,15
 "279","20% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"16@100 <0>","0.2","off",1000,6343.74437983334,0
+zipf: 0.6",100,16,"boosting","boosting",0.6,"0.2","off",1000,6343.74437983334,0
 "280","20% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"64@100 <0>","0.2","off",1000,7247.39737733805,0
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.2","off",1000,7247.39737733805,0
 "281","20% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"96@100 <11>","0.2","off",1000,6706.97235662949,11
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.2","off",1000,6706.97235662949,11
 "282","20% update
 zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"16@100 <0>","0.2","on",1000,6344.19738450216,0
+ + phasing","r/w locks",0.6,"0.2","on",1000,6344.19738450216,0
 "283","20% update
 zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"64@100 <8>","0.2","on",1000,11007.5201863713,8
+ + phasing","r/w locks",0.6,"0.2","on",1000,11007.5201863713,8
 "284","20% update
 zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"96@100 <67>","0.2","on",1000,11018.6665620371,67
+ + phasing","r/w locks",0.6,"0.2","on",1000,11018.6665620371,67
 "285","20% update
 zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"16@100 <0>","0.2","on",1000,6343.35118429116,0
+ + phasing","boosting",0.6,"0.2","on",1000,6343.35118429116,0
 "286","20% update
 zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"64@100 <8>","0.2","on",1000,13188.1965123343,8
+ + phasing","boosting",0.6,"0.2","on",1000,13188.1965123343,8
 "287","20% update
 zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"96@100 <35>","0.2","on",1000,13181.6661090666,35
+ + phasing","boosting",0.6,"0.2","on",1000,13181.6661090666,35
 "288","40% update
-zipf: 0.6",100,16,"r/w locks","r/w locks",0.6,"16@100 <0>","0.4","off",1000,6129.89054242605,0
+zipf: 0.6",100,16,"r/w locks
+(baseline)","r/w locks",0.6,"0.4","off",1000,6129.89054242605,0
 "289","40% update
-zipf: 0.6",100,64,"r/w locks","r/w locks",0.6,"64@100 <0>","0.4","off",1000,2602.79347143754,0
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.4","off",1000,2602.79347143754,0
 "290","40% update
-zipf: 0.6",100,96,"r/w locks","r/w locks",0.6,"96@100 <11>","0.4","off",1000,2222.33740653873,11
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.4","off",1000,2222.33740653873,11
 "291","40% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"16@100 <0>","0.4","off",1000,6344.74490475556,0
+zipf: 0.6",100,16,"boosting","boosting",0.6,"0.4","off",1000,6344.74490475556,0
 "292","40% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"64@100 <1>","0.4","off",1000,6170.44128873628,1
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.4","off",1000,6170.44128873628,1
 "293","40% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"96@100 <13>","0.4","off",1000,5504.77662495684,13
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.4","off",1000,5504.77662495684,13
 "294","40% update
 zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"16@100 <0>","0.4","on",1000,6340.27759277513,0
+ + phasing","r/w locks",0.6,"0.4","on",1000,6340.27759277513,0
 "295","40% update
 zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"64@100 <14>","0.4","on",1000,8379.46541990702,14
+ + phasing","r/w locks",0.6,"0.4","on",1000,8379.46541990702,14
 "296","40% update
 zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"96@100 <43>","0.4","on",1000,8414.50166873896,43
+ + phasing","r/w locks",0.6,"0.4","on",1000,8414.50166873896,43
 "297","40% update
 zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"16@100 <0>","0.4","on",1000,6342.18632919824,0
+ + phasing","boosting",0.6,"0.4","on",1000,6342.18632919824,0
 "298","40% update
 zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"64@100 <12>","0.4","on",1000,11778.8992743453,12
+ + phasing","boosting",0.6,"0.4","on",1000,11778.8992743453,12
 "299","40% update
 zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"96@100 <47>","0.4","on",1000,11807.1674784688,47
+ + phasing","boosting",0.6,"0.4","on",1000,11807.1674784688,47
 "300","60% update
-zipf: 0.6",100,16,"r/w locks","r/w locks",0.6,"16@100 <0>","0.6","off",1000,3701.92131686585,0
+zipf: 0.6",100,16,"r/w locks
+(baseline)","r/w locks",0.6,"0.6","off",1000,3701.92131686585,0
 "301","60% update
-zipf: 0.6",100,64,"r/w locks","r/w locks",0.6,"64@100 <1>","0.6","off",1000,1859.00073811343,1
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.6","off",1000,1859.00073811343,1
 "302","60% update
-zipf: 0.6",100,96,"r/w locks","r/w locks",0.6,"96@100 <19>","0.6","off",1000,1612.95328746573,19
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.6","off",1000,1612.95328746573,19
 "303","60% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"16@100 <0>","0.6","off",1000,6343.94386927695,0
+zipf: 0.6",100,16,"boosting","boosting",0.6,"0.6","off",1000,6343.94386927695,0
 "304","60% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"64@100 <0>","0.6","off",1000,5870.88891758466,0
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.6","off",1000,5870.88891758466,0
 "305","60% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"96@100 <12>","0.6","off",1000,5244.08945054728,12
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.6","off",1000,5244.08945054728,12
 "306","60% update
 zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"16@100 <0>","0.6","on",1000,6184.98611305373,0
+ + phasing","r/w locks",0.6,"0.6","on",1000,6184.98611305373,0
 "307","60% update
 zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"64@100 <13>","0.6","on",1000,6757.35464060488,13
+ + phasing","r/w locks",0.6,"0.6","on",1000,6757.35464060488,13
 "308","60% update
 zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"96@100 <40>","0.6","on",1000,6707.48045294786,40
+ + phasing","r/w locks",0.6,"0.6","on",1000,6707.48045294786,40
 "309","60% update
 zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"16@100 <0>","0.6","on",1000,6342.5420252018,0
+ + phasing","boosting",0.6,"0.6","on",1000,6342.5420252018,0
 "310","60% update
 zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"64@100 <14>","0.6","on",1000,10831.7476763068,14
+ + phasing","boosting",0.6,"0.6","on",1000,10831.7476763068,14
 "311","60% update
 zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"96@100 <43>","0.6","on",1000,10865.6886219624,43
+ + phasing","boosting",0.6,"0.6","on",1000,10865.6886219624,43
 "312","80% update
-zipf: 0.6",100,16,"r/w locks","r/w locks",0.6,"16@100 <0>","0.8","off",1000,2819.91624011168,0
+zipf: 0.6",100,16,"r/w locks
+(baseline)","r/w locks",0.6,"0.8","off",1000,2819.91624011168,0
 "313","80% update
-zipf: 0.6",100,64,"r/w locks","r/w locks",0.6,"64@100 <2>","0.8","off",1000,1557.89391229422,2
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.8","off",1000,1557.89391229422,2
 "314","80% update
-zipf: 0.6",100,96,"r/w locks","r/w locks",0.6,"96@100 <22>","0.8","off",1000,1293.24017455964,22
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.8","off",1000,1293.24017455964,22
 "315","80% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"16@100 <0>","0.8","off",1000,6342.39586524757,0
+zipf: 0.6",100,16,"boosting","boosting",0.6,"0.8","off",1000,6342.39586524757,0
 "316","80% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"64@100 <0>","0.8","off",1000,6327.31767124148,0
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.8","off",1000,6327.31767124148,0
 "317","80% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"96@100 <10>","0.8","off",1000,5871.75222969006,10
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.8","off",1000,5871.75222969006,10
 "318","80% update
 zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"16@100 <0>","0.8","on",1000,5640.03862675236,0
+ + phasing","r/w locks",0.6,"0.8","on",1000,5640.03862675236,0
 "319","80% update
 zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"64@100 <14>","0.8","on",1000,5930.95799251352,14
+ + phasing","r/w locks",0.6,"0.8","on",1000,5930.95799251352,14
 "320","80% update
 zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"96@100 <44>","0.8","on",1000,5910.34661301052,44
+ + phasing","r/w locks",0.6,"0.8","on",1000,5910.34661301052,44
 "321","80% update
 zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"16@100 <0>","0.8","on",1000,6342.30490006061,0
+ + phasing","boosting",0.6,"0.8","on",1000,6342.30490006061,0
 "322","80% update
 zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"64@100 <9>","0.8","on",1000,10060.2795776776,9
+ + phasing","boosting",0.6,"0.8","on",1000,10060.2795776776,9
 "323","80% update
 zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"96@100 <36>","0.8","on",1000,10060.5421956239,36
+ + phasing","boosting",0.6,"0.8","on",1000,10060.5421956239,36
 "324","100% update
-zipf: 0.6",100,16,"r/w locks","r/w locks",0.6,"16@100 <0>","1","off",1000,2502.00321178853,0
+zipf: 0.6",100,16,"r/w locks
+(baseline)","r/w locks",0.6,"1","off",1000,2502.00321178853,0
 "325","100% update
-zipf: 0.6",100,64,"r/w locks","r/w locks",0.6,"64@100 <1>","1","off",1000,1371.16779398582,1
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"1","off",1000,1371.16779398582,1
 "326","100% update
-zipf: 0.6",100,96,"r/w locks","r/w locks",0.6,"96@100 <24>","1","off",1000,1095.4450003387,24
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"1","off",1000,1095.4450003387,24
 "327","100% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"16@100 <0>","1","off",1000,6342.75494809619,0
+zipf: 0.6",100,16,"boosting","boosting",0.6,"1","off",1000,6342.75494809619,0
 "328","100% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"64@100 <2>","1","off",1000,9318.56684449346,2
+zipf: 0.6",100,64,"boosting","boosting",0.6,"1","off",1000,9318.56684449346,2
 "329","100% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"96@100 <40340>","1","off",1000,4306.2521339331,40340
+zipf: 0.6",100,96,"boosting","boosting",0.6,"1","off",1000,4306.2521339331,40340
 "330","100% update
 zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"16@100 <0>","1","on",1000,5280.89513470312,0
+ + phasing","r/w locks",0.6,"1","on",1000,5280.89513470312,0
 "331","100% update
 zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"64@100 <19>","1","on",1000,5518.94068258461,19
+ + phasing","r/w locks",0.6,"1","on",1000,5518.94068258461,19
 "332","100% update
 zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"96@100 <49>","1","on",1000,5410.31501149282,49
+ + phasing","r/w locks",0.6,"1","on",1000,5410.31501149282,49
 "333","100% update
 zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"16@100 <0>","1","on",1000,6342.4268362137,0
+ + phasing","boosting",0.6,"1","on",1000,6342.4268362137,0
 "334","100% update
 zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"64@100 <0>","1","on",1000,9335.48162051725,0
+ + phasing","boosting",0.6,"1","on",1000,9335.48162051725,0
 "335","100% update
 zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"96@100 <31>","1","on",1000,4533.37398347042,31
+ + phasing","boosting",0.6,"1","on",1000,4533.37398347042,31
 "336","0% update
 zipf: 0.6",100,16,"boosting
  + combining","boosting
- + combining",0.6,"16@100 <0>","0","off",1000,6345.11697610524,0
+ + combining",0.6,"0","off",1000,6345.11697610524,0
 "337","0% update
 zipf: 0.6",100,64,"boosting
  + combining","boosting
- + combining",0.6,"64@100 <0>","0","off",1000,17227.8977084025,0
+ + combining",0.6,"0","off",1000,17227.8977084025,0
 "338","0% update
 zipf: 0.6",100,96,"boosting
  + combining","boosting
- + combining",0.6,"96@100 <20>","0","off",1000,18316.0882945983,20
+ + combining",0.6,"0","off",1000,18316.0882945983,20
 "339","0% update
 zipf: 0.6",100,16,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"16@100 <0>","0","on",1000,6344.7008168471,0
+ + combining",0.6,"0","on",1000,6344.7008168471,0
 "340","0% update
 zipf: 0.6",100,64,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"64@100 <0>","0","on",1000,17335.2905621276,0
+ + combining",0.6,"0","on",1000,17335.2905621276,0
 "341","0% update
 zipf: 0.6",100,96,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"96@100 <14>","0","on",1000,18070.5070805558,14
+ + combining",0.6,"0","on",1000,18070.5070805558,14
 "342","20% update
 zipf: 0.6",100,16,"boosting
  + combining","boosting
- + combining",0.6,"16@100 <0>","0.2","off",1000,6343.46152309147,0
+ + combining",0.6,"0.2","off",1000,6343.46152309147,0
 "343","20% update
 zipf: 0.6",100,64,"boosting
  + combining","boosting
- + combining",0.6,"64@100 <3>","0.2","off",1000,8449.71284841777,3
+ + combining",0.6,"0.2","off",1000,8449.71284841777,3
 "344","20% update
 zipf: 0.6",100,96,"boosting
  + combining","boosting
- + combining",0.6,"96@100 <11>","0.2","off",1000,8183.14822337372,11
+ + combining",0.6,"0.2","off",1000,8183.14822337372,11
 "345","20% update
 zipf: 0.6",100,16,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"16@100 <0>","0.2","on",1000,6342.56653466863,0
+ + combining",0.6,"0.2","on",1000,6342.56653466863,0
 "346","20% update
 zipf: 0.6",100,64,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"64@100 <8>","0.2","on",1000,14037.7373528064,8
+ + combining",0.6,"0.2","on",1000,14037.7373528064,8
 "347","20% update
 zipf: 0.6",100,96,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"96@100 <33>","0.2","on",1000,14249.5332897848,33
+ + combining",0.6,"0.2","on",1000,14249.5332897848,33
 "348","40% update
 zipf: 0.6",100,16,"boosting
  + combining","boosting
- + combining",0.6,"16@100 <0>","0.4","off",1000,6344.96448042843,0
+ + combining",0.6,"0.4","off",1000,6344.96448042843,0
 "349","40% update
 zipf: 0.6",100,64,"boosting
  + combining","boosting
- + combining",0.6,"64@100 <2>","0.4","off",1000,7172.68269393358,2
+ + combining",0.6,"0.4","off",1000,7172.68269393358,2
 "350","40% update
 zipf: 0.6",100,96,"boosting
  + combining","boosting
- + combining",0.6,"96@100 <15>","0.4","off",1000,6710.69436264616,15
+ + combining",0.6,"0.4","off",1000,6710.69436264616,15
 "351","40% update
 zipf: 0.6",100,16,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"16@100 <0>","0.4","on",1000,6341.66647240806,0
+ + combining",0.6,"0.4","on",1000,6341.66647240806,0
 "352","40% update
 zipf: 0.6",100,64,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"64@100 <16>","0.4","on",1000,12419.6114511956,16
+ + combining",0.6,"0.4","on",1000,12419.6114511956,16
 "353","40% update
 zipf: 0.6",100,96,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"96@100 <38>","0.4","on",1000,12606.5681847546,38
+ + combining",0.6,"0.4","on",1000,12606.5681847546,38
 "354","60% update
 zipf: 0.6",100,16,"boosting
  + combining","boosting
- + combining",0.6,"16@100 <0>","0.6","off",1000,6344.83769228976,0
+ + combining",0.6,"0.6","off",1000,6344.83769228976,0
 "355","60% update
 zipf: 0.6",100,64,"boosting
  + combining","boosting
- + combining",0.6,"64@100 <0>","0.6","off",1000,3010.81085797552,0
+ + combining",0.6,"0.6","off",1000,3010.81085797552,0
 "356","60% update
 zipf: 0.6",100,96,"boosting
  + combining","boosting
- + combining",0.6,"96@100 <24>","0.6","off",1000,6378.57649952946,24
+ + combining",0.6,"0.6","off",1000,6378.57649952946,24
 "357","60% update
 zipf: 0.6",100,16,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"16@100 <0>","0.6","on",1000,6344.30302182615,0
+ + combining",0.6,"0.6","on",1000,6344.30302182615,0
 "358","60% update
 zipf: 0.6",100,64,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"64@100 <16>","0.6","on",1000,11375.3876599616,16
+ + combining",0.6,"0.6","on",1000,11375.3876599616,16
 "359","60% update
 zipf: 0.6",100,96,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"96@100 <36>","0.6","on",1000,11756.3313162377,36
+ + combining",0.6,"0.6","on",1000,11756.3313162377,36
 "360","80% update
 zipf: 0.6",100,16,"boosting
  + combining","boosting
- + combining",0.6,"16@100 <0>","0.8","off",1000,6344.38753421829,0
+ + combining",0.6,"0.8","off",1000,6344.38753421829,0
 "361","80% update
 zipf: 0.6",100,64,"boosting
  + combining","boosting
- + combining",0.6,"64@100 <0>","0.8","off",1000,7297.85901094858,0
+ + combining",0.6,"0.8","off",1000,7297.85901094858,0
 "362","80% update
 zipf: 0.6",100,96,"boosting
  + combining","boosting
- + combining",0.6,"96@100 <21>","0.8","off",1000,6878.99689006838,21
+ + combining",0.6,"0.8","off",1000,6878.99689006838,21
 "363","80% update
 zipf: 0.6",100,16,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"16@100 <0>","0.8","on",1000,6342.77607188293,0
+ + combining",0.6,"0.8","on",1000,6342.77607188293,0
 "364","80% update
 zipf: 0.6",100,64,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"64@100 <10>","0.8","on",1000,10677.4628521326,10
+ + combining",0.6,"0.8","on",1000,10677.4628521326,10
 "365","80% update
 zipf: 0.6",100,96,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"96@100 <32>","0.8","on",1000,10975.9554878453,32
+ + combining",0.6,"0.8","on",1000,10975.9554878453,32
 "366","100% update
 zipf: 0.6",100,16,"boosting
  + combining","boosting
- + combining",0.6,"16@100 <0>","1","off",1000,6342.0060482528,0
+ + combining",0.6,"1","off",1000,6342.0060482528,0
 "367","100% update
 zipf: 0.6",100,64,"boosting
  + combining","boosting
- + combining",0.6,"64@100 <1>","1","off",1000,10549.9455236374,1
+ + combining",0.6,"1","off",1000,10549.9455236374,1
 "368","100% update
 zipf: 0.6",100,96,"boosting
  + combining","boosting
- + combining",0.6,"96@100 <34232>","1","off",1000,4829.82193288341,34232
+ + combining",0.6,"1","off",1000,4829.82193288341,34232
 "369","100% update
 zipf: 0.6",100,16,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"16@100 <0>","1","on",1000,6342.41050763129,0
+ + combining",0.6,"1","on",1000,6342.41050763129,0
 "370","100% update
 zipf: 0.6",100,64,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"64@100 <0>","1","on",1000,10476.8644492952,0
+ + combining",0.6,"1","on",1000,10476.8644492952,0
 "371","100% update
 zipf: 0.6",100,96,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"96@100 <21>","1","on",1000,5569.87871535731,21
+ + combining",0.6,"1","on",1000,5569.87871535731,21
 "460","50% update
-zipf: 0.6",100,4,"r/w locks","r/w locks",0.6,"4@100 <0>","0.5","off",1000,1583.68734069669,0
+zipf: 0.6",100,4,"r/w locks
+(baseline)","r/w locks",0.6,"0.5","off",1000,1583.68734069669,0
 "461","50% update
-zipf: 0.6",100,16,"r/w locks","r/w locks",0.6,"16@100 <0>","0.5","off",1000,4167.91424636206,0
+zipf: 0.6",100,16,"r/w locks
+(baseline)","r/w locks",0.6,"0.5","off",1000,4167.91424636206,0
 "462","50% update
-zipf: 0.6",100,32,"r/w locks","r/w locks",0.6,"32@100 <0>","0.5","off",1000,2903.12459749464,0
+zipf: 0.6",100,32,"r/w locks
+(baseline)","r/w locks",0.6,"0.5","off",1000,2903.12459749464,0
 "463","50% update
-zipf: 0.6",100,64,"r/w locks","r/w locks",0.6,"64@100 <2>","0.5","off",1000,2211.82497778242,2
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.5","off",1000,2211.82497778242,2
 "464","50% update
-zipf: 0.6",100,96,"r/w locks","r/w locks",0.6,"96@100 <14>","0.5","off",1000,1771.75012686295,14
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.5","off",1000,1771.75012686295,14
 "465","50% update
-zipf: 0.6",100,4,"boosting","boosting",0.6,"4@100 <0>","0.5","off",1000,1583.33111223647,0
+zipf: 0.6",100,4,"boosting","boosting",0.6,"0.5","off",1000,1583.33111223647,0
 "466","50% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"16@100 <0>","0.5","off",1000,6345.62868827345,0
+zipf: 0.6",100,16,"boosting","boosting",0.6,"0.5","off",1000,6345.62868827345,0
 "467","50% update
-zipf: 0.6",100,32,"boosting","boosting",0.6,"32@100 <0>","0.5","off",1000,6817.28206953681,0
+zipf: 0.6",100,32,"boosting","boosting",0.6,"0.5","off",1000,6817.28206953681,0
 "468","50% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"64@100 <0>","0.5","off",1000,6029.23159449275,0
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.5","off",1000,6029.23159449275,0
 "469","50% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"96@100 <12>","0.5","off",1000,5291.94382852919,12
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.5","off",1000,5291.94382852919,12
 "470","50% update
 zipf: 0.6",100,4,"r/w locks
- + phasing","r/w locks",0.6,"4@100 <0>","0.5","on",1000,1583.92750049977,0
+ + phasing","r/w locks",0.6,"0.5","on",1000,1583.92750049977,0
 "471","50% update
 zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"16@100 <0>","0.5","on",1000,6295.8374958375,0
+ + phasing","r/w locks",0.6,"0.5","on",1000,6295.8374958375,0
 "472","50% update
 zipf: 0.6",100,32,"r/w locks
- + phasing","r/w locks",0.6,"32@100 <1>","0.5","on",1000,7283.64002539058,1
+ + phasing","r/w locks",0.6,"0.5","on",1000,7283.64002539058,1
 "473","50% update
 zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"64@100 <15>","0.5","on",1000,7421.20684193855,15
+ + phasing","r/w locks",0.6,"0.5","on",1000,7421.20684193855,15
 "474","50% update
 zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"96@100 <36>","0.5","on",1000,7426.00661796023,36
+ + phasing","r/w locks",0.6,"0.5","on",1000,7426.00661796023,36
 "475","50% update
 zipf: 0.6",100,4,"boosting
- + phasing","boosting",0.6,"4@100 <0>","0.5","on",1000,1583.42079397604,0
+ + phasing","boosting",0.6,"0.5","on",1000,1583.42079397604,0
 "476","50% update
 zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"16@100 <0>","0.5","on",1000,6345.46792730567,0
+ + phasing","boosting",0.6,"0.5","on",1000,6345.46792730567,0
 "477","50% update
 zipf: 0.6",100,32,"boosting
- + phasing","boosting",0.6,"32@100 <0>","0.5","on",1000,10753.3865960342,0
+ + phasing","boosting",0.6,"0.5","on",1000,10753.3865960342,0
 "478","50% update
 zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"64@100 <15>","0.5","on",1000,11315.9484962581,15
+ + phasing","boosting",0.6,"0.5","on",1000,11315.9484962581,15
 "479","50% update
 zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"96@100 <35>","0.5","on",1000,11356.9480844353,35
+ + phasing","boosting",0.6,"0.5","on",1000,11356.9480844353,35
 "480","50% update
 zipf: 0.6",100,4,"boosting
  + combining","boosting
- + combining",0.6,"4@100 <0>","0.5","off",1000,1583.92222322175,0
+ + combining",0.6,"0.5","off",1000,1583.92222322175,0
 "481","50% update
 zipf: 0.6",100,16,"boosting
  + combining","boosting
- + combining",0.6,"16@100 <0>","0.5","off",1000,6345.00674426737,0
+ + combining",0.6,"0.5","off",1000,6345.00674426737,0
 "482","50% update
 zipf: 0.6",100,32,"boosting
  + combining","boosting
- + combining",0.6,"32@100 <0>","0.5","off",1000,2323.54107024884,0
+ + combining",0.6,"0.5","off",1000,2323.54107024884,0
 "483","50% update
 zipf: 0.6",100,64,"boosting
  + combining","boosting
- + combining",0.6,"64@100 <0>","0.5","off",1000,6840.61778520818,0
+ + combining",0.6,"0.5","off",1000,6840.61778520818,0
 "484","50% update
 zipf: 0.6",100,96,"boosting
  + combining","boosting
- + combining",0.6,"96@100 <18>","0.5","off",1000,6608.56680767183,18
+ + combining",0.6,"0.5","off",1000,6608.56680767183,18
 "485","50% update
 zipf: 0.6",100,4,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"4@100 <0>","0.5","on",1000,1583.7295544886,0
+ + combining",0.6,"0.5","on",1000,1583.7295544886,0
 "486","50% update
 zipf: 0.6",100,16,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"16@100 <0>","0.5","on",1000,6343.45681561585,0
+ + combining",0.6,"0.5","on",1000,6343.45681561585,0
 "487","50% update
 zipf: 0.6",100,32,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"32@100 <0>","0.5","on",1000,11122.7576293013,0
+ + combining",0.6,"0.5","on",1000,11122.7576293013,0
 "488","50% update
 zipf: 0.6",100,64,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"64@100 <13>","0.5","on",1000,11975.6423111914,13
+ + combining",0.6,"0.5","on",1000,11975.6423111914,13
 "489","50% update
 zipf: 0.6",100,96,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"96@100 <37>","0.5","on",1000,12157.490545463,37
+ + combining",0.6,"0.5","on",1000,12157.490545463,37
 "490","0% update
-zipf: 0.6",100,16,"r/w locks","r/w locks",0.6,"16@100 <0>","0","off",1000,6344.70542011015,0
+zipf: 0.6",100,16,"r/w locks
+(baseline)","r/w locks",0.6,"0","off",1000,6344.70542011015,0
 "491","0% update
-zipf: 0.6",100,64,"r/w locks","r/w locks",0.6,"64@100 <0>","0","off",1000,15215.7623425626,0
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0","off",1000,15215.7623425626,0
 "492","0% update
-zipf: 0.6",100,96,"r/w locks","r/w locks",0.6,"96@100 <26>","0","off",1000,15685.0207772998,26
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0","off",1000,15685.0207772998,26
 "493","0% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"16@100 <0>","0","off",1000,6344.55936120194,0
+zipf: 0.6",100,16,"boosting","boosting",0.6,"0","off",1000,6344.55936120194,0
 "494","0% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"64@100 <1>","0","off",1000,15313.6646581676,1
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0","off",1000,15313.6646581676,1
 "495","0% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"96@100 <11>","0","off",1000,15697.0052770011,11
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0","off",1000,15697.0052770011,11
 "496","0% update
 zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"16@100 <0>","0","on",1000,6345.57170687847,0
+ + phasing","r/w locks",0.6,"0","on",1000,6345.57170687847,0
 "497","0% update
 zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"64@100 <0>","0","on",1000,15621.8614661105,0
+ + phasing","r/w locks",0.6,"0","on",1000,15621.8614661105,0
 "498","0% update
 zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"96@100 <19>","0","on",1000,15578.6010632476,19
+ + phasing","r/w locks",0.6,"0","on",1000,15578.6010632476,19
 "499","0% update
 zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"16@100 <0>","0","on",1000,6344.72654624157,0
+ + phasing","boosting",0.6,"0","on",1000,6344.72654624157,0
 "500","0% update
 zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"64@100 <0>","0","on",1000,15364.7997396067,0
+ + phasing","boosting",0.6,"0","on",1000,15364.7997396067,0
 "501","0% update
 zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"96@100 <15>","0","on",1000,15539.3831640539,15
+ + phasing","boosting",0.6,"0","on",1000,15539.3831640539,15
 "502","20% update
-zipf: 0.6",100,16,"r/w locks","r/w locks",0.6,"16@100 <0>","0.2","off",1000,6344.33703083322,0
+zipf: 0.6",100,16,"r/w locks
+(baseline)","r/w locks",0.6,"0.2","off",1000,6344.33703083322,0
 "503","20% update
-zipf: 0.6",100,64,"r/w locks","r/w locks",0.6,"64@100 <0>","0.2","off",1000,4116.08876605749,0
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.2","off",1000,4116.08876605749,0
 "504","20% update
-zipf: 0.6",100,96,"r/w locks","r/w locks",0.6,"96@100 <20>","0.2","off",1000,3678.74236351609,20
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.2","off",1000,3678.74236351609,20
 "505","20% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"16@100 <0>","0.2","off",1000,6344.68977919872,0
+zipf: 0.6",100,16,"boosting","boosting",0.6,"0.2","off",1000,6344.68977919872,0
 "506","20% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"64@100 <0>","0.2","off",1000,7252.4893597274,0
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.2","off",1000,7252.4893597274,0
 "507","20% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"96@100 <12>","0.2","off",1000,6781.50725803527,12
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.2","off",1000,6781.50725803527,12
 "508","20% update
 zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"16@100 <0>","0.2","on",1000,6342.36010283324,0
+ + phasing","r/w locks",0.6,"0.2","on",1000,6342.36010283324,0
 "509","20% update
 zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"64@100 <9>","0.2","on",1000,11004.4797487646,9
+ + phasing","r/w locks",0.6,"0.2","on",1000,11004.4797487646,9
 "510","20% update
 zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"96@100 <63>","0.2","on",1000,10930.2751573356,63
+ + phasing","r/w locks",0.6,"0.2","on",1000,10930.2751573356,63
 "511","20% update
 zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"16@100 <0>","0.2","on",1000,6343.17571753046,0
+ + phasing","boosting",0.6,"0.2","on",1000,6343.17571753046,0
 "512","20% update
 zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"64@100 <11>","0.2","on",1000,13116.1823935081,11
+ + phasing","boosting",0.6,"0.2","on",1000,13116.1823935081,11
 "513","20% update
 zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"96@100 <35>","0.2","on",1000,13210.2240738656,35
+ + phasing","boosting",0.6,"0.2","on",1000,13210.2240738656,35
 "514","40% update
-zipf: 0.6",100,16,"r/w locks","r/w locks",0.6,"16@100 <0>","0.4","off",1000,6206.83914915151,0
+zipf: 0.6",100,16,"r/w locks
+(baseline)","r/w locks",0.6,"0.4","off",1000,6206.83914915151,0
 "515","40% update
-zipf: 0.6",100,64,"r/w locks","r/w locks",0.6,"64@100 <1>","0.4","off",1000,2649.75150405441,1
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.4","off",1000,2649.75150405441,1
 "516","40% update
-zipf: 0.6",100,96,"r/w locks","r/w locks",0.6,"96@100 <19>","0.4","off",1000,2149.27845189841,19
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.4","off",1000,2149.27845189841,19
 "517","40% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"16@100 <0>","0.4","off",1000,6343.13173730464,0
+zipf: 0.6",100,16,"boosting","boosting",0.6,"0.4","off",1000,6343.13173730464,0
 "518","40% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"64@100 <0>","0.4","off",1000,6068.02116921119,0
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.4","off",1000,6068.02116921119,0
 "519","40% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"96@100 <6>","0.4","off",1000,5663.27337939765,6
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.4","off",1000,5663.27337939765,6
 "520","40% update
 zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"16@100 <0>","0.4","on",1000,6337.95781355108,0
+ + phasing","r/w locks",0.6,"0.4","on",1000,6337.95781355108,0
 "521","40% update
 zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"64@100 <14>","0.4","on",1000,8341.33481154457,14
+ + phasing","r/w locks",0.6,"0.4","on",1000,8341.33481154457,14
 "522","40% update
 zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"96@100 <30>","0.4","on",1000,8349.19481301787,30
+ + phasing","r/w locks",0.6,"0.4","on",1000,8349.19481301787,30
 "523","40% update
 zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"16@100 <0>","0.4","on",1000,6343.07009334901,0
+ + phasing","boosting",0.6,"0.4","on",1000,6343.07009334901,0
 "524","40% update
 zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"64@100 <10>","0.4","on",1000,11778.5894541108,10
+ + phasing","boosting",0.6,"0.4","on",1000,11778.5894541108,10
 "525","40% update
 zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"96@100 <42>","0.4","on",1000,11844.1062749113,42
+ + phasing","boosting",0.6,"0.4","on",1000,11844.1062749113,42
 "526","60% update
-zipf: 0.6",100,16,"r/w locks","r/w locks",0.6,"16@100 <0>","0.6","off",1000,3453.98675073829,0
+zipf: 0.6",100,16,"r/w locks
+(baseline)","r/w locks",0.6,"0.6","off",1000,3453.98675073829,0
 "527","60% update
-zipf: 0.6",100,64,"r/w locks","r/w locks",0.6,"64@100 <0>","0.6","off",1000,1844.07717814156,0
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.6","off",1000,1844.07717814156,0
 "528","60% update
-zipf: 0.6",100,96,"r/w locks","r/w locks",0.6,"96@100 <13>","0.6","off",1000,1639.31773834987,13
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.6","off",1000,1639.31773834987,13
 "529","60% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"16@100 <0>","0.6","off",1000,6345.98605292429,0
+zipf: 0.6",100,16,"boosting","boosting",0.6,"0.6","off",1000,6345.98605292429,0
 "530","60% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"64@100 <2>","0.6","off",1000,6015.546598395,2
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.6","off",1000,6015.546598395,2
 "531","60% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"96@100 <21>","0.6","off",1000,5284.61759622471,21
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.6","off",1000,5284.61759622471,21
 "532","60% update
 zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"16@100 <0>","0.6","on",1000,6151.9402975134,0
+ + phasing","r/w locks",0.6,"0.6","on",1000,6151.9402975134,0
 "533","60% update
 zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"64@100 <9>","0.6","on",1000,6727.06210829596,9
+ + phasing","r/w locks",0.6,"0.6","on",1000,6727.06210829596,9
 "534","60% update
 zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"96@100 <39>","0.6","on",1000,6713.91052049017,39
+ + phasing","r/w locks",0.6,"0.6","on",1000,6713.91052049017,39
 "535","60% update
 zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"16@100 <0>","0.6","on",1000,6342.93688035142,0
+ + phasing","boosting",0.6,"0.6","on",1000,6342.93688035142,0
 "536","60% update
 zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"64@100 <15>","0.6","on",1000,10786.3960031205,15
+ + phasing","boosting",0.6,"0.6","on",1000,10786.3960031205,15
 "537","60% update
 zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"96@100 <33>","0.6","on",1000,10811.5335733955,33
+ + phasing","boosting",0.6,"0.6","on",1000,10811.5335733955,33
 "538","80% update
-zipf: 0.6",100,16,"r/w locks","r/w locks",0.6,"16@100 <0>","0.8","off",1000,2800.15164716759,0
+zipf: 0.6",100,16,"r/w locks
+(baseline)","r/w locks",0.6,"0.8","off",1000,2800.15164716759,0
 "539","80% update
-zipf: 0.6",100,64,"r/w locks","r/w locks",0.6,"64@100 <0>","0.8","off",1000,1537.33237212003,0
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.8","off",1000,1537.33237212003,0
 "540","80% update
-zipf: 0.6",100,96,"r/w locks","r/w locks",0.6,"96@100 <14>","0.8","off",1000,1264.56680705925,14
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.8","off",1000,1264.56680705925,14
 "541","80% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"16@100 <0>","0.8","off",1000,6344.63925937026,0
+zipf: 0.6",100,16,"boosting","boosting",0.6,"0.8","off",1000,6344.63925937026,0
 "542","80% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"64@100 <0>","0.8","off",1000,6241.10750480228,0
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.8","off",1000,6241.10750480228,0
 "543","80% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"96@100 <28>","0.8","off",1000,5881.55612455604,28
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.8","off",1000,5881.55612455604,28
 "544","80% update
 zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"16@100 <0>","0.8","on",1000,5613.80375860737,0
+ + phasing","r/w locks",0.6,"0.8","on",1000,5613.80375860737,0
 "545","80% update
 zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"64@100 <18>","0.8","on",1000,5891.38380166599,18
+ + phasing","r/w locks",0.6,"0.8","on",1000,5891.38380166599,18
 "546","80% update
 zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"96@100 <55>","0.8","on",1000,5820.5811145947,55
+ + phasing","r/w locks",0.6,"0.8","on",1000,5820.5811145947,55
 "547","80% update
 zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"16@100 <0>","0.8","on",1000,6342.29193725647,0
+ + phasing","boosting",0.6,"0.8","on",1000,6342.29193725647,0
 "548","80% update
 zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"64@100 <8>","0.8","on",1000,10091.7979250881,8
+ + phasing","boosting",0.6,"0.8","on",1000,10091.7979250881,8
 "549","80% update
 zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"96@100 <41>","0.8","on",1000,10051.8271897484,41
+ + phasing","boosting",0.6,"0.8","on",1000,10051.8271897484,41
 "550","100% update
-zipf: 0.6",100,16,"r/w locks","r/w locks",0.6,"16@100 <0>","1","off",1000,2444.70213748625,0
+zipf: 0.6",100,16,"r/w locks
+(baseline)","r/w locks",0.6,"1","off",1000,2444.70213748625,0
 "551","100% update
-zipf: 0.6",100,64,"r/w locks","r/w locks",0.6,"64@100 <0>","1","off",1000,1305.73591132475,0
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"1","off",1000,1305.73591132475,0
 "552","100% update
-zipf: 0.6",100,96,"r/w locks","r/w locks",0.6,"96@100 <18>","1","off",1000,1127.89981390879,18
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"1","off",1000,1127.89981390879,18
 "553","100% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"16@100 <0>","1","off",1000,6342.74847549299,0
+zipf: 0.6",100,16,"boosting","boosting",0.6,"1","off",1000,6342.74847549299,0
 "554","100% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"64@100 <0>","1","off",1000,9317.94626484892,0
+zipf: 0.6",100,64,"boosting","boosting",0.6,"1","off",1000,9317.94626484892,0
 "555","100% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"96@100 <42005>","1","off",1000,4233.29798515376,42005
+zipf: 0.6",100,96,"boosting","boosting",0.6,"1","off",1000,4233.29798515376,42005
 "556","100% update
 zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"16@100 <0>","1","on",1000,5277.24970951622,0
+ + phasing","r/w locks",0.6,"1","on",1000,5277.24970951622,0
 "557","100% update
 zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"64@100 <21>","1","on",1000,5567.60684325253,21
+ + phasing","r/w locks",0.6,"1","on",1000,5567.60684325253,21
 "558","100% update
 zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"96@100 <52>","1","on",1000,5467.67689031373,52
+ + phasing","r/w locks",0.6,"1","on",1000,5467.67689031373,52
 "559","100% update
 zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"16@100 <0>","1","on",1000,6341.84191684566,0
+ + phasing","boosting",0.6,"1","on",1000,6341.84191684566,0
 "560","100% update
 zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"64@100 <2>","1","on",1000,9478.75864222756,2
+ + phasing","boosting",0.6,"1","on",1000,9478.75864222756,2
 "561","100% update
 zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"96@100 <28>","1","on",1000,4465.49866569425,28
+ + phasing","boosting",0.6,"1","on",1000,4465.49866569425,28
 "562","0% update
 zipf: 0.6",100,16,"boosting
  + combining","boosting
- + combining",0.6,"16@100 <0>","0","off",1000,6344.7430727375,0
+ + combining",0.6,"0","off",1000,6344.7430727375,0
 "563","0% update
 zipf: 0.6",100,64,"boosting
  + combining","boosting
- + combining",0.6,"64@100 <0>","0","off",1000,17113.6670862658,0
+ + combining",0.6,"0","off",1000,17113.6670862658,0
 "564","0% update
 zipf: 0.6",100,96,"boosting
  + combining","boosting
- + combining",0.6,"96@100 <19>","0","off",1000,18243.7380598599,19
+ + combining",0.6,"0","off",1000,18243.7380598599,19
 "565","0% update
 zipf: 0.6",100,16,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"16@100 <0>","0","on",1000,6344.69621281754,0
+ + combining",0.6,"0","on",1000,6344.69621281754,0
 "566","0% update
 zipf: 0.6",100,64,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"64@100 <0>","0","on",1000,17360.052348543,0
+ + combining",0.6,"0","on",1000,17360.052348543,0
 "567","0% update
 zipf: 0.6",100,96,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"96@100 <20>","0","on",1000,18113.5880435035,20
+ + combining",0.6,"0","on",1000,18113.5880435035,20
 "568","20% update
 zipf: 0.6",100,16,"boosting
  + combining","boosting
- + combining",0.6,"16@100 <0>","0.2","off",1000,6343.96211207844,0
+ + combining",0.6,"0.2","off",1000,6343.96211207844,0
 "569","20% update
 zipf: 0.6",100,64,"boosting
  + combining","boosting
- + combining",0.6,"64@100 <0>","0.2","off",1000,8523.51043063726,0
+ + combining",0.6,"0.2","off",1000,8523.51043063726,0
 "570","20% update
 zipf: 0.6",100,96,"boosting
  + combining","boosting
- + combining",0.6,"96@100 <11>","0.2","off",1000,8045.04326002246,11
+ + combining",0.6,"0.2","off",1000,8045.04326002246,11
 "571","20% update
 zipf: 0.6",100,16,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"16@100 <0>","0.2","on",1000,6340.99884784187,0
+ + combining",0.6,"0.2","on",1000,6340.99884784187,0
 "572","20% update
 zipf: 0.6",100,64,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"64@100 <11>","0.2","on",1000,14072.3227627428,11
+ + combining",0.6,"0.2","on",1000,14072.3227627428,11
 "573","20% update
 zipf: 0.6",100,96,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"96@100 <37>","0.2","on",1000,14243.9846021731,37
+ + combining",0.6,"0.2","on",1000,14243.9846021731,37
 "574","40% update
 zipf: 0.6",100,16,"boosting
  + combining","boosting
- + combining",0.6,"16@100 <0>","0.4","off",1000,6344.41691311646,0
+ + combining",0.6,"0.4","off",1000,6344.41691311646,0
 "575","40% update
 zipf: 0.6",100,64,"boosting
  + combining","boosting
- + combining",0.6,"64@100 <0>","0.4","off",1000,7026.82798178073,0
+ + combining",0.6,"0.4","off",1000,7026.82798178073,0
 "576","40% update
 zipf: 0.6",100,96,"boosting
  + combining","boosting
- + combining",0.6,"96@100 <16>","0.4","off",1000,6858.78257534935,16
+ + combining",0.6,"0.4","off",1000,6858.78257534935,16
 "577","40% update
 zipf: 0.6",100,16,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"16@100 <0>","0.4","on",1000,6342.95800446265,0
+ + combining",0.6,"0.4","on",1000,6342.95800446265,0
 "578","40% update
 zipf: 0.6",100,64,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"64@100 <13>","0.4","on",1000,12340.0273423501,13
+ + combining",0.6,"0.4","on",1000,12340.0273423501,13
 "579","40% update
 zipf: 0.6",100,96,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"96@100 <44>","0.4","on",1000,12768.8665795808,44
+ + combining",0.6,"0.4","on",1000,12768.8665795808,44
 "580","60% update
 zipf: 0.6",100,16,"boosting
  + combining","boosting
- + combining",0.6,"16@100 <0>","0.6","off",1000,6345.6939790977,0
+ + combining",0.6,"0.6","off",1000,6345.6939790977,0
 "581","60% update
 zipf: 0.6",100,64,"boosting
  + combining","boosting
- + combining",0.6,"64@100 <0>","0.6","off",1000,6578.72174203778,0
+ + combining",0.6,"0.6","off",1000,6578.72174203778,0
 "582","60% update
 zipf: 0.6",100,96,"boosting
  + combining","boosting
- + combining",0.6,"96@100 <8>","0.6","off",1000,1465.02556990552,8
+ + combining",0.6,"0.6","off",1000,1465.02556990552,8
 "583","60% update
 zipf: 0.6",100,16,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"16@100 <1>","0.6","on",1000,6343.49085822759,1
+ + combining",0.6,"0.6","on",1000,6343.49085822759,1
 "584","60% update
 zipf: 0.6",100,64,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"64@100 <11>","0.6","on",1000,11567.9951646702,11
+ + combining",0.6,"0.6","on",1000,11567.9951646702,11
 "585","60% update
 zipf: 0.6",100,96,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"96@100 <39>","0.6","on",1000,11623.3083977714,39
+ + combining",0.6,"0.6","on",1000,11623.3083977714,39
 "586","80% update
 zipf: 0.6",100,16,"boosting
  + combining","boosting
- + combining",0.6,"16@100 <0>","0.8","off",1000,6345.71773943796,0
+ + combining",0.6,"0.8","off",1000,6345.71773943796,0
 "587","80% update
 zipf: 0.6",100,64,"boosting
  + combining","boosting
- + combining",0.6,"64@100 <0>","0.8","off",1000,7189.84251655102,0
+ + combining",0.6,"0.8","off",1000,7189.84251655102,0
 "588","80% update
 zipf: 0.6",100,96,"boosting
  + combining","boosting
- + combining",0.6,"96@100 <17>","0.8","off",1000,7138.09034058779,17
+ + combining",0.6,"0.8","off",1000,7138.09034058779,17
 "589","80% update
 zipf: 0.6",100,16,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"16@100 <0>","0.8","on",1000,6343.50552682149,0
+ + combining",0.6,"0.8","on",1000,6343.50552682149,0
 "590","80% update
 zipf: 0.6",100,64,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"64@100 <11>","0.8","on",1000,10667.8977329339,11
+ + combining",0.6,"0.8","on",1000,10667.8977329339,11
 "591","80% update
 zipf: 0.6",100,96,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"96@100 <47>","0.8","on",1000,10891.1821750326,47
+ + combining",0.6,"0.8","on",1000,10891.1821750326,47
 "592","100% update
 zipf: 0.6",100,16,"boosting
  + combining","boosting
- + combining",0.6,"16@100 <0>","1","off",1000,6341.94917088799,0
+ + combining",0.6,"1","off",1000,6341.94917088799,0
 "593","100% update
 zipf: 0.6",100,64,"boosting
  + combining","boosting
- + combining",0.6,"64@100 <2>","1","off",1000,10350.2850384702,2
+ + combining",0.6,"1","off",1000,10350.2850384702,2
 "594","100% update
 zipf: 0.6",100,96,"boosting
  + combining","boosting
- + combining",0.6,"96@100 <35396>","1","off",1000,4712.40866236972,35396
+ + combining",0.6,"1","off",1000,4712.40866236972,35396
 "595","100% update
 zipf: 0.6",100,16,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"16@100 <0>","1","on",1000,6342.53893396214,0
+ + combining",0.6,"1","on",1000,6342.53893396214,0
 "596","100% update
 zipf: 0.6",100,64,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"64@100 <0>","1","on",1000,10465.9126766645,0
+ + combining",0.6,"1","on",1000,10465.9126766645,0
 "597","100% update
 zipf: 0.6",100,96,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"96@100 <18>","1","on",1000,4878.59846350663,18
+ + combining",0.6,"1","on",1000,4878.59846350663,18

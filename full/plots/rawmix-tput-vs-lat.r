@@ -12,7 +12,7 @@ d <- tryCatch(
     
     d
   }, error = function(e) {
-    write("!! Database unreachable. Reading stashed results from CSV.\n", stderr())
+    error.database_unreachable()
     d <- read.csv(file = 'data/rawmix-tput-vs-lat.csv')
   }
 )

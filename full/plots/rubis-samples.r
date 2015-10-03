@@ -8,7 +8,7 @@ d <- tryCatch(
     write.csv(subset(d, select = c('id', 'name', 'nclients', 'nthreads', 'cc', 'phasing', 'cc_ph', 'rate', 'mix', 'alpha', 'lambda', 'nusers', 'ncategories', 'nregions', 'throughput', 'state', 'avg_latency_ms', 'samples_txn_rate', 'samples_bid_rate')), file = 'data/rubis-samples.csv')
     d
   }, error = function(e) {
-    write("\n!! Database unreachable. Reading stashed results from CSV.\n", stderr())
+    error.database_unreachable()
     read.csv(file = 'data/rubis-samples.csv')
   }
 )

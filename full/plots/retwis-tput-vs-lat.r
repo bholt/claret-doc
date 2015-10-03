@@ -26,7 +26,7 @@ d <- tryCatch(
       file = 'data/retwis-tput-vs-lat.csv')
     d
   }, error = function(e) {
-    write("\n!! Database unreachable. Reading stashed results from CSV.\n", stderr())
+    error.database_unreachable()
     print("!!")
     d <- read.csv(file = 'data/retwis-tput-vs-lat.csv')
   }
