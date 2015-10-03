@@ -34,8 +34,6 @@ RUN install2.r --error \
   scales \
   Unicode \
   extrafont
-  
-RUN apt-get install -y zsh
 
 ENV USER root
 
