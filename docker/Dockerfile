@@ -1,6 +1,13 @@
-#######################################################
-# Base image with my common software and configuration
-#######################################################
+########################################################
+# Everything needed for generating Claret plots with R.
+# 
+# The included `Rscript` script runs Rscript inside the 
+# Docker environment.
+# 
+# Usage:
+#     $ docker/Rscript <plot.r>
+# 
+########################################################
 FROM rocker/r-base
 MAINTAINER Brandon Holt <holt.bg@gmail.com>
 
@@ -11,7 +18,8 @@ RUN apt-get update && \
       texlive-humanities \
       texlive-latex-extra \
       texinfo \
-      zsh && \
+      zsh \
+      mysql-client && \
     apt-get install -y -t unstable \
       libcairo2-dev \
       libmysqlclient-dev \
@@ -33,9 +41,13 @@ RUN install2.r --error \
   RMySQL \
   scales \
   Unicode \
-  extrafont
+  extrafont \
+  Hmisc
 
 ENV USER root
+
+ADD dots/Rprofile /root/.Rprofile
+ADD dots/my.cnf /root/.my.cnf
 
 VOLUME /src
 WORKDIR /src

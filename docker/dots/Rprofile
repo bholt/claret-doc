@@ -1,0 +1,8 @@
+opts <- commandArgs(trailingOnly = FALSE)
+FILE <- sub('--file=', '', opts[grep('--file=', opts)])
+FILE_DIR <- paste(getwd(),dirname(FILE),sep='/')
+FILE_BASE <- sub("^(.*)\\.\\w+", "\\1", basename(FILE))
+
+relative <- function(path) {
+  paste(FILE_DIR,path,sep='/')
+}

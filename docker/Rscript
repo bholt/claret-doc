@@ -1,0 +1,14 @@
+#!/usr/bin/env python
+import os, sys
+from os.path import dirname, realpath, relpath, curdir
+
+def fmt(s): return s.format(**dict(globals(), **locals()))
+
+root = realpath(dirname(realpath('../docker/Rscript'))+'/..')
+rel = relpath(curdir, root)
+
+args = ' '.join(sys.argv[1:])
+
+cmd = fmt('docker run -ti --rm -v {root}:/src bholt/claret-r zsh -c "cd {rel}; Rscript --slave {args}"')
+print fmt("$ {cmd}")
+os.system(cmd)
