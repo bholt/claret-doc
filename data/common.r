@@ -1,7 +1,7 @@
 suppressPackageStartupMessages(require(RMySQL))
 suppressPackageStartupMessages(require(sqldf))
 suppressPackageStartupMessages(require(ggplot2))
-suppressPackageStartupMessages(require(reshape))
+suppressPackageStartupMessages(require(reshape2))
 options(RMySQL.dbname="claret") # (rest comes from $HOME/.my.cnf)
 
 suppressPackageStartupMessages(library(jsonlite))
@@ -31,7 +31,7 @@ parse.args <- function() {
 }
 
 
-json.to.df <- function(jstr) {
+json.to.df <- function(jstr) { 
   d <- fromJSON(jstr)
   return(data.frame(x=names(d),y=unlist(d)))
 }

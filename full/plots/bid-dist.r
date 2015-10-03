@@ -7,7 +7,7 @@ d <- tryCatch({
   write.csv(subset(d, select = c('id', 'name', 'nclients', 'nthreads', 'cc', 'phasing', 'cc_ph', 'rate', 'alpha', 'mix', 'timeout_scaling', 'max_timeout_ms', 'phase_limit', 'max_retries', 'max_op_retries', 'prepare_retries', 'lambda', 'throughput', 'avg_latency_ms', 'txn_count', 'txn_failed', 'stat_nbids_hist', 'server_bid_time_hist')), file = 'data/bid-dist.csv')
   d
 }, error = function(e) {
-  error.database_unreachable()
+  error.database_unreachable(e)
   d <- read.table(file = 'data/bid-dist.csv', sep = ",", quote = "\"\"", header = T)
   d$stat_nbids_hist <- as.character(d$stat_nbids_hist)
   d

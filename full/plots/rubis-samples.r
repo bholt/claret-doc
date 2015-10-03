@@ -8,7 +8,7 @@ d <- tryCatch(
     write.csv(subset(d, select = c('id', 'name', 'nclients', 'nthreads', 'cc', 'phasing', 'cc_ph', 'rate', 'mix', 'alpha', 'lambda', 'nusers', 'ncategories', 'nregions', 'throughput', 'state', 'avg_latency_ms', 'samples_txn_rate', 'samples_bid_rate')), file = 'data/rubis-samples.csv')
     d
   }, error = function(e) {
-    error.database_unreachable()
+    error.database_unreachable(e)
     read.csv(file = 'data/rubis-samples.csv')
   }
 )

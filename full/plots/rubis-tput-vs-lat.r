@@ -9,7 +9,7 @@ d <- tryCatch(
     write.csv(subset(d, select = c('name', 'nclients', 'nthreads', 'cc', 'rate', 'mix', 'alpha', 'lambda', 'nusers', 'ncategories', 'nregions', 'phasing', 'cc_ph', 'timeout_scaling', 'throughput', 'state', 'avg_latency_ms')), file = 'data/rubis-tput-vs-lat.csv')
     d
   }, error = function(e) {
-    error.database_unreachable()
+    error.database_unreachable(e)
     d <- read.csv(file = 'data/rubis-tput-vs-lat.csv')
   }
 )

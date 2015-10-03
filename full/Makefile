@@ -6,6 +6,8 @@ endef
 
 all: pdf-view
 
+RSCRIPT := $(shell git rev-parse --show-toplevel)/docker/Rscript
+
 SRCS := $(wildcard *.mdk)
 
 DEPS := refs.bib out/style Makefile
@@ -44,7 +46,8 @@ FIGS_OUT := $(FIGS:%=fig/%.pdf)
 SVG_SRCS := $(SRCS:%.mdk=out/%.mdk)
 
 %.pdf: %.r plots/common.r
-	Rscript --slave $<
+	 $(RSCRIPT) $<
+	
 
 out/%.mdk: %.mdk
 	mkdir -p out

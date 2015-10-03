@@ -12,7 +12,7 @@ d <- tryCatch(
     
     d
   }, error = function(e) {
-    error.database_unreachable()
+    error.database_unreachable(e)
     d <- read.csv(file = 'data/rawmix-tput-vs-lat.csv')
   }
 )
