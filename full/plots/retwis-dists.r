@@ -56,7 +56,8 @@ g.reposts <- ggplot(
 # save(g.reposts, 'retwis-reposts', w=3.4, h=3.0)
 
 require(gridExtra)
-pdf('retwis-dists.pdf', width = 4.5, height = 2.1)
+outfile <- FILE_DIR + '/' + 'retwis-dists.pdf'
+pdf(outfile, width = 4.5, height = 2.1)
 grid.arrange(g.followers, g.reposts, ncol=2, nrow=1, widths=c(1,1), heights=c(1))
 dev.off()
-print("saved: " + sprintf("%s/%s",FILE_DIR,'retwis-dists.pdf'))
+print("saved: " + outfile)
