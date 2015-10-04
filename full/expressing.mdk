@@ -16,12 +16,16 @@ The next sections will show how ADT behavior is specified in Claret to expose ab
 |:---------------|:-{width=2.32in}-|
 | `UIdGenerator` | Create unique identifiers (not necessarily |
 |                | sequential) (`next`) |
+|----------------|----------------------|
 | `Dict`         | Map (or "hash") which allows setting or |
 |                | getting multiple field/value pairs atomically |
+|----------------|----------------------|
 | `ScoredSet`    | Set with unique items ranked by an |
 |                | associated score (`add`, `size`, `rangeByScore`, ...) |
+|----------------|----------------------|
 | `TopK`         | Like `ScoredSet` but keeps highest ranked 
 |                |items (`add`,`max`) |
+|----------------|----------------------|
 | `SummaryBag`   | Tracks summary stats like mean/max of |
 |                | "added" items (`add`, `mean`, `max`)|
 |--------------|------------|
@@ -33,10 +37,13 @@ The next sections will show how ADT behavior is specified in Claret to expose ab
 | method:            | commutes with: | when:                       |
 |:-------------------|:---------------|:----------------------------|
 |`add(x): void`      | `add(y)`       | $\forall x, y$              |
+|--------------------|----------------|-----------------------------|
 |`remove(x): void`   | `remove(y)`    | $\forall x, y$              |
 |                    | `add(y)`       | $x \ne y$                   |
+|--------------------|----------------|-----------------------------|
 |`size(): int`       | `add(x)`       | $x \in Set$                 |
 |                    | `remove(x)`    | $x \notin Set$              |
+|--------------------|----------------|-----------------------------|
 |`contains(x): bool` | `add(y)`       | $x \ne y \lor y \in Set$    |
 |                    | `remove(y)`    | $x \ne y \lor y \notin Set$ |
 |                    | `size()`       | $\forall x$                 |
