@@ -3,7 +3,7 @@ source('common.r')
 a <- parse.args()
 
 d <- tryCatch({
-  d <- data.rubis(where="name like '%28.1%' and nclients = 4 and nthreads = 64 and mix = 'bid-heavy' and ccmode = 'simple'")
+  d <- data.rubis(where="name like '%28.1%' and nclients = 4 and nthreads = 64 and mix = 'bid-heavy' and ccmode = 'simple' limit 4")
   write.csv(subset(d, select = c('id', 'name', 'nclients', 'nthreads', 'cc', 'phasing', 'cc_ph', 'rate', 'alpha', 'mix', 'timeout_scaling', 'max_timeout_ms', 'phase_limit', 'max_retries', 'max_op_retries', 'prepare_retries', 'lambda', 'throughput', 'avg_latency_ms', 'txn_count', 'txn_failed', 'stat_nbids_hist', 'server_bid_time_hist')), file = 'data/bid-dist.csv')
   d
 }, error = function(e) {
@@ -46,7 +46,7 @@ g.bidtime <-
     ylab('# of bids')+
     stat_summary(geom = 'line', fun.y = mean, color = c.blue)+
     scale_x_continuous(breaks=c(0,20,40,60,80,100), limits=c(0,100))+
-    scale_y_continuous(labels=si.labels())+
+    scale_y_continuous(labels=k.labels)+
     theme_mine
 # , 'bid-time', w=3.4, h=2.0)
 

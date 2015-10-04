@@ -16,6 +16,7 @@ library('Unicode')
 library('sitools')
 
 si.labels <- function(...) { function(x) gsub(" ", "", f2si(x,...)) }
+k.labels <- function(x) { x/1000 + 'k' }
 
 COMB <- "boosting\n + combining"
 COMM <- "boosting"
