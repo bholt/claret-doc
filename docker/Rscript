@@ -2,7 +2,7 @@
 import os, sys
 from os import environ as env
 from os.path import dirname, realpath, relpath, curdir
-import subprocess32 as sp
+import subprocess as sp
 
 def fmt(s): return s.format(**dict(globals(), **locals()))
 
