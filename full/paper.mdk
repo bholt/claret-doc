@@ -10,6 +10,7 @@ Bibliography: refs.bib
 doc class:    [preprint,nocopyrightspace]style/sigplanconf.cls
 css:          style/style.css
 Logo: False
+Package: etoolbox
 
 .onecol: tex-width=3.3in css-width=80% text-align=center
 
@@ -39,6 +40,9 @@ Logo: False
      \cssDoAfter{\end{figure}}%
 }
 \renewcommand{\arraystretch}{1.2}
+
+\apptocmd{\sloppy}{\hbadness 10000\relax}{}{}
+
 ~
 ~ HtmlRaw
 <script>

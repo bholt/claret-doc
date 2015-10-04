@@ -61,7 +61,7 @@ A traditional reader/writer lock can be implemented in this way by tracking all 
 
 Claret uses abstract locks to perform transaction boosting. With these locks, programmers can be assured that transactions will only conflict with each other on operations that do not commute. In our auction application, `bid`s are performed by adding to a `zset` (as in [#fig-adt-bid]). For popular items and near the end of auctions, the `ItemBids` `zset` will be the most highly contended, but because `add`s commute, those `bid` transactions will not conflict with each other.
 
-## Phaser
+## Phaser { #sec-phaser }
 
 ~ Listing { #lst-phaser caption="Phaser interface (example implementation): `enqueue` is called after an operation fails to acquire a lock, `signal` is called when a phase finishes (all ops in the phase commit and release the lock)." }
 ![Phaser interface](fig/phaser.pdf){.onecol}
@@ -69,7 +69,7 @@ Claret uses abstract locks to perform transaction boosting. With these locks, pr
 
 The phasing optimization described in [#sec-phasing] requires knowing how to divide operations for each ADT into phases. Claret accomplishes this by pairing a *phaser* with the abstract lock on each record.
 With phasing enabled, whenever an operation fails to acquire a lock, the concurrency controller *enqueues* the operation into the *phaser* for that record. When all operations in a phase have committed, the abstract lock *signals* the phaser, requesting operations to start a new phase.
-The simplest phaser implementations simply keep queues corresponding to modes (sets of operation types that always commute with one another). [#lst-phaser], for example, shows `adders`, which will contain all operations that may insert into the list (just `add`), and `readers`, which includes any read-only operations (`size`, `contains`, `rangeByScore`, etc).
+The simplest phaser implementations simply keep queues corresponding to *modes* (sets of operation types that always commute with one another). [#lst-phaser], for example, shows `adders`, which will contain all operations that may insert into the list (just `add`), and `readers`, which includes any read-only operations (`size`, `contains`, `rangeByScore`, etc).
 More complicated phaser implementations may allow operations to have multiple possible modes or more complicated state-dependent ways of determining which operations to signal when.
 
 ## Combiner
