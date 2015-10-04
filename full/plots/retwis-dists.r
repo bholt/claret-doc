@@ -24,11 +24,11 @@ g.followers <- ggplot(
   )+
     geom_point(color = c.blue, size = 1.3)+
     xlab('followers / user (log scale)')+ylab('count (log scale)')+
-    scale_x_log10(labels=si.labels())+ #, breaks=c(1,10,100,1000,10000))+
-    scale_y_log10(labels=si.labels())+ #, breaks=c(1,10,100,1000,10000,100000))+
+    scale_x_log10(labels=si.labels(), breaks=c(1,10,100,1000))+
+    scale_y_log10(labels=si.labels(), breaks=c(1,10,100,1000))+
     my_theme()
 
-save(g.followers, 'retwis-followers', w=3.4, h=3.0)
+# save(g.followers, 'retwis-followers', w=3.4, h=3.0)
 
 
 g.followers.cdf <- ggplot(
@@ -41,20 +41,22 @@ g.followers.cdf <- ggplot(
     scale_y_log10(breaks=c(0.10, 0.5, 1))+
     my_theme()
     
-save(g.followers.cdf, 'retwis-followers-cdf', w=3.4, h=3.0)
+# save(g.followers.cdf, 'retwis-followers-cdf', w=3.4, h=3.0)
 
 g.reposts <- ggplot(
     subset(to.hist(r$server_reposts_hist), x > 0),
     aes(x = x, y = y)
   )+
     geom_point(color = c.blue, size = 1.3)+
-    xlab('# reposts (log scale)')+ylab('count (log scale)')+
+    xlab('reposts / post (log scale)')+ylab('count (log scale)')+
     scale_x_log10(labels=si.labels(), breaks=c(1,10,100,1000,10000))+
     scale_y_log10(labels=si.labels(), breaks=c(1,10,100,1000,10000))+
     my_theme()
 
-save(g.reposts, 'retwis-reposts', w=3.4, h=3.0)
+# save(g.reposts, 'retwis-reposts', w=3.4, h=3.0)
 
-# pdf('retwis-dists.pdf')
-# multiplot(g.followers, g.reposts, cols=2)
-# dev.off()
+require(gridExtra)
+pdf('retwis-dists.pdf', width = 4.5, height = 2.1)
+grid.arrange(g.followers, g.reposts, ncol=2, nrow=1, widths=c(1,1), heights=c(1))
+dev.off()
+print("saved: " + sprintf("%s/%s",FILE_DIR,'retwis-dists.pdf'))
