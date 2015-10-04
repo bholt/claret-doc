@@ -15,7 +15,7 @@ d.zipf <- tryCatch({
   d.zipf
 }, error = function(e) {
   error.database_unreachable(e)
-  d.zipf <- read.csv(file = 'data/rawmix-zipf.csv')
+  d.zipf <- db.csv(file = 'data/rawmix-zipf.csv')
 })
 
 d.mix <- tryCatch(
@@ -31,7 +31,7 @@ d.mix <- tryCatch(
   d.mix
 }, error = function(e){
   error.database_unreachable(e)
-  d.mix <- read.csv(file = 'data/rawmix-mix.csv')
+  d.mix <- db.csv(file = 'data/rawmix-mix.csv')
 })
 
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 source('common.r')
 
-d <- read.csv('bid_trace.csv')
+d <- db.csv('bid_trace.csv')
 
 c <- sql("select item, count(*) as count from d group by item")
 

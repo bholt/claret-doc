@@ -9,7 +9,7 @@ d <- tryCatch(
     d
   }, error = function(e) {
     error.database_unreachable(e)
-    read.csv(file = 'data/rubis-samples.csv')
+    db.csv(file = 'data/rubis-samples.csv')
   }
 )
 

@@ -10,7 +10,7 @@ d <- tryCatch(
     d
   }, error = function(e) {
     error.database_unreachable(e)
-    d <- read.csv(file = 'data/rubis-tput-vs-lat.csv')
+    d <- db.csv(file = 'data/rubis-tput-vs-lat.csv')
   }
 )
 

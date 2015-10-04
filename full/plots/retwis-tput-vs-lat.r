@@ -28,7 +28,7 @@ d <- tryCatch(
   }, error = function(e) {
     error.database_unreachable(e)
     print("!!")
-    d <- read.csv(file = 'data/retwis-tput-vs-lat.csv')
+    d <- db.csv(file = 'data/retwis-tput-vs-lat.csv')
   }
 )
 
