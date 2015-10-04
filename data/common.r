@@ -54,6 +54,7 @@ p <- function(...) paste(..., sep='')
   }
 }
 
+
 mgsub <- function(myrepl, mystring){
   gsub2 <- function(l, x){
    do.call('gsub', list(x = x, pattern = l[1], replacement = l[2]))
