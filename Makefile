@@ -15,3 +15,4 @@ deploy:
 	# scp papoc/claret-papoc.pdf $(dest)/pdf
 	scp full/out/claret.pdf $(dest)/draft/claret.pdf
 	scp full/out/paper.html $(dest)/draft/claret.html
+	scp -r full/out/plots $(dest)/draft/
