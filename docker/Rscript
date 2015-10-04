@@ -9,6 +9,10 @@ rel = relpath(curdir, root)
 
 args = ' '.join(sys.argv[1:])
 
+which docker
+
+docker info
+
 cmd = fmt('docker run -i --rm -v {root}:/src bholt/claret-r zsh -c "cd {rel}; Rscript --slave {args}"')
 print fmt("$ {cmd}")
 os.system(cmd)
