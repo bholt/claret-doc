@@ -2,6 +2,7 @@
 import os, sys
 from os import environ as env
 from os.path import dirname, realpath, relpath, curdir
+import subprocess32 as sp
 
 def fmt(s): return s.format(**dict(globals(), **locals()))
 
@@ -9,6 +10,11 @@ root = realpath(dirname(realpath('../docker/Rscript'))+'/..')
 rel = relpath(curdir, root)
 
 args = ' '.join(sys.argv[1:])
+
+# parse docker settings into environment variables
+o = sp.check_output(["docker-machine","env","dev"])
+dockervars = { k: v.replace('"','') for (k,v) in [x.split('=') for x in o.split() if 'DOCKER' in x]}
+env.update(dockervars)
 
 print { k: env[k] for k in env if 'DOCKER' in k }
 
