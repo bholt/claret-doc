@@ -21,16 +21,16 @@ nbid.hist <- adply(d, 1, function(r) {
   data.frame(s, h)
 })
 
-save(
+# save(
   # ggplot(subset(nbid.hist, x != 0), aes(x=x, weight=y))+
+g.biddist <-
   ggplot(nbid.hist, aes(x = x, y = y))+
     geom_point(color = c.blue, size = 1.3)+
     xlab('bids / item (log scale)')+ylab('count (log scale)')+
     scale_x_log10(labels=si.labels(), breaks=c(1,10,100,1000,10000))+
     scale_y_log10(labels=si.labels(), breaks=c(1,10,100,1000,10000,100000))+
     my_theme()
-, 'bid-dist', w=3.4, h=3.0)
-
+# , 'bid-dist', w=3.4, h=3.0)
 
 
 bidtime.hist <- adply(d, 1, function(r) {
@@ -39,7 +39,8 @@ bidtime.hist <- adply(d, 1, function(r) {
   data.frame(s, h)
 })
 
-save(
+# save(
+g.bidtime <-
   ggplot(bidtime.hist, aes(x = (x+0.02)*100, y = y))+
     xlab('% of auction window time')+
     ylab('# of bids')+
@@ -47,4 +48,11 @@ save(
     scale_x_continuous(breaks=c(0,20,40,60,80,100), limits=c(0,100))+
     scale_y_continuous(labels=si.labels())+
     theme_mine
-, 'bid-time', w=3.4, h=2.0)
+# , 'bid-time', w=3.4, h=2.0)
+
+require(gridExtra)
+outfile <- FILE_DIR + '/' + 'bid-dist.pdf'
+pdf(outfile, width = 4.5, height = 2.1)
+grid.arrange(g.biddist, g.bidtime, ncol=2, nrow=1, widths=c(1,1), heights=c(1))
+dev.off()
+print("saved: " + outfile)

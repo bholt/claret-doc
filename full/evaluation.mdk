@@ -42,21 +42,17 @@ Now that we understand how these optimizations perform under various degrees of 
 
 ## RUBiS
 
+The RUBiS [@Amza:02] benchmark imitates an online auction service similar to those described back in [#sec-realworld]. There are 8 different kinds of transactions: `OpenAuction`, `ViewAuction`, `CloseAuction`, `Bid`, `Browse`, `AddComment`, `AddUser`, `ViewUser`, but `ViewAuction` and `Bid` dominate the workload. The benchmark specifies a workload consisting of a mix of these transactions and the average number of bids per auction that should result. However, the *distribution* of bids (by item and time) was left unspecified.
+
+~ Fig { #plot-bid-dist caption="Our modified Rubis models real-world auctions with bids per item (*left*) which follow a power law (indicated by a straight line on a log-log plot), and the frequency of bids over the auction time window (*right*), with higher bidding rates closer to closing time. These skewed distributions, which match those observed empirically, lead to bursts of high contention." }
+![Rubis distributions](plots/bid-dist.pdf){.onecol}
+~
+
+Our modified implementation correctly models the bid distributions observed by prior studies [@Akula:04;@Akula:07], with bids per item following a power law distribution and the frequency of bids increasing exponentially at the end of an auction ([#plot-bid-dist]). Otherwise, we follow the parameters specified in [@Amza:02]: 30,000 items, divided into 62 regions and 40 categories, and 1M users, with an average of 10 bids per item, (though in our case this is distributed according to a zipfian distribution with a parameter of 1.0.
+
 ~ Fig { #plot-rubis caption="Throughput vs latency plot of Rubis (auction site). Contention between bids on popular auctions, especially close to their closing time, causes performance to drop for reader/writer locks, but tracking top bids is commutative, so boosted transactions maintain high throughput and lower latency." }
 ![Rubis](plots/rubis-tput.pdf){ .onecol }
 ~
-
-The RUBiS [@Amza:02] benchmark imitates an online auction service similar to those described back in [#sec-realworld]. There are 8 different kinds of transactions: `OpenAuction`, `ViewAuction`, `CloseAuction`, `Bid`, `Browse`, `AddComment`, `AddUser`, `ViewUser`, but `ViewAuction` and `Bid` dominate the workload. The benchmark specifies a workload consisting of a mix of these transactions and the average number of bids per auction that should result. However, the *distribution* of bids (by item and time) was left unspecified.
-
-~ Fig { #plot-bids-per-item caption="Log-log plot showing the number of bids per item in this auction simulation matches the power law distribution observed empirically." }
-![bids per item power-law plot](plots/bid-dist.pdf){.onecol}
-~
-
-~ Fig { #plot-bid-time caption="Frequency of bids with respect to the auction window (auction opens at 0%, closes at 100%) for all items in a , indicating higher rates of bids as closing times near." }
-![bid time plot](plots/bid-time.pdf)
-~
-
-Our modified implementation correctly models the bid distributions observed by prior studies [@Akula:04;@Akula:07], with bids per item following a power law distribution ([#plot-bids-per-item]) and the frequency of bids increasing exponentially at the end of an auction ([#plot-bid-time]). Otherwise, we follow the parameters specified in [@Amza:02]: 30,000 items, divided into 62 regions and 40 categories, and 1M users, with an average of 10 bids per item, (though in our case this is distributed according to a zipfian distribution with a parameter of 1.0.
 
 [#plot-rubis] shows the performance results for two different workloads: read-heavy (10% Bid transactions), and bid-heavy (50% bid transactions). For the read-heavy workload, phasing and boosting accomplish the same thing, both preventing the occasional performance breakdown which leads the baseline to suffer. In this case, reader/writer locks with phasing are sufficient because the workload is mostly reads. However, in the more bid-heavy workload there is more contention, especially on the most popular auctions, which reader/writer locks are unable to cope with. By taking advantage of the fact that bids commute with each other, boosting maintains nearly the same throughput as on the read-heavy workload.
 
@@ -71,7 +67,7 @@ In fact, boosting and combining both serve to avoid performance breakdowns durin
 
 Retwis is a simplified Twitter clone designed originally for Redis [@redis]. Data structures such as sets are used track each user's followers and posts and keep a materialized up-to-date timeline for each user (represented as a sorted set). On top of Retwis's basic functionality, we added a "repost" action that behaves like Twitter's "retweet". Not being a true benchmark itself, Retwis doesn't specify a workload, so we simulate a realistic workload using a synthetic graph with power-law degree distribution and a simple model for user behavior for posting and reposting.
 
-~ Fig { #plot-retwis-dists caption="Power-law distributions in our Retwis benchmark. Distribution of followers per user (left) comes from the Kronecker synthetic graph generator. Number of reposts per post (right) is a result of the graph structure and our user model which favors reposting already-popular posts." }
+~ Fig { #plot-retwis-dists caption="Power-law distributions in our Retwis benchmark. Distribution of followers per user (*left*) comes from the Kronecker synthetic graph generator. Number of reposts per post (*right*) is a result of the graph structure and our user model which favors reposting already-popular posts." }
 ![Retwis power-law distributions](plots/retwis-dists.pdf){ .onecol }
 ~
 
