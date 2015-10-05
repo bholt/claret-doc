@@ -43,7 +43,9 @@ RUN install2.r --error \
   Unicode \
   extrafont \
   Hmisc
-
+  
+RUN install2.r --error TTR
+    
 ENV USER root
 
 ADD dots/Rprofile /root/.Rprofile

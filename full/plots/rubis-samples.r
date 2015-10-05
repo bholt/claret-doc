@@ -30,7 +30,7 @@ samples <- subset(samples, x > 14 & x < 46)
 save(
   ggplot(samples, aes(
     x = x,
-    y = y*4,
+    y = y * 4, # multiply by number of clients for total throughput
     color = cc_ph, fill = cc_ph
   ))+
     xlab('execution time (s)')+
@@ -38,7 +38,7 @@ save(
     stat_summary(geom='line', fun.y=mean, size=0.4)+
     scale_x_continuous()+
     scale_y_continuous(labels = function(x){ x/1000+'k' })+
-    cc_ph_scales(name = 'Mode:', guide = guide_legend(nrow = 1))+
+    cc_ph_scales(name = '', guide = guide_legend(nrow = 1))+
     coord_cartesian(xlim=c(15,45))+
-    my_theme()+legend.bottom()+theme(legend.margin = unit(-25,'pt'), legend.background = element_rect(fill=alpha('white', 0)))
+    my_theme()+legend.bottom()+theme(legend.margin = unit(-25,'pt'), legend.background = element_rect(fill=alpha('white', 0)), legend.key.width = unit(16,'pt'))
 , 'rubis-samples', w=5, h=3)
