@@ -105,3 +105,30 @@ save(
   my_theme()+theme(legend.position='none')
 , w=4.5, h=3.5)
 
+
+dr <- data.or.csv(
+  csv = 'data/rawmix-retries.csv',
+  gen = function() {
+    d <- data.rawmix(where="name like 'v0.28%' and nclients = 4 and duration = 30 and length = 4 and rate = 50")
+    dc <- adply(d, 1, function(r){
+        c <- fromJSON(jsfix(r$server_txn_conflict_on_tag))
+        c <- c[['0']][['s']]
+        data.frame(conflicts = c$conflicts, conflicts_total = c$total)
+      })
+    subset(dc, select = c('name', 'nthreads', 'cc', 'phasing', 'cc_ph', 'avg_latency_ms', 'throughput', 'txn_retries', 'conflicts', 'conflicts_total'))
+  }
+)
+
+dr$cc_ph <- factor(dr$cc_ph, levels = rev(levels(dr$cc_ph)))
+save(
+  ggplot(dr, aes(x = cc_ph, y = txn_retries, group = cc_ph, color = cc_ph, fill = cc_ph))+
+    xlab('mode')+
+    ylab('txn retries')+
+    geom_bar(stat="identity")+
+    scale_y_continuous(labels=k.labels)+
+    expand_limits(y=0)+
+    cc_ph_scales()+
+    coord_flip()+
+    my_theme()+theme(legend.position='none')
+    
+, 'rawmix-retries', w=4.5, h=2.5)

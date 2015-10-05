@@ -73,6 +73,19 @@ db.csv <- function(file) {
   d
 }
 
+data.or.csv <- function(csv, gen) {
+  d <- tryCatch(
+    {
+      d <- gen()
+      write.csv(d, file = csv)
+      d
+    }, error = function(e) {
+      error.database_unreachable(e)
+      d <- db.csv(file = csv)
+    }
+  )
+}
+
 db <- function(query, factors=c(), numeric=c()) {
   d <- sqldf(query)
   d[factors] <- lapply(d[factors], factor)

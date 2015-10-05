@@ -18,6 +18,11 @@ To begin with, we explore the effects of each of the optimizations with transact
 ![Raw mix throughput versus latency](plots/rawmix-tput.pdf){ .onecol }
 ~
 
+~ Fig { #plot-rawmix-retries caption="Transaction retries for Rawmix workload with 384 clients. Throughput is largely determined by retries. Phasing, boosting, and combining all reduce retries in different ways." }
+![Raw mix throughput versus latency](plots/rawmix-retries.pdf){ .onecol }
+~
+
+
 First, we start with a 50% read, 50% write workload and a modest zipfian parameter of 0.6, and vary the number of clients. [#plot-rawmix] shows a throughput versus latency plot with lines for each of the optimization conditions as we vary the number of clients (from 8 up to 256). As expected, each line maintains low latency until a saturation point when throughput begins to peak and latencies increase as clients have to wait longer for the overloaded server to respond. The more clients there are, the more chances for transactions to contend. We see that the baseline reader/writer locking scheme falls over very early on this reasonably contentious workload, as writes to the popular keys cause others to abort.
 
 We see that enabling phasing (the dashed lines) immediately helps even the reader/writer locks by ensuring that all clients get processed in order of arrival. However, enabling boosting, which switches to using abstract locks, prevents `insert` operations from aborting each other, nearly doubling throughput by exposing more concurrency, and combining adds a little more on top of that. Importantly, `insert` does not generally commute with `size` (except in the case where a duplicate is added), so there is still a significant chance for conflicts in this workload.

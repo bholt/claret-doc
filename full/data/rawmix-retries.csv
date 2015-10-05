@@ -1,0 +1,43 @@
+"","name","nthreads","cc","phasing","cc_ph","avg_latency_ms","throughput","txn_retries","conflicts","conflicts_total"
+"1","v0.28.2-sampa",96,"boosting
+ + combining","on","boosting
+ + combining
+ + phasing",6.55190923370738,11696.6492631022,15312,273961,1599172
+"2","v0.28.2-sampa",96,"r/w locks","on","r/w locks
+ + phasing",6.32080666907199,6811.8655632844,65928,132758,988908
+"3","v0.28.2-sampa",96,"boosting","on","boosting
+ + phasing",6.79225563009104,11028.6880643648,21480,247580,1584661
+"4","v0.28.2-sampa",96,"r/w locks","off","r/w locks
+(baseline)",17.8386635011522,1849.03406981811,319144,1654653,1916842
+"5","v0.28.2-sampa",96,"boosting","off","boosting",16.9195684097867,5274.89119232208,232664,1394602,2087603
+"6","v0.28.2-sampa",96,"boosting
+ + combining","off","boosting
+ + combining",14.3832445591111,6323.36495322799,199912,1285972,2024942
+"7","v0.28.2-sampa",96,"r/w locks","off","r/w locks
+(baseline)",17.4473274168417,1908.90633284622,327904,1701668,1972697
+"8","v0.28.2-sampa",96,"boosting","off","boosting",16.776284887889,5328.49455637592,235424,1409241,2106451
+"9","v0.28.2-sampa",96,"r/w locks","on","r/w locks
+ + phasing",6.26985138420516,6599.21333195321,67640,130876,962676
+"10","v0.28.2-sampa",96,"boosting","on","boosting
+ + phasing",7.14340861443439,10535.1073256537,25368,230647,1506834
+"11","v0.28.2-sampa",96,"boosting
+ + combining","off","boosting
+ + combining",14.7681005110733,6192.39137601371,198240,1272825,1994744
+"12","v0.28.2-sampa",96,"boosting
+ + combining","on","boosting
+ + combining
+ + phasing",6.80935070712747,11296.7316371572,18192,260745,1542010
+"13","v0.28.2-sampa",96,"r/w locks","off","r/w locks
+(baseline)",17.8347141961986,1855.3731285443,317872,1649393,1911999
+"14","v0.28.2-sampa",96,"boosting","off","boosting",16.7479679802956,5347.66401917783,227096,1371285,2070586
+"15","v0.28.2-sampa",96,"r/w locks","on","r/w locks
+ + phasing",6.64923010363611,6571.89198270793,67708,130773,959076
+"16","v0.28.2-sampa",96,"boosting","on","boosting
+ + phasing",7.11245000062695,10549.7718103049,25352,230257,1507913
+"17","v0.28.2-sampa",96,"boosting
+ + combining","off","boosting
+ + combining",14.6583141912712,6286.46397407789,153232,258667,1533098
+"18","v0.28.2-sampa",96,"boosting
+ + combining","on","boosting
+ + combining
+ + phasing",6.88224904327348,11235.0260287474,17488,258667,1533098
