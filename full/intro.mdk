@@ -14,7 +14,7 @@ In this work, we propose a new way to express high-level application semantics t
 
 Datastores supporting complex datatypes and operations are already popular. Many datastores support simple collections such as *lists*, *sets*, and *maps*, and some, such as Cassandra [@cassandra] and Voldemort [@voldemort], support custom data types as blackboxes. Redis [@redis], one of the most popular key/value stores, supports a large, fixed set of complex data types and a number of operations specific to each type. Currently, these datastores treat data types as just blackboxes with special update functions. In *Claret*, we expose the logical properties of these data types to the system and use them to improve synchronization and concurrency control to enable performant strong distributed transactions.
 
-This work makes the following contributions [todo: I would remove the first bullet]:
+This work makes the following contributions [todo:Luis: I would remove the first bullet]:
 
 - Models of real-world high-contention scenarios in two modified benchmarks: Rubis (online auction), and Retwis (Twitter-like social network).
 - Design of an *extensible ADT-store*, Claret, with interfaces to express logical properties of new ADTs.
