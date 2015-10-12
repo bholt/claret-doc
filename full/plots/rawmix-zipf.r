@@ -4,7 +4,7 @@ source('common.r')
 a <- parse.args()
 
 d.zipf <- tryCatch({
-  d <- data.rawmix(where="name like 'v0.27.5%' and nclients = 4 and duration = 30 and length = 4")
+  d <- data.rawmix(where="name like 'v0.27.5%' or (name like 'v0.28.1%' and disable_txns = 1) and nclients = 4 and duration = 30 and length = 4 and rate = 100")
 
   d$facet <-  num(d$commute_ratio)*100 + "% update\nzipf: " + d$alpha
   d$zipf <- num(d$alpha)
@@ -20,7 +20,7 @@ d.zipf <- tryCatch({
 
 d.mix <- tryCatch(
 {
-  d <- data.rawmix(where="name like 'v0.27.5%' and nclients = 4 and duration = 30 and length = 4")
+  d <- data.rawmix(where="name like 'v0.27.5%' or (name like 'v0.28.1%' and disable_txns = 1) and nclients = 4 and duration = 30 and length = 4 and rate = 100")
 
   d$facet <-  num(d$commute_ratio)*100 + "% update\nzipf: " + d$alpha
   d$zipf <- num(d$alpha)

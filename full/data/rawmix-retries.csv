@@ -41,3 +41,33 @@
  + combining","on","boosting
  + combining
  + phasing",6.88224904327348,11235.0260287474,17488,258667,1533098
+"19","v0.28.1-sampa",4,"r/w locks","off","non-transactional",0.528411183659802,795.575253653712,0,0,95580
+"20","v0.28.1-sampa",4,"boosting","off","non-transactional",0.541811715481171,795.907901134252,0,0,95600
+"21","v0.28.1-sampa",16,"r/w locks","off","non-transactional",0.475224754338281,3182.16444398612,0,0,382652
+"22","v0.28.1-sampa",16,"boosting","off","non-transactional",0.480898770697441,3182.2657476648,0,0,382656
+"23","v0.28.1-sampa",32,"r/w locks","off","non-transactional",0.501932720434601,6355.46658433509,0,0,765764
+"24","v0.28.1-sampa",32,"boosting","off","non-transactional",0.550314465408805,6356.19895079355,0,0,765756
+"25","v0.28.1-sampa",64,"r/w locks","off","non-transactional",1.03890571950901,12668.9496583784,0,0,1531609
+"26","v0.28.1-sampa",64,"boosting","off","non-transactional",0.908843775461174,12666.2851812772,0,0,1531761
+"27","v0.28.1-sampa",96,"r/w locks","off","non-transactional",3.24508908007548,17745.7546672292,0,0,2153654
+"28","v0.28.1-sampa",96,"boosting","off","non-transactional",3.29267574096989,17900.2465489736,0,0,2172338
+"29","v0.28.1-sampa",4,"r/w locks","off","non-transactional",0.537083682008368,795.891998454837,0,0,95604
+"30","v0.28.1-sampa",4,"boosting","off","non-transactional",0.542626380984265,795.761444731943,0,0,95596
+"31","v0.28.1-sampa",16,"r/w locks","off","non-transactional",0.500035542546519,3182.10093174417,0,0,382652
+"32","v0.28.1-sampa",16,"boosting","off","non-transactional",0.513233818364275,3182.00112426449,0,0,382660
+"33","v0.28.1-sampa",32,"r/w locks","off","non-transactional",0.607263742922212,6355.81037877103,0,0,765776
+"34","v0.28.1-sampa",32,"boosting","off","non-transactional",0.513271766156161,6356.35904842539,0,0,765776
+"35","v0.28.1-sampa",64,"r/w locks","off","non-transactional",0.915586484228118,12668.461828551,0,0,1531844
+"36","v0.28.1-sampa",64,"boosting","off","non-transactional",1.17238083299383,12668.2503027215,0,0,1531632
+"37","v0.28.1-sampa",96,"r/w locks","off","non-transactional",3.25999820693468,17649.0987486649,0,0,2141632
+"38","v0.28.1-sampa",96,"boosting","off","non-transactional",3.24561174964269,17714.0728482279,0,0,2149430
+"39","v0.28.1-sampa",4,"r/w locks","off","non-transactional",0.548100418410042,795.915852712275,0,0,95608
+"40","v0.28.1-sampa",4,"boosting","off","non-transactional",0.535160696350854,795.819748292364,0,0,95584
+"41","v0.28.1-sampa",16,"r/w locks","off","non-transactional",0.469142797407485,3181.79399164471,0,0,382652
+"42","v0.28.1-sampa",16,"boosting","off","non-transactional",0.490825179795953,3182.40336922785,0,0,382656
+"43","v0.28.1-sampa",32,"r/w locks","off","non-transactional",0.621001608758331,6356.77240701512,0,0,765812
+"44","v0.28.1-sampa",32,"boosting","off","non-transactional",0.610248641872127,6355.78308533031,0,0,765760
+"45","v0.28.1-sampa",64,"r/w locks","off","non-transactional",1.40644556348402,12666.3821537627,0,0,1531480
+"46","v0.28.1-sampa",64,"boosting","off","non-transactional",1.06475968117668,12671.2686888208,0,0,1531636
+"47","v0.28.1-sampa",96,"r/w locks","off","non-transactional",3.28948747510743,17608.9485635565,0,0,2137253
+"48","v0.28.1-sampa",96,"boosting","off","non-transactional",3.24137905167693,17574.9405913509,0,0,2133032

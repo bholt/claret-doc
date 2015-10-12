@@ -4,9 +4,9 @@ a <- parse.args()
 
 d <- tryCatch(
   {
-    d <- data.rawmix(where="name like 'v0.27.5%' and nclients = 4 and duration = 30 and length = 4")
-        
-    d <- subset(d, commute_ratio == 0.5 & alpha == 0.6 & rate == 100)
+    d <- data.rawmix(where="(name like 'v0.27.5%' or (name like 'v0.28.1%' and disable_txns = 1)) and nclients = 4 and duration = 30 and length = 4 and rate = 100")
+    
+    d <- subset(d, commute_ratio == 0.5 & alpha == 0.6)
     
     write.csv(subset(d, select = c('name', 'nclients', 'nthreads', 'cc', 'phasing', 'cc_ph', 'rate', 'alpha', 'commute_ratio', 'timeout_scaling', 'throughput', 'op_timeouts', 'avg_latency_ms', 'txn_failed')), file = 'data/rawmix-tput-vs-lat.csv')
     
@@ -56,7 +56,7 @@ save(
   stat_summary(geom='line', fun.y=mean)+
   stat_summary(geom='point', fun.y=mean)+  
   scale_x_continuous(trans=log2_trans(), breaks=c(16,32,64,128,256,384))+
-  scale_y_continuous(labels=si.labels())+
+  scale_y_continuous(labels=k.labels)+
   expand_limits(y=0)+
   cc_ph_scales()+
   my_theme()
@@ -74,7 +74,7 @@ save(
   # stat_summary(geom='smooth', fun.data=mean_cl_normal)+
   # stat_summary(fun.data=mean_cl_normal, geom='errorbar', width=0.2, aes(color='black'))+
   scale_x_continuous(breaks=c(16,32,64,128,256,384))+
-  scale_y_continuous(labels=si.labels())+
+  scale_y_continuous(labels=k.labels)+
   expand_limits(y=0)+
   cc_ph_scales()+
   my_theme()
@@ -99,7 +99,7 @@ save(
   geom_bar(stat="identity")+
   geom_errorbar(aes(ymin=ymin,ymax=ymax), width=0.2)+
   # scale_x_continuous(trans=log2_trans(), breaks=c(16,32,64,128,256,384))+
-  scale_y_continuous(labels=si.labels())+
+  scale_y_continuous(labels=k.labels)+
   expand_limits(y=0)+
   cc_ph_scales()+
   my_theme()+theme(legend.position='none')

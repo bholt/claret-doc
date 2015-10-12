@@ -25,6 +25,7 @@ PH   <- "\n + phasing"
 ALL  <- "all"
 COMM_PH <- "boosting\n+\nphasing"
 BASE <- "\n(baseline)"
+NOTXN <- "non-transactional"
 
 parse.args <- function() {
   options <- commandArgs(trailingOnly=TRUE)
@@ -113,7 +114,21 @@ db <- function(query, factors=c(), numeric=c()) {
       'simple#NA'='bo'
     )), levels=c('rw','bo','cb'))
     
-    if ('phasing' %in% colnames(d)) {
+    if ('disable_txns' %in% colnames(d)) {
+      # d$disable_txns <- factor(revalue(d$disable_txns, c('NA'='0','0'='0','1'='1')))
+      d$disable_txns[is.na(d$disable_txns)] <- 0
+      
+      d$cc_ph <- factor(revalue(x(d$ccmode,d$combining,d$phasing,d$disable_txns), c(
+        'rw#0#off#0'=RW+BASE,
+        'simple#0#off#0'=COMM,
+        'simple#1#off#0'=COMB,
+        'rw#0#on#0'=RW+PH,
+        'simple#0#on#0'=COMM+PH,
+        'simple#1#on#0'=COMB+PH,
+        'simple#0#off#1'=NOTXN,
+        'rw#0#off#1'=NOTXN
+      )), levels=c(NOTXN,COMB+PH,COMM+PH,RW+PH,COMB,COMM,RW+BASE))
+    } else if ('phasing' %in% colnames(d)) {
       d$cc_ph <- factor(revalue(x(d$ccmode,d$combining,d$phasing), c(
         'rw#0#off'=RW+BASE,
         'simple#0#off'=COMM,
@@ -246,6 +261,7 @@ my_palette[[COMM]] <- c.blue
 my_palette[[COMB]] <- c.green
 my_palette[[PH]]   <- c.pink
 my_palette[[ALL]]  <- c.yellow
+my_palette[[NOTXN]] <- c.pink
 
 # The palette with grey:
 cbPalette <- c("#0072B2", "#E69F00", "#009E73", "#D55E00", "#CC79A7", "#56B4E9", "#F0E442", "#999999")
@@ -290,7 +306,7 @@ phasing.linetype <- function(title="Phasing:", ...) {
     # labels=c(as.u_char('2713'), as.u_char('2717')))
 }
 
-cc_ph_scales <- function(name = 'Mode', guide = guide_legend(nrow = 6), ...) {
+cc_ph_scales <- function(name = 'Mode', guide = guide_legend(nrow = 7), ...) {
   colors <- c()
   colors[[RW+BASE]] <- c.gray
   colors[[RW+PH]] <- c.gray
@@ -298,6 +314,7 @@ cc_ph_scales <- function(name = 'Mode', guide = guide_legend(nrow = 6), ...) {
   colors[[COMM+PH]] <- c.blue
   colors[[COMB]] <- c.green
   colors[[COMB+PH]] <- c.green
+  colors[[NOTXN]] <- c.pink
   
   dotted <- 2
   lines <- c()
@@ -307,6 +324,7 @@ cc_ph_scales <- function(name = 'Mode', guide = guide_legend(nrow = 6), ...) {
   lines[[COMM+PH]] <- dotted
   lines[[COMB]] <- 1
   lines[[COMB+PH]] <- dotted
+  lines[[NOTXN]] <- 1
   
   list(
     scale_fill_manual(values=colors, name = name, guide = guide, ...),
