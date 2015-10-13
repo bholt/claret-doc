@@ -62,48 +62,48 @@ save(
   my_theme()
 , 'rawmix-tput', w=5, h=3.5)
 
-save(
-  ggplot(d, aes(
-    x = x,
-    y = avg_latency_ms,
-    group = cc_ph, fill = cc_ph, color = cc_ph, linetype = cc_ph,
-  ))+
-  xlab('Clients')+ylab('Mean transaction latency (ms)')+
-  stat_summary(geom='line', fun.y=mean)+
-  stat_summary(geom='point', fun.y=mean)+  
-  # stat_summary(geom='smooth', fun.data=mean_cl_normal)+
-  # stat_summary(fun.data=mean_cl_normal, geom='errorbar', width=0.2, aes(color='black'))+
-  scale_x_continuous(breaks=c(16,32,64,128,256,384))+
-  scale_y_continuous(labels=k.labels)+
-  expand_limits(y=0)+
-  cc_ph_scales()+
-  my_theme()
-, 'rawmix-latency', w=5, h=3.5)
+# save(
+#   ggplot(d, aes(
+#     x = x,
+#     y = avg_latency_ms,
+#     group = cc_ph, fill = cc_ph, color = cc_ph, linetype = cc_ph,
+#   ))+
+#   xlab('Clients')+ylab('Mean transaction latency (ms)')+
+#   stat_summary(geom='line', fun.y=mean)+
+#   stat_summary(geom='point', fun.y=mean)+
+#   # stat_summary(geom='smooth', fun.data=mean_cl_normal)+
+#   # stat_summary(fun.data=mean_cl_normal, geom='errorbar', width=0.2, aes(color='black'))+
+#   scale_x_continuous(breaks=c(16,32,64,128,256,384))+
+#   scale_y_continuous(labels=k.labels)+
+#   expand_limits(y=0)+
+#   cc_ph_scales()+
+#   my_theme()
+# , 'rawmix-latency', w=5, h=3.5)
 
-cl_normal_min <- function(r) { mean_cl_normal(r)$ymin }
-cl_normal_max <- function(r) { mean_cl_normal(r)$ymax }
-
-d.mean <- ddply(d, .(rate,nthreads,cc_ph,phasing,cc,timeout_scaling), summarise, y=mean(throughput), ymin=cl_normal_min(throughput), ymax=cl_normal_max(throughput))
-
-my.max <- function(r) { r[which.max(r$y),] }
-
-d.max <- ddply(d.mean, .(cc_ph), my.max)
-
-save(
-  ggplot(d.max, aes(
-    x = cc_ph,
-    y = y,
-    group = cc_ph, fill = cc_ph,
-  ))+
-  xlab('total clients')+ylab('throughput (txn/s)')+
-  geom_bar(stat="identity")+
-  geom_errorbar(aes(ymin=ymin,ymax=ymax), width=0.2)+
-  # scale_x_continuous(trans=log2_trans(), breaks=c(16,32,64,128,256,384))+
-  scale_y_continuous(labels=k.labels)+
-  expand_limits(y=0)+
-  cc_ph_scales()+
-  my_theme()+theme(legend.position='none')
-, w=4.5, h=3.5)
+# cl_normal_min <- function(r) { mean_cl_normal(r)$ymin }
+# cl_normal_max <- function(r) { mean_cl_normal(r)$ymax }
+#
+# d.mean <- ddply(d, .(rate,nthreads,cc_ph,phasing,cc,timeout_scaling), summarise, y=mean(throughput), ymin=cl_normal_min(throughput), ymax=cl_normal_max(throughput))
+#
+# my.max <- function(r) { r[which.max(r$y),] }
+#
+# d.max <- ddply(d.mean, .(cc_ph), my.max)
+#
+# save(
+#   ggplot(d.max, aes(
+#     x = cc_ph,
+#     y = y,
+#     group = cc_ph, fill = cc_ph,
+#   ))+
+#   xlab('total clients')+ylab('throughput (txn/s)')+
+#   geom_bar(stat="identity")+
+#   geom_errorbar(aes(ymin=ymin,ymax=ymax), width=0.2)+
+#   # scale_x_continuous(trans=log2_trans(), breaks=c(16,32,64,128,256,384))+
+#   scale_y_continuous(labels=k.labels)+
+#   expand_limits(y=0)+
+#   cc_ph_scales()+
+#   my_theme()+theme(legend.position='none')
+# , w=4.5, h=3.5)
 
 
 dr <- data.or.csv(
@@ -115,20 +115,22 @@ dr <- data.or.csv(
         c <- c[['0']][['s']]
         data.frame(conflicts = c$conflicts, conflicts_total = c$total)
       })
-    subset(dc, select = c('name', 'nthreads', 'cc', 'phasing', 'cc_ph', 'avg_latency_ms', 'throughput', 'txn_retries', 'conflicts', 'conflicts_total'))
+    subset(dc, select = c('name', 'nthreads', 'cc', 'phasing', 'disable_txns', 'cc_ph', 'txn_retries', 'txn_count', 'total_time', 'throughput', 'avg_latency_ms', 'conflicts', 'conflicts_total'))
   }
 )
 
 dr$cc_ph <- factor(dr$cc_ph, levels = rev(levels(dr$cc_ph)))
+# dr$retry_rate <- with(dr, txn_retries / txn_count * 100)
+dr$retry_rate <- with(dr, txn_retries / total_time)
+
 save(
-  ggplot(dr, aes(x = cc_ph, y = txn_retries, group = cc_ph, color = cc_ph, fill = cc_ph))+
+  ggplot(subset(dr, disable_txns == 0), aes(x = cc_ph, y = retry_rate, group = cc_ph, color = cc_ph, fill = cc_ph))+
     xlab('mode')+
-    ylab('txn retries')+
+    ylab('txn retry percentage')+
     geom_bar(stat="identity")+
     scale_y_continuous(labels=k.labels)+
     expand_limits(y=0)+
     cc_ph_scales()+
     coord_flip()+
     my_theme()+theme(legend.position='none')
-    
 , 'rawmix-retries', w=4.5, h=2.5)
