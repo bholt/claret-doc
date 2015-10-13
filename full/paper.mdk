@@ -55,7 +55,7 @@ if (screen && screen.width > 480) {
 [TITLE]
 
 ~ Abstract
-...
+[INCLUDE="abstract"]
 ~
 
 [INCLUDE="intro"]

@@ -1,0 +1,8 @@
+Interactive distributed applications like Twitter or eBay are difficult to scale because of the high degree of writes or update operations. The highly skewed access patterns exhibited by real-world systems lead to high contention in datastores, causing periods of diminished service or even catastrophic failure.
+There is often sufficient concurrency in these applications to scale them without resorting to weaker models like eventual consistency, but traditional concurrency control mechanisms, which operate on low level operations, are unable to detect it.
+
+In Claret, high-level application semantics are communicated to the datastore through *abstract data types* (ADTs), which let the programmer and datastore alike reason about their logical behavior, such as operation commutativity. The datastore can use this knowledge to avoid unnecessary conflicts or reduce communication, while the programmer can tune their performance by carefully choosing the right ADTs for their application or implementing custom ones which expose the maximum amount of concurrency.
+
+In this work, we describe the design and implementation of an extensible ADT-store, including optimizations which take advantage of the abstract properties of the ADTs: transaction boosting, phasing, and operation combining. 
+We evaluate Claret with benchmarks modeling real-world contention: a microbenchmark based on YCSB, an online auction service, and a Twitter clone.
+We show that our ADT-aware optimizations scale well with increasing contention, with peak throughput on average 2x over the baseline on workloads with significant updates.
