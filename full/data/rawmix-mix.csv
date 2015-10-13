@@ -1,1519 +1,1803 @@
 "","facet","rate","nthreads","cc_ph","cc","zipf","commute_ratio","phasing","timeout_scaling","throughput","op_timeouts"
-"1","40% update
-zipf: 0.6",100,64,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.4","on",1000,12344.9031786628,12
-"2","20% update
-zipf: 0.6",100,64,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.2","on",1000,14010.8798894741,10
-"3","60% update
-zipf: 0.6",100,64,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.6","on",1000,11403.6345293563,7
-"4","80% update
-zipf: 0.6",100,64,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.8","on",1000,10658.4262427849,11
-"5","100% update
-zipf: 0.6",100,64,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"1","on",1000,10503.4465575949,2
-"6","50% update
-zipf: 0.6",100,4,"r/w locks
-(baseline)","r/w locks",0.6,"0.5","off",1000,1583.49740647831,0
-"7","50% update
-zipf: 0.6",100,16,"r/w locks
-(baseline)","r/w locks",0.6,"0.5","off",1000,4302.43736922468,0
-"8","50% update
-zipf: 0.6",100,32,"r/w locks
-(baseline)","r/w locks",0.6,"0.5","off",1000,2917.752779292,0
-"9","50% update
-zipf: 0.6",100,64,"r/w locks
-(baseline)","r/w locks",0.6,"0.5","off",1000,2161.50513321527,1
-"10","50% update
-zipf: 0.6",100,96,"r/w locks
-(baseline)","r/w locks",0.6,"0.5","off",1000,1838.13496297733,18
-"11","50% update
-zipf: 0.6",100,4,"boosting","boosting",0.6,"0.5","off",1000,1583.82061405701,0
-"12","50% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"0.5","off",1000,6344.65856151953,0
-"13","50% update
-zipf: 0.6",100,32,"boosting","boosting",0.6,"0.5","off",1000,7009.68929720165,0
-"14","50% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"0.5","off",1000,5893.76688377335,2
-"15","50% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"0.5","off",1000,5483.37602644558,16
-"16","50% update
-zipf: 0.6",100,4,"r/w locks
- + phasing","r/w locks",0.6,"0.5","on",1000,1583.65040547474,0
-"17","50% update
-zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"0.5","on",1000,6288.4294576173,0
-"18","50% update
-zipf: 0.6",100,32,"r/w locks
- + phasing","r/w locks",0.6,"0.5","on",1000,7394.48650876481,0
-"19","50% update
-zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"0.5","on",1000,7475.93607592222,16
-"20","50% update
-zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"0.5","on",1000,7544.89527166471,43
-"21","50% update
-zipf: 0.6",100,4,"boosting
- + phasing","boosting",0.6,"0.5","on",1000,1584.06604939711,0
-"22","50% update
-zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"0.5","on",1000,6342.92222540446,0
-"23","50% update
-zipf: 0.6",100,32,"boosting
- + phasing","boosting",0.6,"0.5","on",1000,10780.6213957946,1
-"24","50% update
-zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"0.5","on",1000,11159.652705148,11
-"25","50% update
-zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"0.5","on",1000,11289.971591191,39
-"26","50% update
-zipf: 0.6",100,4,"boosting
- + combining","boosting
- + combining",0.6,"0.5","off",1000,1584.17820838734,0
-"27","50% update
-zipf: 0.6",100,16,"boosting
- + combining","boosting
- + combining",0.6,"0.5","off",1000,6344.32595533234,0
+"1","50% update
+zipf: 0.6",100,4,"non-transactional","boosting",0.6,"0.5","off",1000,1582.20913852988,0
+"2","50% update
+zipf: 0.6",100,16,"non-transactional","boosting",0.6,"0.5","off",1000,6326.95331850537,0
+"3","50% update
+zipf: 0.6",100,32,"non-transactional","boosting",0.6,"0.5","off",1000,12630.2454683531,0
+"4","50% update
+zipf: 0.6",100,64,"non-transactional","boosting",0.6,"0.5","off",1000,18177.0841937967,0
+"5","50% update
+zipf: 0.6",100,96,"non-transactional","boosting",0.6,"0.5","off",1000,18358.8834210639,47
+"6","0% update
+zipf: 0.6",100,64,"non-transactional","boosting",0.6,"0","off",1000,23019.8670249642,0
+"7","20% update
+zipf: 0.6",100,64,"non-transactional","boosting",0.6,"0.2","off",1000,19993.3929291127,1
+"8","40% update
+zipf: 0.6",100,64,"non-transactional","boosting",0.6,"0.4","off",1000,18546.0552398573,1
+"9","60% update
+zipf: 0.6",100,64,"non-transactional","boosting",0.6,"0.6","off",1000,17673.6776701083,4
+"10","80% update
+zipf: 0.6",100,64,"non-transactional","boosting",0.6,"0.8","off",1000,16942.3615219123,4
+"11","100% update
+zipf: 0.6",100,64,"non-transactional","boosting",0.6,"1","off",1000,15966.4937803915,0
+"12","0% update
+zipf: 0.6",100,96,"non-transactional","boosting",0.6,"0","off",1000,24046.8540124839,26
+"13","20% update
+zipf: 0.6",100,96,"non-transactional","boosting",0.6,"0.2","off",1000,20324.0016209965,45
+"14","40% update
+zipf: 0.6",100,96,"non-transactional","boosting",0.6,"0.4","off",1000,19029.5779985829,18
+"15","60% update
+zipf: 0.6",100,96,"non-transactional","boosting",0.6,"0.6","off",1000,18004.8783703606,51
+"16","80% update
+zipf: 0.6",100,96,"non-transactional","boosting",0.6,"0.8","off",1000,17008.5064292779,56
+"17","100% update
+zipf: 0.6",100,96,"non-transactional","boosting",0.6,"1","off",1000,16143.4397987411,31
 "28","50% update
-zipf: 0.6",100,32,"boosting
- + combining","boosting
- + combining",0.6,"0.5","off",1000,7570.16061424636,0
+zipf: 0.6",100,4,"non-transactional","boosting",0.6,"0.5","off",1000,1582.81432139883,0
 "29","50% update
-zipf: 0.6",100,64,"boosting
- + combining","boosting
- + combining",0.6,"0.5","off",1000,6781.55732809535,0
+zipf: 0.6",100,16,"non-transactional","boosting",0.6,"0.5","off",1000,6325.69397573537,0
 "30","50% update
-zipf: 0.6",100,96,"boosting
- + combining","boosting
- + combining",0.6,"0.5","off",1000,6451.46793992764,10
+zipf: 0.6",100,32,"non-transactional","boosting",0.6,"0.5","off",1000,12627.7253660073,0
 "31","50% update
+zipf: 0.6",100,64,"non-transactional","boosting",0.6,"0.5","off",1000,17959.0784555438,0
+"32","50% update
+zipf: 0.6",100,96,"non-transactional","boosting",0.6,"0.5","off",1000,18867.0738178498,35
+"33","0% update
+zipf: 0.6",100,64,"non-transactional","boosting",0.6,"0","off",1000,22901.1404082226,0
+"34","20% update
+zipf: 0.6",100,64,"non-transactional","boosting",0.6,"0.2","off",1000,19693.0152038746,0
+"35","40% update
+zipf: 0.6",100,64,"non-transactional","boosting",0.6,"0.4","off",1000,18626.0793132049,1
+"36","60% update
+zipf: 0.6",100,64,"non-transactional","boosting",0.6,"0.6","off",1000,17602.4429660622,1
+"37","80% update
+zipf: 0.6",100,64,"non-transactional","boosting",0.6,"0.8","off",1000,16677.2225123794,1
+"38","100% update
+zipf: 0.6",100,64,"non-transactional","boosting",0.6,"1","off",1000,16028.6918436493,1
+"39","0% update
+zipf: 0.6",100,96,"non-transactional","boosting",0.6,"0","off",1000,23638.1656717057,21
+"40","20% update
+zipf: 0.6",100,96,"non-transactional","boosting",0.6,"0.2","off",1000,20433.7327170723,37
+"41","40% update
+zipf: 0.6",100,96,"non-transactional","boosting",0.6,"0.4","off",1000,18838.218861556,39
+"42","60% update
+zipf: 0.6",100,96,"non-transactional","boosting",0.6,"0.6","off",1000,18167.6284766051,51
+"43","80% update
+zipf: 0.6",100,96,"non-transactional","boosting",0.6,"0.8","off",1000,16797.418155326,68
+"44","100% update
+zipf: 0.6",100,96,"non-transactional","boosting",0.6,"1","off",1000,16339.9334821031,40
+"55","50% update
+zipf: 0.6",100,4,"non-transactional","boosting",0.6,"0.5","off",1000,1581.82756840475,0
+"56","50% update
+zipf: 0.6",100,16,"non-transactional","boosting",0.6,"0.5","off",1000,6325.65809158427,0
+"57","50% update
+zipf: 0.6",100,32,"non-transactional","boosting",0.6,"0.5","off",1000,12631.2857128644,0
+"58","50% update
+zipf: 0.6",100,64,"non-transactional","boosting",0.6,"0.5","off",1000,18313.9584834086,0
+"59","50% update
+zipf: 0.6",100,96,"non-transactional","boosting",0.6,"0.5","off",1000,18766.0456578267,46
+"60","0% update
+zipf: 0.6",100,64,"non-transactional","boosting",0.6,"0","off",1000,23328.5353968862,0
+"61","20% update
+zipf: 0.6",100,64,"non-transactional","boosting",0.6,"0.2","off",1000,19641.0493623208,0
+"62","40% update
+zipf: 0.6",100,64,"non-transactional","boosting",0.6,"0.4","off",1000,18500.7004837303,1
+"63","60% update
+zipf: 0.6",100,64,"non-transactional","boosting",0.6,"0.6","off",1000,17599.8043246888,0
+"64","80% update
+zipf: 0.6",100,64,"non-transactional","boosting",0.6,"0.8","off",1000,16779.0044291664,0
+"65","100% update
+zipf: 0.6",100,64,"non-transactional","boosting",0.6,"1","off",1000,15843.2223144349,0
+"66","0% update
+zipf: 0.6",100,96,"non-transactional","boosting",0.6,"0","off",1000,23399.0444612006,39
+"67","20% update
+zipf: 0.6",100,96,"non-transactional","boosting",0.6,"0.2","off",1000,20298.10619539,31
+"68","40% update
+zipf: 0.6",100,96,"non-transactional","boosting",0.6,"0.4","off",1000,19000.7777587366,57
+"69","60% update
+zipf: 0.6",100,96,"non-transactional","boosting",0.6,"0.6","off",1000,17811.6675897355,40
+"70","80% update
+zipf: 0.6",100,96,"non-transactional","boosting",0.6,"0.8","off",1000,17396.2230565619,31
+"71","100% update
+zipf: 0.6",100,96,"non-transactional","boosting",0.6,"1","off",1000,16262.6465749993,37
+"82","50% update
+zipf: 0.6",100,4,"r/w locks
+(baseline)","r/w locks",0.6,"0.5","off",1000,1583.71251740472,0
+"83","50% update
+zipf: 0.6",100,4,"boosting","boosting",0.6,"0.5","off",1000,1583.46437804846,0
+"84","50% update
+zipf: 0.6",100,4,"r/w locks
+ + phasing","r/w locks",0.6,"0.5","on",1000,1583.46437804846,0
+"85","50% update
+zipf: 0.6",100,4,"boosting
+ + phasing","boosting",0.6,"0.5","on",1000,1583.65704310282,0
+"86","50% update
+zipf: 0.6",100,4,"boosting
+ + combining","boosting
+ + combining",0.6,"0.5","off",1000,1583.37997388129,0
+"87","50% update
 zipf: 0.6",100,4,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"0.5","on",1000,1583.51576218608,0
-"32","50% update
+ + combining",0.6,"0.5","on",1000,1583.06599106527,0
+"88","50% update
+zipf: 0.6",100,16,"r/w locks
+(baseline)","r/w locks",0.6,"0.5","off",1000,4095.28306278388,0
+"89","50% update
+zipf: 0.6",100,16,"boosting","boosting",0.6,"0.5","off",1000,6340.9291409358,0
+"90","50% update
+zipf: 0.6",100,16,"r/w locks
+ + phasing","r/w locks",0.6,"0.5","on",1000,6261.67539894414,0
+"91","50% update
+zipf: 0.6",100,16,"boosting
+ + phasing","boosting",0.6,"0.5","on",1000,6337.30607896664,0
+"92","50% update
+zipf: 0.6",100,16,"boosting
+ + combining","boosting
+ + combining",0.6,"0.5","off",1000,6339.55027600029,0
+"93","50% update
 zipf: 0.6",100,16,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"0.5","on",1000,6342.75494809619,0
-"33","50% update
+ + combining",0.6,"0.5","on",1000,6338.62462046556,0
+"94","50% update
+zipf: 0.6",100,32,"r/w locks
+(baseline)","r/w locks",0.6,"0.5","off",1000,3011.56718884262,0
+"95","50% update
+zipf: 0.6",100,32,"boosting","boosting",0.6,"0.5","off",1000,6914.61080391323,0
+"96","50% update
+zipf: 0.6",100,32,"r/w locks
+ + phasing","r/w locks",0.6,"0.5","on",1000,6996.59766943673,4240
+"97","50% update
+zipf: 0.6",100,32,"boosting
+ + phasing","boosting",0.6,"0.5","on",1000,10623.3624599343,0
+"98","50% update
+zipf: 0.6",100,32,"boosting
+ + combining","boosting
+ + combining",0.6,"0.5","off",1000,2577.72613640365,0
+"99","50% update
 zipf: 0.6",100,32,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"0.5","on",1000,11097.5041597338,0
-"34","50% update
+ + combining",0.6,"0.5","on",1000,11028.5351428087,0
+"100","50% update
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.5","off",1000,2271.2283459944,0
+"101","50% update
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.5","off",1000,5960.44066596289,4
+"102","50% update
+zipf: 0.6",100,64,"r/w locks
+ + phasing","r/w locks",0.6,"0.5","on",1000,6697.81597198513,23902
+"103","50% update
+zipf: 0.6",100,64,"boosting
+ + phasing","boosting",0.6,"0.5","on",1000,10905.2092795057,5238
+"104","50% update
+zipf: 0.6",100,64,"boosting
+ + combining","boosting
+ + combining",0.6,"0.5","off",1000,6826.16961097974,0
+"105","50% update
 zipf: 0.6",100,64,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"0.5","on",1000,11818.8821591754,10
-"35","50% update
+ + combining",0.6,"0.5","on",1000,11690.1931649331,3941
+"106","50% update
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.5","off",1000,1835.68023634593,39
+"107","50% update
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.5","off",1000,5527.24829739307,29
+"108","50% update
+zipf: 0.6",100,96,"r/w locks
+ + phasing","r/w locks",0.6,"0.5","on",1000,6732.43528111263,43426
+"109","50% update
+zipf: 0.6",100,96,"boosting
+ + phasing","boosting",0.6,"0.5","on",1000,10514.0490471841,20268
+"110","50% update
+zipf: 0.6",100,96,"boosting
+ + combining","boosting
+ + combining",0.6,"0.5","off",1000,4201.3484232426,26
+"111","50% update
 zipf: 0.6",100,96,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"0.5","on",1000,12162.0180380701,40
-"36","0% update
-zipf: 0.6",100,16,"r/w locks
-(baseline)","r/w locks",0.6,"0","off",1000,6345.33097576163,0
-"37","0% update
-zipf: 0.6",100,64,"r/w locks
-(baseline)","r/w locks",0.6,"0","off",1000,15360.5217628091,0
-"38","0% update
-zipf: 0.6",100,96,"r/w locks
-(baseline)","r/w locks",0.6,"0","off",1000,15706.9708828016,13
-"39","0% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"0","off",1000,6345.61397082086,0
-"40","0% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"0","off",1000,15407.2627386895,0
-"41","0% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"0","off",1000,15794.7098930836,15
-"42","0% update
-zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"0","on",1000,6344.74767251369,0
-"43","0% update
-zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"0","on",1000,15384.8809915105,0
-"44","0% update
-zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"0","on",1000,15634.555484421,11
-"45","0% update
-zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"0","on",1000,6344.68612224783,0
-"46","0% update
-zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"0","on",1000,15235.6594811838,0
-"47","0% update
-zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"0","on",1000,15435.8453894782,14
-"48","20% update
-zipf: 0.6",100,16,"r/w locks
-(baseline)","r/w locks",0.6,"0.2","off",1000,6343.87404427631,0
-"49","20% update
-zipf: 0.6",100,64,"r/w locks
-(baseline)","r/w locks",0.6,"0.2","off",1000,4180.48642941921,1
-"50","20% update
-zipf: 0.6",100,96,"r/w locks
-(baseline)","r/w locks",0.6,"0.2","off",1000,3530.22022547666,20
-"51","20% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"0.2","off",1000,6343.78018318068,0
-"52","20% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"0.2","off",1000,7287.84177502594,0
-"53","20% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"0.2","off",1000,6756.62551902514,15
-"54","20% update
-zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"0.2","on",1000,6341.85489698532,0
-"55","20% update
-zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"0.2","on",1000,11064.9906533413,12
-"56","20% update
-zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"0.2","on",1000,10981.4665276139,57
-"57","20% update
-zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"0.2","on",1000,6343.51549307034,0
-"58","20% update
-zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"0.2","on",1000,13144.0410103854,9
-"59","20% update
-zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"0.2","on",1000,13226.8978292061,35
-"60","40% update
-zipf: 0.6",100,16,"r/w locks
-(baseline)","r/w locks",0.6,"0.4","off",1000,6157.83199131518,0
-"61","40% update
-zipf: 0.6",100,64,"r/w locks
-(baseline)","r/w locks",0.6,"0.4","off",1000,2700.02125537516,0
-"62","40% update
-zipf: 0.6",100,96,"r/w locks
-(baseline)","r/w locks",0.6,"0.4","off",1000,2123.97851444389,26
-"63","40% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"0.4","off",1000,6345.19321708782,0
-"64","40% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"0.4","off",1000,6156.2820895028,1
-"65","40% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"0.4","off",1000,5648.88212386582,18
-"66","40% update
-zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"0.4","on",1000,6331.92906502373,0
-"67","40% update
-zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"0.4","on",1000,8454.31368145731,18
-"68","40% update
-zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"0.4","on",1000,8362.89638132563,37
-"69","40% update
-zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"0.4","on",1000,6343.62231050754,0
-"70","40% update
-zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"0.4","on",1000,11771.8000909824,11
-"71","40% update
-zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"0.4","on",1000,11832.2766475194,41
-"72","60% update
-zipf: 0.6",100,16,"r/w locks
-(baseline)","r/w locks",0.6,"0.6","off",1000,3472.52761874981,0
-"73","60% update
-zipf: 0.6",100,64,"r/w locks
-(baseline)","r/w locks",0.6,"0.6","off",1000,1977.33796250891,4
-"74","60% update
-zipf: 0.6",100,96,"r/w locks
-(baseline)","r/w locks",0.6,"0.6","off",1000,1578.54806894526,21
-"75","60% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"0.6","off",1000,6344.23319646063,0
-"76","60% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"0.6","off",1000,6063.07505812683,0
-"77","60% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"0.6","off",1000,5290.96978966237,10
-"78","60% update
-zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"0.6","on",1000,6148.31316996174,0
-"79","60% update
-zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"0.6","on",1000,6870.12974154007,18
-"80","60% update
-zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"0.6","on",1000,6759.8120490455,49
-"81","60% update
-zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"0.6","on",1000,6344.48030213714,0
-"82","60% update
-zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"0.6","on",1000,10784.7854291583,14
-"83","60% update
-zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"0.6","on",1000,10841.8605575314,34
-"84","80% update
-zipf: 0.6",100,16,"r/w locks
-(baseline)","r/w locks",0.6,"0.8","off",1000,2963.27831122138,0
-"85","80% update
-zipf: 0.6",100,64,"r/w locks
-(baseline)","r/w locks",0.6,"0.8","off",1000,1614.51365549646,0
-"86","80% update
-zipf: 0.6",100,96,"r/w locks
-(baseline)","r/w locks",0.6,"0.8","off",1000,1295.54394372929,19
-"87","80% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"0.8","off",1000,6346.62457163981,0
-"88","80% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"0.8","off",1000,6298.30081812461,1
-"89","80% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"0.8","off",1000,5775.0416742313,25
-"90","80% update
-zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"0.8","on",1000,5591.37207110916,0
-"91","80% update
-zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"0.8","on",1000,5933.45857586693,21
-"92","80% update
-zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"0.8","on",1000,5842.54777738428,43
-"93","80% update
-zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"0.8","on",1000,6343.94743240048,0
-"94","80% update
-zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"0.8","on",1000,9953.5494830721,10
-"95","80% update
-zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"0.8","on",1000,10075.4793218453,40
-"96","100% update
-zipf: 0.6",100,16,"r/w locks
-(baseline)","r/w locks",0.6,"1","off",1000,2482.34871753959,0
-"97","100% update
-zipf: 0.6",100,64,"r/w locks
-(baseline)","r/w locks",0.6,"1","off",1000,1423.34361811078,0
-"98","100% update
-zipf: 0.6",100,96,"r/w locks
-(baseline)","r/w locks",0.6,"1","off",1000,1077.75162049727,15
-"99","100% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"1","off",1000,6342.49668613907,0
-"100","100% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"1","off",1000,9447.69624289938,2
-"101","100% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"1","off",1000,4334.8538694107,42429
-"102","100% update
-zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"1","on",1000,5317.89367142553,0
-"103","100% update
-zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"1","on",1000,5564.88781479867,12
-"104","100% update
-zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"1","on",1000,5562.87564707311,49
-"105","100% update
-zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"1","on",1000,6342.71440466278,0
-"106","100% update
-zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"1","on",1000,9297.46822829127,2
-"107","100% update
-zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"1","on",1000,4526.69359943527,25
-"108","0% update
-zipf: 0.6",100,16,"boosting
- + combining","boosting
- + combining",0.6,"0","off",1000,6344.90567294404,0
-"109","0% update
-zipf: 0.6",100,64,"boosting
- + combining","boosting
- + combining",0.6,"0","off",1000,17153.8653159512,0
-"110","0% update
-zipf: 0.6",100,96,"boosting
- + combining","boosting
- + combining",0.6,"0","off",1000,18212.8393505697,15
-"111","0% update
-zipf: 0.6",100,16,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0","on",1000,6344.86341400061,0
+ + combining",0.6,"0.5","on",1000,11636.7426091316,14842
 "112","0% update
-zipf: 0.6",100,64,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0","on",1000,17278.708670309,1
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0","off",1000,15667.3986744246,0
 "113","0% update
-zipf: 0.6",100,96,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0","on",1000,18243.7519693527,20
-"114","20% update
-zipf: 0.6",100,16,"boosting
- + combining","boosting
- + combining",0.6,"0.2","off",1000,6344.11001608676,0
-"115","20% update
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0","off",1000,15499.4094932258,0
+"114","0% update
+zipf: 0.6",100,64,"r/w locks
+ + phasing","r/w locks",0.6,"0","on",1000,15367.2016507321,0
+"115","0% update
 zipf: 0.6",100,64,"boosting
- + combining","boosting
- + combining",0.6,"0.2","off",1000,8543.07470263276,1
+ + phasing","boosting",0.6,"0","on",1000,15712.7783123735,1
 "116","20% update
-zipf: 0.6",100,96,"boosting
- + combining","boosting
- + combining",0.6,"0.2","off",1000,8017.92038906803,8
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.2","off",1000,4320.74446851257,0
 "117","20% update
-zipf: 0.6",100,16,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.2","on",1000,6342.09535988917,0
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.2","off",1000,7416.19760280776,0
 "118","20% update
-zipf: 0.6",100,64,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.2","on",1000,13948.3235539262,8
+zipf: 0.6",100,64,"r/w locks
+ + phasing","r/w locks",0.6,"0.2","on",1000,10196.273097196,20219
 "119","20% update
-zipf: 0.6",100,96,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.2","on",1000,14361.0375579542,28
+zipf: 0.6",100,64,"boosting
+ + phasing","boosting",0.6,"0.2","on",1000,12897.0258090403,3194
 "120","40% update
-zipf: 0.6",100,16,"boosting
- + combining","boosting
- + combining",0.6,"0.4","off",1000,6343.88161070697,0
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.4","off",1000,2658.80072699033,6
 "121","40% update
-zipf: 0.6",100,64,"boosting
- + combining","boosting
- + combining",0.6,"0.4","off",1000,7194.02707971408,0
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.4","off",1000,6121.64294385583,3
 "122","40% update
-zipf: 0.6",100,96,"boosting
- + combining","boosting
- + combining",0.6,"0.4","off",1000,6578.38305060142,16
+zipf: 0.6",100,64,"r/w locks
+ + phasing","r/w locks",0.6,"0.4","on",1000,7669.2726102977,22860
 "123","40% update
-zipf: 0.6",100,16,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.4","on",1000,6343.53311042136,0
-"124","40% update
 zipf: 0.6",100,64,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.4","on",1000,12369.193576239,7
-"125","40% update
-zipf: 0.6",100,96,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.4","on",1000,12874.0127468754,37
+ + phasing","boosting",0.6,"0.4","on",1000,11498.6076117226,5021
+"124","60% update
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.6","off",1000,1922.44646564057,1
+"125","60% update
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.6","off",1000,5888.96464529453,3
 "126","60% update
-zipf: 0.6",100,16,"boosting
- + combining","boosting
- + combining",0.6,"0.6","off",1000,6346.93965904815,0
+zipf: 0.6",100,64,"r/w locks
+ + phasing","r/w locks",0.6,"0.6","on",1000,6151.95037243374,24269
 "127","60% update
 zipf: 0.6",100,64,"boosting
- + combining","boosting
- + combining",0.6,"0.6","off",1000,6770.30002387458,0
-"128","60% update
-zipf: 0.6",100,96,"boosting
- + combining","boosting
- + combining",0.6,"0.6","off",1000,6490.66416743118,17
-"129","60% update
-zipf: 0.6",100,16,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.6","on",1000,6343.90339747304,0
-"130","60% update
-zipf: 0.6",100,64,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.6","on",1000,11375.6740244907,6
-"131","60% update
-zipf: 0.6",100,96,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.6","on",1000,11596.4465238958,39
-"132","80% update
-zipf: 0.6",100,16,"boosting
- + combining","boosting
- + combining",0.6,"0.8","off",1000,6343.25848122259,0
-"133","80% update
-zipf: 0.6",100,64,"boosting
- + combining","boosting
- + combining",0.6,"0.8","off",1000,7344.71442304505,1
-"134","80% update
-zipf: 0.6",100,96,"boosting
- + combining","boosting
- + combining",0.6,"0.8","off",1000,7030.6793038539,22
-"135","80% update
-zipf: 0.6",100,16,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.8","on",1000,6343.80421788054,0
-"136","80% update
-zipf: 0.6",100,64,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.8","on",1000,10706.972791374,8
-"137","80% update
-zipf: 0.6",100,96,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.8","on",1000,11055.5572109161,34
-"138","100% update
-zipf: 0.6",100,16,"boosting
- + combining","boosting
- + combining",0.6,"1","off",1000,6342.15223936269,0
-"139","100% update
-zipf: 0.6",100,64,"boosting
- + combining","boosting
- + combining",0.6,"1","off",1000,10410.003255576,1
-"140","100% update
-zipf: 0.6",100,96,"boosting
- + combining","boosting
- + combining",0.6,"1","off",1000,4604.63420293698,36977
-"141","100% update
-zipf: 0.6",100,16,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"1","on",1000,6342.17336135321,0
-"142","100% update
-zipf: 0.6",100,64,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"1","on",1000,10474.6084795652,0
-"143","100% update
-zipf: 0.6",100,96,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"1","on",1000,4774.25899466602,22
-"233","50% update
-zipf: 0.6",100,4,"r/w locks
-(baseline)","r/w locks",0.6,"0.5","off",1000,1584.07660501704,0
-"234","50% update
-zipf: 0.6",100,16,"r/w locks
-(baseline)","r/w locks",0.6,"0.5","off",1000,4096.60113284485,0
-"235","50% update
-zipf: 0.6",100,32,"r/w locks
-(baseline)","r/w locks",0.6,"0.5","off",1000,2946.22319752532,0
-"236","50% update
+ + phasing","boosting",0.6,"0.6","on",1000,10374.2886593155,5985
+"128","80% update
 zipf: 0.6",100,64,"r/w locks
-(baseline)","r/w locks",0.6,"0.5","off",1000,2206.03374741404,1
-"237","50% update
+(baseline)","r/w locks",0.6,"0.8","off",1000,1574.70466959147,3
+"129","80% update
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.8","off",1000,6450.07944915254,0
+"130","80% update
+zipf: 0.6",100,64,"r/w locks
+ + phasing","r/w locks",0.6,"0.8","on",1000,5226.40964855671,25136
+"131","80% update
+zipf: 0.6",100,64,"boosting
+ + phasing","boosting",0.6,"0.8","on",1000,9736.31799579143,5238
+"132","100% update
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"1","off",1000,1398.47024001407,0
+"133","100% update
+zipf: 0.6",100,64,"boosting","boosting",0.6,"1","off",1000,9239.73193550528,5
+"134","100% update
+zipf: 0.6",100,64,"r/w locks
+ + phasing","r/w locks",0.6,"1","on",1000,4710.58866175576,25281
+"135","100% update
+zipf: 0.6",100,64,"boosting
+ + phasing","boosting",0.6,"1","on",1000,9191.77909469172,0
+"136","0% update
+zipf: 0.6",100,64,"boosting
+ + combining","boosting
+ + combining",0.6,"0","off",1000,17518.6443376947,0
+"137","0% update
+zipf: 0.6",100,64,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0","on",1000,17359.8250986143,0
+"138","20% update
+zipf: 0.6",100,64,"boosting
+ + combining","boosting
+ + combining",0.6,"0.2","off",1000,8624.62343165491,0
+"139","20% update
+zipf: 0.6",100,64,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.2","on",1000,13910.8163610607,1437
+"140","40% update
+zipf: 0.6",100,64,"boosting
+ + combining","boosting
+ + combining",0.6,"0.4","off",1000,7132.8332930075,4
+"141","40% update
+zipf: 0.6",100,64,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.4","on",1000,12277.9843382565,3233
+"142","60% update
+zipf: 0.6",100,64,"boosting
+ + combining","boosting
+ + combining",0.6,"0.6","off",1000,6722.5821838852,2
+"143","60% update
+zipf: 0.6",100,64,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.6","on",1000,11207.8384285994,3375
+"144","80% update
+zipf: 0.6",100,64,"boosting
+ + combining","boosting
+ + combining",0.6,"0.8","off",1000,7413.83022061186,1
+"145","80% update
+zipf: 0.6",100,64,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.8","on",1000,10545.8967451631,2590
+"146","100% update
+zipf: 0.6",100,64,"boosting
+ + combining","boosting
+ + combining",0.6,"1","off",1000,10423.9889812648,0
+"147","100% update
+zipf: 0.6",100,64,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"1","on",1000,10292.5125156342,2
+"148","0% update
 zipf: 0.6",100,96,"r/w locks
-(baseline)","r/w locks",0.6,"0.5","off",1000,1746.96595077649,17
-"238","50% update
-zipf: 0.6",100,4,"boosting","boosting",0.6,"0.5","off",1000,1583.80478313309,0
-"239","50% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"0.5","off",1000,6343.97967305047,0
-"240","50% update
-zipf: 0.6",100,32,"boosting","boosting",0.6,"0.5","off",1000,6811.83221079367,0
-"241","50% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"0.5","off",1000,5997.72471733095,1
-"242","50% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"0.5","off",1000,5441.18228679156,11
-"243","50% update
-zipf: 0.6",100,4,"r/w locks
- + phasing","r/w locks",0.6,"0.5","on",1000,1583.05789529801,0
+(baseline)","r/w locks",0.6,"0","off",1000,15846.5387823186,21
+"149","0% update
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0","off",1000,15642.2044158483,50
+"150","0% update
+zipf: 0.6",100,96,"r/w locks
+ + phasing","r/w locks",0.6,"0","on",1000,15436.5943587944,45
+"151","0% update
+zipf: 0.6",100,96,"boosting
+ + phasing","boosting",0.6,"0","on",1000,15750.3077472898,34
+"152","20% update
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.2","off",1000,3545.54314076559,36
+"153","20% update
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.2","off",1000,6937.90545579336,33
+"154","20% update
+zipf: 0.6",100,96,"r/w locks
+ + phasing","r/w locks",0.6,"0.2","on",1000,10202.1578538729,39951
+"155","20% update
+zipf: 0.6",100,96,"boosting
+ + phasing","boosting",0.6,"0.2","on",1000,12942.8800010579,11727
+"156","40% update
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.4","off",1000,2125.17198390295,41
+"157","40% update
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.4","off",1000,5717.40582003098,31
+"158","40% update
+zipf: 0.6",100,96,"r/w locks
+ + phasing","r/w locks",0.6,"0.4","on",1000,7599.88683564163,42583
+"159","40% update
+zipf: 0.6",100,96,"boosting
+ + phasing","boosting",0.6,"0.4","on",1000,11067.1660259689,19589
+"160","60% update
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.6","off",1000,1636.41996024473,48
+"161","60% update
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.6","off",1000,5435.0854763895,35
+"162","60% update
+zipf: 0.6",100,96,"r/w locks
+ + phasing","r/w locks",0.6,"0.6","on",1000,6049.25665478599,44191
+"163","60% update
+zipf: 0.6",100,96,"boosting
+ + phasing","boosting",0.6,"0.6","on",1000,10150.8002590434,20778
+"164","80% update
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.8","off",1000,1336.93668126496,48
+"165","80% update
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.8","off",1000,5852.51714630307,38
+"166","80% update
+zipf: 0.6",100,96,"r/w locks
+ + phasing","r/w locks",0.6,"0.8","on",1000,5171.39920339201,44837
+"167","80% update
+zipf: 0.6",100,96,"boosting
+ + phasing","boosting",0.6,"0.8","on",1000,9775.07959813254,14772
+"168","100% update
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"1","off",1000,1158.49945387235,44
+"169","100% update
+zipf: 0.6",100,96,"boosting","boosting",0.6,"1","off",1000,4399.28936999408,40059
+"170","100% update
+zipf: 0.6",100,96,"r/w locks
+ + phasing","r/w locks",0.6,"1","on",1000,4325.87514922787,46148
+"171","100% update
+zipf: 0.6",100,96,"boosting
+ + phasing","boosting",0.6,"1","on",1000,4781.81631755293,52
+"172","0% update
+zipf: 0.6",100,96,"boosting
+ + combining","boosting
+ + combining",0.6,"0","off",1000,18186.066987293,36
+"173","0% update
+zipf: 0.6",100,96,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0","on",1000,18032.5416368788,31
+"174","20% update
+zipf: 0.6",100,96,"boosting
+ + combining","boosting
+ + combining",0.6,"0.2","off",1000,8062.45545495341,21
+"175","20% update
+zipf: 0.6",100,96,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.2","on",1000,14018.4566533258,8737
+"176","40% update
+zipf: 0.6",100,96,"boosting
+ + combining","boosting
+ + combining",0.6,"0.4","off",1000,6929.73975364533,32
+"177","40% update
+zipf: 0.6",100,96,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.4","on",1000,12037.1821708118,14156
+"178","60% update
+zipf: 0.6",100,96,"boosting
+ + combining","boosting
+ + combining",0.6,"0.6","off",1000,6431.28820391696,32
+"179","60% update
+zipf: 0.6",100,96,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.6","on",1000,10948.4169899493,15572
+"180","80% update
+zipf: 0.6",100,96,"boosting
+ + combining","boosting
+ + combining",0.6,"0.8","off",1000,4114.98952142096,33
+"181","80% update
+zipf: 0.6",100,96,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.8","on",1000,10441.0062237585,12050
+"182","100% update
+zipf: 0.6",100,96,"boosting
+ + combining","boosting
+ + combining",0.6,"1","off",1000,4691.59484326734,40442
+"183","100% update
+zipf: 0.6",100,96,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"1","on",1000,5006.10153348568,60
 "244","50% update
-zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"0.5","on",1000,6283.57185192091,0
+zipf: 0.6",100,4,"r/w locks
+(baseline)","r/w locks",0.6,"0.5","off",1000,1582.85748552468,0
 "245","50% update
-zipf: 0.6",100,32,"r/w locks
- + phasing","r/w locks",0.6,"0.5","on",1000,7330.56128910028,1
+zipf: 0.6",100,4,"boosting","boosting",0.6,"0.5","off",1000,1583.37469891961,0
 "246","50% update
-zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"0.5","on",1000,7470.27719282032,12
+zipf: 0.6",100,4,"r/w locks
+ + phasing","r/w locks",0.6,"0.5","on",1000,1583.43800077959,0
 "247","50% update
-zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"0.5","on",1000,7481.38827723603,41
+zipf: 0.6",100,4,"boosting
+ + phasing","boosting",0.6,"0.5","on",1000,1583.22561731274,0
 "248","50% update
 zipf: 0.6",100,4,"boosting
- + phasing","boosting",0.6,"0.5","on",1000,1583.65040547474,0
-"249","50% update
-zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"0.5","on",1000,6343.57536317798,0
-"250","50% update
-zipf: 0.6",100,32,"boosting
- + phasing","boosting",0.6,"0.5","on",1000,10745.1640705332,0
-"251","50% update
-zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"0.5","on",1000,11281.3228099755,15
-"252","50% update
-zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"0.5","on",1000,11336.2261861746,45
-"253","50% update
-zipf: 0.6",100,4,"boosting
  + combining","boosting
- + combining",0.6,"0.5","off",1000,1583.61874808428,0
+ + combining",0.6,"0.5","off",1000,1583.94466987827,0
+"249","50% update
+zipf: 0.6",100,4,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.5","on",1000,1583.98822036185,0
+"250","50% update
+zipf: 0.6",100,16,"r/w locks
+(baseline)","r/w locks",0.6,"0.5","off",1000,4118.58488964629,0
+"251","50% update
+zipf: 0.6",100,16,"boosting","boosting",0.6,"0.5","off",1000,6339.87036895247,0
+"252","50% update
+zipf: 0.6",100,16,"r/w locks
+ + phasing","r/w locks",0.6,"0.5","on",1000,6251.02777916479,0
+"253","50% update
+zipf: 0.6",100,16,"boosting
+ + phasing","boosting",0.6,"0.5","on",1000,6338.15897659524,0
 "254","50% update
 zipf: 0.6",100,16,"boosting
  + combining","boosting
- + combining",0.6,"0.5","off",1000,6344.04949815847,0
+ + combining",0.6,"0.5","off",1000,6339.23875340377,0
 "255","50% update
-zipf: 0.6",100,32,"boosting
- + combining","boosting
- + combining",0.6,"0.5","off",1000,7621.17073203193,0
-"256","50% update
-zipf: 0.6",100,64,"boosting
- + combining","boosting
- + combining",0.6,"0.5","off",1000,2474.91229144612,0
-"257","50% update
-zipf: 0.6",100,96,"boosting
- + combining","boosting
- + combining",0.6,"0.5","off",1000,4400.57517064551,8
-"258","50% update
-zipf: 0.6",100,4,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.5","on",1000,1582.95241014433,0
-"259","50% update
 zipf: 0.6",100,16,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"0.5","on",1000,6343.105877181,0
+ + combining",0.6,"0.5","on",1000,6337.5789817102,0
+"256","50% update
+zipf: 0.6",100,32,"r/w locks
+(baseline)","r/w locks",0.6,"0.5","off",1000,3094.1752929865,0
+"257","50% update
+zipf: 0.6",100,32,"boosting","boosting",0.6,"0.5","off",1000,6886.08167077114,0
+"258","50% update
+zipf: 0.6",100,32,"r/w locks
+ + phasing","r/w locks",0.6,"0.5","on",1000,6952.8984786056,4272
+"259","50% update
+zipf: 0.6",100,32,"boosting
+ + phasing","boosting",0.6,"0.5","on",1000,10621.0413972185,1
 "260","50% update
 zipf: 0.6",100,32,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.5","on",1000,11107.2435216953,0
+ + combining","boosting
+ + combining",0.6,"0.5","off",1000,7564.45200834984,0
 "261","50% update
-zipf: 0.6",100,64,"boosting
+zipf: 0.6",100,32,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"0.5","on",1000,11939.4064166506,10
+ + combining",0.6,"0.5","on",1000,11061.8518653975,0
 "262","50% update
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.5","off",1000,2295.94200439796,0
+"263","50% update
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.5","off",1000,5897.12835661112,0
+"264","50% update
+zipf: 0.6",100,64,"r/w locks
+ + phasing","r/w locks",0.6,"0.5","on",1000,6681.27103434623,23775
+"265","50% update
+zipf: 0.6",100,64,"boosting
+ + phasing","boosting",0.6,"0.5","on",1000,10980.9435069651,5275
+"266","50% update
+zipf: 0.6",100,64,"boosting
+ + combining","boosting
+ + combining",0.6,"0.5","off",1000,6913.19744657451,0
+"267","50% update
+zipf: 0.6",100,64,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.5","on",1000,11671.8163614423,3888
+"268","50% update
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.5","off",1000,1865.09089734896,45
+"269","50% update
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.5","off",1000,5447.10795435862,43
+"270","50% update
+zipf: 0.6",100,96,"r/w locks
+ + phasing","r/w locks",0.6,"0.5","on",1000,6712.99437571751,43446
+"271","50% update
+zipf: 0.6",100,96,"boosting
+ + phasing","boosting",0.6,"0.5","on",1000,10481.4811147309,20770
+"272","50% update
+zipf: 0.6",100,96,"boosting
+ + combining","boosting
+ + combining",0.6,"0.5","off",1000,6656.83492550481,39
+"273","50% update
 zipf: 0.6",100,96,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"0.5","on",1000,12222.5425958884,31
-"263","0% update
-zipf: 0.6",100,16,"r/w locks
-(baseline)","r/w locks",0.6,"0","off",1000,6346.22493530887,0
-"264","0% update
-zipf: 0.6",100,64,"r/w locks
-(baseline)","r/w locks",0.6,"0","off",1000,15615.6311759919,0
-"265","0% update
-zipf: 0.6",100,96,"r/w locks
-(baseline)","r/w locks",0.6,"0","off",1000,15569.9720735242,13
-"266","0% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"0","off",1000,6345.16194554421,0
-"267","0% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"0","off",1000,15651.0763527899,0
-"268","0% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"0","off",1000,15548.6346736185,12
-"269","0% update
-zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"0","on",1000,6345.29700497506,0
-"270","0% update
-zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"0","on",1000,15654.1380856683,0
-"271","0% update
-zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"0","on",1000,15502.1492252176,10
-"272","0% update
-zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"0","on",1000,6346.03472735629,0
-"273","0% update
-zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"0","on",1000,15446.5074567376,0
+ + combining",0.6,"0.5","on",1000,11488.3031650259,14789
 "274","0% update
-zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"0","on",1000,15491.163827416,13
-"275","20% update
-zipf: 0.6",100,16,"r/w locks
-(baseline)","r/w locks",0.6,"0.2","off",1000,6344.39397370489,0
-"276","20% update
 zipf: 0.6",100,64,"r/w locks
-(baseline)","r/w locks",0.6,"0.2","off",1000,4121.84031554257,1
-"277","20% update
-zipf: 0.6",100,96,"r/w locks
-(baseline)","r/w locks",0.6,"0.2","off",1000,3634.04924112043,15
+(baseline)","r/w locks",0.6,"0","off",1000,15336.1178660173,0
+"275","0% update
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0","off",1000,15401.2746038013,0
+"276","0% update
+zipf: 0.6",100,64,"r/w locks
+ + phasing","r/w locks",0.6,"0","on",1000,15524.7209460468,1
+"277","0% update
+zipf: 0.6",100,64,"boosting
+ + phasing","boosting",0.6,"0","on",1000,15485.6303059055,0
 "278","20% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"0.2","off",1000,6343.74437983334,0
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.2","off",1000,4132.84036338554,0
 "279","20% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"0.2","off",1000,7247.39737733805,0
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.2","off",1000,7296.35268418614,1
 "280","20% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"0.2","off",1000,6706.97235662949,11
+zipf: 0.6",100,64,"r/w locks
+ + phasing","r/w locks",0.6,"0.2","on",1000,10331.5776600082,20004
 "281","20% update
-zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"0.2","on",1000,6344.19738450216,0
-"282","20% update
-zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"0.2","on",1000,11007.5201863713,8
-"283","20% update
-zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"0.2","on",1000,11018.6665620371,67
-"284","20% update
-zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"0.2","on",1000,6343.35118429116,0
-"285","20% update
 zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"0.2","on",1000,13188.1965123343,8
-"286","20% update
-zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"0.2","on",1000,13181.6661090666,35
-"287","40% update
-zipf: 0.6",100,16,"r/w locks
-(baseline)","r/w locks",0.6,"0.4","off",1000,6129.89054242605,0
-"288","40% update
+ + phasing","boosting",0.6,"0.2","on",1000,13037.7116495491,3061
+"282","40% update
 zipf: 0.6",100,64,"r/w locks
-(baseline)","r/w locks",0.6,"0.4","off",1000,2602.79347143754,0
-"289","40% update
-zipf: 0.6",100,96,"r/w locks
-(baseline)","r/w locks",0.6,"0.4","off",1000,2222.33740653873,11
-"290","40% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"0.4","off",1000,6344.74490475556,0
-"291","40% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"0.4","off",1000,6170.44128873628,1
-"292","40% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"0.4","off",1000,5504.77662495684,13
-"293","40% update
-zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"0.4","on",1000,6340.27759277513,0
-"294","40% update
+(baseline)","r/w locks",0.6,"0.4","off",1000,2745.2620026001,4
+"283","40% update
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.4","off",1000,6137.33209282614,0
+"284","40% update
 zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"0.4","on",1000,8379.46541990702,14
-"295","40% update
-zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"0.4","on",1000,8414.50166873896,43
-"296","40% update
-zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"0.4","on",1000,6342.18632919824,0
-"297","40% update
+ + phasing","r/w locks",0.6,"0.4","on",1000,7588.61168793607,22923
+"285","40% update
 zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"0.4","on",1000,11778.8992743453,12
-"298","40% update
-zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"0.4","on",1000,11807.1674784688,47
-"299","60% update
-zipf: 0.6",100,16,"r/w locks
-(baseline)","r/w locks",0.6,"0.6","off",1000,3701.92131686585,0
-"300","60% update
+ + phasing","boosting",0.6,"0.4","on",1000,11518.3642057216,4876
+"286","60% update
 zipf: 0.6",100,64,"r/w locks
-(baseline)","r/w locks",0.6,"0.6","off",1000,1859.00073811343,1
-"301","60% update
-zipf: 0.6",100,96,"r/w locks
-(baseline)","r/w locks",0.6,"0.6","off",1000,1612.95328746573,19
-"302","60% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"0.6","off",1000,6343.94386927695,0
-"303","60% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"0.6","off",1000,5870.88891758466,0
+(baseline)","r/w locks",0.6,"0.6","off",1000,2020.09515319534,0
+"287","60% update
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.6","off",1000,5927.7173715528,0
+"288","60% update
+zipf: 0.6",100,64,"r/w locks
+ + phasing","r/w locks",0.6,"0.6","on",1000,6070.5873192003,24541
+"289","60% update
+zipf: 0.6",100,64,"boosting
+ + phasing","boosting",0.6,"0.6","on",1000,10485.6492389673,5774
+"290","80% update
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.8","off",1000,1615.97720522793,0
+"291","80% update
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.8","off",1000,6340.1554626566,0
+"292","80% update
+zipf: 0.6",100,64,"r/w locks
+ + phasing","r/w locks",0.6,"0.8","on",1000,5189.83201251405,25175
+"293","80% update
+zipf: 0.6",100,64,"boosting
+ + phasing","boosting",0.6,"0.8","on",1000,9737.1089271632,5017
+"294","100% update
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"1","off",1000,1413.53667553737,1
+"295","100% update
+zipf: 0.6",100,64,"boosting","boosting",0.6,"1","off",1000,9502.73383586368,1
+"296","100% update
+zipf: 0.6",100,64,"r/w locks
+ + phasing","r/w locks",0.6,"1","on",1000,4743.95800477336,25368
+"297","100% update
+zipf: 0.6",100,64,"boosting
+ + phasing","boosting",0.6,"1","on",1000,9230.1467540005,1
+"298","0% update
+zipf: 0.6",100,64,"boosting
+ + combining","boosting
+ + combining",0.6,"0","off",1000,17406.9380958383,1
+"299","0% update
+zipf: 0.6",100,64,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0","on",1000,17504.9349908267,0
+"300","20% update
+zipf: 0.6",100,64,"boosting
+ + combining","boosting
+ + combining",0.6,"0.2","off",1000,8641.54256464625,0
+"301","20% update
+zipf: 0.6",100,64,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.2","on",1000,13897.0112777592,1363
+"302","40% update
+zipf: 0.6",100,64,"boosting
+ + combining","boosting
+ + combining",0.6,"0.4","off",1000,7222.89922644908,0
+"303","40% update
+zipf: 0.6",100,64,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.4","on",1000,12351.5965828979,3110
 "304","60% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"0.6","off",1000,5244.08945054728,12
+zipf: 0.6",100,64,"boosting
+ + combining","boosting
+ + combining",0.6,"0.6","off",1000,6757.67624133328,2
 "305","60% update
-zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"0.6","on",1000,6184.98611305373,0
-"306","60% update
-zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"0.6","on",1000,6757.35464060488,13
-"307","60% update
-zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"0.6","on",1000,6707.48045294786,40
-"308","60% update
-zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"0.6","on",1000,6342.5420252018,0
-"309","60% update
 zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"0.6","on",1000,10831.7476763068,14
-"310","60% update
-zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"0.6","on",1000,10865.6886219624,43
-"311","80% update
-zipf: 0.6",100,16,"r/w locks
-(baseline)","r/w locks",0.6,"0.8","off",1000,2819.91624011168,0
-"312","80% update
-zipf: 0.6",100,64,"r/w locks
-(baseline)","r/w locks",0.6,"0.8","off",1000,1557.89391229422,2
-"313","80% update
-zipf: 0.6",100,96,"r/w locks
-(baseline)","r/w locks",0.6,"0.8","off",1000,1293.24017455964,22
-"314","80% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"0.8","off",1000,6342.39586524757,0
-"315","80% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"0.8","off",1000,6327.31767124148,0
-"316","80% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"0.8","off",1000,5871.75222969006,10
-"317","80% update
-zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"0.8","on",1000,5640.03862675236,0
-"318","80% update
-zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"0.8","on",1000,5930.95799251352,14
-"319","80% update
-zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"0.8","on",1000,5910.34661301052,44
-"320","80% update
-zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"0.8","on",1000,6342.30490006061,0
-"321","80% update
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.6","on",1000,11144.9875285252,3804
+"306","80% update
 zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"0.8","on",1000,10060.2795776776,9
-"322","80% update
-zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"0.8","on",1000,10060.5421956239,36
-"323","100% update
-zipf: 0.6",100,16,"r/w locks
-(baseline)","r/w locks",0.6,"1","off",1000,2502.00321178853,0
-"324","100% update
-zipf: 0.6",100,64,"r/w locks
-(baseline)","r/w locks",0.6,"1","off",1000,1371.16779398582,1
-"325","100% update
+ + combining","boosting
+ + combining",0.6,"0.8","off",1000,7286.77397892814,0
+"307","80% update
+zipf: 0.6",100,64,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.8","on",1000,10588.8751807485,2499
+"308","100% update
+zipf: 0.6",100,64,"boosting
+ + combining","boosting
+ + combining",0.6,"1","off",1000,10252.3367276854,0
+"309","100% update
+zipf: 0.6",100,64,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"1","on",1000,10142.1480144404,2
+"310","0% update
 zipf: 0.6",100,96,"r/w locks
-(baseline)","r/w locks",0.6,"1","off",1000,1095.4450003387,24
-"326","100% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"1","off",1000,6342.75494809619,0
-"327","100% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"1","off",1000,9318.56684449346,2
-"328","100% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"1","off",1000,4306.2521339331,40340
-"329","100% update
-zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"1","on",1000,5280.89513470312,0
+(baseline)","r/w locks",0.6,"0","off",1000,15846.3717470151,43
+"311","0% update
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0","off",1000,16132.2712275,32
+"312","0% update
+zipf: 0.6",100,96,"r/w locks
+ + phasing","r/w locks",0.6,"0","on",1000,15879.524053817,14
+"313","0% update
+zipf: 0.6",100,96,"boosting
+ + phasing","boosting",0.6,"0","on",1000,15970.0262468929,24
+"314","20% update
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.2","off",1000,3583.28259207918,32
+"315","20% update
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.2","off",1000,6721.57656710139,30
+"316","20% update
+zipf: 0.6",100,96,"r/w locks
+ + phasing","r/w locks",0.6,"0.2","on",1000,10142.000386922,39978
+"317","20% update
+zipf: 0.6",100,96,"boosting
+ + phasing","boosting",0.6,"0.2","on",1000,12890.1411428175,11674
+"318","40% update
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.4","off",1000,2187.3788164732,26
+"319","40% update
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.4","off",1000,5571.47019633392,38
+"320","40% update
+zipf: 0.6",100,96,"r/w locks
+ + phasing","r/w locks",0.6,"0.4","on",1000,7551.50564859203,42690
+"321","40% update
+zipf: 0.6",100,96,"boosting
+ + phasing","boosting",0.6,"0.4","on",1000,11091.9993011626,18924
+"322","60% update
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.6","off",1000,1672.70472906213,39
+"323","60% update
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.6","off",1000,5399.46534086986,28
+"324","60% update
+zipf: 0.6",100,96,"r/w locks
+ + phasing","r/w locks",0.6,"0.6","on",1000,6049.10441914083,44235
+"325","60% update
+zipf: 0.6",100,96,"boosting
+ + phasing","boosting",0.6,"0.6","on",1000,10199.4059124596,20745
+"326","80% update
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.8","off",1000,1344.46844871505,45
+"327","80% update
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.8","off",1000,5651.02365302342,48
+"328","80% update
+zipf: 0.6",100,96,"r/w locks
+ + phasing","r/w locks",0.6,"0.8","on",1000,5095.31460890803,45022
+"329","80% update
+zipf: 0.6",100,96,"boosting
+ + phasing","boosting",0.6,"0.8","on",1000,9501.88636896255,15229
 "330","100% update
-zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"1","on",1000,5518.94068258461,19
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"1","off",1000,1098.30464771482,47
 "331","100% update
-zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"1","on",1000,5410.31501149282,49
+zipf: 0.6",100,96,"boosting","boosting",0.6,"1","off",1000,4174.78746981575,44590
 "332","100% update
-zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"1","on",1000,6342.4268362137,0
+zipf: 0.6",100,96,"r/w locks
+ + phasing","r/w locks",0.6,"1","on",1000,4298.24166928992,46253
 "333","100% update
-zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"1","on",1000,9335.48162051725,0
-"334","100% update
 zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"1","on",1000,4533.37398347042,31
+ + phasing","boosting",0.6,"1","on",1000,4581.65394242183,63
+"334","0% update
+zipf: 0.6",100,96,"boosting
+ + combining","boosting
+ + combining",0.6,"0","off",1000,18451.9660699452,31
 "335","0% update
-zipf: 0.6",100,16,"boosting
- + combining","boosting
- + combining",0.6,"0","off",1000,6345.11697610524,0
-"336","0% update
-zipf: 0.6",100,64,"boosting
- + combining","boosting
- + combining",0.6,"0","off",1000,17227.8977084025,0
-"337","0% update
-zipf: 0.6",100,96,"boosting
- + combining","boosting
- + combining",0.6,"0","off",1000,18316.0882945983,20
-"338","0% update
-zipf: 0.6",100,16,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0","on",1000,6344.7008168471,0
-"339","0% update
-zipf: 0.6",100,64,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0","on",1000,17335.2905621276,0
-"340","0% update
 zipf: 0.6",100,96,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"0","on",1000,18070.5070805558,14
-"341","20% update
-zipf: 0.6",100,16,"boosting
- + combining","boosting
- + combining",0.6,"0.2","off",1000,6343.46152309147,0
-"342","20% update
-zipf: 0.6",100,64,"boosting
- + combining","boosting
- + combining",0.6,"0.2","off",1000,8449.71284841777,3
-"343","20% update
+ + combining",0.6,"0","on",1000,18195.0945020026,22
+"336","20% update
 zipf: 0.6",100,96,"boosting
  + combining","boosting
- + combining",0.6,"0.2","off",1000,8183.14822337372,11
-"344","20% update
-zipf: 0.6",100,16,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.2","on",1000,6342.56653466863,0
-"345","20% update
-zipf: 0.6",100,64,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.2","on",1000,14037.7373528064,8
-"346","20% update
+ + combining",0.6,"0.2","off",1000,8020.41219464015,27
+"337","20% update
 zipf: 0.6",100,96,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"0.2","on",1000,14249.5332897848,33
-"347","40% update
-zipf: 0.6",100,16,"boosting
- + combining","boosting
- + combining",0.6,"0.4","off",1000,6344.96448042843,0
-"348","40% update
-zipf: 0.6",100,64,"boosting
- + combining","boosting
- + combining",0.6,"0.4","off",1000,7172.68269393358,2
-"349","40% update
+ + combining",0.6,"0.2","on",1000,13895.8223162348,8630
+"338","40% update
 zipf: 0.6",100,96,"boosting
  + combining","boosting
- + combining",0.6,"0.4","off",1000,6710.69436264616,15
-"350","40% update
-zipf: 0.6",100,16,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.4","on",1000,6341.66647240806,0
-"351","40% update
-zipf: 0.6",100,64,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.4","on",1000,12419.6114511956,16
-"352","40% update
+ + combining",0.6,"0.4","off",1000,3422.57063840986,32
+"339","40% update
 zipf: 0.6",100,96,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"0.4","on",1000,12606.5681847546,38
-"353","60% update
-zipf: 0.6",100,16,"boosting
- + combining","boosting
- + combining",0.6,"0.6","off",1000,6344.83769228976,0
-"354","60% update
-zipf: 0.6",100,64,"boosting
- + combining","boosting
- + combining",0.6,"0.6","off",1000,3010.81085797552,0
-"355","60% update
+ + combining",0.6,"0.4","on",1000,12160.0179899534,14328
+"340","60% update
 zipf: 0.6",100,96,"boosting
  + combining","boosting
- + combining",0.6,"0.6","off",1000,6378.57649952946,24
-"356","60% update
-zipf: 0.6",100,16,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.6","on",1000,6344.30302182615,0
-"357","60% update
-zipf: 0.6",100,64,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.6","on",1000,11375.3876599616,16
-"358","60% update
+ + combining",0.6,"0.6","off",1000,6425.4997541246,11
+"341","60% update
 zipf: 0.6",100,96,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"0.6","on",1000,11756.3313162377,36
-"359","80% update
-zipf: 0.6",100,16,"boosting
- + combining","boosting
- + combining",0.6,"0.8","off",1000,6344.38753421829,0
-"360","80% update
-zipf: 0.6",100,64,"boosting
- + combining","boosting
- + combining",0.6,"0.8","off",1000,7297.85901094858,0
-"361","80% update
+ + combining",0.6,"0.6","on",1000,10936.095213577,16021
+"342","80% update
 zipf: 0.6",100,96,"boosting
  + combining","boosting
- + combining",0.6,"0.8","off",1000,6878.99689006838,21
-"362","80% update
-zipf: 0.6",100,16,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.8","on",1000,6342.77607188293,0
-"363","80% update
-zipf: 0.6",100,64,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.8","on",1000,10677.4628521326,10
-"364","80% update
+ + combining",0.6,"0.8","off",1000,6888.38262793331,34
+"343","80% update
 zipf: 0.6",100,96,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"0.8","on",1000,10975.9554878453,32
-"365","100% update
-zipf: 0.6",100,16,"boosting
- + combining","boosting
- + combining",0.6,"1","off",1000,6342.0060482528,0
-"366","100% update
-zipf: 0.6",100,64,"boosting
- + combining","boosting
- + combining",0.6,"1","off",1000,10549.9455236374,1
-"367","100% update
+ + combining",0.6,"0.8","on",1000,10609.0118681609,11798
+"344","100% update
 zipf: 0.6",100,96,"boosting
  + combining","boosting
- + combining",0.6,"1","off",1000,4829.82193288341,34232
-"368","100% update
-zipf: 0.6",100,16,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"1","on",1000,6342.41050763129,0
-"369","100% update
-zipf: 0.6",100,64,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"1","on",1000,10476.8644492952,0
-"370","100% update
+ + combining",0.6,"1","off",1000,4697.62611864777,37044
+"345","100% update
 zipf: 0.6",100,96,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"1","on",1000,5569.87871535731,21
-"457","50% update
+ + combining",0.6,"1","on",1000,4914.21199741991,37
+"406","50% update
 zipf: 0.6",100,4,"r/w locks
-(baseline)","r/w locks",0.6,"0.5","off",1000,1583.68734069669,0
-"458","50% update
-zipf: 0.6",100,16,"r/w locks
-(baseline)","r/w locks",0.6,"0.5","off",1000,4167.91424636206,0
-"459","50% update
-zipf: 0.6",100,32,"r/w locks
-(baseline)","r/w locks",0.6,"0.5","off",1000,2903.12459749464,0
-"460","50% update
-zipf: 0.6",100,64,"r/w locks
-(baseline)","r/w locks",0.6,"0.5","off",1000,2211.82497778242,2
-"461","50% update
-zipf: 0.6",100,96,"r/w locks
-(baseline)","r/w locks",0.6,"0.5","off",1000,1771.75012686295,14
-"462","50% update
-zipf: 0.6",100,4,"boosting","boosting",0.6,"0.5","off",1000,1583.33111223647,0
-"463","50% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"0.5","off",1000,6345.62868827345,0
-"464","50% update
-zipf: 0.6",100,32,"boosting","boosting",0.6,"0.5","off",1000,6817.28206953681,0
-"465","50% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"0.5","off",1000,6029.23159449275,0
-"466","50% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"0.5","off",1000,5291.94382852919,12
-"467","50% update
+(baseline)","r/w locks",0.6,"0.5","off",1000,1583.73090967243,0
+"407","50% update
+zipf: 0.6",100,4,"boosting","boosting",0.6,"0.5","off",1000,1583.64649129821,0
+"408","50% update
 zipf: 0.6",100,4,"r/w locks
- + phasing","r/w locks",0.6,"0.5","on",1000,1583.92750049977,0
-"468","50% update
+ + phasing","r/w locks",0.6,"0.5","on",1000,1583.65704310282,0
+"409","50% update
+zipf: 0.6",100,4,"boosting
+ + phasing","boosting",0.6,"0.5","on",1000,1583.01184027292,0
+"410","50% update
+zipf: 0.6",100,4,"boosting
+ + combining","boosting
+ + combining",0.6,"0.5","off",1000,1582.59096633196,0
+"411","50% update
+zipf: 0.6",100,4,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.5","on",1000,1583.4010740795,0
+"412","50% update
 zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"0.5","on",1000,6295.8374958375,0
-"469","50% update
+(baseline)","r/w locks",0.6,"0.5","off",1000,4099.36648211244,0
+"413","50% update
+zipf: 0.6",100,16,"boosting","boosting",0.6,"0.5","off",1000,6337.22033401797,0
+"414","50% update
+zipf: 0.6",100,16,"r/w locks
+ + phasing","r/w locks",0.6,"0.5","on",1000,6237.59146199375,0
+"415","50% update
+zipf: 0.6",100,16,"boosting
+ + phasing","boosting",0.6,"0.5","on",1000,6337.01865297739,0
+"416","50% update
+zipf: 0.6",100,16,"boosting
+ + combining","boosting
+ + combining",0.6,"0.5","off",1000,5912.46083692651,0
+"417","50% update
+zipf: 0.6",100,16,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.5","on",1000,6337.733242339,0
+"418","50% update
 zipf: 0.6",100,32,"r/w locks
- + phasing","r/w locks",0.6,"0.5","on",1000,7283.64002539058,1
-"470","50% update
-zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"0.5","on",1000,7421.20684193855,15
-"471","50% update
-zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"0.5","on",1000,7426.00661796023,36
-"472","50% update
-zipf: 0.6",100,4,"boosting
- + phasing","boosting",0.6,"0.5","on",1000,1583.42079397604,0
-"473","50% update
-zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"0.5","on",1000,6345.46792730567,0
-"474","50% update
+(baseline)","r/w locks",0.6,"0.5","off",1000,2925.54667371342,0
+"419","50% update
+zipf: 0.6",100,32,"boosting","boosting",0.6,"0.5","off",1000,6938.03215707648,0
+"420","50% update
+zipf: 0.6",100,32,"r/w locks
+ + phasing","r/w locks",0.6,"0.5","on",1000,6896.65686739161,4370
+"421","50% update
 zipf: 0.6",100,32,"boosting
- + phasing","boosting",0.6,"0.5","on",1000,10753.3865960342,0
-"475","50% update
-zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"0.5","on",1000,11315.9484962581,15
-"476","50% update
-zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"0.5","on",1000,11356.9480844353,35
-"477","50% update
-zipf: 0.6",100,4,"boosting
- + combining","boosting
- + combining",0.6,"0.5","off",1000,1583.92222322175,0
-"478","50% update
-zipf: 0.6",100,16,"boosting
- + combining","boosting
- + combining",0.6,"0.5","off",1000,6345.00674426737,0
-"479","50% update
+ + phasing","boosting",0.6,"0.5","on",1000,10690.8728179551,0
+"422","50% update
 zipf: 0.6",100,32,"boosting
  + combining","boosting
- + combining",0.6,"0.5","off",1000,2323.54107024884,0
-"480","50% update
-zipf: 0.6",100,64,"boosting
- + combining","boosting
- + combining",0.6,"0.5","off",1000,6840.61778520818,0
-"481","50% update
-zipf: 0.6",100,96,"boosting
- + combining","boosting
- + combining",0.6,"0.5","off",1000,6608.56680767183,18
-"482","50% update
-zipf: 0.6",100,4,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.5","on",1000,1583.7295544886,0
-"483","50% update
-zipf: 0.6",100,16,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.5","on",1000,6343.45681561585,0
-"484","50% update
+ + combining",0.6,"0.5","off",1000,4998.15235179222,0
+"423","50% update
 zipf: 0.6",100,32,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"0.5","on",1000,11122.7576293013,0
-"485","50% update
+ + combining",0.6,"0.5","on",1000,11023.2607625913,1
+"424","50% update
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.5","off",1000,2196.78976901997,3
+"425","50% update
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.5","off",1000,6018.33988013886,0
+"426","50% update
+zipf: 0.6",100,64,"r/w locks
+ + phasing","r/w locks",0.6,"0.5","on",1000,6659.68246760618,23910
+"427","50% update
+zipf: 0.6",100,64,"boosting
+ + phasing","boosting",0.6,"0.5","on",1000,10948.7435987466,5279
+"428","50% update
+zipf: 0.6",100,64,"boosting
+ + combining","boosting
+ + combining",0.6,"0.5","off",1000,6836.4387588892,3
+"429","50% update
 zipf: 0.6",100,64,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"0.5","on",1000,11975.6423111914,13
-"486","50% update
+ + combining",0.6,"0.5","on",1000,11746.3718839666,3515
+"430","50% update
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.5","off",1000,1782.97825652014,41
+"431","50% update
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.5","off",1000,5335.38388737726,33
+"432","50% update
+zipf: 0.6",100,96,"r/w locks
+ + phasing","r/w locks",0.6,"0.5","on",1000,6709.85330474228,43532
+"433","50% update
+zipf: 0.6",100,96,"boosting
+ + phasing","boosting",0.6,"0.5","on",1000,10572.2646831505,20283
+"434","50% update
+zipf: 0.6",100,96,"boosting
+ + combining","boosting
+ + combining",0.6,"0.5","off",1000,6525.68254826815,30
+"435","50% update
 zipf: 0.6",100,96,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"0.5","on",1000,12157.490545463,37
-"487","0% update
-zipf: 0.6",100,16,"r/w locks
-(baseline)","r/w locks",0.6,"0","off",1000,6344.70542011015,0
-"488","0% update
+ + combining",0.6,"0.5","on",1000,11501.0976222593,14827
+"436","0% update
 zipf: 0.6",100,64,"r/w locks
-(baseline)","r/w locks",0.6,"0","off",1000,15215.7623425626,0
-"489","0% update
-zipf: 0.6",100,96,"r/w locks
-(baseline)","r/w locks",0.6,"0","off",1000,15685.0207772998,26
-"490","0% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"0","off",1000,6344.55936120194,0
-"491","0% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"0","off",1000,15313.6646581676,1
-"492","0% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"0","off",1000,15697.0052770011,11
-"493","0% update
-zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"0","on",1000,6345.57170687847,0
-"494","0% update
+(baseline)","r/w locks",0.6,"0","off",1000,15507.8184604566,10
+"437","0% update
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0","off",1000,15449.1872008597,5
+"438","0% update
 zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"0","on",1000,15621.8614661105,0
-"495","0% update
+ + phasing","r/w locks",0.6,"0","on",1000,15331.8759474943,1
+"439","0% update
+zipf: 0.6",100,64,"boosting
+ + phasing","boosting",0.6,"0","on",1000,15391.1889596603,0
+"440","20% update
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.2","off",1000,4092.37340519821,1
+"441","20% update
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.2","off",1000,7286.64461682608,0
+"442","20% update
+zipf: 0.6",100,64,"r/w locks
+ + phasing","r/w locks",0.6,"0.2","on",1000,10170.5117306208,20253
+"443","20% update
+zipf: 0.6",100,64,"boosting
+ + phasing","boosting",0.6,"0.2","on",1000,12807.4156647291,3266
+"444","40% update
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.4","off",1000,2633.82647984733,0
+"445","40% update
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.4","off",1000,6120.29374130001,0
+"446","40% update
+zipf: 0.6",100,64,"r/w locks
+ + phasing","r/w locks",0.6,"0.4","on",1000,7591.39143294502,22763
+"447","40% update
+zipf: 0.6",100,64,"boosting
+ + phasing","boosting",0.6,"0.4","on",1000,11521.8097555477,4944
+"448","60% update
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.6","off",1000,1914.52880007823,1
+"449","60% update
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.6","off",1000,5824.73629686998,2
+"450","60% update
+zipf: 0.6",100,64,"r/w locks
+ + phasing","r/w locks",0.6,"0.6","on",1000,6109.41765758045,24365
+"451","60% update
+zipf: 0.6",100,64,"boosting
+ + phasing","boosting",0.6,"0.6","on",1000,10445.2920301151,5853
+"452","80% update
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.8","off",1000,1627.95853165547,5
+"453","80% update
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.8","off",1000,6232.28674631842,2
+"454","80% update
+zipf: 0.6",100,64,"r/w locks
+ + phasing","r/w locks",0.6,"0.8","on",1000,5302.01211807018,25096
+"455","80% update
+zipf: 0.6",100,64,"boosting
+ + phasing","boosting",0.6,"0.8","on",1000,9703.87379596219,5235
+"456","100% update
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"1","off",1000,1394.54154088634,2
+"457","100% update
+zipf: 0.6",100,64,"boosting","boosting",0.6,"1","off",1000,9509.1660168887,0
+"458","100% update
+zipf: 0.6",100,64,"r/w locks
+ + phasing","r/w locks",0.6,"1","on",1000,4667.26717774912,25551
+"459","100% update
+zipf: 0.6",100,64,"boosting
+ + phasing","boosting",0.6,"1","on",1000,9257.34001260658,3
+"460","0% update
+zipf: 0.6",100,64,"boosting
+ + combining","boosting
+ + combining",0.6,"0","off",1000,17353.2026698868,1
+"461","0% update
+zipf: 0.6",100,64,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0","on",1000,17524.9216274942,2
+"462","20% update
+zipf: 0.6",100,64,"boosting
+ + combining","boosting
+ + combining",0.6,"0.2","off",1000,8678.82145188169,0
+"463","20% update
+zipf: 0.6",100,64,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.2","on",1000,13884.5980306288,1467
+"464","40% update
+zipf: 0.6",100,64,"boosting
+ + combining","boosting
+ + combining",0.6,"0.4","off",1000,7242.59602227737,0
+"465","40% update
+zipf: 0.6",100,64,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.4","on",1000,12310.4061115679,3269
+"466","60% update
+zipf: 0.6",100,64,"boosting
+ + combining","boosting
+ + combining",0.6,"0.6","off",1000,6866.22727122181,0
+"467","60% update
+zipf: 0.6",100,64,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.6","on",1000,11131.4165176928,4176
+"468","80% update
+zipf: 0.6",100,64,"boosting
+ + combining","boosting
+ + combining",0.6,"0.8","off",1000,7191.00380572611,0
+"469","80% update
+zipf: 0.6",100,64,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.8","on",1000,10605.3509708834,2796
+"470","100% update
+zipf: 0.6",100,64,"boosting
+ + combining","boosting
+ + combining",0.6,"1","off",1000,10299.4234456586,4
+"471","100% update
+zipf: 0.6",100,64,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"1","on",1000,10302.9156753636,1
+"472","0% update
 zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"0","on",1000,15578.6010632476,19
+(baseline)","r/w locks",0.6,"0","off",1000,15726.1721154674,24
+"473","0% update
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0","off",1000,15811.5918043097,31
+"474","0% update
+zipf: 0.6",100,96,"r/w locks
+ + phasing","r/w locks",0.6,"0","on",1000,15606.307811957,26
+"475","0% update
+zipf: 0.6",100,96,"boosting
+ + phasing","boosting",0.6,"0","on",1000,15480.9760488157,48
+"476","20% update
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.2","off",1000,3639.43651027485,29
+"477","20% update
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.2","off",1000,6733.46904278794,32
+"478","20% update
+zipf: 0.6",100,96,"r/w locks
+ + phasing","r/w locks",0.6,"0.2","on",1000,10021.0344572111,40277
+"479","20% update
+zipf: 0.6",100,96,"boosting
+ + phasing","boosting",0.6,"0.2","on",1000,12817.5603208338,11743
+"480","40% update
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.4","off",1000,2172.28851130284,35
+"481","40% update
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.4","off",1000,5581.6007408213,43
+"482","40% update
+zipf: 0.6",100,96,"r/w locks
+ + phasing","r/w locks",0.6,"0.4","on",1000,7577.98389222057,42591
+"483","40% update
+zipf: 0.6",100,96,"boosting
+ + phasing","boosting",0.6,"0.4","on",1000,11091.513165926,19311
+"484","60% update
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.6","off",1000,1589.02731563878,56
+"485","60% update
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.6","off",1000,5311.24266589402,41
+"486","60% update
+zipf: 0.6",100,96,"r/w locks
+ + phasing","r/w locks",0.6,"0.6","on",1000,6128.99811740105,44021
+"487","60% update
+zipf: 0.6",100,96,"boosting
+ + phasing","boosting",0.6,"0.6","on",1000,10265.1377780122,20030
+"488","80% update
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.8","off",1000,1294.85778040043,47
+"489","80% update
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.8","off",1000,5632.03044269851,31
+"490","80% update
+zipf: 0.6",100,96,"r/w locks
+ + phasing","r/w locks",0.6,"0.8","on",1000,5188.69801259056,44967
+"491","80% update
+zipf: 0.6",100,96,"boosting
+ + phasing","boosting",0.6,"0.8","on",1000,9524.95490078172,15120
+"492","100% update
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"1","off",1000,1101.84541734229,41
+"493","100% update
+zipf: 0.6",100,96,"boosting","boosting",0.6,"1","off",1000,4365.31831686772,42960
+"494","100% update
+zipf: 0.6",100,96,"r/w locks
+ + phasing","r/w locks",0.6,"1","on",1000,4371.62116637738,46100
+"495","100% update
+zipf: 0.6",100,96,"boosting
+ + phasing","boosting",0.6,"1","on",1000,4510.68445314515,36
 "496","0% update
-zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"0","on",1000,6344.72654624157,0
+zipf: 0.6",100,96,"boosting
+ + combining","boosting
+ + combining",0.6,"0","off",1000,18110.436921325,39
 "497","0% update
-zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"0","on",1000,15364.7997396067,0
-"498","0% update
 zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"0","on",1000,15539.3831640539,15
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0","on",1000,18344.5080583777,28
+"498","20% update
+zipf: 0.6",100,96,"boosting
+ + combining","boosting
+ + combining",0.6,"0.2","off",1000,8123.4407595746,27
 "499","20% update
+zipf: 0.6",100,96,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.2","on",1000,14033.7840071403,8692
+"500","40% update
+zipf: 0.6",100,96,"boosting
+ + combining","boosting
+ + combining",0.6,"0.4","off",1000,6743.00900479091,12
+"501","40% update
+zipf: 0.6",100,96,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.4","on",1000,12067.1756935795,14000
+"502","60% update
+zipf: 0.6",100,96,"boosting
+ + combining","boosting
+ + combining",0.6,"0.6","off",1000,6450.77395293574,54
+"503","60% update
+zipf: 0.6",100,96,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.6","on",1000,10949.1585848116,15173
+"504","80% update
+zipf: 0.6",100,96,"boosting
+ + combining","boosting
+ + combining",0.6,"0.8","off",1000,6910.69893942437,40
+"505","80% update
+zipf: 0.6",100,96,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.8","on",1000,10490.0758564842,11547
+"506","100% update
+zipf: 0.6",100,96,"boosting
+ + combining","boosting
+ + combining",0.6,"1","off",1000,4598.31981670728,40967
+"507","100% update
+zipf: 0.6",100,96,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"1","on",1000,4958.7837569631,37
+"568","50% update
+zipf: 0.6",100,4,"r/w locks
+(baseline)","r/w locks",0.6,"0.5","off",1000,1583.30224377765,0
+"569","50% update
+zipf: 0.6",100,4,"boosting","boosting",0.6,"0.5","off",1000,1583.34304988757,0
+"570","50% update
+zipf: 0.6",100,4,"r/w locks
+ + phasing","r/w locks",0.6,"0.5","on",1000,1583.19924577832,0
+"571","50% update
+zipf: 0.6",100,4,"boosting
+ + phasing","boosting",0.6,"0.5","on",1000,1583.37997388129,0
+"572","50% update
+zipf: 0.6",100,4,"boosting
+ + combining","boosting
+ + combining",0.6,"0.5","off",1000,1583.55680663591,0
+"573","50% update
+zipf: 0.6",100,4,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.5","on",1000,1583.33250049138,0
+"574","50% update
 zipf: 0.6",100,16,"r/w locks
-(baseline)","r/w locks",0.6,"0.2","off",1000,6344.33703083322,0
-"500","20% update
-zipf: 0.6",100,64,"r/w locks
-(baseline)","r/w locks",0.6,"0.2","off",1000,4116.08876605749,0
-"501","20% update
-zipf: 0.6",100,96,"r/w locks
-(baseline)","r/w locks",0.6,"0.2","off",1000,3678.74236351609,20
-"502","20% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"0.2","off",1000,6344.68977919872,0
-"503","20% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"0.2","off",1000,7252.4893597274,0
-"504","20% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"0.2","off",1000,6781.50725803527,12
-"505","20% update
+(baseline)","r/w locks",0.6,"0.5","off",1000,4853.2880837118,0
+"575","50% update
+zipf: 0.6",100,16,"boosting","boosting",0.6,"0.5","off",1000,6335.78614907928,0
+"576","50% update
 zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"0.2","on",1000,6342.36010283324,0
-"506","20% update
-zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"0.2","on",1000,11004.4797487646,9
-"507","20% update
-zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"0.2","on",1000,10930.2751573356,63
-"508","20% update
+ + phasing","r/w locks",0.6,"0.5","on",1000,6267.48234291686,0
+"577","50% update
 zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"0.2","on",1000,6343.17571753046,0
-"509","20% update
+ + phasing","boosting",0.6,"0.5","on",1000,6336.91708551077,0
+"578","50% update
+zipf: 0.6",100,16,"boosting
+ + combining","boosting
+ + combining",0.6,"0.5","off",1000,6337.25709455299,0
+"579","50% update
+zipf: 0.6",100,16,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.5","on",1000,6336.55193532174,0
+"580","50% update
+zipf: 0.6",100,32,"r/w locks
+(baseline)","r/w locks",0.6,"0.5","off",1000,3276.25597196277,0
+"581","50% update
+zipf: 0.6",100,32,"boosting","boosting",0.6,"0.5","off",1000,7131.69023676404,0
+"582","50% update
+zipf: 0.6",100,32,"r/w locks
+ + phasing","r/w locks",0.6,"0.5","on",1000,7278.24994114077,3680
+"583","50% update
+zipf: 0.6",100,32,"boosting
+ + phasing","boosting",0.6,"0.5","on",1000,10897.827878659,0
+"584","50% update
+zipf: 0.6",100,32,"boosting
+ + combining","boosting
+ + combining",0.6,"0.5","off",1000,2445.98551394668,0
+"585","50% update
+zipf: 0.6",100,32,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.5","on",1000,11287.6584855182,0
+"586","50% update
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.5","off",1000,2395.09394572025,3
+"587","50% update
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.5","off",1000,6049.67271959459,0
+"588","50% update
+zipf: 0.6",100,64,"r/w locks
+ + phasing","r/w locks",0.6,"0.5","on",1000,6979.21400101268,23191
+"589","50% update
 zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"0.2","on",1000,13116.1823935081,11
-"510","20% update
+ + phasing","boosting",0.6,"0.5","on",1000,11362.5807904963,5034
+"590","50% update
+zipf: 0.6",100,64,"boosting
+ + combining","boosting
+ + combining",0.6,"0.5","off",1000,7193.68816994609,0
+"591","50% update
+zipf: 0.6",100,64,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.5","on",1000,11973.3851139549,2967
+"592","50% update
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.5","off",1000,1845.99108484876,29
+"593","50% update
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.5","off",1000,5455.87882255831,34
+"594","50% update
+zipf: 0.6",100,96,"r/w locks
+ + phasing","r/w locks",0.6,"0.5","on",1000,7071.92611171236,42675
+"595","50% update
 zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"0.2","on",1000,13210.2240738656,35
-"511","40% update
+ + phasing","boosting",0.6,"0.5","on",1000,11034.1192129782,19843
+"596","50% update
+zipf: 0.6",100,96,"boosting
+ + combining","boosting
+ + combining",0.6,"0.5","off",1000,6701.7769214301,23
+"597","50% update
+zipf: 0.6",100,96,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.5","on",1000,12033.392373583,13445
+"598","0% update
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0","off",1000,15941.6687380893,1
+"599","0% update
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0","off",1000,15823.5623667784,1
+"600","0% update
+zipf: 0.6",100,64,"r/w locks
+ + phasing","r/w locks",0.6,"0","on",1000,16033.6467554678,0
+"601","0% update
+zipf: 0.6",100,64,"boosting
+ + phasing","boosting",0.6,"0","on",1000,15949.726225357,3
+"602","20% update
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.2","off",1000,4297.70755379814,2
+"603","20% update
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.2","off",1000,7482.12862100106,0
+"604","20% update
+zipf: 0.6",100,64,"r/w locks
+ + phasing","r/w locks",0.6,"0.2","on",1000,10692.7894275768,19364
+"605","20% update
+zipf: 0.6",100,64,"boosting
+ + phasing","boosting",0.6,"0.2","on",1000,13395.2779388617,2930
+"606","40% update
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.4","off",1000,2763.33601907639,1
+"607","40% update
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.4","off",1000,6314.85663835036,0
+"608","40% update
+zipf: 0.6",100,64,"r/w locks
+ + phasing","r/w locks",0.6,"0.4","on",1000,7933.11664202292,22101
+"609","40% update
+zipf: 0.6",100,64,"boosting
+ + phasing","boosting",0.6,"0.4","on",1000,11937.7215357604,4650
+"610","60% update
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.6","off",1000,2111.71977722603,0
+"611","60% update
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.6","off",1000,6163.70313614627,1
+"612","60% update
+zipf: 0.6",100,64,"r/w locks
+ + phasing","r/w locks",0.6,"0.6","on",1000,6353.67416088396,23767
+"613","60% update
+zipf: 0.6",100,64,"boosting
+ + phasing","boosting",0.6,"0.6","on",1000,10870.1988685295,5525
+"614","80% update
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.8","off",1000,1635.48632862101,0
+"615","80% update
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.8","off",1000,6572.1111961773,7
+"616","80% update
+zipf: 0.6",100,64,"r/w locks
+ + phasing","r/w locks",0.6,"0.8","on",1000,5414.00778210117,24394
+"617","80% update
+zipf: 0.6",100,64,"boosting
+ + phasing","boosting",0.6,"0.8","on",1000,10102.9220865234,4996
+"618","100% update
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"1","off",1000,1510.39512212599,0
+"619","100% update
+zipf: 0.6",100,64,"boosting","boosting",0.6,"1","off",1000,9591.77177416146,4
+"620","100% update
+zipf: 0.6",100,64,"r/w locks
+ + phasing","r/w locks",0.6,"1","on",1000,4989.86708862812,24387
+"621","100% update
+zipf: 0.6",100,64,"boosting
+ + phasing","boosting",0.6,"1","on",1000,9561.19556388111,0
+"622","0% update
+zipf: 0.6",100,64,"boosting
+ + combining","boosting
+ + combining",0.6,"0","off",1000,17779.6191644156,0
+"623","0% update
+zipf: 0.6",100,64,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0","on",1000,17807.1367490206,0
+"624","20% update
+zipf: 0.6",100,64,"boosting
+ + combining","boosting
+ + combining",0.6,"0.2","off",1000,8704.75919536618,1
+"625","20% update
+zipf: 0.6",100,64,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.2","on",1000,14223.2329025051,1247
+"626","40% update
+zipf: 0.6",100,64,"boosting
+ + combining","boosting
+ + combining",0.6,"0.4","off",1000,1761.81968713234,0
+"627","40% update
+zipf: 0.6",100,64,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.4","on",1000,12590.2552204176,2522
+"628","60% update
+zipf: 0.6",100,64,"boosting
+ + combining","boosting
+ + combining",0.6,"0.6","off",1000,1144.9625609128,0
+"629","60% update
+zipf: 0.6",100,64,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.6","on",1000,11573.8165249411,3298
+"630","80% update
+zipf: 0.6",100,64,"boosting
+ + combining","boosting
+ + combining",0.6,"0.8","off",1000,7171.57566630477,0
+"631","80% update
+zipf: 0.6",100,64,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.8","on",1000,10778.0200552746,2301
+"632","100% update
+zipf: 0.6",100,64,"boosting
+ + combining","boosting
+ + combining",0.6,"1","off",1000,10527.7046604298,1
+"633","100% update
+zipf: 0.6",100,64,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"1","on",1000,10429.9168277183,0
+"634","0% update
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0","off",1000,16170.2408969511,39
+"635","0% update
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0","off",1000,16122.9340994674,15
+"636","0% update
+zipf: 0.6",100,96,"r/w locks
+ + phasing","r/w locks",0.6,"0","on",1000,16247.7274680523,30
+"637","0% update
+zipf: 0.6",100,96,"boosting
+ + phasing","boosting",0.6,"0","on",1000,16040.829953425,40
+"638","20% update
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.2","off",1000,3626.57521393791,33
+"639","20% update
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.2","off",1000,6908.26094809609,17
+"640","20% update
+zipf: 0.6",100,96,"r/w locks
+ + phasing","r/w locks",0.6,"0.2","on",1000,10552.2350990707,39269
+"641","20% update
+zipf: 0.6",100,96,"boosting
+ + phasing","boosting",0.6,"0.2","on",1000,13283.0393092719,11359
+"642","40% update
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.4","off",1000,2240.85547960907,50
+"643","40% update
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.4","off",1000,5701.1536516983,16
+"644","40% update
+zipf: 0.6",100,96,"r/w locks
+ + phasing","r/w locks",0.6,"0.4","on",1000,7926.53685692429,41801
+"645","40% update
+zipf: 0.6",100,96,"boosting
+ + phasing","boosting",0.6,"0.4","on",1000,11622.5094504696,18300
+"646","60% update
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.6","off",1000,1643.42395036968,49
+"647","60% update
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.6","off",1000,5476.0943556619,35
+"648","60% update
+zipf: 0.6",100,96,"r/w locks
+ + phasing","r/w locks",0.6,"0.6","on",1000,6428.81666468797,43205
+"649","60% update
+zipf: 0.6",100,96,"boosting
+ + phasing","boosting",0.6,"0.6","on",1000,10724.4455437381,19882
+"650","80% update
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.8","off",1000,1273.76885004653,32
+"651","80% update
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.8","off",1000,5858.02939861684,37
+"652","80% update
+zipf: 0.6",100,96,"r/w locks
+ + phasing","r/w locks",0.6,"0.8","on",1000,5367.1840198438,44266
+"653","80% update
+zipf: 0.6",100,96,"boosting
+ + phasing","boosting",0.6,"0.8","on",1000,10002.4682988155,14804
+"654","100% update
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"1","off",1000,1222.79345723088,28
+"655","100% update
+zipf: 0.6",100,96,"boosting","boosting",0.6,"1","off",1000,4566.79541271976,41257
+"656","100% update
+zipf: 0.6",100,96,"r/w locks
+ + phasing","r/w locks",0.6,"1","on",1000,4589.36702366446,45248
+"657","100% update
+zipf: 0.6",100,96,"boosting
+ + phasing","boosting",0.6,"1","on",1000,4678.46609618109,50
+"658","0% update
+zipf: 0.6",100,96,"boosting
+ + combining","boosting
+ + combining",0.6,"0","off",1000,18621.3553719008,27
+"659","0% update
+zipf: 0.6",100,96,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0","on",1000,18639.261950173,40
+"660","20% update
+zipf: 0.6",100,96,"boosting
+ + combining","boosting
+ + combining",0.6,"0.2","off",1000,8391.56037920198,31
+"661","20% update
+zipf: 0.6",100,96,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.2","on",1000,14380.5976796123,8037
+"662","40% update
+zipf: 0.6",100,96,"boosting
+ + combining","boosting
+ + combining",0.6,"0.4","off",1000,6782.36400839558,41
+"663","40% update
+zipf: 0.6",100,96,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.4","on",1000,12711.1927187223,12961
+"664","60% update
+zipf: 0.6",100,96,"boosting
+ + combining","boosting
+ + combining",0.6,"0.6","off",1000,6717.86075559661,19
+"665","60% update
+zipf: 0.6",100,96,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.6","on",1000,11497.2022012433,13727
+"666","80% update
+zipf: 0.6",100,96,"boosting
+ + combining","boosting
+ + combining",0.6,"0.8","off",1000,7069.02859026118,26
+"667","80% update
+zipf: 0.6",100,96,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.8","on",1000,11021.7495417238,10897
+"668","100% update
+zipf: 0.6",100,96,"boosting
+ + combining","boosting
+ + combining",0.6,"1","off",1000,4645.88261725719,38747
+"669","100% update
+zipf: 0.6",100,96,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"1","on",1000,5129.57750201536,46
+"730","50% update
+zipf: 0.6",100,4,"r/w locks
+(baseline)","r/w locks",0.6,"0.5","off",1000,1583.59373438427,0
+"731","50% update
+zipf: 0.6",100,4,"boosting","boosting",0.6,"0.5","off",1000,1583.06071730773,0
+"732","50% update
+zipf: 0.6",100,4,"r/w locks
+ + phasing","r/w locks",0.6,"0.5","on",1000,1583.02907550036,0
+"733","50% update
+zipf: 0.6",100,4,"boosting
+ + phasing","boosting",0.6,"0.5","on",1000,1583.2361661725,0
+"734","50% update
+zipf: 0.6",100,4,"boosting
+ + combining","boosting
+ + combining",0.6,"0.5","off",1000,1583.700609295,0
+"735","50% update
+zipf: 0.6",100,4,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.5","on",1000,1582.87857890073,0
+"736","50% update
 zipf: 0.6",100,16,"r/w locks
-(baseline)","r/w locks",0.6,"0.4","off",1000,6206.83914915151,0
-"512","40% update
-zipf: 0.6",100,64,"r/w locks
-(baseline)","r/w locks",0.6,"0.4","off",1000,2649.75150405441,1
-"513","40% update
-zipf: 0.6",100,96,"r/w locks
-(baseline)","r/w locks",0.6,"0.4","off",1000,2149.27845189841,19
-"514","40% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"0.4","off",1000,6343.13173730464,0
-"515","40% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"0.4","off",1000,6068.02116921119,0
-"516","40% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"0.4","off",1000,5663.27337939765,6
-"517","40% update
+(baseline)","r/w locks",0.6,"0.5","off",1000,4705.75706445955,0
+"737","50% update
+zipf: 0.6",100,16,"boosting","boosting",0.6,"0.5","off",1000,6337.10423052729,0
+"738","50% update
 zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"0.4","on",1000,6337.95781355108,0
-"518","40% update
-zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"0.4","on",1000,8341.33481154457,14
-"519","40% update
-zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"0.4","on",1000,8349.19481301787,30
-"520","40% update
+ + phasing","r/w locks",0.6,"0.5","on",1000,6268.52458907278,0
+"739","50% update
 zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"0.4","on",1000,6343.07009334901,0
-"521","40% update
-zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"0.4","on",1000,11778.5894541108,10
-"522","40% update
-zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"0.4","on",1000,11844.1062749113,42
-"523","60% update
-zipf: 0.6",100,16,"r/w locks
-(baseline)","r/w locks",0.6,"0.6","off",1000,3453.98675073829,0
-"524","60% update
-zipf: 0.6",100,64,"r/w locks
-(baseline)","r/w locks",0.6,"0.6","off",1000,1844.07717814156,0
-"525","60% update
-zipf: 0.6",100,96,"r/w locks
-(baseline)","r/w locks",0.6,"0.6","off",1000,1639.31773834987,13
-"526","60% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"0.6","off",1000,6345.98605292429,0
-"527","60% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"0.6","off",1000,6015.546598395,2
-"528","60% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"0.6","off",1000,5284.61759622471,21
-"529","60% update
-zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"0.6","on",1000,6151.9402975134,0
-"530","60% update
-zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"0.6","on",1000,6727.06210829596,9
-"531","60% update
-zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"0.6","on",1000,6713.91052049017,39
-"532","60% update
-zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"0.6","on",1000,6342.93688035142,0
-"533","60% update
-zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"0.6","on",1000,10786.3960031205,15
-"534","60% update
-zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"0.6","on",1000,10811.5335733955,33
-"535","80% update
-zipf: 0.6",100,16,"r/w locks
-(baseline)","r/w locks",0.6,"0.8","off",1000,2800.15164716759,0
-"536","80% update
-zipf: 0.6",100,64,"r/w locks
-(baseline)","r/w locks",0.6,"0.8","off",1000,1537.33237212003,0
-"537","80% update
-zipf: 0.6",100,96,"r/w locks
-(baseline)","r/w locks",0.6,"0.8","off",1000,1264.56680705925,14
-"538","80% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"0.8","off",1000,6344.63925937026,0
-"539","80% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"0.8","off",1000,6241.10750480228,0
-"540","80% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"0.8","off",1000,5881.55612455604,28
-"541","80% update
-zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"0.8","on",1000,5613.80375860737,0
-"542","80% update
-zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"0.8","on",1000,5891.38380166599,18
-"543","80% update
-zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"0.8","on",1000,5820.5811145947,55
-"544","80% update
-zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"0.8","on",1000,6342.29193725647,0
-"545","80% update
-zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"0.8","on",1000,10091.7979250881,8
-"546","80% update
-zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"0.8","on",1000,10051.8271897484,41
-"547","100% update
-zipf: 0.6",100,16,"r/w locks
-(baseline)","r/w locks",0.6,"1","off",1000,2444.70213748625,0
-"548","100% update
-zipf: 0.6",100,64,"r/w locks
-(baseline)","r/w locks",0.6,"1","off",1000,1305.73591132475,0
-"549","100% update
-zipf: 0.6",100,96,"r/w locks
-(baseline)","r/w locks",0.6,"1","off",1000,1127.89981390879,18
-"550","100% update
-zipf: 0.6",100,16,"boosting","boosting",0.6,"1","off",1000,6342.74847549299,0
-"551","100% update
-zipf: 0.6",100,64,"boosting","boosting",0.6,"1","off",1000,9317.94626484892,0
-"552","100% update
-zipf: 0.6",100,96,"boosting","boosting",0.6,"1","off",1000,4233.29798515376,42005
-"553","100% update
-zipf: 0.6",100,16,"r/w locks
- + phasing","r/w locks",0.6,"1","on",1000,5277.24970951622,0
-"554","100% update
-zipf: 0.6",100,64,"r/w locks
- + phasing","r/w locks",0.6,"1","on",1000,5567.60684325253,21
-"555","100% update
-zipf: 0.6",100,96,"r/w locks
- + phasing","r/w locks",0.6,"1","on",1000,5467.67689031373,52
-"556","100% update
-zipf: 0.6",100,16,"boosting
- + phasing","boosting",0.6,"1","on",1000,6341.84191684566,0
-"557","100% update
-zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"1","on",1000,9478.75864222756,2
-"558","100% update
-zipf: 0.6",100,96,"boosting
- + phasing","boosting",0.6,"1","on",1000,4465.49866569425,28
-"559","0% update
+ + phasing","boosting",0.6,"0.5","on",1000,6336.31994461678,0
+"740","50% update
 zipf: 0.6",100,16,"boosting
  + combining","boosting
- + combining",0.6,"0","off",1000,6344.7430727375,0
-"560","0% update
-zipf: 0.6",100,64,"boosting
- + combining","boosting
- + combining",0.6,"0","off",1000,17113.6670862658,0
-"561","0% update
-zipf: 0.6",100,96,"boosting
- + combining","boosting
- + combining",0.6,"0","off",1000,18243.7380598599,19
-"562","0% update
+ + combining",0.6,"0.5","off",1000,6336.8168807828,0
+"741","50% update
 zipf: 0.6",100,16,"boosting
  + combining
  + phasing","boosting
- + combining",0.6,"0","on",1000,6344.69621281754,0
-"563","0% update
-zipf: 0.6",100,64,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0","on",1000,17360.052348543,0
-"564","0% update
-zipf: 0.6",100,96,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0","on",1000,18113.5880435035,20
-"565","20% update
-zipf: 0.6",100,16,"boosting
- + combining","boosting
- + combining",0.6,"0.2","off",1000,6343.96211207844,0
-"566","20% update
-zipf: 0.6",100,64,"boosting
- + combining","boosting
- + combining",0.6,"0.2","off",1000,8523.51043063726,0
-"567","20% update
-zipf: 0.6",100,96,"boosting
- + combining","boosting
- + combining",0.6,"0.2","off",1000,8045.04326002246,11
-"568","20% update
-zipf: 0.6",100,16,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.2","on",1000,6340.99884784187,0
-"569","20% update
-zipf: 0.6",100,64,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.2","on",1000,14072.3227627428,11
-"570","20% update
-zipf: 0.6",100,96,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.2","on",1000,14243.9846021731,37
-"571","40% update
-zipf: 0.6",100,16,"boosting
- + combining","boosting
- + combining",0.6,"0.4","off",1000,6344.41691311646,0
-"572","40% update
-zipf: 0.6",100,64,"boosting
- + combining","boosting
- + combining",0.6,"0.4","off",1000,7026.82798178073,0
-"573","40% update
-zipf: 0.6",100,96,"boosting
- + combining","boosting
- + combining",0.6,"0.4","off",1000,6858.78257534935,16
-"574","40% update
-zipf: 0.6",100,16,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.4","on",1000,6342.95800446265,0
-"575","40% update
-zipf: 0.6",100,64,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.4","on",1000,12340.0273423501,13
-"576","40% update
-zipf: 0.6",100,96,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.4","on",1000,12768.8665795808,44
-"577","60% update
-zipf: 0.6",100,16,"boosting
- + combining","boosting
- + combining",0.6,"0.6","off",1000,6345.6939790977,0
-"578","60% update
-zipf: 0.6",100,64,"boosting
- + combining","boosting
- + combining",0.6,"0.6","off",1000,6578.72174203778,0
-"579","60% update
-zipf: 0.6",100,96,"boosting
- + combining","boosting
- + combining",0.6,"0.6","off",1000,1465.02556990552,8
-"580","60% update
-zipf: 0.6",100,16,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.6","on",1000,6343.49085822759,1
-"581","60% update
-zipf: 0.6",100,64,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.6","on",1000,11567.9951646702,11
-"582","60% update
-zipf: 0.6",100,96,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.6","on",1000,11623.3083977714,39
-"583","80% update
-zipf: 0.6",100,16,"boosting
- + combining","boosting
- + combining",0.6,"0.8","off",1000,6345.71773943796,0
-"584","80% update
-zipf: 0.6",100,64,"boosting
- + combining","boosting
- + combining",0.6,"0.8","off",1000,7189.84251655102,0
-"585","80% update
-zipf: 0.6",100,96,"boosting
- + combining","boosting
- + combining",0.6,"0.8","off",1000,7138.09034058779,17
-"586","80% update
-zipf: 0.6",100,16,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.8","on",1000,6343.50552682149,0
-"587","80% update
-zipf: 0.6",100,64,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.8","on",1000,10667.8977329339,11
-"588","80% update
-zipf: 0.6",100,96,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"0.8","on",1000,10891.1821750326,47
-"589","100% update
-zipf: 0.6",100,16,"boosting
- + combining","boosting
- + combining",0.6,"1","off",1000,6341.94917088799,0
-"590","100% update
-zipf: 0.6",100,64,"boosting
- + combining","boosting
- + combining",0.6,"1","off",1000,10350.2850384702,2
-"591","100% update
-zipf: 0.6",100,96,"boosting
- + combining","boosting
- + combining",0.6,"1","off",1000,4712.40866236972,35396
-"592","100% update
-zipf: 0.6",100,16,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"1","on",1000,6342.53893396214,0
-"593","100% update
-zipf: 0.6",100,64,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"1","on",1000,10465.9126766645,0
-"594","100% update
-zipf: 0.6",100,96,"boosting
- + combining
- + phasing","boosting
- + combining",0.6,"1","on",1000,4878.59846350663,18
-"685","100% update
-zipf: 0.6",100,64,NA,"boosting
- + combining",0.6,"1","on",1000,0,3
-"686","50% update
-zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"0.5","on",1000,10960.2684136541,5394
-"687","50% update
-zipf: 0.6",100,64,"boosting
- + phasing","boosting",0.6,"0.5","on",1000,10638.2391705766,11114
-"688","50% update
-zipf: 0.6",100,64,NA,"boosting",0.6,"0.5","on",1000,0,0
-"689","50% update
-zipf: 0.6",100,4,"non-transactional","boosting",0.6,"0.5","off",1000,1582.20913852988,0
-"690","50% update
-zipf: 0.6",100,16,"non-transactional","boosting",0.6,"0.5","off",1000,6326.95331850537,0
-"691","50% update
-zipf: 0.6",100,32,"non-transactional","boosting",0.6,"0.5","off",1000,12630.2454683531,0
-"692","50% update
-zipf: 0.6",100,64,"non-transactional","boosting",0.6,"0.5","off",1000,18177.0841937967,0
-"693","50% update
-zipf: 0.6",100,96,"non-transactional","boosting",0.6,"0.5","off",1000,18358.8834210639,47
-"694","0% update
-zipf: 0.6",100,64,"non-transactional","boosting",0.6,"0","off",1000,23019.8670249642,0
-"695","20% update
-zipf: 0.6",100,64,"non-transactional","boosting",0.6,"0.2","off",1000,19993.3929291127,1
-"696","40% update
-zipf: 0.6",100,64,"non-transactional","boosting",0.6,"0.4","off",1000,18546.0552398573,1
-"697","60% update
-zipf: 0.6",100,64,"non-transactional","boosting",0.6,"0.6","off",1000,17673.6776701083,4
-"698","80% update
-zipf: 0.6",100,64,"non-transactional","boosting",0.6,"0.8","off",1000,16942.3615219123,4
-"699","100% update
-zipf: 0.6",100,64,"non-transactional","boosting",0.6,"1","off",1000,15966.4937803915,0
-"700","0% update
-zipf: 0.6",100,96,"non-transactional","boosting",0.6,"0","off",1000,24046.8540124839,26
-"701","20% update
-zipf: 0.6",100,96,"non-transactional","boosting",0.6,"0.2","off",1000,20324.0016209965,45
-"702","40% update
-zipf: 0.6",100,96,"non-transactional","boosting",0.6,"0.4","off",1000,19029.5779985829,18
-"703","60% update
-zipf: 0.6",100,96,"non-transactional","boosting",0.6,"0.6","off",1000,18004.8783703606,51
-"704","80% update
-zipf: 0.6",100,96,"non-transactional","boosting",0.6,"0.8","off",1000,17008.5064292779,56
-"705","100% update
-zipf: 0.6",100,96,"non-transactional","boosting",0.6,"1","off",1000,16143.4397987411,31
-"716","50% update
-zipf: 0.6",100,4,"non-transactional","boosting",0.6,"0.5","off",1000,1582.81432139883,0
-"717","50% update
-zipf: 0.6",100,16,"non-transactional","boosting",0.6,"0.5","off",1000,6325.69397573537,0
-"718","50% update
-zipf: 0.6",100,32,"non-transactional","boosting",0.6,"0.5","off",1000,12627.7253660073,0
-"719","50% update
-zipf: 0.6",100,64,"non-transactional","boosting",0.6,"0.5","off",1000,17959.0784555438,0
-"720","50% update
-zipf: 0.6",100,96,"non-transactional","boosting",0.6,"0.5","off",1000,18867.0738178498,35
-"721","0% update
-zipf: 0.6",100,64,"non-transactional","boosting",0.6,"0","off",1000,22901.1404082226,0
-"722","20% update
-zipf: 0.6",100,64,"non-transactional","boosting",0.6,"0.2","off",1000,19693.0152038746,0
-"723","40% update
-zipf: 0.6",100,64,"non-transactional","boosting",0.6,"0.4","off",1000,18626.0793132049,1
-"724","60% update
-zipf: 0.6",100,64,"non-transactional","boosting",0.6,"0.6","off",1000,17602.4429660622,1
-"725","80% update
-zipf: 0.6",100,64,"non-transactional","boosting",0.6,"0.8","off",1000,16677.2225123794,1
-"726","100% update
-zipf: 0.6",100,64,"non-transactional","boosting",0.6,"1","off",1000,16028.6918436493,1
-"727","0% update
-zipf: 0.6",100,96,"non-transactional","boosting",0.6,"0","off",1000,23638.1656717057,21
-"728","20% update
-zipf: 0.6",100,96,"non-transactional","boosting",0.6,"0.2","off",1000,20433.7327170723,37
-"729","40% update
-zipf: 0.6",100,96,"non-transactional","boosting",0.6,"0.4","off",1000,18838.218861556,39
-"730","60% update
-zipf: 0.6",100,96,"non-transactional","boosting",0.6,"0.6","off",1000,18167.6284766051,51
-"731","80% update
-zipf: 0.6",100,96,"non-transactional","boosting",0.6,"0.8","off",1000,16797.418155326,68
-"732","100% update
-zipf: 0.6",100,96,"non-transactional","boosting",0.6,"1","off",1000,16339.9334821031,40
+ + combining",0.6,"0.5","on",1000,6336.42408791677,0
+"742","50% update
+zipf: 0.6",100,32,"r/w locks
+(baseline)","r/w locks",0.6,"0.5","off",1000,3112.88363002483,0
 "743","50% update
-zipf: 0.6",100,4,"non-transactional","boosting",0.6,"0.5","off",1000,1581.82756840475,0
+zipf: 0.6",100,32,"boosting","boosting",0.6,"0.5","off",1000,6931.03906457614,0
 "744","50% update
-zipf: 0.6",100,16,"non-transactional","boosting",0.6,"0.5","off",1000,6325.65809158427,0
+zipf: 0.6",100,32,"r/w locks
+ + phasing","r/w locks",0.6,"0.5","on",1000,7131.63800790975,3830
 "745","50% update
-zipf: 0.6",100,32,"non-transactional","boosting",0.6,"0.5","off",1000,12631.2857128644,0
+zipf: 0.6",100,32,"boosting
+ + phasing","boosting",0.6,"0.5","on",1000,10914.1182178915,0
 "746","50% update
-zipf: 0.6",100,64,"non-transactional","boosting",0.6,"0.5","off",1000,18313.9584834086,0
+zipf: 0.6",100,32,"boosting
+ + combining","boosting
+ + combining",0.6,"0.5","off",1000,7906.58727205061,0
 "747","50% update
-zipf: 0.6",100,96,"non-transactional","boosting",0.6,"0.5","off",1000,18766.0456578267,46
-"748","0% update
-zipf: 0.6",100,64,"non-transactional","boosting",0.6,"0","off",1000,23328.5353968862,0
-"749","20% update
-zipf: 0.6",100,64,"non-transactional","boosting",0.6,"0.2","off",1000,19641.0493623208,0
-"750","40% update
-zipf: 0.6",100,64,"non-transactional","boosting",0.6,"0.4","off",1000,18500.7004837303,1
-"751","60% update
-zipf: 0.6",100,64,"non-transactional","boosting",0.6,"0.6","off",1000,17599.8043246888,0
-"752","80% update
-zipf: 0.6",100,64,"non-transactional","boosting",0.6,"0.8","off",1000,16779.0044291664,0
-"753","100% update
-zipf: 0.6",100,64,"non-transactional","boosting",0.6,"1","off",1000,15843.2223144349,0
-"754","0% update
-zipf: 0.6",100,96,"non-transactional","boosting",0.6,"0","off",1000,23399.0444612006,39
-"755","20% update
-zipf: 0.6",100,96,"non-transactional","boosting",0.6,"0.2","off",1000,20298.10619539,31
-"756","40% update
-zipf: 0.6",100,96,"non-transactional","boosting",0.6,"0.4","off",1000,19000.7777587366,57
-"757","60% update
-zipf: 0.6",100,96,"non-transactional","boosting",0.6,"0.6","off",1000,17811.6675897355,40
-"758","80% update
-zipf: 0.6",100,96,"non-transactional","boosting",0.6,"0.8","off",1000,17396.2230565619,31
-"759","100% update
-zipf: 0.6",100,96,"non-transactional","boosting",0.6,"1","off",1000,16262.6465749993,37
+zipf: 0.6",100,32,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.5","on",1000,11293.3684745797,0
+"748","50% update
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.5","off",1000,2354.19332932849,3
+"749","50% update
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.5","off",1000,6002.89896225076,3
+"750","50% update
+zipf: 0.6",100,64,"r/w locks
+ + phasing","r/w locks",0.6,"0.5","on",1000,7056.20739093542,23017
+"751","50% update
+zipf: 0.6",100,64,"boosting
+ + phasing","boosting",0.6,"0.5","on",1000,11361.6666004055,5187
+"752","50% update
+zipf: 0.6",100,64,"boosting
+ + combining","boosting
+ + combining",0.6,"0.5","off",1000,7054.56809915932,0
+"753","50% update
+zipf: 0.6",100,64,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.5","on",1000,11906.8040963776,3437
+"754","50% update
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.5","off",1000,1912.04465524473,33
+"755","50% update
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.5","off",1000,5576.3694443349,35
+"756","50% update
+zipf: 0.6",100,96,"r/w locks
+ + phasing","r/w locks",0.6,"0.5","on",1000,7009.45466715581,42720
+"757","50% update
+zipf: 0.6",100,96,"boosting
+ + phasing","boosting",0.6,"0.5","on",1000,11053.0605241711,19767
+"758","50% update
+zipf: 0.6",100,96,"boosting
+ + combining","boosting
+ + combining",0.6,"0.5","off",1000,4948.45360824742,9
+"759","50% update
+zipf: 0.6",100,96,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.5","on",1000,11941.517030011,14245
+"760","0% update
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0","off",1000,15982.6821457697,0
+"761","0% update
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0","off",1000,15892.812156088,0
+"762","0% update
+zipf: 0.6",100,64,"r/w locks
+ + phasing","r/w locks",0.6,"0","on",1000,15884.7766636281,0
+"763","0% update
+zipf: 0.6",100,64,"boosting
+ + phasing","boosting",0.6,"0","on",1000,15969.3201103097,4
+"764","20% update
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.2","off",1000,4290.91146598739,0
+"765","20% update
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.2","off",1000,7541.73931420722,2
+"766","20% update
+zipf: 0.6",100,64,"r/w locks
+ + phasing","r/w locks",0.6,"0.2","on",1000,10574.8884140085,19524
+"767","20% update
+zipf: 0.6",100,64,"boosting
+ + phasing","boosting",0.6,"0.2","on",1000,13329.1359039275,2972
+"768","40% update
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.4","off",1000,2750.13295833102,1
+"769","40% update
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.4","off",1000,6366.06177618942,2
+"770","40% update
+zipf: 0.6",100,64,"r/w locks
+ + phasing","r/w locks",0.6,"0.4","on",1000,7882.44066516233,22320
+"771","40% update
+zipf: 0.6",100,64,"boosting
+ + phasing","boosting",0.6,"0.4","on",1000,11941.6453004194,4808
+"772","60% update
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.6","off",1000,2055.05974693117,0
+"773","60% update
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.6","off",1000,6062.71177467175,0
+"774","60% update
+zipf: 0.6",100,64,"r/w locks
+ + phasing","r/w locks",0.6,"0.6","on",1000,6251.13047099163,23868
+"775","60% update
+zipf: 0.6",100,64,"boosting
+ + phasing","boosting",0.6,"0.6","on",1000,10869.9960561681,5371
+"776","80% update
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"0.8","off",1000,1676.50069435842,0
+"777","80% update
+zipf: 0.6",100,64,"boosting","boosting",0.6,"0.8","off",1000,6624.21140734222,0
+"778","80% update
+zipf: 0.6",100,64,"r/w locks
+ + phasing","r/w locks",0.6,"0.8","on",1000,5452.38311865552,24417
+"779","80% update
+zipf: 0.6",100,64,"boosting
+ + phasing","boosting",0.6,"0.8","on",1000,10089.7068956379,4897
+"780","100% update
+zipf: 0.6",100,64,"r/w locks
+(baseline)","r/w locks",0.6,"1","off",1000,1447.97264289204,0
+"781","100% update
+zipf: 0.6",100,64,"boosting","boosting",0.6,"1","off",1000,9574.04350391482,0
+"782","100% update
+zipf: 0.6",100,64,"r/w locks
+ + phasing","r/w locks",0.6,"1","on",1000,4898.96564702218,24680
+"783","100% update
+zipf: 0.6",100,64,"boosting
+ + phasing","boosting",0.6,"1","on",1000,9504.55796068552,0
+"784","0% update
+zipf: 0.6",100,64,"boosting
+ + combining","boosting
+ + combining",0.6,"0","off",1000,17664.2814767187,1
+"785","0% update
+zipf: 0.6",100,64,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0","on",1000,17889.2033966842,4
+"786","20% update
+zipf: 0.6",100,64,"boosting
+ + combining","boosting
+ + combining",0.6,"0.2","off",1000,8964.04101091441,2
+"787","20% update
+zipf: 0.6",100,64,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.2","on",1000,14277.5137378116,1199
+"788","40% update
+zipf: 0.6",100,64,"boosting
+ + combining","boosting
+ + combining",0.6,"0.4","off",1000,7307.96214176981,0
+"789","40% update
+zipf: 0.6",100,64,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.4","on",1000,12726.3326748949,2273
+"790","60% update
+zipf: 0.6",100,64,"boosting
+ + combining","boosting
+ + combining",0.6,"0.6","off",1000,6940.64471266081,1
+"791","60% update
+zipf: 0.6",100,64,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.6","on",1000,11502.6105854602,3474
+"792","80% update
+zipf: 0.6",100,64,"boosting
+ + combining","boosting
+ + combining",0.6,"0.8","off",1000,7485.77974665104,1
+"793","80% update
+zipf: 0.6",100,64,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.8","on",1000,10884.5043534173,2546
+"794","100% update
+zipf: 0.6",100,64,"boosting
+ + combining","boosting
+ + combining",0.6,"1","off",1000,10515.6730667232,1
+"795","100% update
+zipf: 0.6",100,64,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"1","on",1000,10442.144623524,2
+"796","0% update
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0","off",1000,16167.9536679537,25
+"797","0% update
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0","off",1000,16123.8772467462,31
+"798","0% update
+zipf: 0.6",100,96,"r/w locks
+ + phasing","r/w locks",0.6,"0","on",1000,16114.0053948273,17
+"799","0% update
+zipf: 0.6",100,96,"boosting
+ + phasing","boosting",0.6,"0","on",1000,16117.2306441538,38
+"800","20% update
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.2","off",1000,3669.03655238311,26
+"801","20% update
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.2","off",1000,6915.87985374988,35
+"802","20% update
+zipf: 0.6",100,96,"r/w locks
+ + phasing","r/w locks",0.6,"0.2","on",1000,10566.9038033195,39172
+"803","20% update
+zipf: 0.6",100,96,"boosting
+ + phasing","boosting",0.6,"0.2","on",1000,13406.9237044891,11575
+"804","40% update
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.4","off",1000,2283.79740944699,25
+"805","40% update
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.4","off",1000,5680.74253260412,34
+"806","40% update
+zipf: 0.6",100,96,"r/w locks
+ + phasing","r/w locks",0.6,"0.4","on",1000,7843.7895358769,42035
+"807","40% update
+zipf: 0.6",100,96,"boosting
+ + phasing","boosting",0.6,"0.4","on",1000,11646.4375424416,18155
+"808","60% update
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.6","off",1000,1653.05352495993,30
+"809","60% update
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.6","off",1000,5432.76892593919,35
+"810","60% update
+zipf: 0.6",100,96,"r/w locks
+ + phasing","r/w locks",0.6,"0.6","on",1000,6348.90641369249,43271
+"811","60% update
+zipf: 0.6",100,96,"boosting
+ + phasing","boosting",0.6,"0.6","on",1000,10680.4900663563,19677
+"812","80% update
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"0.8","off",1000,1360.93033455667,31
+"813","80% update
+zipf: 0.6",100,96,"boosting","boosting",0.6,"0.8","off",1000,5908.3898321771,42
+"814","80% update
+zipf: 0.6",100,96,"r/w locks
+ + phasing","r/w locks",0.6,"0.8","on",1000,5442.37118254916,43835
+"815","80% update
+zipf: 0.6",100,96,"boosting
+ + phasing","boosting",0.6,"0.8","on",1000,10097.692814766,14603
+"816","100% update
+zipf: 0.6",100,96,"r/w locks
+(baseline)","r/w locks",0.6,"1","off",1000,1197.93042570602,37
+"817","100% update
+zipf: 0.6",100,96,"boosting","boosting",0.6,"1","off",1000,4415.20767322071,41808
+"818","100% update
+zipf: 0.6",100,96,"r/w locks
+ + phasing","r/w locks",0.6,"1","on",1000,4603.59139964433,45397
+"819","100% update
+zipf: 0.6",100,96,"boosting
+ + phasing","boosting",0.6,"1","on",1000,4629.7734007724,60
+"820","0% update
+zipf: 0.6",100,96,"boosting
+ + combining","boosting
+ + combining",0.6,"0","off",1000,18703.7269667899,15
+"821","0% update
+zipf: 0.6",100,96,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0","on",1000,18578.4509803273,40
+"822","20% update
+zipf: 0.6",100,96,"boosting
+ + combining","boosting
+ + combining",0.6,"0.2","off",1000,8273.18746186951,51
+"823","20% update
+zipf: 0.6",100,96,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.2","on",1000,14383.9181904661,8074
+"824","40% update
+zipf: 0.6",100,96,"boosting
+ + combining","boosting
+ + combining",0.6,"0.4","off",1000,6871.04046337891,33
+"825","40% update
+zipf: 0.6",100,96,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.4","on",1000,12569.4244925052,12924
+"826","60% update
+zipf: 0.6",100,96,"boosting
+ + combining","boosting
+ + combining",0.6,"0.6","off",1000,6514.11911373785,38
+"827","60% update
+zipf: 0.6",100,96,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.6","on",1000,11498.5864884145,13965
+"828","80% update
+zipf: 0.6",100,96,"boosting
+ + combining","boosting
+ + combining",0.6,"0.8","off",1000,7206.8013497524,19
+"829","80% update
+zipf: 0.6",100,96,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"0.8","on",1000,10990.9481648741,10905
+"830","100% update
+zipf: 0.6",100,96,"boosting
+ + combining","boosting
+ + combining",0.6,"1","off",1000,4678.78451505481,39734
+"831","100% update
+zipf: 0.6",100,96,"boosting
+ + combining
+ + phasing","boosting
+ + combining",0.6,"1","on",1000,4963.95604686044,42

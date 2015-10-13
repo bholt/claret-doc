@@ -4,7 +4,7 @@ a <- parse.args()
 
 d <- tryCatch(
   {
-    d <- data.rawmix(where="(name like 'v0.27.5%' or (name like 'v0.28.1%' and disable_txns = 1)) and nclients = 4 and duration = 30 and length = 4 and rate = 100")
+    d <- data.rawmix(where="name like 'v0.28.1%' and nclients = 4 and duration = 30 and length = 4 and rate = 100")
     
     d <- subset(d, commute_ratio == 0.5 & alpha == 0.6)
     
