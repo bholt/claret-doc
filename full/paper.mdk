@@ -65,6 +65,7 @@ if (screen && screen.width > 480) {
 [INCLUDE="expressing"]
 [INCLUDE="evaluation"]
 [INCLUDE="related"]
+[INCLUDE="conclusion"]
 
 # References {-}
 [BIB]
