@@ -4,7 +4,7 @@ source('common.r')
 a <- parse.args()
 
 d.zipf <- tryCatch({
-  d <- data.rawmix(where="name like 'v0.28.1%' and nclients = 4 and duration = 30 and length = 4 and rate = 100")
+  d <- data.rawmix(where="name like 'v0.28.1%' and nclients = 4 and duration = 30 and length = 4 and rate = 100 and timeout_scaling = 1000 and phase_limit = 100")
 
   d$facet <-  num(d$commute_ratio)*100 + "% update\nzipf: " + d$alpha
   d$zipf <- num(d$alpha)
@@ -50,7 +50,7 @@ save(
   stat_summary(geom='point', fun.y=max)+
   # geom_text(size=1.2)+
   expand_limits(y=0)+
-  scale_x_continuous(breaks=c(0.2,0.4,0.6,0.8,1.0,1.2))+
+  scale_x_continuous(breaks=c(0.2,0.4,0.6,0.8,1.0,1.2,1.4))+
   # scale_y_continuous(labels=si.labels())+
   scale_y_continuous(labels=function(x){ x/1000+'k' })+
   # facet_wrap(~facet, ncol=6)+ #, scales="free")+
