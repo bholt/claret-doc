@@ -3,6 +3,7 @@ There is often sufficient concurrency in these applications to scale them withou
 
 In Claret, high-level application semantics are communicated to the datastore through *abstract data types* (ADTs), which let the programmer and datastore alike reason about their logical behavior, such as operation commutativity. The datastore can use this knowledge to avoid unnecessary conflicts or reduce communication, while the programmer can tune their performance by carefully choosing the right ADTs for their application or implementing custom ones which expose the maximum amount of concurrency.
 
-In this work, we describe the design and implementation of an extensible ADT-store, including optimizations which take advantage of the abstract properties of the ADTs: transaction boosting, phasing, and operation combining. 
-We evaluate Claret with benchmarks modeling real-world contention: a microbenchmark based on YCSB, an online auction service, and a Twitter clone.
-We show that our ADT-aware optimizations scale well with increasing contention, with peak throughput on average 2x over the baseline on workloads with significant updates.
+In this work, we describe the design and implementation of an extensible ADT-store,  including optimizations which take advantage of the abstract properties of the ADTs: transaction boosting, phasing, and operation combining. 
+Claret is the first datastore to use ADTs to improve performance of distributed transactions.
+On a transaction microbenchmark, Claret's ADT optimizations show speedups up to 49x over the baseline concurrency control and even up to 20% better than without transactions.
+Furthermore, Claret shows up to a 68x throughput improvement on a bid-heavy workload for the Rubis auction benchmark, and up to a 4x speedup on a Twitter clone modeling a realistic social graph.

@@ -1,4 +1,4 @@
-title:       Claret: Abstract Data Types in Datastores
+title:       Claret: Avoiding contention in distributed transactions with abstract data types
 
 author:      Brandon Holt, Irene Zhang, Dan Ports, Mark Oskin, Luis Ceze
 affiliation: University of Washington
