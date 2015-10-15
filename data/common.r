@@ -10,6 +10,7 @@ suppressPackageStartupMessages(require(grid))
 suppressPackageStartupMessages(require(plyr))
 suppressPackageStartupMessages(require(yaml))
 suppressPackageStartupMessages(require(extrafont))
+suppressPackageStartupMessages(require(tcltk))
 
 library('Unicode')
 # library('Cairo')
@@ -26,6 +27,7 @@ ALL  <- "all"
 COMM_PH <- "boosting\n+\nphasing"
 BASE <- "\n(baseline)"
 NOTXN <- "non-transactional"
+BETT <- "better "
 
 parse.args <- function() {
   options <- commandArgs(trailingOnly=TRUE)
@@ -33,7 +35,9 @@ parse.args <- function() {
 }
 
 
-json.to.df <- function(jstr) { 
+cat.yaml <- function(o) cat(as.yaml(o))
+
+json.to.df <- function(jstr) {
   d <- fromJSON(jstr)
   return(data.frame(x=names(d),y=unlist(d)))
 }
@@ -98,36 +102,43 @@ db <- function(query, factors=c(), numeric=c()) {
   
   if ( 'combining' %in% colnames(d) ) {
     
+    d$combining[is.na(d$combining)] <- 0
+    
     d$cc <- factor(revalue(x(d$ccmode,d$combining), c(
       'rw#0'=RW,
       'simple#0'=COMM,
       'simple#1'=COMB,
-      'rw#NA'=RW,
-      'simple#NA'=COMM
-    )), levels=c(RW,COMM,COMB))
+      'better#0'=BETT+COMM,
+      'better#1'=BETT+COMB
+    )), levels=c(RW,COMM,COMB,BETT+COMM,BETT+COMB))
     
     d$cca <- factor(revalue(x(d$ccmode,d$combining), c(
       'rw#0'='rw',
       'simple#0'='bo',
       'simple#1'='cb',
-      'rw#NA'='rw',
-      'simple#NA'='bo'
-    )), levels=c('rw','bo','cb'))
+      'better#0'='b+b',
+      'better#1'='b+c'
+    )), levels=c('rw','bo','cb','b+b','b+c'))
     
     if ('disable_txns' %in% colnames(d)) {
       # d$disable_txns <- factor(revalue(d$disable_txns, c('NA'='0','0'='0','1'='1')))
       d$disable_txns[is.na(d$disable_txns)] <- 0
+      d$ccmode[d$disable_txns == 1] <- 'rw'
       
       d$cc_ph <- factor(revalue(x(d$ccmode,d$combining,d$phasing,d$disable_txns), c(
         'rw#0#off#0'=RW+BASE,
         'simple#0#off#0'=COMM,
         'simple#1#off#0'=COMB,
+        'better#0#off#0'=BETT+COMM,
+        'better#1#off#0'=BETT+COMB,
         'rw#0#on#0'=RW+PH,
         'simple#0#on#0'=COMM+PH,
         'simple#1#on#0'=COMB+PH,
-        'simple#0#off#1'=NOTXN,
+        'better#0#on#0'=BETT+COMM+PH,
+        'better#1#on#0'=BETT+COMB+PH,
         'rw#0#off#1'=NOTXN
-      )), levels=c(NOTXN,COMB+PH,COMM+PH,RW+PH,COMB,COMM,RW+BASE))
+      )), levels=c(NOTXN,BETT+COMB+PH,BETT+COMM+PH,COMB+PH,COMM+PH,RW+PH,COMB,COMM,BETT+COMB,BETT+COMM,RW+BASE))
+      
     } else if ('phasing' %in% colnames(d)) {
       d$cc_ph <- factor(revalue(x(d$ccmode,d$combining,d$phasing), c(
         'rw#0#off'=RW+BASE,
@@ -135,8 +146,10 @@ db <- function(query, factors=c(), numeric=c()) {
         'simple#1#off'=COMB,
         'rw#0#on'=RW+PH,
         'simple#0#on'=COMM+PH,
-        'simple#1#on'=COMB+PH
-      )), levels=c(COMB+PH,COMM+PH,RW+PH,COMB,COMM,RW+BASE))
+        'simple#1#on'=COMB+PH,
+        'better#0#on'=BETT+COMM+PH,
+        'better#1#on'=BETT+COMB+PH
+      )), levels=c(BETT+COMB+PH,BETT+COMM+PH,COMB+PH,COMM+PH,RW+PH,COMB,COMM,RW+BASE))
     }
     
   } else if ( 'ccmode' %in% colnames(d) ) {
@@ -312,8 +325,12 @@ cc_ph_scales <- function(name = 'Mode', guide = guide_legend(nrow = 7), ...) {
   colors[[RW+PH]] <- c.gray
   colors[[COMM]] <- c.blue
   colors[[COMM+PH]] <- c.blue
+  colors[[BETT+COMM]] <- c.red
+  colors[[BETT+COMM+PH]] <- c.red
   colors[[COMB]] <- c.green
   colors[[COMB+PH]] <- c.green
+  colors[[BETT+COMB]] <- c.yellow
+  colors[[BETT+COMB+PH]] <- c.yellow
   colors[[NOTXN]] <- c.pink
   
   dotted <- 2
@@ -324,6 +341,10 @@ cc_ph_scales <- function(name = 'Mode', guide = guide_legend(nrow = 7), ...) {
   lines[[COMM+PH]] <- dotted
   lines[[COMB]] <- 1
   lines[[COMB+PH]] <- dotted
+  lines[[BETT+COMM]] <- 1
+  lines[[BETT+COMM+PH]] <- dotted
+  lines[[BETT+COMB]] <- 1
+  lines[[BETT+COMB+PH]] <- dotted
   lines[[NOTXN]] <- 1
   
   list(
