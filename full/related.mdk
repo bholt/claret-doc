@@ -1,5 +1,9 @@
 # Related Work
 
+## ADTs in databases
+
+There is significant historic work on introducing abstract data types into databases, to support custom indices [@Stonebraker:83;@Stonebraker:86]. The first algorithms for leveraging ADT semantics for concurrency control come from the mid 1980s, with Schwarz, Herlihy and Weihl [@Schwarz:84;@Weihl:1988;@Herlihy:88;@Fekete:90]. That work allowed databases to reason about the commutativity of operations within transactions using abstract locks, and allowed the database system to be extended with user-defined types that expressed their abstract behavior to the database. Another contemporary system [@Spector:85] used similar type-based locks with an early form of distributed transactions. However, since then, the concept has lost popularity. Claret revives these ideas and incorporates them into the modern world of key-value stores and web applications.
+
 ## Improving Transaction Concurrency
 
 Several recent systems have explored ways of exposing more concurrency between transactions. An old technique, transaction chopping [@Shasha:95], statically analyzes transactions and breaks them into smaller pieces that reduces the scope where locks are held, but potentially resulting in cascading rollbacks. A more recent system, Lynx [@Zhang:SOSP13], extends this with additional checks for commutative operations and allows conflicting transactions to interleave safely by enforcing consistent ordering. Salt [@Xie:14] borrows the notion of chopping, but allows programmers to choose some transactions to execute using weaker consistency and isolation (termed *BASE* transactions). By focusing on "baseifying" only the highly contentious transactions, programmers can get most of the benefits of NoSQL systems while maintaining the strong ACID guarantees on the rest. 
@@ -8,7 +12,7 @@ Most recently, Callas [@Xie:15] introduced modular concurrency control which ope
 
 ## Commutativity
 
-Commutativity is well known, especially in distributed systems, for enabling important optimizations. Since the 80s, commutativity has been exploited by database systems designers [@Weihl:1988;@Fekete:90] within the safe confines of relational models, where complete control of the data structures allows systems to determine when transactions may conflict. Recently, commutativity has seen a resurgence in systems without a predefined data model, such as NoSQL databases and transactional memory.
+Commutativity is well known, especially in distributed systems, for enabling important optimizations. Though the original work leveraging commutativity was in relational database systems with highly sophisticated concurrency control, recently, there has been a resurgence of systems without a predefined data model, such as NoSQL databases and transactional memory, leveraging commutativity.
 
 Several NoSQL systems specialize for commutative operations to improve performance of serializable distributed transactions. Lynx [@Zhang:SOSP13] statically splits transactions into chains, but allows users to annotate parts of transactions as commutative to improve performance.
 Doppel [@Narula:OSDI14], a multicore in-memory database, allows commutative operations on highly contended records to be performed in parallel *phases* with a technique called *phase reconciliation*. In the context of distributed transactional memory, HyFlow [@Kim:EuroPar13] combines multi-versioning and commutativity to reorder commutative transactions before others. HyFlow effectively combines boosting and phase reconciliation, but only if entire transactions commute. Claret exposes commutativity as a natural part of the application design, and allows more nuanced commutativity to be exploited within transactions through abstract locks.
