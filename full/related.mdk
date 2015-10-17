@@ -20,7 +20,7 @@ Doppel [@Narula:OSDI14], a multicore in-memory database, allows commutative oper
 Commutativity has been used in eventually consistent datastores to improve convergence. RedBlue consistency [@Li:OSDI12] treats commutative (blue) and non-commutative (red) operations differently, exploiting the convergence guarantees of blue operations to avoid coordination. Conflict-free (or convergent) replicated data types (CRDTs/CvRDTs) [@Shapiro:SSS11] force operations to commute by defining merge functions that resolve conflicts automatically. Riak [@riak] has implemented CRDTs for production use cases. 
 Claret's strictly linearizable model exposes concurrency without relaxing consistency because eventual consistency is notoriously difficult for programmers to reason about and CRDT behavior is often still counterintuitive.
 
-Bloom and BloomL [@Bloom;@BloomL] apply the CALM theorm to help programmers design applications in ways that do not require distributed coordination by restricting them in certain ways that ensure monotonicity. This lets programmers avoid reasoning about inconsistency, but not all programs can easy be expressed in this way, whereas Claret can support any design, making the question of commutativity a performance issue only.
+Bloom and BloomL [@Bloom;@BloomL] apply the CALM theorem to help programmers design applications in ways that do not require distributed coordination by restricting them in certain ways that ensure monotonicity. This lets programmers avoid reasoning about inconsistency, but not all programs can easy be expressed in this way, whereas Claret can support any design, making the question of commutativity a performance issue only.
 
 
 ## Complex datatypes in NoSQL
@@ -28,7 +28,3 @@ Bloom and BloomL [@Bloom;@BloomL] apply the CALM theorm to help programmers desi
 There is a recent trend toward supporting complex data types in NoSQL datastores. At the forefront is Redis [@redis], one of the most popular key/value stores, which supports many data types and complex operations on them, exposed through a very wide but fixed set of commands, but does not support distributed transactions. Hyperdex [@hyperdex;@hyperdex-web] supports atomic operations on lists, sets, and maps, as well as JSON-style documents. Hyperdex's Warp transaction system [@hyperdex-warp] reasons dynamically about dependencies between transactions to avoid unnecessary conflicts, but does not consider operation commutativity. Many other popular datastores such as MongoDB [@mongodb] support atomically updating parts of JSON documents but do not leverage commutativity.
 
 Programmers clearly appreciate being able to build their applications out of a library of provided data structures. Claret leverages those same data structures to expose concurrency optimizations, and provides interfaces for programmers to extend it with custom types.
-
-[todo: what else should go in the related work? section on transactions in general?]
-
-[todo: section on contention? include more detail about studies on real-world contention?]
