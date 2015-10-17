@@ -40,7 +40,7 @@ d.zipf.mean <- ddply(d.zipf, .(facet,rate,nthreads,cc_ph,zipf,phasing,cc,timeout
 d.mix.mean <- ddply(d.mix, .(facet,rate,nthreads,cc_ph,zipf,commute_ratio,phasing,cc,timeout_scaling), summarize, throughput=mean(throughput), op_timeouts=mean(op_timeouts))
 
 save(
-  ggplot(d.zipf.mean, aes(
+  ggplot(subset.modes(d.zipf.mean), aes(
     x = zipf,
     y = throughput,
     group = cc_ph, fill = cc_ph, color = cc_ph, linetype = cc_ph
@@ -62,7 +62,7 @@ save(
 , w=5, h=3)
 
 save(
-  ggplot(subset(d.mix.mean, commute_ratio != 0.5), aes(
+  ggplot(subset.modes(subset(d.mix.mean, commute_ratio != 0.5)), aes(
     x = num(commute_ratio),
     y = throughput,
     group = cc_ph, fill = cc_ph, color = cc_ph, linetype = cc_ph

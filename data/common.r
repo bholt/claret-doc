@@ -26,7 +26,7 @@ PH   <- "\n + phasing"
 ALL  <- "all"
 COMM_PH <- "boosting\n+\nphasing"
 BASE <- "\n(baseline)"
-NOTXN <- "non-transactional"
+NOTXN <- "without\ntransactions"
 BETT <- "better "
 
 parse.args <- function() {
@@ -319,6 +319,8 @@ phasing.linetype <- function(title="Phasing:", ...) {
     # labels=c(as.u_char('2713'), as.u_char('2717')))
 }
 
+subset.modes <- function(d) subset(d, cc_ph %in% c(RW+BASE, RW+PH, COMM+PH, COMB+PH, NOTXN))
+
 cc_ph_scales <- function(name = 'Mode', guide = guide_legend(nrow = 7), ...) {
   colors <- c()
   colors[[RW+BASE]] <- c.gray
@@ -333,19 +335,20 @@ cc_ph_scales <- function(name = 'Mode', guide = guide_legend(nrow = 7), ...) {
   colors[[BETT+COMB+PH]] <- c.yellow
   colors[[NOTXN]] <- c.pink
   
-  dotted <- 2
+  dashed <- 2
+  dotted <- 3
   lines <- c()
   lines[[RW+BASE]] <- 1
-  lines[[RW+PH]] <- dotted
+  lines[[RW+PH]] <- dashed
   lines[[COMM]] <- 1
-  lines[[COMM+PH]] <- dotted
+  lines[[COMM+PH]] <- dashed
   lines[[COMB]] <- 1
-  lines[[COMB+PH]] <- dotted
+  lines[[COMB+PH]] <- dashed
   lines[[BETT+COMM]] <- 1
-  lines[[BETT+COMM+PH]] <- dotted
+  lines[[BETT+COMM+PH]] <- dashed
   lines[[BETT+COMB]] <- 1
-  lines[[BETT+COMB+PH]] <- dotted
-  lines[[NOTXN]] <- 1
+  lines[[BETT+COMB+PH]] <- dashed
+  lines[[NOTXN]] <- dotted
   
   list(
     scale_fill_manual(values=colors, name = name, guide = guide, ...),

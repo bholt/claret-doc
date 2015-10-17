@@ -1,61 +1,91 @@
 "","cc_ph","tag","count"
-"1","boosting
+"1","better boosting
  + combining
- + phasing","Open-Open",907.449541284404
-"2","boosting
+ + phasing","Open-Open",307
+"2","better boosting
  + combining
- + phasing","Open-Close",1317.63302752294
-"3","boosting
+ + phasing","Open-Close",514
+"3","better boosting
  + combining
- + phasing","Browse-Open/Close",417.660550458716
-"4","boosting
+ + phasing","Browse-Open/Close",363.666666666667
+"4","better boosting
  + combining
- + phasing","Bid-View",810.963302752294
-"5","boosting
+ + phasing","Bid-View",2
+"5","better boosting
  + combining
- + phasing","Bid-Bid",14.4587155963303
-"6","boosting
- + phasing","Open-Open",517.292452830189
-"7","boosting
- + phasing","Open-Close",1080.41509433962
-"8","boosting
- + phasing","Browse-Open/Close",332.792452830189
-"9","boosting
- + phasing","Bid-View",711.292452830189
-"10","boosting
- + phasing","Bid-Bid",36.6603773584906
-"11","r/w locks
- + phasing","Open-Open",1197.42990654206
-"12","r/w locks
- + phasing","Open-Close",1169.17757009346
-"13","r/w locks
- + phasing","Browse-Open/Close",334.448598130841
-"14","r/w locks
- + phasing","Bid-View",225.626168224299
-"15","r/w locks
- + phasing","Bid-Bid",36153.2242990654
+ + phasing","Bid-Bid",9
+"6","better boosting
+ + phasing","Open-Open",238
+"7","better boosting
+ + phasing","Open-Close",413
+"8","better boosting
+ + phasing","Browse-Open/Close",286
+"9","better boosting
+ + phasing","Bid-View",6
+"10","better boosting
+ + phasing","Bid-Bid",0
+"11","boosting
+ + combining
+ + phasing","Open-Open",897.027027027027
+"12","boosting
+ + combining
+ + phasing","Open-Close",1303.40540540541
+"13","boosting
+ + combining
+ + phasing","Browse-Open/Close",416.531531531532
+"14","boosting
+ + combining
+ + phasing","Bid-View",899.297297297297
+"15","boosting
+ + combining
+ + phasing","Bid-Bid",16.2432432432432
 "16","boosting
- + combining","Open-Open",6484.39814814815
+ + phasing","Open-Open",503.135135135135
 "17","boosting
- + combining","Open-Close",21141.5925925926
+ + phasing","Open-Close",1049.87387387387
 "18","boosting
- + combining","Browse-Open/Close",10887.1481481481
+ + phasing","Browse-Open/Close",329.315315315315
 "19","boosting
- + combining","Bid-View",8512.26851851852
+ + phasing","Bid-View",853.495495495495
 "20","boosting
+ + phasing","Bid-Bid",41.0900900900901
+"21","r/w locks
+ + phasing","Open-Open",1252.41592920354
+"22","r/w locks
+ + phasing","Open-Close",1110.12389380531
+"23","r/w locks
+ + phasing","Browse-Open/Close",318.424778761062
+"24","r/w locks
+ + phasing","Bid-View",253.309734513274
+"25","r/w locks
+ + phasing","Bid-Bid",37086.7699115044
+"26","boosting
+ + combining","Open-Open",6484.39814814815
+"27","boosting
+ + combining","Open-Close",21141.5925925926
+"28","boosting
+ + combining","Browse-Open/Close",10887.1481481481
+"29","boosting
+ + combining","Bid-View",8512.26851851852
+"30","boosting
  + combining","Bid-Bid",70.1296296296296
-"21","boosting","Open-Open",7644.49074074074
-"22","boosting","Open-Close",20659.6111111111
-"23","boosting","Browse-Open/Close",10154.4166666667
-"24","boosting","Bid-View",19445.7314814815
-"25","boosting","Bid-Bid",152.12037037037
-"26","r/w locks
+"31","boosting","Open-Open",7644.49074074074
+"32","boosting","Open-Close",20659.6111111111
+"33","boosting","Browse-Open/Close",10154.4166666667
+"34","boosting","Bid-View",19445.7314814815
+"35","boosting","Bid-Bid",152.12037037037
+"36","r/w locks
 (baseline)","Open-Open",64815.0265486726
-"27","r/w locks
+"37","r/w locks
 (baseline)","Open-Close",64823.9469026549
-"28","r/w locks
+"38","r/w locks
 (baseline)","Browse-Open/Close",25872.3097345133
-"29","r/w locks
+"39","r/w locks
 (baseline)","Bid-View",2860.93805309735
-"30","r/w locks
+"40","r/w locks
 (baseline)","Bid-Bid",643539.053097345
+"41",NA,"Open-Open",0
+"42",NA,"Open-Close",0
+"43",NA,"Browse-Open/Close",0
+"44",NA,"Bid-View",0
+"45",NA,"Bid-Bid",0

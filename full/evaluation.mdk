@@ -14,8 +14,8 @@ All the following experiments are run on our own cluster. Each node has dual 6-c
 
 To begin with, we explore the effects of each of the optimizations with transactions performing a random mix of operations similar to YCSB [@YCSB]. Each transaction executes a fixed number of operations, randomly selecting either a read operation (set `size`), or a commutative write operation (set `insert`), and keys selected randomly with a zipfian distribution from a pool of 10,000 keys. By varying the percentage of writes and the zipfian parameter, we can control the amount of contention in this artificial workload and quantify the impact of each optimization on performance. The zipfian parameter determines the shape of the distribution; a value of 1 corresponds to Zipf's Law, lower values are shallower and more uniform, higher values more extremely skewed.
 
-~ Fig { #plot-rawmix caption="Performance of raw mix workload (50% read, zipf: 0.6) while increasing number of clients, plotted as throughput versus latency. We see that phasing helps all modes avoid latency spikes by ordering lock requests fairly, and when used with abstract locks and combining, results in much higher peak throughput, with no increase latency." }
-![Raw mix throughput versus latency](plots/rawmix-tput.pdf){ .onecol }
+~ Fig { #plot-rawmix caption="Performance of raw mix workload (50% read, zipf: 0.6) with increasing number of clients, plotted as throughput versus latency. Phasing helps keep latency low even for r/w locks, but boosting (abstract locks) unlocks much more concurrency, resulting in a much higher peak throughput, 67% of the non-transactional peak which doesn't have strong consistency guarantees." }
+![Raw mix throughput versus latency](plots/rawmix-tput-vs-lat.pdf){ .onecol }
 ~
 
 ~ Fig { #plot-rawmix-retries caption="Transaction retries for Rawmix workload with 384 clients. Throughput is largely determined by retries. Phasing, boosting, and combining all reduce retries in different ways." }

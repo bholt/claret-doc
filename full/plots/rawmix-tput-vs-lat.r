@@ -4,7 +4,7 @@ a <- parse.args()
 
 d <- tryCatch(
   {
-    d <- data.rawmix(where="name like 'v0.28.1%' and nclients = 4 and duration = 30 and length = 4 and rate = 100")
+    d <- data.rawmix(where="name like 'v0.28.1%' and nclients = 4 and duration = 30 and length = 4 and rate = 100 and total_time < 61")
     
     d <- subset(d, commute_ratio == 0.5 & alpha == 0.6)
     
@@ -23,31 +23,33 @@ d$x <- d$nthreads * num(d$nclients)
 
 g.cc_ph <- guide_legend(nrow = 6)
 
+# force all non-transactional ones to be considered 'rw' mode (messes up some groupings otherwise)
+d[d$cc_ph == NOTXN,]$cc <- RW
 
-# save(
-#   ggplot(d, aes(
-#     x = throughput,
-#     y = avg_latency_ms,
-#     group = cc_ph, fill = cc_ph, color = cc_ph, linetype = cc_ph
-#   ))+
-#   xlab('Throughput (txn/s)')+ylab('Mean latency (ms)')+
-#   # geom_point()+
-#   # geom_text(aes(label=label), size=1.7)+
-#   scale_x_continuous(labels=si.labels())+
-#   # geom_point()+
-#   geom_mean_path(d, throughput, avg_latency_ms, .(x,cc,phasing,cc_ph))+
-#   expand_limits(y=0)+
-#   coord_cartesian(ylim=c(0,20))+
-#   # cc_scales(title='Mode:', guide = g.cc)+
-#   # color_scales('', my_palette)+
-#   # phasing.linetype(title='Phasing:', guide = g.cc_ph)+
-#   cc_ph_scales()+
-#   my_theme() #+legend.bottom()
-# , w=5, h=3)
+# subset to just my selected set of lines
+d <- subset(d, cc_ph %in% c(RW+BASE, RW+PH, COMM+PH, COMB+PH, NOTXN))
+
+d.mean <- mean_path(d, throughput, avg_latency_ms, .(nthreads,cc,phasing,cc_ph))
+
+save(
+  ggplot(d.mean, aes(
+    x = x,
+    y = y,
+    label = nthreads,
+    group = cc_ph, fill = cc_ph, color = cc_ph, linetype = cc_ph
+  ))+
+  xlab('Throughput (txn/s)')+ylab('Mean latency (ms)')+
+  geom_point()+
+  geom_path()+
+  expand_limits(y=0)+
+  coord_cartesian(ylim=c(0,12))+
+  cc_ph_scales()+
+  my_theme()
+, w=5, h=3)
 
 
 save(
-  ggplot(d, aes(
+  ggplot(subset(d), aes(
     x = x,
     y = throughput,
     group = cc_ph, fill = cc_ph, color = cc_ph, linetype = cc_ph,
@@ -84,10 +86,6 @@ save(
 # cl_normal_max <- function(r) { mean_cl_normal(r)$ymax }
 #
 # d.mean <- ddply(d, .(rate,nthreads,cc_ph,phasing,cc,timeout_scaling), summarise, y=mean(throughput), ymin=cl_normal_min(throughput), ymax=cl_normal_max(throughput))
-#
-# my.max <- function(r) { r[which.max(r$y),] }
-#
-# d.max <- ddply(d.mean, .(cc_ph), my.max)
 #
 # save(
 #   ggplot(d.max, aes(
