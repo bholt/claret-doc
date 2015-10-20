@@ -5,7 +5,8 @@ by.conflict.mean <- data.or.csv(
   csv = 'data/rubis-conflicts.csv',
   gen = function(){
     d <- data.rubis(where="duration = 60 and name like 'v0.28.1%' and nthreads <= 96 and server_txn_conflicts != 'NA'")
-
+    d <- subset(d, cc_ph %in% c(RW+BASE,COMM,COMM+PH,COMB+PH))
+    
     # convert tag # to names
     parse_txn_conflicts <- function(r) {
       tags <- c(
@@ -78,24 +79,29 @@ tag.palette <- c(
 save(
   ggplot(by.conflict.mean, aes(
       x = cc_ph,
-      y = count,
+      y = num(count) / 60,
       group = x(cc_ph,tag),
       fill = tag
   ))+
   geom_bar(stat='identity', position='dodge', width = 0.8)+
-  annotate(geom='text', x = 5, y = 57500, label = floor(rw.count/1000)+'k', size=8)+
-  geom_segment(aes(x = 5, y = 60000, xend = 5.5, yend = 70000), arrow = arrow(length = unit(0.5, "cm")))+
+  annotate(geom='text', x = 3.35, y = 1230, label = round(rw.count/1000/60,1)+'k', size=7)+
+  geom_segment(aes(x = 3.5, y = 1200, xend = 3.5, yend = 1300), arrow = arrow(length = unit(0.5, "cm")))+
   # coord_cartesian()+
-  ylab('conflicts')+
-  coord_flip(ylim = c(0, 70000))+
+  ylab('conflicts / sec')+
+  coord_flip(ylim = c(0, 1300))+
   scale_y_continuous(labels = k.labels)+
+  # scale_y_continuous(trans=log2_trans())+
   scale_fill_manual(values=tag.palette)+
   scale_color_manual(values=tag.palette)+
   my_theme()+theme(
     axis.title.y = element_blank(),
-    legend.position = c(0.86, 0.18),
+    legend.position = c(0.86, 0.23),
     legend.key.size = unit(60,'pt'),
     legend.title = element_blank(),
-    text = element_text(size=26, family="Helvetica")
+    text = element_text(size=26, family="Helvetica"),
+    panel.grid.major.x = element_line(color="grey80", size=0.2),
+    panel.grid.minor.x = element_line(color="grey90", size=0.2),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank()
   )
-, w = 15, h = 7)
+, w = 15, h = 5.5)

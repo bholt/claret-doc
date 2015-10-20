@@ -32,7 +32,8 @@ d <- tryCatch(
   }
 )
 
-# d <- subset(d, grepl('v0.27.1', name))
+d <- subset(d, cc_ph %in% c(RW+PH, COMM, COMM+PH, COMB+PH, NOTXN))
+d$cc_ph <- factor(d$cc_ph, levels = rev(c(RW+PH, COMM, COMM+PH, COMB+PH, NOTXN)))
 
 d$x <- d$nthreads * num(d$nclients)
 d$label <- d$nthreads * num(d$nclients) + "x" + d$rate
@@ -73,9 +74,9 @@ plot <- function(suffix, d, layers) {
     scale_y_continuous(labels = function(x){ x/1000+'k' })+
     expand_limits(x=0, y=0)+
     facet_wrap(~facet, scales="free")+
-    cc_ph_scales()+
+    cc_ph_scales(guide = guide_legend(nrow = 4))+
     my_theme()
-  , 'retwis-tput', w=5, h=3)
+  , 'retwis-tput', w=5, h=2.5)
 
 }
 

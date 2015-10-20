@@ -349,11 +349,25 @@ cc_ph_scales <- function(name = 'Mode', guide = guide_legend(nrow = 7), ...) {
   lines[[BETT+COMB]] <- 1
   lines[[BETT+COMB+PH]] <- dashed
   lines[[NOTXN]] <- dotted
+
+  shapes <- c()
+  shapes[[RW+BASE]] <- 1
+  shapes[[RW+PH]] <- 1
+  shapes[[COMM]] <- 2
+  shapes[[COMM+PH]] <- 2
+  shapes[[COMB]] <- 3
+  shapes[[COMB+PH]] <- 3
+  shapes[[BETT+COMM]] <- 2
+  shapes[[BETT+COMM+PH]] <- 2
+  shapes[[BETT+COMB]] <- 3
+  shapes[[BETT+COMB+PH]] <- 3
+  shapes[[NOTXN]] <- 4
   
   list(
     scale_fill_manual(values=colors, name = name, guide = guide, ...),
     scale_color_manual(values=colors, name = name, guide = guide, ...),
-    scale_linetype_manual(values=lines, name = name, guide = guide, ...)
+    scale_linetype_manual(values=lines, name = name, guide = guide, ...),
+    scale_shape_manual(values=shapes, name = name, guide = guide, ...)
   )
 }
 
@@ -361,8 +375,10 @@ cc_ph_scales <- function(name = 'Mode', guide = guide_legend(nrow = 7), ...) {
 my_theme <- function() theme(
   panel.background = element_rect(fill="white"),
   panel.border = element_rect(fill=NA, color="grey50"),
-  panel.grid.major = element_line(color="grey80", size=0.2),
-  panel.grid.minor = element_line(color="grey90", size=0.2),
+  panel.grid.major.x = element_blank(),
+  panel.grid.minor.x = element_blank(),
+  panel.grid.major.y = element_line(color="grey80", size=0.2),
+  panel.grid.minor.y = element_blank(), #element_line(color="grey90", size=0.2),
   strip.background = element_rect(fill="grey90", color="grey50"),
   strip.background = element_rect(fill="grey80", color="grey50"),
   axis.ticks = element_line(colour="black"),

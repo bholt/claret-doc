@@ -61,10 +61,10 @@ save(
   xlab('Clients')+ylab('Throughput (txn/s)')+
   stat_summary(geom='line', fun.y=mean)+
   stat_summary(geom='point', fun.y=mean, guide=F)+
-  scale_x_continuous(trans=log2_trans(), breaks=c(8,16,32,64,128,256,384))+
+  scale_x_continuous(trans=log2_trans(), breaks=c(8,16,32,64,128,256))+
   scale_y_continuous(breaks = c(0, 5000, 10000, 15000, 20000), labels = si.labels())+
   expand_limits(x=0, y=0)+
   facet_wrap(~facet, scales="free_x")+
-  cc_ph_scales()+
+  cc_ph_scales(guide = guide_legend(nrow = 5))+
   my_theme()
-, 'rubis-tput', w=6, h=3)
+, 'rubis-tput', w=5, h=2.5)

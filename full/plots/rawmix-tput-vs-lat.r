@@ -27,7 +27,7 @@ g.cc_ph <- guide_legend(nrow = 6)
 d[d$cc_ph == NOTXN,]$cc <- RW
 
 # subset to just my selected set of lines
-d <- subset(d, cc_ph %in% c(RW+BASE, RW+PH, COMM+PH, COMB+PH, NOTXN))
+d <- subset(d, cc_ph %in% c(RW+BASE, COMM, COMM+PH, COMB+PH, NOTXN))
 
 d.mean <- mean_path(d, throughput, avg_latency_ms, .(nthreads,cc,phasing,cc_ph))
 
@@ -43,8 +43,14 @@ save(
   geom_path()+
   expand_limits(y=0)+
   coord_cartesian(ylim=c(0,12))+
+  scale_y_continuous(breaks=c(2,4,6,8,10,12))+
   cc_ph_scales()+
-  my_theme()
+  my_theme()+
+  theme(
+    panel.grid.major.x = element_line(color="grey80", size=0.2),
+    panel.grid.minor.x = element_line(color="grey90", size=0.2),
+    panel.grid.minor.y = element_line(color="grey90", size=0.2)
+  )
 , w=5, h=3)
 
 
@@ -58,7 +64,6 @@ save(
   stat_summary(geom='line', fun.y=mean)+
   stat_summary(geom='point', fun.y=mean)+  
   scale_x_continuous(trans=log2_trans(), breaks=c(16,32,64,128,256,384))+
-  scale_y_continuous(labels=k.labels)+
   expand_limits(y=0)+
   cc_ph_scales()+
   my_theme()

@@ -36,6 +36,16 @@ save(
     xlab('execution time (s)')+
     ylab('throughput (txn/s)')+
     stat_summary(geom='line', fun.y=mean, size=0.4)+
+    
+    # annotations for variance
+    annotate(geom='text', x = 15.5, y = 13700, 
+             size = 3, color = c.blue, hjust = 0, family="Helvetica",
+             label = 'stddev (over 5s): 287')+
+
+    annotate(geom='text', x = 44.5, y = 10500,
+             size = 3, color = c.gray, hjust = 1, family="Helvetica",
+             label = 'stddev (over 5s): 800')+
+    
     scale_x_continuous()+
     scale_y_continuous(labels = function(x){ x/1000+'k' })+
     cc_ph_scales(name = '', guide = guide_legend(nrow = 1))+
