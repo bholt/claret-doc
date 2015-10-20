@@ -39,8 +39,6 @@ d.zipf.mean <- ddply(d.zipf, .(facet,rate,nthreads,cc_ph,zipf,phasing,cc,timeout
 
 d.mix.mean <- ddply(d.mix, .(facet,rate,nthreads,cc_ph,zipf,commute_ratio,phasing,cc,timeout_scaling), summarize, throughput=mean(throughput), op_timeouts=mean(op_timeouts))
 
-/
-
 subset.modes <- function(d) {
   d <- subset(d, cc_ph %in% c(RW+BASE, RW+PH, COMM, COMB, BETT+COMM+PH, BETT+COMB+PH, NOTXN))
   d[d$cc_ph == BETT+COMM+PH,]$cc_ph <- COMM+PH
