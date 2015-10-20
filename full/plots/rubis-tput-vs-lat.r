@@ -4,7 +4,7 @@ a <- parse.args()
 
 d <- tryCatch(
   {
-    d <- data.rubis(where="duration = 60 and name like 'v0.29%' and nthreads <= 96")
+    d <- data.rubis(where="duration = 60 and name like 'v0.29%' and nthreads <= 96 and total_time < 65")
     
     write.csv(subset(d, select = c('name', 'nclients', 'nthreads', 'cc', 'rate', 'mix', 'alpha', 'lambda', 'nusers', 'ncategories', 'nregions', 'phasing', 'cc_ph', 'timeout_scaling', 'throughput', 'state', 'avg_latency_ms')), file = 'data/rubis-tput-vs-lat.csv')
     d
@@ -33,6 +33,9 @@ d$facet <- with(d, workload)
 
 d <- subset(d, lambda == 20 & grepl('read-heavy|bid-heavy', workload) & nthreads != 80)
 
+d <- subset(d, cc_ph %in% c(RW+BASE, RW+PH, COMM+PH, COMB+PH, NOTXN))
+
+
 save(
   ggplot(d, aes(
     x = throughput,
@@ -59,9 +62,9 @@ save(
   stat_summary(geom='line', fun.y=mean)+
   stat_summary(geom='point', fun.y=mean, guide=F)+
   scale_x_continuous(trans=log2_trans(), breaks=c(8,16,32,64,128,256,384))+
-  scale_y_continuous(breaks = c(0, 5000, 10000), labels = si.labels())+
+  scale_y_continuous(breaks = c(0, 5000, 10000, 15000, 20000), labels = si.labels())+
   expand_limits(x=0, y=0)+
   facet_wrap(~facet, scales="free_x")+
   cc_ph_scales()+
   my_theme()
-, 'rubis-tput', w=5, h=3)
+, 'rubis-tput', w=6, h=3)
