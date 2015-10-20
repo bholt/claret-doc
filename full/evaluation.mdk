@@ -27,7 +27,7 @@ First, we start with a 50% read, 50% write workload and a modest zipfian paramet
 
 We see that enabling phasing (the dashed lines) immediately helps even the reader/writer locks by ensuring that all clients get processed in order of arrival. However, enabling boosting, which switches to using abstract locks, prevents `insert` operations from aborting each other, nearly doubling throughput by exposing more concurrency, and combining adds a little more on top of that. Importantly, `insert` does not generally commute with `size` (except in the case where a duplicate is added), so there is still a significant chance for conflicts in this workload.
 
-~ Fig { #plot-mix caption="Peak throughput, varying operation mix. For read-heavy workloads, using commutativity (boosting) is irrelevant, but with a greater fraction of commutative updates, reader/writer locking falls over while boosting maintains high throughput." }
+~ Fig { #plot-mix caption="*Peak throughput, varying operation mix.* For read-heavy workloads, using commutativity (boosting) is irrelevant, but with a greater fraction of commutative updates, reader/writer locking falls over while boosting maintains high throughput." }
 ![Varying mix](plots/rawmix-mix.pdf){ .onecol }
 ~
 
@@ -37,7 +37,7 @@ We see that enabling phasing (the dashed lines) immediately helps even the reade
 
 ### Varying key distribution
 
-~ Fig { #plot-zipf caption="Peak throughput for varying key distribution. Higher zipfian results in greater contention; abstract locks, used in boosting and phasing, perform better. Phasing alone is ineffetual." }
+~ Fig { #plot-zipf caption="*Peak throughput, varying key distribution.* Higher zipfian results in greater contention; abstract locks, used in boosting and phasing, perform better. Phasing alone is ineffetual." }
 ![Varying zipfian](plots/rawmix-zipf.pdf){ .onecol }
 ~
 
