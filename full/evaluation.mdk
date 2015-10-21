@@ -2,10 +2,14 @@
 
 To understand the potential performance impact of the optimizations enabled by ADTs, we built a prototype in-memory ADT-store. This custom implementation, written in C++, uses UDP to transmit messages between clients (representing frontend servers) and servers. Records are kept in their in-memory representations; compared with most traditional key-value stores (with the exception of Redis) this saves time as serializing and deserializing is only performed on values being sent in or returned from operations.
 
+
 As discussed before, Claret uses a standard two-phase locking scheme to isolate transactions.
 The baseline uses reader/writer locks which allow any number of read-only operations in parallel, but requires an exclusive lock for operations that modify the record. When boosting is enabled, these are replaced with abstract locks, which allow any operations that commute with one another to hold the lock at the same time. By default, operations retry whenever they fail to acquire a lock; with phasing, replies are sent whenever the lock is finally acquired, so retries are only used to resolve deadlocks or lost packets.
 
-This prototype does not ensure fault-tolerance or durability. These could be implemented by replicating shards or logging operations to persistent storage. Mirroring operations to other replicas or waiting for filesystem syncs would be expected to increase the amount of time spent holding locks, which should be expected to exaggerate the results obtained in our experiments since the longer locks are held, the more concurrency is required.
+This prototype does not ensure fault-tolerance or durability. These could be implemented by replicating shards or logging operations to persistent storage. Mirroring operations to other replicas or waiting for filesystem syncs would be expected to increase the amount of time spent holding locks, which should be expected to exaggerate the results obtained in our experiments since the longer locks are held, the more concurrency is required. [todo: need a clearer explanation here. i think you are saying that support for durability and fault-tolerance will make your results better, but it is unclear.]
+
+[todo: say what questions you want to answer with the evaluation.]
+
 
 All the following experiments are run on our own cluster. Each node has dual 6-core 2.66 GHz Intel Xeon X5650 processors with 24 GB of memory, connected with a 40Gb Mellanox ConnectX-2 InfiniBand network. Unless otherwise noted, experiments are run with 4 single-threaded shards running on 4 different nodes, with 4 clients running on other nodes with variable numbers of threads. Average round-trip times between nodes for UDP packets are 150 µs.
 
