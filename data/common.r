@@ -411,10 +411,10 @@ data.retwis <- function(select="*", where="client = 'dsretwis'") {
       d.tmp <- do.call("rbind", fromJSON("freeze/retwis.json"))
       sql(sprintf("select * from `d.tmp` where total_time is not null and %s",where))
     } else {
-      suppressWarnings(db(sprintf("select * from retwis where total_time is not null and %s", where),
+      db(sprintf("select * from retwis where total_time is not null and %s", where),
         factors=c('nshards', 'nclients'),
         numeric=c('total_time', 'txn_count', 'nthreads')
-      ))
+      )
     }
 
   d$scale <- gsub('.*/(\\d+)', '\\1', d$loaddir)
@@ -440,15 +440,15 @@ data.retwis <- function(select="*", where="client = 'dsretwis'") {
   
   
   lvl <- c(
-    'read-heavy: ~14% (re)post',
-    'post-heavy: ~45% (re)post',
-    'mixed'
+    'read-heavy: ~5% post/repost',
+    'post-heavy: ~50% post/repost'
   )
   
   d$workload <- factor(revalue(d$mix, c(
     'geom_repost'=lvl[2],
-    'geom_heavy'=lvl[2],
-    'read_heavy'=lvl[1],
+    # 'geom_heavy'=lvl[2],
+    # 'read_heavy'=lvl[1],
+    '2read2heavy'=lvl[1],
     'update_heavy'=lvl[3]
   )), levels=lvl)
   
