@@ -16,6 +16,8 @@ d <- tryCatch(
 
 print(nrow(d))
 
+d <- subset(d, cc_ph %in% c(RW+PH,COMM+PH))
+
 samples <- adply(d, 1, function(r){
   s <- subset(r, select=c('id','cc','phasing','cc_ph','mix'))
   h <- to.hist(jsfix(r$samples_txn_rate))
@@ -25,7 +27,7 @@ samples <- adply(d, 1, function(r){
 
 samples$x <- ave(samples$x, cut(samples$x, 60*3))
 
-samples <- subset(samples, x > 14 & x < 46)
+samples <- subset(samples, x > 14 & x < 46 )
 
 save(
   ggplot(samples, aes(
