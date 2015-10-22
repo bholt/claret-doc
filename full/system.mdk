@@ -35,7 +35,7 @@ To support arbitrary ADT operations in transactions, each operation is split int
 Once locks for all operations in a transaction have been acquired, a transaction commit is sent to each participating shard, which executes the *commit* part of each of the *prepared* operations. The commit stage performs any necessary mutation on the record and releases the lock.
 
 Similar to Spanner [@Spanner]), clients do not read their own writes; due to the buffering of mutations, operations always observe the state prior to the beginning of the transaction.
-We use a lock-based approach rather than optimistic concurrency control (OCC), but OCC should also benefit in similar ways from Claret's optimizations.
+We use a lock-based approach rather than optimistic concurrency control (OCC), but OCC should also benefit in similar ways from Claret's optimizations. [todo: OCC is known to fall over at high contention, phasing would not work with OCC?]
 
 Note that from the clients' view, there are no fundamental differences in programming model between Redis and Claret (with the exception of distributed transactions and custom types). 
 However, under the hood, Claret will be using its knowledge about the operations to improve performance in ways which we will describe next.
