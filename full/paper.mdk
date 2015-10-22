@@ -25,7 +25,6 @@ Pdf Latex: xelatex
 ~Pre, ~Code: tex-font-family="SourceCodePro-Regular" tex-font-size=small
 ~Pre: tex-font-size=x-small
 
-
 ~H1: label='[§@h1]{.heading-label}' replace="/§//"
 ~H2: label='[§@h1.@h1-h2]{.heading-label}' replace="/§//"
 
