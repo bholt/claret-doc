@@ -4,6 +4,10 @@
 ![Example ADT version of Bid transaction](fig/adt-bid.pdf){.onecol}
 ~
 
+~ Fig { #fig-rubis-conflicts caption="High-level overview of important Rubis transactions, implemented with ADTs. Lines show conflicts between operations, many of which are either eliminated due to commutativity by boosting or mediated by phasing." }
+![Example ADT version of Bid transaction](fig/rubis-conflicts.pdf){.onecol}
+~
+
 <!--
 - adts hide their implementation, allow reasoning about abstract behavior
 - if abstract view allows reordering, then concurrency control can take advantage of that

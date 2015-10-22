@@ -18,6 +18,7 @@ FIGS := \
 	adt-bid \
 	abstract-lock \
 	phaser \
+	rubis-conflicts \
 	combiner
 
 fig/system-diagram.pdf: ../Claret.graffle
@@ -38,6 +39,8 @@ fig/phaser.pdf: ../Claret.graffle
 fig/combiner.pdf: ../Claret.graffle
 	$(call graffleFigure,$<,Combiner,$@)
 
+fig/rubis-conflicts.pdf: ../Claret.graffle
+	$(call graffleFigure,$<,Rubis,$@)
 
 PLOTS := $(filter-out plots/common.r, $(wildcard plots/*.r))
 
