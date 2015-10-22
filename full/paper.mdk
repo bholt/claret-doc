@@ -1,16 +1,20 @@
 title:       Claret: Avoiding contention in distributed transactions with abstract data types
+author: Paper #120
 
-author:      Brandon Holt, Irene Zhang, Dan Ports, Mark Oskin, Luis Ceze
-affiliation: University of Washington
-email:       {bholt,iyzhang,dkrp,oskin,luisceze}\@cs.uw.edu
+_author:      Brandon Holt, Irene Zhang, Dan Ports, Mark Oskin, Luis Ceze
+_affiliation: University of Washington
+_email:       {bholt,iyzhang,dkrp,oskin,luisceze}\@cs.uw.edu
 
 Heading Base: 2
 Bib style:    plainnat
 Bibliography: refs.bib
-doc class:    [preprint,nocopyrightspace]style/sigplanconf.cls
+doc class:    [preprint]style/sigplanconf-eurosys.cls
 css:          style/style.css
 Logo: False
 Package: etoolbox
+Package: fontspec
+
+Pdf Latex: xelatex
 
 .onecol: tex-width=3.3in css-width=80% text-align=center
 
@@ -18,7 +22,7 @@ Package: etoolbox
 
 ~P,~Span: replace="/\[(?:TODO|todo):\s*(.*?)\]/[\1]{#todo}/g"
 
-~Pre, ~Code: tex-font-family="SourceCodePro-Light" tex-font-size=small
+~Pre, ~Code: tex-font-family="SourceCodePro-Regular" tex-font-size=small
 ~Pre: tex-font-size=x-small
 
 
@@ -51,6 +55,8 @@ Package: etoolbox
 \renewcommand{\arraystretch}{1.2}
 
 \apptocmd{\sloppy}{\hbadness 10000\relax}{}{}
+
+\setmainfont{Times}
 
 ~
 ~ HtmlRaw

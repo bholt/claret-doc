@@ -58,7 +58,7 @@ out/style:
 	cd out && ln -s ../style
 
 out/paper.pdf: $(SRCS) $(PLOT_PDFS) $(DEPS) $(FIGS_OUT)
-	madoko -v --pdf --odir=out --tex paper.mdk
+	madoko -mlatex:xelatex -v --pdf --odir=out --tex paper.mdk
 
 pdf: out/paper.pdf
 
