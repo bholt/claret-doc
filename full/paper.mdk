@@ -31,10 +31,19 @@ Package: etoolbox
 ~Listing: page-align=top label='Listing\ [@listing]{.figure-label}' replace='&source;&nl;&nl;[[**&label;.** ]{.caption-before}&caption;]{.figure-caption html-elem=fig-caption}&nl;{notag}&nl;'              
 
 ~ TexRaw
-\cssClassRuleDo{fig}{%
-  \cssDoBefore{\begin{figure}[t]}%
-     \cssDoAfter{\end{figure}}%
+%\cssClassRuleDo{fig}{%
+%  \cssDoBefore{\begin{figure}[t]}%
+%     \cssDoAfter{\end{figure}}%
+%}
+
+\cssElemRuleDo{fig}{%
+  \cssIfHasClass{wide}%
+    {\cssDoBefore{\begin{figure*}[t]}%
+     \cssDoAfter{\end{figure*}}}%
+    {\cssDoBefore{\begin{figure}[t]}%
+     \cssDoAfter{\end{figure}}}%
 }
+
 \cssClassRuleDo{listing}{%
   \cssDoBefore{\begin{figure}[t]}%
      \cssDoAfter{\end{figure}}%

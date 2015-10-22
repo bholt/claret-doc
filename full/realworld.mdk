@@ -31,8 +31,8 @@ An auction site's ability to handle these peak bidding times is crucial: a slow-
 
 ## Application-level commutativity
 
-~ Fig { #fig-levels caption="At the application level, many transactions ought to commute with one another, such as these Bid transactions, but when translated down to put and get operations, this knowledge is lost." }
-![Application-level versus key/value store level](fig/app-level.pdf){.onecol}
+~ Fig { #fig-levels .wide caption="At the application level, many transactions ought to commute with one another, such as these Bid transactions, but when translated down to put and get operations, this knowledge is lost." }
+![Application-level versus key/value store level](fig/app-level.pdf){width=100%}
 ~
 
 Luckily, auctions and many other applications share something besides power laws: commutativity.
