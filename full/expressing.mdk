@@ -5,36 +5,38 @@ Just as in any software design, building Claret applications involves choosing t
 Typically, the more specialized an ADT is, the more concurrency it can expose, so finding the closest match for each use case is essential.
 For example, an application needing to generate unique identifiers should not use a counter, which must return the next number in the sequence, because this is very difficult to scale (as implementers of TPC-C [@TPCC], which explicitly requires this, know well). Instead, a `UniqueID` type succinctly expresses that non-sequential IDs are okay, and can implement it in a way that is fully commutative.
 
-Claret has a library of pre-defined ADTs, shown in [#fig-adt-list] which were used to implement the applications in this work.
+Claret has a library of pre-defined ADTs, shown in [#tab-adt-list] which were used to implement the applications in this work.
 Reusing existing ADTs saves implementation time and effort, but may not always expose the maximum amount of concurrency.
 Custom ADTs can express more complex application-specific properties, but the developer is responsible for specifying the abstract behavior for Claret.
 [todo: example: bank account adt? (not one of our apps, but there is an easy-to-describe custom adt there)]
 The next sections will show how ADT behavior is specified in Claret to expose abstract properties of ADTs for use in the optimizations previously described.
 
-~ Fig { #fig-adt-list caption="Library of built-in data types."}
-| Data type      | Description |
-|:---------------|:-{width=2.32in}-|
-| `UIdGenerator` | Create unique identifiers (not necessarily |
-|                | sequential) (`next`) |
-|----------------|----------------------|
-| `Dict`         | Map (or "hash") which allows setting or |
-|                | getting multiple field/value pairs atomically |
-|----------------|----------------------|
-| `ScoredSet`    | Set with unique items ranked by an |
-|                | associated score (`add`, `size`, `rangeByScore`, ...) |
-|----------------|----------------------|
-| `TopK`         | Like `ScoredSet` but keeps highest ranked 
-|                |items (`add`,`max`) |
-|----------------|----------------------|
-| `SummaryBag`   | Tracks summary stats like mean/max of |
-|                | "added" items (`add`, `mean`, `max`)|
-|--------------|------------|
+~ Tab { #tab-adt-list caption="Library of built-in data types."}
+| Data type      | Description                               |
+|:---------------|:-{width=2.08in}---------------------------|
+| `UIdGenerator` | Create unique identifiers (not            |
+|                | necessarily sequential) (`next`)          |
+|----------------|-------------------------------------------|
+| `Dict`         | Map (or "hash") which allows setting      |
+|                | or getting multiple fields atomically     |
+|----------------|-------------------------------------------|
+| `ScoredSet`    | Set with unique items ranked by an        |
+|                | associated score (`add`, `size`, `range`) |
+|----------------|-------------------------------------------|
+| `TopK`         | Like `ScoredSet` but keeps highest        |
+|                | ranked items (`add`,`max`)                |
+|----------------|-------------------------------------------|
+| `SummaryBag`   | Container where only summary stats        |
+|                | of added items can be retrieved           |
+|                | (`add`, `mean`, `max`)                    |
+|----------------|-------------------------------------------|
 ~
 
 ## Commutativity Specification {#sec-commutativity-spec}
 
-~ Fig { #fig-spec caption="Abstract Commutativity Specification for Set." }
-| method:            | commutes with: | when:                       |
+~ Tab { #tab-spec caption="Abstract Commutativity Specification for Set." }
+| method:            | commutes       | when:                       |
+|                    |          with: |                             |
 |:-------------------|:---------------|:----------------------------|
 |`add(x): void`      | `add(y)`       | $\forall x, y$              |
 |--------------------|----------------|-----------------------------|
@@ -51,7 +53,7 @@ The next sections will show how ADT behavior is specified in Claret to expose ab
 ~
 
 *Commutativity* is not a property of an operation in isolation.
-A *pair* of operations commute if executing them on their target record in either order will produce the same outcome. Using the definitions from [@Kulkarni:PLDI11], whether or not a pair of method invocations commute is a function of the methods, their arguments, their return values, and the *abstract state* of their target. We call the full set of commutativity rules for an ADT its *commutativity specification.* An example specification for a *Set* is shown in [#fig-spec]. <!-- There are actually many valid specifications which expose less than the maximum commutativity but may be cheaper to implement. -->
+A *pair* of operations commute if executing them on their target record in either order will produce the same outcome. Using the definitions from [@Kulkarni:PLDI11], whether or not a pair of method invocations commute is a function of the methods, their arguments, their return values, and the *abstract state* of their target. We call the full set of commutativity rules for an ADT its *commutativity specification.* An example specification for a *Set* is shown in [#tab-spec]. <!-- There are actually many valid specifications which expose less than the maximum commutativity but may be cheaper to implement. -->
 However, we need something besides this declarative representation to communicate this specification to Claret's concurrency controller.
 
 ### Abstract lock interface

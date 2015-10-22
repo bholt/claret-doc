@@ -31,13 +31,12 @@ Pdf Latex: xelatex
 
 ~Fig: page-align=top label='Figure\ [@fig]{.figure-label}' replace='&source;&nl;&nl;[[**&label;.** ]{.caption-before}&caption;]{.figure-caption html-elem=fig-caption}&nl;{notag}&nl;'
 
+~Tab: page-align=top label='Table\ [@tab]{.figure-label}' replace='&source;&nl;&nl;[[**&label;.** ]{.caption-before}&caption;]{.fig-caption html-elem=fig-caption}&nl;{notag}&nl;'
+
+
 ~Listing: page-align=top label='Listing\ [@listing]{.figure-label}' replace='&source;&nl;&nl;[[**&label;.** ]{.caption-before}&caption;]{.figure-caption html-elem=fig-caption}&nl;{notag}&nl;'              
 
 ~ TexRaw
-%\cssClassRuleDo{fig}{%
-%  \cssDoBefore{\begin{figure}[t]}%
-%     \cssDoAfter{\end{figure}}%
-%}
 
 \cssElemRuleDo{fig}{%
   \cssIfHasClass{wide}%
@@ -45,6 +44,14 @@ Pdf Latex: xelatex
      \cssDoAfter{\end{figure*}}}%
     {\cssDoBefore{\begin{figure}[t]}%
      \cssDoAfter{\end{figure}}}%
+}
+
+\cssElemRuleDo{tab}{%
+  \cssIfHasClass{wide}%
+    {\cssDoBefore{\begin{table*}[t]}%
+     \cssDoAfter{\end{table*}}}%
+    {\cssDoBefore{\begin{table}[t]}%
+     \cssDoAfter{\end{table}}}%
 }
 
 \cssClassRuleDo{listing}{%
