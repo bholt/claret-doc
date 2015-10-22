@@ -12,18 +12,15 @@ doc class:    [preprint]style/sigplanconf-eurosys.cls
 css:          style/style.css
 Logo: False
 Package: etoolbox
-Package: fontspec
+Package: [scaled=.9]inconsolata
 
-Pdf Latex: xelatex
+Pdf Latex: pdflatex
 
 .onecol: tex-width=3.3in css-width=80% text-align=center
 
 #todo: color=red font-size=x-small font-family=HelveticaNeue-Light before='[' after=']'
 
 ~P,~Span: replace="/\[(?:TODO|todo):\s*(.*?)\]/[\1]{#todo}/g"
-
-~Pre, ~Code: tex-font-family="SourceCodePro-Regular" tex-font-size=small
-~Pre: tex-font-size=x-small
 
 ~H1: label='[§@h1]{.heading-label}' replace="/§//"
 ~H2: label='[§@h1.@h1-h2]{.heading-label}' replace="/§//"
@@ -62,7 +59,7 @@ Pdf Latex: xelatex
 
 \apptocmd{\sloppy}{\hbadness 10000\relax}{}{}
 
-\setmainfont{Times}
+%\setmainfont{Times}
 
 ~
 ~ HtmlRaw
