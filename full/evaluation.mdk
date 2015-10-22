@@ -64,12 +64,12 @@ Our modified implementation correctly models the bid distributions observed by p
 
 [#plot-rubis] shows the performance results for two different workloads: read-heavy (10% Bid transactions), and bid-heavy (50% bid transactions). For the read-heavy workload, phasing and boosting accomplish the same thing, both preventing the occasional performance breakdown which leads the baseline to suffer. In this case, reader/writer locks with phasing are sufficient because the workload is mostly reads. However, in the more bid-heavy workload there is more contention, especially on the most popular auctions, which reader/writer locks are unable to cope with. By taking advantage of the fact that bids commute with each other, boosting maintains nearly the same throughput as on the read-heavy workload.
 
-~ Fig { #plot-rubis-conflicts caption="Breakdown of conflicts between Rubis transactions (minor contributors omitted) with 256 clients on bid-heavy workload (averaged). Note that boosting (abstract locks) completely eliminates Bid-Bid conflicts." }
+~ Fig { #plot-rubis-conflicts caption="Breakdown of conflicts between Rubis transactions (minor contributors omitted) with 256 clients on bid-heavy workload (averaged). Note that, as predicted by [#fig-rubis-conflicts], boosting completely eliminates Bid-Bid conflicts, and phasing drastically reduces remaining conflicts." }
 ![Rubis](plots/rubis-conflicts.pdf){ .onecol }
 ~
 
 
-~ Fig { #plot-rubis-samples caption="Trace of throughput over time for Rubis (all with phasing enabled). The auction workload is characterized by bursts of higher-contention bidding activity. Boosting reduces the variance by 2.8x from the baseline (mean std. dev. over 5-second windows: 287 txn/s compared to 800 txn/s for baseline)."}
+~ Fig { #plot-rubis-samples caption="Trace of throughput over time for Rubis (both with phasing enabled). The workload is characterized by bursts of high-contention bidding activity. Boosting smooths out the performance, reducing variance by 2.8x."}
 ![Rubis sampled throughput](plots/rubis-samples.pdf){.onecol}
 ~
 
