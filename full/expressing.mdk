@@ -35,8 +35,7 @@ The next sections will show how ADT behavior is specified in Claret to expose ab
 ## Commutativity Specification {#sec-commutativity-spec}
 
 ~ Tab { #tab-spec caption="Abstract Commutativity Specification for Set." }
-| method:            | commutes       | when:                       |
-|                    |          with: |                             |
+| Method             | Commute with   | When                        |
 |:-------------------|:---------------|:----------------------------|
 |`add(x): void`      | `add(y)`       | $\forall x, y$              |
 |--------------------|----------------|-----------------------------|

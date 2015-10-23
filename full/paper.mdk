@@ -12,9 +12,7 @@ doc class:    [preprint]style/sigplanconf-eurosys.cls
 css:          style/style.css
 Logo: False
 Package: etoolbox
-Package: [scaled=.9]inconsolata
-
-Pdf Latex: pdflatex
+Package: fontspec
 
 .onecol: tex-width=3.3in css-width=80% text-align=center
 
@@ -59,7 +57,8 @@ Pdf Latex: pdflatex
 
 \apptocmd{\sloppy}{\hbadness 10000\relax}{}{}
 
-%\setmainfont{Times}
+\setmainfont{Times}
+\setmonofont[Scale=0.85]{Hasklig}
 
 ~
 ~ HtmlRaw
