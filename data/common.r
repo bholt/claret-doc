@@ -74,7 +74,7 @@ vals <- function(lst) unlist(lst, use.names=F)
 
 db.csv <- function(file) {
   d <- read.csv(file = file)
-  d$cc_ph <- factor(d$cc_ph, levels=c(COMB+PH,COMM+PH,RW+PH,COMB,COMM,RW+BASE))
+  d$cc_ph <- factor(d$cc_ph, levels=c(COMB+PH,COMM+PH,RW+PH,COMB,COMM,RW+BASE,NOTXN))
   d
 }
 
