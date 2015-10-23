@@ -43,7 +43,7 @@ d$facet <- with(d, workload) # + "\n" + timeout_scaling)
 # d$retwis_txn_count <- d$retwis_follow_count + d$retwis_newuser_count + d$retwis_post_count + d$retwis_repost_count + d$retwis_timeline_count / 10
 # d$throughput <- d$retwis_txn_count * num(d$nclients) / d$total_time
 
-d <- subset(d, async == 0 & txn_failed < 20 & total_time > 60 & total_time < 65)
+d <- subset(d, async == 0 & txn_failed < 200 & total_time > 60 & total_time < 65 & (phasing == 'on' | disable_txns == 1))
 
 save(
   ggplot(d, aes(

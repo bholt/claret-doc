@@ -239,3 +239,456 @@ transactions",500,25734.4464387398,1,14.7470264282978,0,60.0602
  + combining",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","on",0,"boosting
  + combining
  + phasing",500,18368.3146753343,464,20.5122179944596,0,60.6085
+"97","v0.30-sampa","4",4,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","on",0,"r/w locks
+ + phasing",500,748.5213879858,77,19.3439219165927,0,60.2254
+"98","v0.30-sampa","4",4,"boosting",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","on",0,"boosting
+ + phasing",500,3812.01244540138,5,3.25527226943658,0,60.0061
+"99","v0.30-sampa","4",4,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"without
+transactions",500,4402.56685347212,0,2.40815523400133,0,60.0268
+"100","v0.30-sampa","4",4,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","on",0,"r/w locks
+ + phasing",500,4942.83324502561,16,1.72516315193355,0,60.0174
+"101","v0.30-sampa","4",4,"boosting",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","on",0,"boosting
+ + phasing",500,5703.69691465518,0,1.29840245883439,0,60.0095
+"102","v0.30-sampa","4",4,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"without
+transactions",500,5761.64159434319,0,1.09580234346986,0,60.0197
+"103","v0.30-sampa","4",4,"boosting
+ + combining",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","on",0,"boosting
+ + combining
+ + phasing",500,3879.69117914176,15,3.14993814858085,0,60.0089
+"104","v0.30-sampa","4",4,"boosting
+ + combining",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","on",0,"boosting
+ + combining
+ + phasing",500,5686.09970088069,0,1.33123498036457,0,60.0095
+"105","v0.30-sampa","4",8,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","on",0,"r/w locks
+ + phasing",500,910.613141337913,237,29.4598868417235,1,60.557
+"106","v0.30-sampa","4",8,"boosting",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","on",0,"boosting
+ + phasing",500,6295.90381359886,10,4.48030487482136,0,60.0168
+"107","v0.30-sampa","4",8,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"without
+transactions",500,8683.7892716924,0,2.70952965548991,0,60.0337
+"108","v0.30-sampa","4",8,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","on",0,"r/w locks
+ + phasing",500,7775.27281688218,52,2.66457946086703,0,60.0586
+"109","v0.30-sampa","4",8,"boosting",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","on",0,"boosting
+ + phasing",500,12045.9192430557,5,1.39704954680773,0,60.0097
+"110","v0.30-sampa","4",8,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"without
+transactions",500,12252.489391867,0,1.01374936773576,0,60.0247
+"111","v0.30-sampa","4",8,"boosting
+ + combining",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","on",0,"boosting
+ + combining
+ + phasing",500,6567.90386613733,40,4.2337322515213,0,60.0496
+"112","v0.30-sampa","4",8,"boosting
+ + combining",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","on",0,"boosting
+ + combining
+ + phasing",500,11853.8415011089,1,1.31041326960922,0,60.0143
+"113","v0.30-sampa","4",16,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","on",0,"r/w locks
+ + phasing",500,1160.07226917957,633,37.5155173395592,8,60.5514
+"114","v0.30-sampa","4",16,"boosting",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","on",0,"boosting
+ + phasing",500,6938.21574204445,10,8.82741700529019,0,60.1561
+"115","v0.30-sampa","4",16,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"without
+transactions",500,8824.10650783102,0,6.80700376765854,0,60.0369
+"116","v0.30-sampa","4",16,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","on",0,"r/w locks
+ + phasing",500,12059.2340154682,263,3.6213355765213,1,60.3302
+"117","v0.30-sampa","4",16,"boosting",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","on",0,"boosting
+ + phasing",500,19986.4593992857,3,2.46290471620997,0,45.0497
+"118","v0.30-sampa","4",16,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"without
+transactions",500,23157.7790031135,0,1.97147329469922,0,60.0289
+"119","v0.30-sampa","4",16,"boosting
+ + combining",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","on",0,"boosting
+ + combining
+ + phasing",500,7596.27084169054,71,8.02584756161694,0,60.0779
+"120","v0.30-sampa","4",16,"boosting
+ + combining",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","on",0,"boosting
+ + combining
+ + phasing",500,18266.9828251303,39,2.91521199737284,0,60.0121
+"121","v0.30-sampa","4",32,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","on",0,"r/w locks
+ + phasing",500,1486.3088808819,1421,38.6837970975902,34,60.6415
+"122","v0.30-sampa","4",32,"boosting",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","on",0,"boosting
+ + phasing",500,7453.6674454024,60,16.9286487163207,0,60.0118
+"123","v0.30-sampa","4",32,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"without
+transactions",500,10526.1124498126,0,11.8366313764452,0,60.0499
+"124","v0.30-sampa","4",32,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","on",0,"r/w locks
+ + phasing",500,15451.7674414769,895,4.61695760385583,18,60.6385
+"125","v0.30-sampa","4",32,"boosting",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","on",0,"boosting
+ + phasing",500,17885.2755134007,11,6.90728987705483,0,60.0116
+"126","v0.30-sampa","4",32,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"without
+transactions",500,25481.6255894252,0,4.58652101385236,0,60.0373
+"127","v0.30-sampa","4",32,"boosting
+ + combining",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","on",0,"boosting
+ + combining
+ + phasing",500,7796.45325118641,159,16.1967126283596,0,60.055
+"128","v0.30-sampa","4",32,"boosting
+ + combining",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","on",0,"boosting
+ + combining
+ + phasing",500,17334.3661244513,77,7.06752206402411,0,60.0315
+"129","v0.30-sampa","4",64,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","on",0,"r/w locks
+ + phasing",500,2031.27782651426,2965,53.9531107936096,74,60.6436
+"130","v0.30-sampa","4",64,"boosting",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","on",0,"boosting
+ + phasing",500,7800.75723919343,183,32.1140049641291,1,60.3244
+"131","v0.30-sampa","4",64,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"without
+transactions",500,10790.9352441331,0,23.3719861022828,0,60.0656
+"132","v0.30-sampa","4",64,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","on",0,"r/w locks
+ + phasing",500,18651.6249981451,2179,7.35776267494572,51,60.6493
+"133","v0.30-sampa","4",64,"boosting",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","on",0,"boosting
+ + phasing",500,18253.3014398452,16,13.7136312650421,0,60.3676
+"134","v0.30-sampa","4",64,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"without
+transactions",500,25931.4805470765,0,9.67775246148827,0,60.0501
+"135","v0.30-sampa","4",64,"boosting
+ + combining",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","on",0,"boosting
+ + combining
+ + phasing",500,8600.64050814829,386,29.5592528030201,0,45.0892
+"136","v0.30-sampa","4",64,"boosting
+ + combining",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","on",0,"boosting
+ + combining
+ + phasing",500,18559.1169038436,198,13.6124647069783,0,60.152
+"137","v0.30-sampa","4",96,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","on",0,"r/w locks
+ + phasing",500,2407.59822145433,4610,57.4778821660413,129,60.6563
+"138","v0.30-sampa","4",96,"boosting",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","on",0,"boosting
+ + phasing",500,6971.46339524655,238,53.5086085667592,1,60.3856
+"139","v0.30-sampa","4",96,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"without
+transactions",500,11008.2213762441,4,34.3718018508438,0,60.0751
+"140","v0.30-sampa","4",96,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","on",0,"r/w locks
+ + phasing",500,19010.6701486435,3434,11.0918084877582,78,60.6552
+"141","v0.30-sampa","4",96,"boosting",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","on",0,"boosting
+ + phasing",500,18549.8970106686,37,20.3284943002858,0,60.5888
+"142","v0.30-sampa","4",96,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"without
+transactions",500,26300.4174082726,4,14.4151295998055,0,60.0611
+"143","v0.30-sampa","4",96,"boosting
+ + combining",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","on",0,"boosting
+ + combining
+ + phasing",500,8927.49234725923,1156,42.2525938488199,0,60.5012
+"144","v0.30-sampa","4",96,"boosting
+ + combining",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","on",0,"boosting
+ + combining
+ + phasing",500,18090.1728594454,856,20.8428466886206,0,60.4306
+"145","v0.30-sampa","4",4,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"r/w locks
+(baseline)",500,1030.56393026244,0,14.055631023999,0,60.0021
+"146","v0.30-sampa","4",4,"boosting",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"boosting",500,3821.20812169206,0,3.25215874400349,0,60.0072
+"147","v0.30-sampa","4",4,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"without
+transactions",500,4466.89820020155,0,2.38102980221354,0,60.0345
+"148","v0.30-sampa","4",4,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","on",0,"r/w locks
+ + phasing",500,970.54321991597,57,14.9275885558583,0,60.5022
+"149","v0.30-sampa","4",4,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"without
+transactions",500,4486.90849186559,0,2.33526869904816,0,60.0351
+"150","v0.30-sampa","4",4,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"r/w locks
+(baseline)",500,5285.37075951666,0,1.53166185317375,0,60.0079
+"151","v0.30-sampa","4",4,"boosting",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"boosting",500,5678.37956729808,0,1.36397675919948,0,60.0136
+"152","v0.30-sampa","4",4,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"without
+transactions",500,5672.26148704261,0,1.13407040135351,0,60.0198
+"153","v0.30-sampa","4",4,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","on",0,"r/w locks
+ + phasing",500,4847.11551438869,47,1.79866897670709,0,60.0159
+"154","v0.30-sampa","4",4,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"without
+transactions",500,5715.49482095344,0,1.10178400690282,0,60.0207
+"155","v0.30-sampa","4",4,"boosting
+ + combining",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"boosting
+ + combining",500,3749.52506015905,13,3.36060444444444,0,60.0076
+"156","v0.30-sampa","4",4,"boosting
+ + combining",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"boosting
+ + combining",500,5526.13557407287,4,1.46843717586897,0,60.0159
+"157","v0.30-sampa","4",8,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"r/w locks
+(baseline)",500,668.609834830706,0,38.4044865403789,0,60.0051
+"158","v0.30-sampa","4",8,"boosting",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"boosting",500,6030.51552438976,23,4.72522686827823,0,60.0088
+"159","v0.30-sampa","4",8,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"without
+transactions",500,8732.1208163918,0,2.71900990401196,0,60.0349
+"160","v0.30-sampa","4",8,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","on",0,"r/w locks
+ + phasing",500,938.044495286965,247,27.9187226843367,1,60.4918
+"161","v0.30-sampa","4",8,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"without
+transactions",500,8649.31313807699,0,2.72837851370818,0,60.0339
+"162","v0.30-sampa","4",8,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"r/w locks
+(baseline)",500,10010.9151203579,0,1.75395012817525,0,60.0085
+"163","v0.30-sampa","4",8,"boosting",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"boosting",500,11924.1261054389,0,1.39428817387027,0,60.0101
+"164","v0.30-sampa","4",8,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"without
+transactions",500,12225.0433160069,0,1.02008187561666,0,60.024
+"165","v0.30-sampa","4",8,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","on",0,"r/w locks
+ + phasing",500,8598.97584544274,32,2.27698445219301,0,60.1667
+"166","v0.30-sampa","4",8,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"without
+transactions",500,12279.3450029738,0,1.00314762354422,0,60.0247
+"167","v0.30-sampa","4",8,"boosting
+ + combining",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"boosting
+ + combining",500,5826.27489339437,112,4.91117721084544,0,60.0109
+"168","v0.30-sampa","4",8,"boosting
+ + combining",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"boosting
+ + combining",500,11958.5663531592,0,1.39418414099863,0,60.0092
+"169","v0.30-sampa","4",16,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"r/w locks
+(baseline)",500,636.855849205013,0,56.1025748377643,0,60.0073
+"170","v0.30-sampa","4",16,"boosting",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"boosting",500,7227.332106961,0,8.46205134826073,0,60.0144
+"171","v0.30-sampa","4",16,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"without
+transactions",500,10151.791216295,0,5.82246400587981,0,60.043
+"172","v0.30-sampa","4",16,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","on",0,"r/w locks
+ + phasing",500,1090.61568238557,658,35.7587751149843,12,60.6043
+"173","v0.30-sampa","4",16,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"without
+transactions",500,9942.205389056,0,5.99264907895707,0,60.0402
+"174","v0.30-sampa","4",16,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"r/w locks
+(baseline)",500,8572.6092955362,0,5.6913244281338,0,60.0116
+"175","v0.30-sampa","4",16,"boosting",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"boosting",500,17082.067578399,0,3.21694663935226,0,60.0103
+"176","v0.30-sampa","4",16,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"without
+transactions",500,21590.396449645,0,2.25370826466177,0,60.0278
+"177","v0.30-sampa","4",16,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","on",0,"r/w locks
+ + phasing",500,11162.4218615207,285,3.93742977569838,1,60.2776
+"178","v0.30-sampa","4",16,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"without
+transactions",500,22349.2488680547,0,2.13333810371404,0,60.0294
+"179","v0.30-sampa","4",16,"boosting
+ + combining",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"boosting
+ + combining",500,7310.4181490659,118,8.38238780385506,0,60.0097
+"180","v0.30-sampa","4",16,"boosting
+ + combining",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"boosting
+ + combining",500,16171.3203107947,0,3.43366333369054,0,60.0139
+"181","v0.30-sampa","4",32,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"r/w locks
+(baseline)",500,664.306997020417,0,92.2353000200682,0,60.0084
+"182","v0.30-sampa","4",32,"boosting",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"boosting",500,7149.19625613826,142,17.6540401450667,0,60.0129
+"183","v0.30-sampa","4",32,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"without
+transactions",500,10287.7792487864,0,12.0654735697081,0,60.0495
+"184","v0.30-sampa","4",32,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","on",0,"r/w locks
+ + phasing",500,1422.67323613294,1419,40.6113996846304,35,60.6239
+"185","v0.30-sampa","4",32,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"without
+transactions",500,10737.6211078138,0,11.5972902889614,0,60.0498
+"186","v0.30-sampa","4",32,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"r/w locks
+(baseline)",500,6534.05919179093,0,11.9076813220443,0,60.0117
+"187","v0.30-sampa","4",32,"boosting",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"boosting",500,17558.3761166573,0,6.96249814939243,0,60.0117
+"188","v0.30-sampa","4",32,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"without
+transactions",500,26267.3242425302,0,4.45549175171966,0,60.0387
+"189","v0.30-sampa","4",32,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","on",0,"r/w locks
+ + phasing",500,15061.7206581558,885,5.10618821746576,14,60.6361
+"190","v0.30-sampa","4",32,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"without
+transactions",500,26029.3380370132,0,4.58004852977312,0,60.0381
+"191","v0.30-sampa","4",32,"boosting
+ + combining",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"boosting
+ + combining",500,3289.96755465901,34492,16.8889360669659,0,60.1319
+"192","v0.30-sampa","4",32,"boosting
+ + combining",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"boosting
+ + combining",500,13963.7638535024,227,8.91507317492291,0,60.0119
+"193","v0.30-sampa","4",64,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"r/w locks
+(baseline)",500,753.145047071565,0,129.515044247788,0,60.015
+"194","v0.30-sampa","4",64,"boosting",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"boosting",500,652.077027970865,115702,44.5358563704988,0,60.134
+"195","v0.30-sampa","4",64,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"without
+transactions",500,10654.2930541612,0,23.7283336354488,0,60.0633
+"196","v0.30-sampa","4",64,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","on",0,"r/w locks
+ + phasing",500,2299.79249463651,2158,45.0137635724117,59,45.4928
+"197","v0.30-sampa","4",64,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"without
+transactions",500,10534.4512966688,0,23.9883296771379,0,60.0616
+"198","v0.30-sampa","4",64,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"r/w locks
+(baseline)",500,6989.59239374944,0,19.3849410687722,0,60.0138
+"199","v0.30-sampa","4",64,"boosting",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"boosting",500,17758.9461705208,0,14.2894457350231,0,60.0173
+"200","v0.30-sampa","4",64,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"without
+transactions",500,26673.8380738444,0,9.39709785922794,0,60.0533
+"201","v0.30-sampa","4",64,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","on",0,"r/w locks
+ + phasing",500,18698.3801896018,2159,7.4053287521915,49,60.6429
+"202","v0.30-sampa","4",64,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"without
+transactions",500,26083.9736096263,0,9.55135342185904,0,60.0522
+"203","v0.30-sampa","4",64,"boosting
+ + combining",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"boosting
+ + combining",500,2783.75048017201,68467,41.7837514934289,0,60.1347
+"204","v0.30-sampa","4",64,"boosting
+ + combining",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"boosting
+ + combining",500,16684.6395318613,9,15.1339389145875,0,60.0164
+"205","v0.30-sampa","4",96,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"r/w locks
+(baseline)",500,797.396663850718,4,175.769809428285,0,60.0153
+"206","v0.30-sampa","4",96,"boosting",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"boosting",500,2055.93202893883,132122,47.7617002034818,0,60.2374
+"207","v0.30-sampa","4",96,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"without
+transactions",500,10525.4712128602,4,35.8494648143931,0,60.0737
+"208","v0.30-sampa","4",96,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","on",0,"r/w locks
+ + phasing",500,2475.48259874561,4563,58.8570667377115,124,60.6508
+"209","v0.30-sampa","4",96,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"without
+transactions",500,10785.897393215,185,34.8742499444403,0,60.074
+"210","v0.30-sampa","4",96,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"r/w locks
+(baseline)",500,7612.53561253561,2,27.7004762405015,0,60.021
+"211","v0.30-sampa","4",96,"boosting",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"boosting",500,9910.27005454304,81347,21.3380002818962,0,60.136
+"212","v0.30-sampa","4",96,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"without
+transactions",500,27153.0868267311,4,13.8807924929977,0,60.0633
+"213","v0.30-sampa","4",96,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","on",0,"r/w locks
+ + phasing",500,19427.3410283593,3437,10.590557596084,79,60.6539
+"214","v0.30-sampa","4",96,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"without
+transactions",500,26343.2924037461,0,14.2626042506718,0,60.0625
+"215","v0.30-sampa","4",96,"boosting
+ + combining",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"boosting
+ + combining",500,2714.0605149558,118046,56.7652681109695,0,60.1372
+"216","v0.30-sampa","4",96,"boosting
+ + combining",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"boosting
+ + combining",500,15466.0304650392,348,24.2786292598641,0,60.0229
+"217","v0.30-sampa","4",4,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"r/w locks
+(baseline)",500,914.816351767319,0,16.0931283247103,0,60.0033
+"218","v0.30-sampa","4",4,"boosting",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"boosting",500,3791.90296760087,10,3.29161612432537,0,60.0047
+"219","v0.30-sampa","4",4,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"without
+transactions",500,4518.92770755176,0,2.32796095316739,0,60.0284
+"220","v0.30-sampa","4",4,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","on",0,"r/w locks
+ + phasing",500,876.127772501164,76,16.8134554260633,0,60.3291
+"221","v0.30-sampa","4",4,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"without
+transactions",500,4521.23158518953,0,2.30868309361,0,60.0332
+"222","v0.30-sampa","4",4,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"r/w locks
+(baseline)",500,5339.252208747,0,1.47409617497254,0,60.0114
+"223","v0.30-sampa","4",4,"boosting",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"boosting",500,5670.86329436663,0,1.3805465765501,0,60.0085
+"224","v0.30-sampa","4",4,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"without
+transactions",500,5712.49568858504,0,1.13804501277579,0,60.0151
+"225","v0.30-sampa","4",4,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","on",0,"r/w locks
+ + phasing",500,4856.27390366044,39,1.81321034425959,0,60.0065
+"226","v0.30-sampa","4",4,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"without
+transactions",500,5653.79078694818,0,1.11896527335738,0,60.0192
+"227","v0.30-sampa","4",4,"boosting
+ + combining",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"boosting
+ + combining",500,3846.02951639698,0,3.24156037709691,0,60.0141
+"228","v0.30-sampa","4",4,"boosting
+ + combining",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"boosting
+ + combining",500,5659.56049852605,0,1.42033542976939,0,60.0089
+"229","v0.30-sampa","4",8,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"r/w locks
+(baseline)",500,820.488206481977,0,31.1351966200845,0,60.0033
+"230","v0.30-sampa","4",8,"boosting",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"boosting",500,6133.12580510233,24,4.61688530469845,0,60.0079
+"231","v0.30-sampa","4",8,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"without
+transactions",500,8686.01430168119,0,2.72921620667966,0,60.0349
+"232","v0.30-sampa","4",8,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","on",0,"r/w locks
+ + phasing",500,968.316173808985,266,27.5054622422504,1,60.5009
+"233","v0.30-sampa","4",8,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"without
+transactions",500,8598.05175768236,0,2.76991390466744,0,60.0336
+"234","v0.30-sampa","4",8,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"r/w locks
+(baseline)",500,9310.12877596182,8,2.07415627371526,0,60.0112
+"235","v0.30-sampa","4",8,"boosting",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"boosting",500,12021.9763006561,0,1.37986249722777,0,60.0101
+"236","v0.30-sampa","4",8,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"without
+transactions",500,12033.474448493,0,1.02872602011431,0,60.0219
+"237","v0.30-sampa","4",8,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","on",0,"r/w locks
+ + phasing",500,7801.59924286731,62,2.67023194224937,0,60.0159
+"238","v0.30-sampa","4",8,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"without
+transactions",500,12153.0611054931,0,1.02364372114446,0,60.0257
+"239","v0.30-sampa","4",8,"boosting
+ + combining",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"boosting
+ + combining",500,6215.15749835462,71,4.55275433498118,0,60.0165
+"240","v0.30-sampa","4",8,"boosting
+ + combining",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"boosting
+ + combining",500,11795.3511933626,0,1.43735131072597,0,60.0111
+"241","v0.30-sampa","4",16,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"r/w locks
+(baseline)",500,623.352209663926,0,56.4998395893487,0,60.0046
+"242","v0.30-sampa","4",16,"boosting",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"boosting",500,6991.5802839009,33,8.79035825277889,0,60.0139
+"243","v0.30-sampa","4",16,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"without
+transactions",500,10095.1683016605,0,5.88950775748857,0,60.041
+"244","v0.30-sampa","4",16,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","on",0,"r/w locks
+ + phasing",500,1144.77192785727,633,37.0860270815327,9,60.6409
+"245","v0.30-sampa","4",16,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"without
+transactions",500,9360.43625849048,0,6.3878856898822,0,60.0378
+"246","v0.30-sampa","4",16,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"r/w locks
+(baseline)",500,7295.89889802985,0,6.29966745235615,0,60.0107
+"247","v0.30-sampa","4",16,"boosting",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"boosting",500,17137.3723975431,59,3.19421950479569,0,60.0106
+"248","v0.30-sampa","4",16,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"without
+transactions",500,23667.8122298167,0,1.84580798283721,0,60.0287
+"249","v0.30-sampa","4",16,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","on",0,"r/w locks
+ + phasing",500,10524.3717782172,311,4.18937940664054,1,60.4285
+"250","v0.30-sampa","4",16,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"without
+transactions",500,24244.2899669001,0,1.70596512829533,0,60.0303
+"251","v0.30-sampa","4",16,"boosting
+ + combining",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"boosting
+ + combining",500,7414.89751708049,23,8.23473148630913,0,60.01
+"252","v0.30-sampa","4",16,"boosting
+ + combining",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"boosting
+ + combining",500,13171.2966434543,131,4.41472424926369,0,60.0111
+"253","v0.30-sampa","4",32,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"r/w locks
+(baseline)",500,661.253982855391,0,77.4653225806452,0,60.0072
+"254","v0.30-sampa","4",32,"boosting",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"boosting",500,6947.76614211794,262,18.0596957664346,0,60.0262
+"255","v0.30-sampa","4",32,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"without
+transactions",500,10547.1337717509,0,11.8361469523864,0,60.0493
+"256","v0.30-sampa","4",32,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","on",0,"r/w locks
+ + phasing",500,1382.84698553406,1411,47.5894782028045,29,60.6459
+"257","v0.30-sampa","4",32,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"without
+transactions",500,10507.2016066852,0,11.8692507147974,0,60.0491
+"258","v0.30-sampa","4",32,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"r/w locks
+(baseline)",500,6615.81916196602,0,10.9151360664161,0,60.0095
+"259","v0.30-sampa","4",32,"boosting",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"boosting",500,18563.6301830955,128,6.64165278336302,0,60.0124
+"260","v0.30-sampa","4",32,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"without
+transactions",500,32795.9639562821,0,3.46478529933511,0,45.0342
+"261","v0.30-sampa","4",32,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","on",0,"r/w locks
+ + phasing",500,15189.4548202811,906,4.68914179931427,19,60.6002
+"262","v0.30-sampa","4",32,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"without
+transactions",500,25870.2234895551,0,4.58165401760996,0,60.0386
+"263","v0.30-sampa","4",32,"boosting
+ + combining",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"boosting
+ + combining",500,427.333181073344,44274,8.58102947281029,0,45.0983
+"264","v0.30-sampa","4",32,"boosting
+ + combining",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"boosting
+ + combining",500,15567.7711219789,276,7.8706871085271,0,60.0145
+"265","v0.30-sampa","4",64,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"r/w locks
+(baseline)",500,995.980794909451,0,107.207995003123,0,45.0089
+"266","v0.30-sampa","4",64,"boosting",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"boosting",500,1969.13559716633,91297,38.6160186467588,0,60.134
+"267","v0.30-sampa","4",64,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"without
+transactions",500,10440.7967140457,0,24.0887780421374,0,60.0617
+"268","v0.30-sampa","4",64,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","on",0,"r/w locks
+ + phasing",500,1994.69198687833,2984,55.2791643251463,76,60.663
+"269","v0.30-sampa","4",64,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"without
+transactions",500,13457.2885064792,0,18.7549639167777,0,45.0593
+"270","v0.30-sampa","4",64,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"r/w locks
+(baseline)",500,6841.47032359116,0,19.9292714767258,0,60.014
+"271","v0.30-sampa","4",64,"boosting",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"boosting",500,18735.4393237815,0,13.5585737815138,0,60.0161
+"272","v0.30-sampa","4",64,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"without
+transactions",500,25269.983796809,0,9.92284475373321,0,60.0499
+"273","v0.30-sampa","4",64,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","on",0,"r/w locks
+ + phasing",500,18036.1394137237,2220,7.62924556932404,51,60.654
+"274","v0.30-sampa","4",64,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"without
+transactions",500,26995.1657677071,0,9.28166584828423,0,60.0509
+"275","v0.30-sampa","4",64,"boosting
+ + combining",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"boosting
+ + combining",500,1657.61199440589,96668,38.3527287319422,0,60.1347
+"276","v0.30-sampa","4",64,"boosting
+ + combining",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"boosting
+ + combining",500,14265.4914440908,192,17.6711688772817,0,60.017
+"277","v0.30-sampa","4",96,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"r/w locks
+(baseline)",500,759.519402035093,1,179.976307476307,0,60.0169
+"278","v0.30-sampa","4",96,"boosting",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"boosting",500,1332.60850108891,147885,42.8627431471071,0,60.3358
+"279","v0.30-sampa","4",96,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"without
+transactions",500,13799.3095552933,0,27.477619427366,0,45.0724
+"280","v0.30-sampa","4",96,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","on",0,"r/w locks
+ + phasing",500,2424.68402320433,4579,60.8112371162057,125,60.6611
+"281","v0.30-sampa","4",96,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"without
+transactions",500,10198.1008949499,180,37.115134736306,0,60.0704
+"282","v0.30-sampa","4",96,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"r/w locks
+(baseline)",500,7176.46411951221,4,28.55235052657,0,60.0173
+"283","v0.30-sampa","4",96,"boosting",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"boosting",500,4657.25270047358,138886,20.7082363358517,0,60.1376
+"284","v0.30-sampa","4",96,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"without
+transactions",500,25153.5207116848,9,15.0729714415831,0,60.0603
+"285","v0.30-sampa","4",96,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","on",0,"r/w locks
+ + phasing",500,19316.1209483299,3423,10.7444178900649,79,60.654
+"286","v0.30-sampa","4",96,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"without
+transactions",500,25489.0442890443,0,14.7613125068588,0,60.06
+"287","v0.30-sampa","4",96,"boosting
+ + combining",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"boosting
+ + combining",500,6752.22486797121,19999,52.4733788429524,0,60.1384
+"288","v0.30-sampa","4",96,"boosting
+ + combining",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"boosting
+ + combining",500,1801.22953204948,164536,24.8445347119645,0,60.1367
+"289","v0.30-sampa","4",4,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"r/w locks
+(baseline)",500,858.29327964695,0,17.1064077669903,0,60.0028
+"290","v0.30-sampa","4",4,"boosting",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"boosting",500,3717.84851913633,5,3.40730780263913,0,60.0089
+"291","v0.30-sampa","4",4,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"without
+transactions",500,4457.44478833167,0,2.40525875213011,0,60.0326
+"292","v0.30-sampa","4",4,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","on",0,"r/w locks
+ + phasing",500,837.373817661553,65,17.422085113115,0,60.3888
+"293","v0.30-sampa","4",4,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"without
+transactions",500,4422.47918686349,0,2.42549152542373,0,60.0342
+"294","v0.30-sampa","4",4,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"r/w locks
+(baseline)",500,5077.07869175355,0,1.65978285129121,0,60.0101
+"295","v0.30-sampa","4",4,"boosting",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"boosting",500,5648.94095688836,0,1.38493580666478,0,60.007
+"296","v0.30-sampa","4",4,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"without
+transactions",500,5690.19866578697,0,1.16746738188377,0,60.0204
+"297","v0.30-sampa","4",4,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","on",0,"r/w locks
+ + phasing",500,4979.02023322702,24,1.76446491204584,0,60.0102
+"298","v0.30-sampa","4",4,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"without
+transactions",500,5662.4516584827,0,1.13831612895632,0,60.0157
+"299","v0.30-sampa","4",4,"boosting
+ + combining",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"boosting
+ + combining",500,3847.86144738947,0,3.24375877063807,0,60.0032
+"300","v0.30-sampa","4",4,"boosting
+ + combining",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"boosting
+ + combining",500,5583.31597497063,0,1.37979776273534,0,60.0095
+"301","v0.30-sampa","4",8,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"r/w locks
+(baseline)",500,858.044668717566,0,26.0327843380982,0,60.0062
+"302","v0.30-sampa","4",8,"boosting",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"boosting",500,6155.681837119,16,4.58698806661902,0,60.007
+"303","v0.30-sampa","4",8,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"without
+transactions",500,8795.79617091796,0,2.66409646584764,0,60.0405
+"304","v0.30-sampa","4",8,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","on",0,"r/w locks
+ + phasing",500,837.513689047606,248,29.0164878510571,2,60.5411
+"305","v0.30-sampa","4",8,"r/w locks",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"without
+transactions",500,8698.67075323983,0,2.73499854466351,0,60.034
+"306","v0.30-sampa","4",8,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"r/w locks
+(baseline)",500,10129.9766042112,0,1.76435908065036,0,60.0108
+"307","v0.30-sampa","4",8,"boosting",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"boosting",500,11994.7344741973,0,1.37621138030673,0,60.013
+"308","v0.30-sampa","4",8,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"without
+transactions",500,12089.4990253736,0,1.02628822790113,0,60.023
+"309","v0.30-sampa","4",8,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","on",0,"r/w locks
+ + phasing",500,8495.41263028613,25,2.31672935276602,0,60.0889
+"310","v0.30-sampa","4",8,"r/w locks",50,"16","2read2heavy","read-heavy: ~5% post/repost","-1","off",0,"without
+transactions",500,12286.1374377975,0,0.994755140450505,0,60.0257
+"311","v0.30-sampa","4",8,"boosting
+ + combining",50,"16","geom_repost","post-heavy: ~50% post/repost","-1","off",0,"boosting
+ + combining",500,6339.96523791034,36,4.40214694255194,0,60.0079

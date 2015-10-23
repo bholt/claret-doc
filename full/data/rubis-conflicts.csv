@@ -1,41 +1,41 @@
 "","cc_ph","tag","count"
-"1","boosting
+"1","r/w locks
+(baseline)","Open-Open",394.28
+"2","r/w locks
+(baseline)","Open-Close",189.28
+"3","r/w locks
+(baseline)","Browse-Open/Close",420.6
+"4","r/w locks
+(baseline)","Bid-View",3305.8
+"5","r/w locks
+(baseline)","Bid-Bid",788322.32
+"6","boosting","Open-Open",1144.44444444444
+"7","boosting","Open-Close",5347.07407407407
+"8","boosting","Browse-Open/Close",4380.88888888889
+"9","boosting","Bid-View",65618.5185185185
+"10","boosting","Bid-Bid",2614.81481481481
+"11","boosting
+ + phasing","Open-Open",129.333333333333
+"12","boosting
+ + phasing","Open-Close",258.5
+"13","boosting
+ + phasing","Browse-Open/Close",179.733333333333
+"14","boosting
+ + phasing","Bid-View",3473.43333333333
+"15","boosting
+ + phasing","Bid-Bid",765.2
+"16","boosting
  + combining
- + phasing","Open-Open",897.027027027027
-"2","boosting
+ + phasing","Open-Open",101.625
+"17","boosting
  + combining
- + phasing","Open-Close",1303.40540540541
-"3","boosting
+ + phasing","Open-Close",232.625
+"18","boosting
  + combining
- + phasing","Browse-Open/Close",416.531531531532
-"4","boosting
+ + phasing","Browse-Open/Close",146.125
+"19","boosting
  + combining
- + phasing","Bid-View",899.297297297297
-"5","boosting
+ + phasing","Bid-View",2432.04166666667
+"20","boosting
  + combining
- + phasing","Bid-Bid",16.2432432432432
-"6","boosting
- + phasing","Open-Open",503.135135135135
-"7","boosting
- + phasing","Open-Close",1049.87387387387
-"8","boosting
- + phasing","Browse-Open/Close",329.315315315315
-"9","boosting
- + phasing","Bid-View",853.495495495495
-"10","boosting
- + phasing","Bid-Bid",41.0900900900901
-"11","boosting","Open-Open",7644.49074074074
-"12","boosting","Open-Close",20659.6111111111
-"13","boosting","Browse-Open/Close",10154.4166666667
-"14","boosting","Bid-View",19445.7314814815
-"15","boosting","Bid-Bid",152.12037037037
-"16","r/w locks
-(baseline)","Open-Open",64815.0265486726
-"17","r/w locks
-(baseline)","Open-Close",64823.9469026549
-"18","r/w locks
-(baseline)","Browse-Open/Close",25872.3097345133
-"19","r/w locks
-(baseline)","Bid-View",2860.93805309735
-"20","r/w locks
-(baseline)","Bid-Bid",643539.053097345
+ + phasing","Bid-Bid",52.2083333333333

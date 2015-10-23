@@ -118,7 +118,7 @@ dr <- data.or.csv(
         c <- c[['0']][['s']]
         data.frame(conflicts = c$conflicts, conflicts_total = c$total)
       })
-    subset(dc, select = c('name', 'nthreads', 'cc', 'phasing', 'disable_txns', 'cc_ph', 'txn_retries', 'txn_count', 'total_time', 'throughput', 'avg_latency_ms', 'conflicts', 'conflicts_total'))
+    subset(dc, select = c('name', 'nthreads', 'cc', 'phasing', 'disable_txns', 'cc_ph', 'txn_retries', 'txn_count', 'total_time', 'throughput', 'avg_latency_ms', 'conflicts', 'conflicts_total', 'server_acquire_attempts', 'server_acquire_first_success'))
   }
 )
 
@@ -126,12 +126,16 @@ dr$cc_ph <- factor(dr$cc_ph, levels = rev(levels(dr$cc_ph)))
 # dr$retry_rate <- with(dr, txn_retries / txn_count * 100)
 dr$retry_rate <- with(dr, txn_retries / total_time)
 
+dr$acquire_rate <- with(dr,
+  (server_acquire_first_success)/server_acquire_attempts * 100
+)
+
 save(
-  ggplot(subset(dr, disable_txns == 0), aes(x = cc_ph, y = retry_rate, group = cc_ph, color = cc_ph, fill = cc_ph))+
+  ggplot(subset(dr, disable_txns == 0), aes(x = cc_ph, y = acquire_rate, group = cc_ph, color = cc_ph, fill = cc_ph))+
     xlab('mode')+
-    ylab('txn retry percentage')+
-    geom_bar(stat="identity")+
-    scale_y_continuous(labels=k.labels)+
+    ylab('lock acquire success (percentage)')+
+    stat_summary(geom='bar', fun.y=mean)+
+    scale_y_continuous(labels=function(x) x+"%")+
     expand_limits(y=0)+
     cc_ph_scales()+
     coord_flip()+
