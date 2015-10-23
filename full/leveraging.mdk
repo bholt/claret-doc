@@ -24,7 +24,7 @@
 
 
 
-[todo: reference set of data types?] In Claret, programmers express application-level semantics through ADTs [todo: bit redundant?]. We know that the `Bid` transactions in [#fig-levels] should commute somehow, but how do we implement them so that this is true? We wish to track all the bids for each item and determine the maximum bid. The solution is to choose data types that capture the behavior we want. A *scored set* data type allows the items in the set to be ranked according to a score associated with each item, which works perfectly for tracking an item's bids, shown in [#fig-adt-bid]. Because `zset.add` operations commute, `Bid` transactions will now also commute. [todo: kinda wordy]
+[todo: reference set of data types?] In Claret, programmers express application-level semantics through ADTs [todo: bit redundant?]. We know that the `Bid` transactions in [#fig-levels] should commute somehow, but how do we implement them so that this is true? We wish to track all the bids for each item and determine the maximum bid. The solution is to choose data types that capture the behavior we want. A *scored set* data type allows the items in the set to be ranked according to a score associated with each item, which works perfectly for tracking an item's bids, shown in [#fig-adt-bid]. Because `zset.add` operations commute, `Bid` transactions no longer conflict. [todo: kinda wordy]
 
 Abstract data types decouple their abstract behavior from their low-level concrete implementation.
 Abstract operations can have properties such as commutativity, associativity, or monotonicity, which tell users how they can be reordered or executed concurrently, while the concrete implementation takes care of making it so by performing the necessary synchronization. 
@@ -37,9 +37,7 @@ To ensure strong isolation, all transactional storage systems implement some for
 
 *Abstract locks* [@Ni:07] generalize the notion of reader/writer locks to any operations which can logically run concurrently on the same record. With an abstract lock for an ADT, the concurrency control system can allow any operations that commute to hold the lock at the same time. For `zset`, `add` operations can all hold the lock at the same time, but reading operations such as `size` must wait. The same idea can be applied to optimistic concurrency control: operations only cause conflicts if the abstract lock doesn't allow them to execute concurrently with other outstanding operations.
 
-Using abstract locks to improve concurrency in transactions is known as *transaction boosting* [@Herlihy:PPoPP08] in the transactional memory community. 
-But this technique is of possibly even greater importance to distributed transactions because the performance of distributed transactions is highly dependent on how long locks are held for.
-Waiting for one lock causes a cascade of waiting as others wait on the locks the blocked transaction holds. Every operation that can share an abstract lock reduces the time the rest of its locks are held for, which can have a big impact on performance.
+Using abstract locks to improve concurrency in transactions is known as *transaction boosting* [@Herlihy:PPoPP08] in the transactional memory community. However, this technique can be even more valuable to distributed transactions because their performance depends on how long locks are held. Waiting for one lock causes a cascade of waiting as others wait on the locks the blocked transaction holds. Every operation that can share an abstract lock reduces the time the rest of its locks are held for, which can have a big impact on performance.
 In OCC-based systems, boosting reduces the abort rate because fewer operations conflict with one another.
 
 [todo: bring this more to forefront] Boosting is especially important for highly contended records. In the case of auctions, when a particularly hot auction is near closing time, it can expect to receive a huge number of bids. If all of the bids conflict with each other and serialize, it may cause some of them to not complete in time. However, if the bids are represented using a `zset`, then they naturally commute, the transactions can execute concurrently, and everyone gets to place their bids.
@@ -54,7 +52,7 @@ To implement phasing, each ADT defines a *phaser* which is responsible for group
 
 Reader/writer locks can also benefit from phasing; in that case, there are just two modes, reading and writing, though writing, of course, only allows one operation at a time.
 
-Due to phasing, the latency of some operations may increase as they are forced to wait for their phase to come. However, the benefits of reducing conflicts are often enough to reduce the latency of transactions overall.
+Due to phasing, the latency of some operations may increase as they are forced to wait for their phase to come. However, reducing conflicts often reduces the latency of transactions overall.
 
 ## Combining {#sec-combining}
 
@@ -64,4 +62,4 @@ For distributed datastores where the network is typically the bottleneck, combin
 
 For correctness, transactions sharing combined operations must all commit together. This also means that they must not conflict on any of their other locks, otherwise they would deadlock, and this applies transitively through all combined operations. Claret handles this by merging the locks sets of the two transactions whenever operations are combined and aborting a transaction and removing it from the set if it later performs an operation that conflicts with the others.
 
-With all the overhead of tracking outstanding locks and merging transaction sets, it seems like this might be more work than it is worth, and it likely is in some cases. However, these frontend servers can often afford to spend this effort to try combining because they are easy to replicate to handle additional load, whereas the datastore shards they are saving work for cannot.
+With all the overhead of tracking outstanding locks and merging transaction sets, it seems like this might be more work than it is worth, and it likely is in some cases. However, these frontend servers can often afford to spend this effort to try combining because they are easy to replicate to handle additional load, whereas the datastore shards they are saving work for cannot. [todo: weird wording]
