@@ -18,7 +18,8 @@ Package: fontspec
 
 #todo: color=red font-size=x-small font-family=HelveticaNeue-Light before='[' after=']'
 
-~P,~Span: replace="/\[(?:TODO|todo):\s*(.*?)\]/[\1]{#todo}/g"
+#disabled: replace="/\[(?:TODO|todo):\s*(.*?)\]/[\1]{#todo}/g"
+~P,~Span: replace="/\[(?:TODO|todo):\s*(.*?)\]//g"
 
 ~H1: label='[§@h1]{.heading-label}' replace="/§//"
 ~H2: label='[§@h1.@h1-h2]{.heading-label}' replace="/§//"

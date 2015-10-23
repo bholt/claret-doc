@@ -31,10 +31,6 @@ An auction site's ability to handle these peak bidding times is crucial: a slow-
 
 ## Application-level commutativity
 
-~ Fig { #fig-levels .wide caption="At the application level, many transactions ought to commute with one another, such as these Bid transactions, but when translated down to put and get operations, this knowledge is lost." }
-![Application-level versus key/value store level](fig/app-level.pdf){width=100%}
-~
-
 Luckily, auctions and many other applications share something besides power laws: commutativity.
 At the application level, it should be clear that bids on an item can be reordered with one another, provided that the correct maximum bid can still be tracked. When the auction closes, or whenever someone views the current maximum bid, that imposes an ordering which bids cannot move beyond.
 In [#fig-levels], we see that the maximum bid observed by the `View` action will be the same if the two bids are executed in either order. That is to say, the bids *commute* with one another.

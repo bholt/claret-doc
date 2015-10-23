@@ -8,17 +8,17 @@ The concept of ADTs could be applied to many different datastores and systems. F
 For horizontal scalability, datastores are typically divided into many shards, each containing a subset of the key space (often using consistent hashing), running on different hosts (nodes or cores).
 Frontend servers implement the core application logic and expose it via an API to end users which might be mobile clients or web servers. These servers are replicated to mitigate failures, but each instance may handle many concurrent end-user connections, mediating access to the backing datastore where application state resides.
 
-Claret operates between these frontend servers and the datastore. 
-Applications model their state using ADTs and the operations they provide; this application logic is implemented on the clients, which in this case are the frontend servers.
+Claret operates between application servers and the datastore. 
+Applications model their state using ADTs and the operations the allow, as they would in Redis; this application logic is implemented on the clients, which in this case are the frontend or application servers.
 Clients are responsible for coordinating their transactions, retrying if necessary.
-A new, ADT-aware concurrency control system is added to each shard of the core datastore.
+A new ADT-aware concurrency control system is added to each shard of the core datastore.
 ADT optimizations occur both in the concurrency control system and in the client as it issues operations and prepares transactions, which will be explained in more depth in [#sec-leveraging].
 
 ## Programming model
 
 The Claret programming model is not significantly different than traditional key/value stores, especially for users of Redis [@redis]. Rather than just strings with two available operations, `put` and `get`, records can have any of a number of different types, each of which have operations associated with them.
 Each record has a type, determined by a tag associated with its key so invalid operations are prevented on the client.
-The particular client bindings employed are not essential to this work; our code examples will use Python-like syntax similar to Redis's Python bindings though our actual implementation uses C++. An example of an ADT implementation of the Bid transaction is shown in [#fig-adt-bid].
+The particular client bindings employed are not essential to this work; our code examples will use Python-like syntax similar to Redis's Python bindings though our actual implementation uses C++. An example of an ADT implementation of the Bid transaction is shown in [#fig-levels].
 
 ## Consistency model
 
@@ -28,8 +28,16 @@ Individual operations in Claret are strictly linearizable, committing atomically
 
 ## Transactions {#sec-transactions}
 
-Claret implements interactive distributed transactions with strict serializable isolation, similar to Spanner [@Spanner]. [#fig-adt-bid] shows a possible client interface with `begin` and `commit`, though the retry logic is elided. 
-Claret does not limit the transaction interface; clients are free to perform any operations on any records within the scope of the transaction. Claret uses strict two-phase locking and acquires locks for each record accessed during transaction execution.
+~ Fig { #fig-levels .wide caption="At the application level, many transactions ought to commute with one another, such as these Bid transactions, but when translated down to put and get operations, this knowledge is lost." }
+![Application-level versus key/value store level](fig/app-level.pdf){width=100%}
+~
+
+~ Fig { #fig-rubis-conflicts caption="High-level overview of important Rubis transactions, implemented with ADTs. Lines show conflicts between operations, many of which are either eliminated due to commutativity by boosting or mediated by phasing." }
+![Example ADT version of Bid transaction](fig/rubis-conflicts.pdf){.onecol}
+~
+
+
+Claret implements interactive distributed transactions with strict serializable isolation, similar to Spanner [@Spanner], with standard `begin`, `commit`, and `abort` functions and automatic retries. Claret does not limit the transaction interface; clients are free to perform any operations on any records within the scope of the transaction. Claret uses strict two-phase locking and acquires locks for each record accessed during transaction execution.
 
 To support arbitrary ADT operations in transactions, each operation is split into two parts, *prepare* and *commit*, which are executed on the shard holding the record. *Prepare* always starts by attempting to acquire the lock for the record. When the lock has been acquired, *prepare* may read any data it wishes from the record to compute a *result* which will be returned to the calling transaction. Operations returning *void* typically do nothing after acquiring the lock, simply returning control to the calling transaction.
 Once locks for all operations in a transaction have been acquired, a transaction commit is sent to each participating shard, which executes the *commit* part of each of the *prepared* operations. The commit stage performs any necessary mutation on the record and releases the lock.

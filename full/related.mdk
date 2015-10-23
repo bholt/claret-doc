@@ -2,7 +2,7 @@
 
 ## ADTs in databases
 
-There is significant historic work on introducing abstract data types into databases, to support custom indices [@Stonebraker:83;@Stonebraker:86]. The first algorithms for leveraging ADT semantics for concurrency control come from the mid 1980s, with Schwarz, Herlihy and Weihl [@Schwarz:84;@Weihl:1988;@Herlihy:88;@Fekete:90]. That work allowed databases to reason about the commutativity of operations within transactions using abstract locks, and allowed the database system to be extended with user-defined types that expressed their abstract behavior to the database. Another contemporary system [@Spector:85] used similar type-based locks with an early form of distributed transactions. However, since then, the concept has lost popularity. Claret revives these ideas and incorporates them into the modern world of key-value stores and web applications.
+ADT concepts were first used in databases to support custom indices [@Stonebraker:83;@Stonebraker:86]. The first algorithms for leveraging ADT semantics for concurrency control come from the mid 1980s, by Schwarz, Herlihy and Weihl [@Schwarz:84;@Weihl:1988;@Herlihy:88;@Fekete:90]. That work introduced abstract locks to allow databases to leverage commutativity and also allowed user-defined types that expressed their abstract behavior to the database. Another contemporary system [@Spector:85] used similar type-based locks with an early form of distributed transactions. However, since then, the concept has lost popularity. Claret revives these ideas and incorporates them into the modern world of key-value stores and web applications.
 
 ## Improving Transaction Concurrency
 

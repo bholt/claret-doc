@@ -44,14 +44,14 @@ save(
   expand_limits(y=0)+
   coord_cartesian(ylim=c(0,12))+
   scale_y_continuous(breaks=c(2,4,6,8,10,12))+
-  cc_ph_scales()+
+  cc_ph_scales(guide = guide_legend(nrow=5))+
   my_theme()+
   theme(
     panel.grid.major.x = element_line(color="grey80", size=0.2),
     panel.grid.minor.x = element_line(color="grey90", size=0.2),
     panel.grid.minor.y = element_line(color="grey90", size=0.2)
   )
-, w=5, h=3)
+, w=5, h=2.5)
 
 
 save(
