@@ -4,15 +4,15 @@
 ![Claret System Diagram](fig/system-diagram.pdf){.onecol}
 ~
 
-The concept of ADTs could be applied to many different datastores and systems. For Claret, we focus on one commonly employed system architecture: a sharded datastore shared by many stateless replicated application servers within a single datacenter.
+The concept of ADTs could be applied to many different datastores and systems. For Claret, we focus on one commonly employed system architecture, shown in [#system-diagram]: a sharded datastore shared by many stateless replicated application servers within a single datacenter.
 For horizontal scalability, datastores are typically divided into many shards, each containing a subset of the key space (often using consistent hashing), running on different hosts (nodes or cores).
-Frontend servers implement the core application logic and expose it via an API to end users which might be mobile clients or web servers. These servers are replicated to mitigate failures, but each instance may handle many concurrent end-user connections, mediating access to the backing datastore where application state resides.
+Frontend servers are the *clients* in our model, implementing the core application logic and exposing it via APIs to end users which might be mobile clients or web servers. These servers are replicated to mitigate failures, but each instance may handle many concurrent end-user connections, mediating access to the backing datastore where application state resides.
 
-Claret operates between application servers and the datastore. 
-Applications model their state using ADTs and the operations the allow, as they would in Redis; this application logic is implemented on the clients, which in this case are the frontend or application servers.
-Clients are responsible for coordinating their transactions, retrying if necessary.
+Claret operates between application servers and the datastore.
+Applications model their state using ADTs and operations on them, as they would in Redis, but differing from Redis, Claret strongly encourages the use of transactions to ease reasoning about consistency.
+Clients are responsible for coordinating their transactions, retrying if necessary, using multi-threading to handle concurrent end-user requests.
 A new ADT-aware concurrency control system is added to each shard of the core datastore.
-ADT optimizations occur both in the concurrency control system and in the client as it issues operations and prepares transactions, which will be explained in more depth in [#sec-leveraging].
+ADT awareness is used in both the concurrency control system and the client, which will be explained in more depth in [#sec-leveraging].
 
 ## Programming model
 
@@ -37,7 +37,7 @@ Individual operations in Claret are strictly linearizable, committing atomically
 ~
 
 
-Claret implements interactive distributed transactions with strict serializable isolation, similar to Spanner [@Spanner], with standard `begin`, `commit`, and `abort` functions and automatic retries. Claret does not limit the transaction interface; clients are free to perform any operations on any records within the scope of the transaction. Claret uses strict two-phase locking and acquires locks for each record accessed during transaction execution.
+Claret implements interactive distributed transactions with strict serializable isolation, similar to Spanner [@Spanner], with standard `begin`, `commit`, and `abort` functions and automatic retries. Claret supports general transactions: clients are free to perform any operations on any records within the scope of the transaction. It uses strict two-phase locking and acquires locks for each record accessed during transaction execution.
 
 To support arbitrary ADT operations in transactions, each operation is split into two parts, *prepare* and *commit*, which are executed on the shard holding the record. *Prepare* always starts by attempting to acquire the lock for the record. When the lock has been acquired, *prepare* may read any data it wishes from the record to compute a *result* which will be returned to the calling transaction. Operations returning *void* typically do nothing after acquiring the lock, simply returning control to the calling transaction.
 Once locks for all operations in a transaction have been acquired, a transaction commit is sent to each participating shard, which executes the *commit* part of each of the *prepared* operations. The commit stage performs any necessary mutation on the record and releases the lock.
@@ -45,5 +45,5 @@ Once locks for all operations in a transaction have been acquired, a transaction
 Similar to Spanner [@Spanner]), clients do not read their own writes; due to the buffering of mutations, operations always observe the state prior to the beginning of the transaction.
 We use a lock-based approach rather than optimistic concurrency control (OCC), but OCC should also benefit in similar ways from Claret's optimizations. [todo: OCC is known to fall over at high contention, phasing would not work with OCC?]
 
-Note that from the clients' view, there are no fundamental differences in programming model between Redis and Claret (with the exception of distributed transactions and custom types). 
-However, under the hood, Claret will be using its knowledge about the operations to improve performance in ways which we will describe next.
+Claret does not require major application modifications to express concurrency. From the clients' view, there are no fundamental differences between using Redis and Claret (except the addition of distributed transactions and custom types).
+Under the hood, however, Claret will use its knowledge about ADTs to improve performance in ways which we describe next.

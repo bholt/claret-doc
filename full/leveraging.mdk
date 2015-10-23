@@ -20,7 +20,7 @@
 <!-- As was alluded to earlier, data types hold the key. Specifically, the notion of  -->
 
 In Claret, programmers express application-level semantics through ADTs. We know that the `Bid` transactions in [#fig-levels] should commute somehow, and we need to be able to determine the current high bid.
-A `topk` set meets our needs: it associates a score with each item, but only tracks the ones with the top scores. Because `topk.add` operations commute, `Bid` transactions no longer conflict. Applications express their desired semantics by choosing the most specific ADT for their needs, either by choosing from the built-in ADTs ([#tab-adt-list]) or implementing their own (see [#sec-expressing]).
+A `topk` set meets our needs: it associates a score with each item, but is optimized to track those with the highest scores. Because `topk.add` operations commute, `Bid` transactions no longer conflict. Applications express their desired semantics by choosing the most specific ADT for their needs, either by choosing from the built-in ADTs ([#tab-adt-list]) or implementing their own (see [#sec-expressing]).
 
 Abstract data types decouple their abstract behavior from their low-level concrete implementation.
 Abstract operations can have properties such as commutativity, associativity, or monotonicity, which define how they can be reordered or executed concurrently, while the concrete implementation takes care of performing the necessary synchronization.
