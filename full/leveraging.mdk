@@ -24,7 +24,7 @@
 
 
 
-In Claret, programmers express application-level semantics through ADTs [todo: bit redundant?]. We know that the `Bid` transactions in [#fig-levels] should commute somehow, but how do we implement them so that this is true? We wish to track all the bids for each item and determine the maximum bid. The solution is to choose data types that capture the behavior we want. A *scored set* data type allows the items in the set to be ranked according to a score associated with each item, which works perfectly for tracking an item's bids, shown in [#fig-adt-bid]. Because `zset.add` operations commute, `Bid` transactions will now also commute. [todo: kinda wordy]
+[todo: reference set of data types?] In Claret, programmers express application-level semantics through ADTs [todo: bit redundant?]. We know that the `Bid` transactions in [#fig-levels] should commute somehow, but how do we implement them so that this is true? We wish to track all the bids for each item and determine the maximum bid. The solution is to choose data types that capture the behavior we want. A *scored set* data type allows the items in the set to be ranked according to a score associated with each item, which works perfectly for tracking an item's bids, shown in [#fig-adt-bid]. Because `zset.add` operations commute, `Bid` transactions will now also commute. [todo: kinda wordy]
 
 Abstract data types decouple their abstract behavior from their low-level concrete implementation.
 Abstract operations can have properties such as commutativity, associativity, or monotonicity, which tell users how they can be reordered or executed concurrently, while the concrete implementation takes care of making it so by performing the necessary synchronization. 

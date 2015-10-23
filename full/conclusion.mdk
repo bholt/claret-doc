@@ -1,3 +1,3 @@
 # Conclusion
 
-[todo: write me]
+Reading is easy. If all applications were purely browsing static content, then contention would not be a problem; geo-replication and caching could handle most problems with skew. However, the reality is that interaction is key to these applications, so they must deal with real-world contention. Claret helps mitigate contention by allowing programmers to expose concurrency among transactions at the application level through ADTs, which the datastore leverages in optimizations to the transaction protocol. Together, these optimizations lead to significant speedups in high contention scenarios, without hurting performance on lighter workloads: up to 49x on our microbenchmark, 68x on a bid-heavy auction workload, and 4x on Twitter. This places strongly consistent transactions close enough to non-transactional performance (often within 33%) to make them practical for common use.
