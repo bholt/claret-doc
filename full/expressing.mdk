@@ -23,8 +23,8 @@ The next sections will show how ADT behavior is specified in Claret to expose ab
 | `ScoredSet`    | Set with unique items ranked by an        |
 |                | associated score (`add`, `size`, `range`) |
 |----------------|-------------------------------------------|
-| `TopK`         | Like `ScoredSet` but keeps highest        |
-|                | ranked items (`add`,`max`)                |
+| `TopK`         | Like `ScoredSet` but keeps only           |
+|                | highest-ranked items (`add`, `max`, ...)  |
 |----------------|-------------------------------------------|
 | `SummaryBag`   | Container where only summary stats        |
 |                | of added items can be retrieved           |
@@ -77,18 +77,18 @@ Claret uses abstract locks to perform transaction boosting. With these locks, pr
 
 The phasing optimization described in [#sec-phasing] requires knowing how to divide operations for each ADT into phases. Claret accomplishes this by pairing a *phaser* with the abstract lock on each record.
 With phasing enabled, whenever an operation fails to acquire a lock, the concurrency controller *enqueues* the operation into the *phaser* for that record. When all operations in a phase have committed, the abstract lock *signals* the phaser, requesting operations to start a new phase.
-The simplest phaser implementations simply keep queues corresponding to *modes* (sets of operation types that always commute with one another). [#lst-phaser], for example, shows `adders`, which will contain all operations that may insert into the list (just `add`), and `readers`, which includes any read-only operations (`size`, `contains`, `rangeByScore`, etc).
+The simplest phaser implementations simply keep queues corresponding to *modes* (sets of operation types that always commute with one another). [#lst-phaser], for example, shows `adders`, which will contain all operations that may insert into the list (just `add`), and `readers`, which includes any read-only operations (`size`, `contains`, `range`, etc).
 More complicated phaser implementations may allow operations to have multiple possible modes or more complicated state-dependent ways of determining which operations to signal when.
 
 ## Combiner
 
-~ Fig { #fig-combining caption="Combining `rangeByScore` operations: the second operation's result can be computed locally from the first because its range is a subset of the first, so the two can be combined." }
-![Combiner for rangeByScore](fig/combiner.pdf){.onecol}
+~ Fig { #fig-combining caption="Combining `range` operations: the second operation's result can be computed locally from the first because its range is a subset of the first, so the two can be combined." }
+![Combiner for range](fig/combiner.pdf){.onecol}
 ~
 
 Finally, ADTs wishing to perform combining ([#sec-combining]) must implement a *combiner* to tell Claret how to combine operations.
 Combiners only have one method, `combine`, which attempts to match the provided operation against any other outstanding operations (operations that have acquired a lock but not committed yet).
 
-Remember from [#sec-transactions] that operations are split into *prepare* and *commit*. Combining is only concerned with the *prepare* part of the operation. Operations that do not return a value (such as `add`) are simple to combine: any commuting mutating operations essentially just share the acquired lock and commit together. Operations that return a value in the *prepare* step (any read), can only be combined if they can share the result. For the `zset.size`  operation, this is simple enough: all concurrent transactions should read the same size, so combined `size` ops can all return the size retrieved by the first one. [#fig-combining] illustrates a more complex example of combining two `rangeByScore` operations on a `zset`. The two operations can be combined because the second operation requests a sub-range of the first, so the combiner can compute the correct [todo: missing word?] locally.
+Remember from [#sec-transactions] that operations are split into *prepare* and *commit*. Combining is only concerned with the *prepare* part of the operation. Operations that do not return a value (such as `add`) are simple to combine: any commuting mutating operations essentially just share the acquired lock and commit together. Operations that return a value in the *prepare* step (any read), can only be combined if they can share the result. For the `zset.size`  operation, this is simple enough: all concurrent transactions should read the same size, so combined `size` ops can all return the size retrieved by the first one. [#fig-combining] illustrates a more complex example of combining two `range` operations on a `zset`. The two operations can be combined because the second operation requests a sub-range of the first, so the combiner can compute the correct [todo: missing word?] locally.
 
 [todo: how do things get into the set?] To avoid excessive matching, only operations declared *combinable* are compared. The client-side library, as discussed earlier, keeps track of outstanding combinable operations with a map of combiners indexed by key. Before sending an acquire request for a combinable operation, the client checks the combiner map for that key. If a combiner is not found, or the combine fails, the operation is sent to the server as usual. If it succeeds, the result of the acquire stage is returned immediately, and Claret handles merging the two transactions as described before.
