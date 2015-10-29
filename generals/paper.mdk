@@ -1,0 +1,76 @@
+title:       Generals
+
+author:      Brandon Holt
+affiliation: University of Washington
+email:       bholt@cs.uw.edu
+
+Heading Base: 2
+Bib style:    plainnat
+Bibliography: refs.bib
+doc class:    article
+css:          style/style.css
+Logo: False
+Package: etoolbox
+Package: fontspec
+
+#todo: color=red font-size=x-small font-family=HelveticaNeue-Light before='[' after=']'
+
+~P,~Span: replace="/\[(?:TODO|todo):\s*(.*?)\]/[\1]{#todo}/g"
+
+~H1: label='[§@h1]{.heading-label}' replace="/§//"
+~H2: label='[§@h1.@h1-h2]{.heading-label}' replace="/§//"
+
+~Fig: page-align=top label='Figure\ [@fig]{.figure-label}' replace='&source;&nl;&nl;[[**&label;.** ]{.caption-before}&caption;]{.figure-caption html-elem=fig-caption}&nl;{notag}&nl;'
+
+~Tab: page-align=top label='Table\ [@tab]{.figure-label}' replace='&source;&nl;&nl;[[**&label;.** ]{.caption-before}&caption;]{.fig-caption html-elem=fig-caption}&nl;{notag}&nl;'
+
+~Listing: page-align=top label='Listing\ [@listing]{.figure-label}' replace='&source;&nl;&nl;[[**&label;.** ]{.caption-before}&caption;]{.figure-caption html-elem=fig-caption}&nl;{notag}&nl;'              
+
+~ TexRaw
+
+\cssElemRuleDo{fig}{%
+  \cssIfHasClass{wide}%
+    {\cssDoBefore{\begin{figure*}[t]}%
+     \cssDoAfter{\end{figure*}}}%
+    {\cssDoBefore{\begin{figure}[t]}%
+     \cssDoAfter{\end{figure}}}%
+}
+
+\cssElemRuleDo{tab}{%
+  \cssIfHasClass{wide}%
+    {\cssDoBefore{\begin{table*}[t]}%
+     \cssDoAfter{\end{table*}}}%
+    {\cssDoBefore{\begin{table}[t]}%
+     \cssDoAfter{\end{table}}}%
+}
+
+\cssClassRuleDo{listing}{%
+  \cssDoBefore{\begin{figure}[t]}%
+     \cssDoAfter{\end{figure}}%
+}
+\renewcommand{\arraystretch}{1.2}
+
+\apptocmd{\sloppy}{\hbadness 10000\relax}{}{}
+
+\setmainfont{Merriweather-Light}
+\setmonofont[Scale=0.85]{Hasklig}
+
+~
+~ HtmlRaw
+<script>
+if (screen && screen.width > 480) {
+  document.write('<script async defer src="//hypothes.is/embed.js"><\/script>');
+}
+</script>
+~
+
+[TITLE]
+
+~ Abstract
+write me
+~
+
+[INCLUDE="outline"]
+
+# References {-}
+[BIB]
