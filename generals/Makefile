@@ -29,7 +29,7 @@ pdf-view: pdf
 	open -a Skim out/paper.pdf
 
 out/paper.html: $(SVG_SRCS) $(DEPS)
-	./pdf2svg.sh
+	../tools/pdf2svg.sh
 	mv out/paper.mdk .web.paper.mdk
 	madoko -v --odir=out .web.paper.mdk
 	mv out/{.web.,}paper.html
