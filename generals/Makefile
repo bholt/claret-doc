@@ -6,6 +6,9 @@ DEPS := refs.bib out/style Makefile
 
 all: web-view
 
+refs.bib: $(SRCS)
+	../tools/findrefs.rb
+
 out/%.mdk: %.mdk
 	mkdir -p out
 	sed 's/\.pdf/\.svg/' $< | sed 's/INCLUDE="/INCLUDE="out\//' > $@
