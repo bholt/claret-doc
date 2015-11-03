@@ -1,8 +1,10 @@
 
 SRCS := $(wildcard *.mdk)
+SVG_SRCS := $(SRCS:%.mdk=out/%.mdk)
+
 DEPS := refs.bib out/style Makefile
 
-all: pdf-view
+all: web-view
 
 out/%.mdk: %.mdk
 	mkdir -p out
@@ -23,7 +25,7 @@ final: pdf
 pdf-view: pdf
 	open -a Skim out/paper.pdf
 
-out/paper.html: $(SVG_SRCS) $(DEPS) $(PLOT_PDFS) $(FIGS_OUT)
+out/paper.html: $(SVG_SRCS) $(DEPS)
 	./pdf2svg.sh
 	mv out/paper.mdk .web.paper.mdk
 	madoko -v --odir=out .web.paper.mdk

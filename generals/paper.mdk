@@ -7,7 +7,7 @@ email:       bholt@cs.uw.edu
 Heading Base: 2
 Bib style:    plainnat
 Bibliography: refs.bib
-doc class:    article
+doc class:    [9pt]article
 css:          style/style.css
 Logo: False
 Package: etoolbox
@@ -70,7 +70,7 @@ if (screen && screen.width > 480) {
 write me
 ~
 
-[INCLUDE="outline"]
+[INCLUDE="intro"]
 
 # References {-}
 [BIB]
