@@ -1,1 +1,40 @@
 # Introduction
+
+How do programmers deal with distributed, replicated data?
+
+Consistency models are too heavy-handed and hard to understand.
+
+How can we naturally express application semantics?
+
+Why, really, are we even here?
+
+## Contention
+
+Contention occurs naturally at the confluence of skewed real-world access patterns and write-heavy interactive apps.
+
+## Concurrency
+
+Contention comes about *because* of concurrency. Lots of concurrent threads trying to access the shared resource.
+
+At the same time, concurrency is also our best tool to fight contention. We must find ways to increase concurrency *within the contended resource*, to allow more to use it at the same time.
+
+The trick is to find where this concurrency exists in applications.
+
+Eventually, there is no more strict concurrency to be exploited. The only way forward is to relax correctness. That's where replication comes in...
+
+## Replication
+
+Replication is done for many reasons: performance (introduce parallelism), reduce latency, fault tolerance, or availability.
+
+Geo-replication, mobile, and in-memory caches (memcached, Redis) are all examples of *replicated data*.
+
+We can't afford strict serializability, which would make them all appear as a single "machine", as we are used to in multi-core shared memory thanks to the efficiency of cache coherence. [todo: why not? why is it too expensive? (because of coordination? ordering constraints? — does cache coherence deal with order?)]
+
+Instead, we must deal with replicated data explicitly. Traditionally, we would do this with weak consistency models, analogous to weak memory models in computer architecture.
+
+Trade off consistency for performance, availability, etc.
+
+## A Better Programming Model
+
+[todo: super super rough] The goal of this work is to find better ways to avoid contention by exposing application semantics to the system. We will explore the many ways programmers have done this in the past and some implementation techniques which help reduce coordination or avoid contention. Then we will propose a new programming model that allows application semantics to be expressed easily, allows programmers to trade off consistency for performance, and allows many of the aforementioned coordination- and contention-avoidance techniques to be applied under the hood.
+
