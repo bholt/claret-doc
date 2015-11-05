@@ -69,7 +69,7 @@ if (screen && screen.width > 480) {
 [TITLE]
 
 ~ Abstract
-write me
+write me. test.
 ~
 
 [INCLUDE="intro"]
