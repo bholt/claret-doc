@@ -11,12 +11,12 @@ rel = relpath(curdir, root)
 
 args = ' '.join(sys.argv[1:])
 
-# parse docker settings into environment variables
-o = sp.check_output(["docker-machine","env","dev"])
-dockervars = { k: v.replace('"','') for (k,v) in [x.split('=') for x in o.split() if 'DOCKER' in x]}
-env.update(dockervars)
-
-print { k: env[k] for k in env if 'DOCKER' in k }
+if sys.platform == 'darwin':
+    # parse docker settings into environment variables
+    o = sp.check_output(["docker-machine","env","dev"])
+    dockervars = { k: v.replace('"','') for (k,v) in [x.split('=') for x in o.split() if 'DOCKER' in x]}
+    env.update(dockervars)
+    print { k: env[k] for k in env if 'DOCKER' in k }
 
 cmd = fmt('docker run -i --rm -v {root}:/src bholt/claret-r zsh -c "cd {rel}; Rscript --slave {args}"')
 print fmt("$ {cmd}")
