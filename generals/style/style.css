@@ -1,12 +1,13 @@
+
 body.madoko {
   font-family: 'Merriweather';
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 300;
 }
 
 .madoko code, .madoko pre {
-  font-family: Hasklig;
-  font-size: 13px;
+  font-family: 'Anonymous Pro', monospace;
+  font-size: 11px;
   text-rendering: optimizeLegibility;
 }
 

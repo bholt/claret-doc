@@ -57,6 +57,7 @@ Package: fontspec
 
 ~
 ~ HtmlRaw
+<link href='https://fonts.googleapis.com/css?family=Merriweather:700,300,300italic,700italic|Anonymous+Pro:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
 <script>
 if (screen && screen.width > 480) {
   document.write('<script async defer src="//hypothes.is/embed.js"><\/script>');
