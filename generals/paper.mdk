@@ -12,6 +12,7 @@ css:          style/style.css
 Logo: False
 Package: etoolbox
 Package: fontspec
+Package: [margin=1.5in]geometry
 
 #todo: color=red font-size=x-small font-family=HelveticaNeue-Light before='[' after=']'
 
