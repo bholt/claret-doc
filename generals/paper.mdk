@@ -7,7 +7,7 @@ email:       bholt@cs.uw.edu
 Heading Base: 2
 Bib style:    plainnat
 Bibliography: refs.bib
-doc class:    [9pt]article
+doc class:    [10pt]article
 css:          style/style.css
 Logo: False
 Package: etoolbox
@@ -52,8 +52,8 @@ Package: fontspec
 
 \apptocmd{\sloppy}{\hbadness 10000\relax}{}{}
 
-\setmainfont{Merriweather-Light}
-\setmonofont[Scale=0.85]{Hasklig}
+\setmainfont[Ligatures=TeX, Scale=0.9]{Lora}
+\setmonofont[Scale=0.85]{Anonymous Pro}
 
 ~
 ~ HtmlRaw
