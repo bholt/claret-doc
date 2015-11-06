@@ -12,6 +12,8 @@ SRCS := $(wildcard *.mdk)
 
 DEPS := refs.bib out/style Makefile
 
+NAME := claret-eurosys
+
 FIGS := \
 	system-diagram \
 	app-level \
@@ -66,24 +68,24 @@ out/paper.pdf: $(SRCS) $(PLOT_PDFS) $(DEPS) $(FIGS_OUT)
 pdf: out/paper.pdf
 
 final: pdf
-	cd out && pdfstill paper.pdf && mv paper.still.pdf claret.pdf
+	cd out && pdfstill paper.pdf && mv paper.still.pdf $(NAME).pdf
 
 pdf-view: pdf
 	open -a Skim out/paper.pdf
 
-out/paper.html: $(SVG_SRCS) $(DEPS) $(PLOT_PDFS) $(FIGS_OUT)
+out/$(NAME).html: $(SVG_SRCS) $(DEPS) $(PLOT_PDFS) $(FIGS_OUT)
 	./pdf2svg.sh
 	mv out/paper.mdk paper-web.mdk
 	madoko -v --odir=out paper-web.mdk
 	rm paper-web.mdk
-	mv out/paper{-web,}.html
+	mv out/{paper-web,$(NAME)}.html
 
-web: out/paper.html
+web: out/$(NAME).html
 
 web-view: web
-	open -a Safari out/paper.html
+	open -a Safari out/$(NAME).html
 
 clean:
-	rm -r out .web.paper.mdk plots/*.pdf plots/*.svg
+	rm -r out paper-web.mdk plots/*.pdf plots/*.svg
 
 .PHONY: all clean pdf web pdf-view web-view

@@ -1,4 +1,4 @@
-
+NAME := generals
 SRCS := $(wildcard *.mdk)
 SVG_SRCS := $(SRCS:%.mdk=out/%.mdk)
 
@@ -28,17 +28,17 @@ final: pdf
 pdf-view: pdf
 	open -a Skim out/paper.pdf
 
-out/paper.html: $(SVG_SRCS) $(DEPS)
+out/$(NAME).html: $(SVG_SRCS) $(DEPS)
 	../tools/pdf2svg.sh
 	mv out/paper.mdk paper-web.mdk
 	madoko -v --odir=out paper-web.mdk
 	rm paper-web.mdk
-	mv out/paper{-web,}.html
+	mv out/{paper-web,$(NAME)}.html
 
-web: out/paper.html
+web: out/$(NAME).html
 
 web-view: web
-	open -a Safari out/paper.html
+	open -a Safari out/$(NAME).html
 
 clean:
 	rm -r out paper-web.mdk

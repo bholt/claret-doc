@@ -9,11 +9,7 @@ all:
 	$(MAKE) -C full
 
 deploy:
-	# $(MAKE) -C papoc final
 	$(MAKE) -C eurosys final web
 	$(MAKE) -C generals final web
 	ssh bicycle "cd /cse/web/homes/bholt && mkdir -p pdf && mkdir -p draft"
-	scp eurosys/out/claret.pdf $(dest)/drafts/claret-eurosys.pdf
-	scp eurosys/out/paper.html $(dest)/drafts/claret-eurosys.html
-	scp generals/out/generals.pdf $(dest)/drafts/generals.pdf
-	scp generals/out/paper.html $(dest)/drafts/generals.html
+	scp eurosys/out/claret-eurosys.{pdf,html} generals/out/generals.{pdf,html} $(dest)/drafts/
