@@ -10,6 +10,10 @@ Bibliography: refs.bib
 doc class:    [10pt]article
 css:          style/style.css
 Logo: False
+
+Latex: ../tools/lualatexdvi
+Pdf Latex: xelatex
+
 Package: etoolbox
 Package: fontspec
 Package: [margin=1.5in]geometry

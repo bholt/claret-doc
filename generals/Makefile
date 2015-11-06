@@ -30,9 +30,10 @@ pdf-view: pdf
 
 out/paper.html: $(SVG_SRCS) $(DEPS)
 	../tools/pdf2svg.sh
-	mv out/paper.mdk .web.paper.mdk
-	madoko -v --odir=out .web.paper.mdk
-	mv out/{.web.,}paper.html
+	mv out/paper.mdk paper-web.mdk
+	madoko -v --odir=out paper-web.mdk
+	rm paper-web.mdk
+	mv out/paper{-web,}.html
 
 web: out/paper.html
 
@@ -40,6 +41,6 @@ web-view: web
 	open -a Safari out/paper.html
 
 clean:
-	rm -r out .web.paper.mdk
+	rm -r out paper-web.mdk
 
 .PHONY: all clean pdf web pdf-view web-view
