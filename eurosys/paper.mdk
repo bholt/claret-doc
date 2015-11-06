@@ -5,6 +5,9 @@ _author:      Brandon Holt, Irene Zhang, Dan Ports, Mark Oskin, Luis Ceze
 _affiliation: University of Washington
 _email:       {bholt,iyzhang,dkrp,oskin,luisceze}\@cs.uw.edu
 
+latex: ../tools/lualatexdvi
+pdf latex: xelatex
+
 Heading Base: 2
 Bib style:    plainnat
 Bibliography: refs.bib
