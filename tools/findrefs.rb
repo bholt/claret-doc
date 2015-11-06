@@ -12,7 +12,8 @@ proj_bib = File.exist?(f) ? BibTeX.open(f) : BibTeX::Bibliography.new
 changed = false
 
 # bib file to search within for missing references
-search_bib = BibTeX.open("#{ENV['HOME']}/Dropbox/all.bib")
+allbib = "#{ENV['HOME']}/Dropbox/all.bib"
+search_bib = BibTeX.open(allbib) if File.exist? allbib
 
 citekeys.each do |k|
   p = proj_bib[k]
