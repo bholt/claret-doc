@@ -73,9 +73,10 @@ pdf-view: pdf
 
 out/paper.html: $(SVG_SRCS) $(DEPS) $(PLOT_PDFS) $(FIGS_OUT)
 	./pdf2svg.sh
-	mv out/paper.mdk .web.paper.mdk
-	madoko -v --odir=out .web.paper.mdk
-	mv out/{.web.,}paper.html
+	mv out/paper.mdk paper-web.mdk
+	madoko -v --odir=out paper-web.mdk
+	rm paper-web.mdk
+	mv out/paper{-web,}.html
 
 web: out/paper.html
 
