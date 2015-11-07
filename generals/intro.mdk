@@ -1,16 +1,8 @@
 # Introduction
 
-How do programmers deal with distributed, replicated data?
-
-Consistency models are too heavy-handed and hard to understand.
-
-How can we naturally express application semantics?
-
-Why, really, are we even here?
-
 ## Contention
 
-Contention occurs naturally at the confluence of skewed real-world access patterns and write-heavy interactive apps.
+Contention occurs naturally at the confluence of skewed real-world access patterns and write-heavy interactive apps...
 
 ## Concurrency
 
@@ -34,7 +26,27 @@ Instead, we must deal with replicated data explicitly. Traditionally, we would d
 
 Trade off consistency for performance, availability, etc.
 
-## A Better Programming Model
+## Constraints
+
+Distributed applications have many competing requirements. At the very least, they are expected to be *scalable*, *fault tolerant*, and *highly available*. No matter how many users are active or where they are, they must be able to access the application and get something useful out of it.
+
+Competing with these desired properties is the need for *correctness* — an indulgence, to be sure, but some people seem to think they want it. Strong consistency, strict serializability, and ACID transactions are among the many useful programming tools that must be sacrificed to achieve the previous properties.
+
+Luckily, not everything requires the same level of precision or consistency. There are some actions, such as choosing the winning bid in an auction, or selling the last ticket, where exact correctness is required. However, there are many other situations, such as viewing recent popular tweets or trending hashtags, where users are unlikely to care or even know if the results are imprecise or stale. Even in the auction example, individuals glimpsing an auction in progress may tolerate a somewhat low estimate of the current top bid. While some of these constraints are *soft*, it is still desirable to be as close to correct as possible and there may be some threshold where incorrectness becomes intolerable. For instance, it is in the auction service's best interest to show the most up-to-date top bid in order to get the highest price and maximize the auction service's revenue and customer satisfaction.
+
+At the same time, there are hard and soft constraints on performance. Many services have service-level agreements (SLAs) promising a response within a given latency for all but the 99.9th percentile of requests. Hip startups must be able to handle all the requests from their exponentially growing user bases.
+
+Programmers of these distributed applications must constantly juggle these competing hard and soft correctness and performance constraints. There are a huge variety of techniques that have been invented over the years for handling them: new concurrency control schemes, programming models, and data representations, to name a few. Each has its own trade-offs, requiring varying degrees of application changes support them. There ought to be an abstraction that can help programmers make these competing trade-offs and inherit the body of existing optimization techniques.
+
+## Programming model wish list
+
+- Easy to reason about (composable, *meets programmer expectations*)
+- Minimize unnecessary constraints, expose application-level concurrency
+- Allow trading off consistency for performance (latency/availability)
+
+## Abstract data types: a new old programming model
+
+Abstract data types (ADTs), one of the oldest [todo: ?] abstractions of Computer Science, provide the core of our solution to the problem. ADTs expose a set of *logical operations* over *abstract state* of a data type while encapsulating the details of their implementation. This makes it easy for programmers and systems alike to reason about their behavior. This ease of reasoning extends to multiple data types, as ADTs can be composed in a variety of ways. Part of an ADT's specification is which operations are commutative or associative or monotonic with respect to the current state and each other, so they naturally express concurrency and ordering constraints, which systems can take advantage of. Finally, ADTs can be used to trade off precision as well by exposing inconsistency in the form of new data types and operations with error bounds, probability distributions, or other semantic approximations.
 
 [todo: super super rough] The goal of this work is to find better ways to avoid contention by exposing application semantics to the system. We will explore the many ways programmers have done this in the past and some implementation techniques which help reduce coordination or avoid contention. Then we will propose a new programming model that allows application semantics to be expressed easily, allows programmers to trade off consistency for performance, and allows many of the aforementioned coordination- and contention-avoidance techniques to be applied under the hood.
 
