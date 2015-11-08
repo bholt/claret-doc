@@ -1,4 +1,4 @@
-# Introduction
+# Introduction {#intro}
 
 ## Contention
 
@@ -26,7 +26,7 @@ Instead, we must deal with replicated data explicitly. Traditionally, we would d
 
 Trade off consistency for performance, availability, etc.
 
-## Constraints
+## Constraints {#constraints}
 
 Distributed applications have many competing requirements. At the very least, they are expected to be *scalable*, *fault tolerant*, and *highly available*. No matter how many users are active or where they are, they must be able to access the application and get something useful out of it.
 
@@ -48,5 +48,5 @@ Programmers of these distributed applications must constantly juggle these compe
 
 Abstract data types (ADTs), one of the oldest [todo: ?] abstractions of Computer Science, provide the core of our solution to the problem. ADTs expose a set of *logical operations* over *abstract state* of a data type while encapsulating the details of their implementation. This makes it easy for programmers and systems alike to reason about their behavior. This ease of reasoning extends to multiple data types, as ADTs can be composed in a variety of ways. Part of an ADT's specification is which operations are commutative or associative or monotonic with respect to the current state and each other, so they naturally express concurrency and ordering constraints, which systems can take advantage of. Finally, ADTs can be used to trade off precision as well by exposing inconsistency in the form of new data types and operations with error bounds, probability distributions, or other semantic approximations.
 
-[todo: super super rough] The goal of this work is to find better ways to avoid contention by exposing application semantics to the system. We will explore the many ways programmers have done this in the past and some implementation techniques which help reduce coordination or avoid contention. Then we will propose a new programming model that allows application semantics to be expressed easily, allows programmers to trade off consistency for performance, and allows many of the aforementioned coordination- and contention-avoidance techniques to be applied under the hood.
-
+This paper will explore the many existing ways of mitigating contention and managing weakly consistent replicated data and how ADTs can include all of them.
+[todo: ...]

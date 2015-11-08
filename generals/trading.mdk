@@ -1,0 +1,65 @@
+# Trading off consistency for performance
+
+In order to meet scalability, availability, and latency requirements, distributed systems programmers must routinely make trade-offs between consistency and performance [@Bailis:HAT;@Brewer:CAP;@Gilbert:CAP]. Continuing our recurring theme, the problem with consistency is not in the *average case*, but rather in the exceptional cases: those few *high contention* cases, and the *long tail* of disproportionately slow requests [@Dean:13:Tail].
+
+Many solutions have been proposed that deal with various aspects of the problem. Even just choosing which one is right in a given scenario is a daunting task, so in this section I will attempt to organize and categorize the various benefits and costs of each technique. But first we must discuss what consistency is.
+
+## Consistency models
+
+Analogous to memory models in computer architecture, consistency models refer to the allowable reorderings of operations and their visibility in a distributed system. Differing from architecture memory models where strong coherence is assumed, consistency models frequently expose the existence of replicas to programmers. This makes them significantly more difficult to reason about, as if memory models were not complex enough.
+<!-- Consistency models can be loosely organized along an axis of increasing ordering guarantees. -->
+
+The strongest consistency model, *strict serializability* (Lamport's *sequential consistency* [@Lamport:79:SC] combined with Herlihy's *linearizability* [@Herlihy:90:Linear]) guarantees that operations appear to occur in a global serial order that all observers agree on and that corresponds to real time. This, and any form of consistency that requires enforcing a *global total order* is theoretically impossible to enforce with *high availability* due to the possibility of network partitions (this is the essence of the CAP theorem [@Brewer:CAP;@Gilbert:CAP]). In practice, strict serializability may not be wholly impractical for the average case, but ensuring it in *all* cases is prohibitively expensive.
+
+At the other extreme, *eventual consistency*, the least common denominator among consistency models, simply guarantees that if update operations stop occurring, all replicas will eventually reflect the same state [@Vogels:EC]. Under this model, programmers cannot count on subsequent operations reflecting the same state, because those operations could go to any replica at any time, and those replicas are continuously receiving updates from other nodes.
+
+There are a whole family of models similar to eventual consistency which add various ordering constraints:
+
+- *Monotonic writes* ensure that writes from a client are serialized.
+- *Monotonic reads* ensures that reads will not observe earlier values than have been seen by a particular client already
+- *Read-your-writes* ensures that a client will at least observe its own effects
+- *Causal consistency* ensures that operations from different clients causally following a write will observe that write (by some definition of *causation* which the system must track)
+
+There are too many variations on these and other models to enumerate, including combinations of them. Each restricts the possible reorderings, making some cases easier for programmers to reason about, while also reducing the flexibility of the system and reducing performance. For instance, many require *sticky sessions* [@Terry:94:Session], which forces clients to continue communicating with a particular replica, even if it is not the fastest, or lowest latency, or most up-to-date one available.
+
+As a way of trading off consistency for performance, weak consistency models are a poor choice. A particular consistency model must often be chosen at a very coarse grain, possibly at the level of an entire database's configuration. Applications can enforce stronger guarantees on top of a weaker model by using various consensus protocols, but these must be chosen and implemented carefully, and the extra code written to handle this is not easily adapted to changes in the underlying consistency model.
+
+##  Bounded staleness
+
+In theory, eventually consistent systems provide absolutely no guarantees during execution because there is no bound on the time it must take for updates to propagate, and there are almost no situations where updates are guaranteed not to occur. In practice, however, programmers typically observe very few actual consistency errors, even at large scale [@Lu:15:Facebook]. This is because the propagation time, or *inconsistency window* is typically very small, on the order of tens of milliseconds [@Bailis:12:PBS], so few accesses observe the gap. However, programmers cannot rely on these observations because they do not hold in all cases. High contention situations are particularly problematic because with more concurrent updates and accesses, the chances of observing inconsistencies is much higher, and the value is also likely to be further from the correct value.
+
+In order to help programmers reason about staleness, Bailis et al. [@Bailis:12:PBS] introduced a metric called *probabilistically bounded staleness* (PBS) which quantifies the staleness of accesses, either in terms of *time* or *versions*. By observing the distributions of propagation delays, round trip times, and rate of updates, their implementation builds a model of the system and uses it to predict staleness during execution.
+
+## Consistency-based SLAs
+[todo: figure showing an example SLA]
+
+With *consistency based SLAs* [@Terry:13:SLAs], programmers can explicitly trade off consistency for latency. A consistency SLA specifies a target latency and a consistency level (e.g. 100 ms with read-my-writes). In this programming model, operations specify a set of desired SLAs, each associated with a *utility*. Using a prediction mechanism similar to PBS, the Pileus system attempts to determine which SLA to target to maximize utility, typically to achieve the best consistency possible within a certain latency.
+
+Allowing users to specify their desired latencies and consistencies directly to the system could be extremely powerful and freeing. However, because it is so fine-grained, the burden of choosing target latencies and consistency for each operation could be quite high, and it seems difficult to compose a sequence of operations and SLAs to achieve an overall target latency or correctness criteria.
+
+## Annotating constraints
+[todo: figure showing annotations for both on bank account example]
+
+Some recent work has explored ways of enforcing stronger ordering guarantees where necessary within the context of eventual consistency. Commonly used eventually consistent datastores support variable consistency levels, such as Cassandra [@cassandra] on a per-operation basis, and Riak [@riak] on user-defined namespaces. However, they leave programmers to determine where to use stronger consistency in order to achieve their correctness goals.
+
+Quelea [@Sivaramakrishnan:15:Quelea] has programmers write *contracts* to describe ordering constraints between operations and then automatically selects the correct consistency level for each operation to satisfy all of the contracts. Contracts are specified in terms of low-level consistency properties such as *visibility* and *session order*.
+For example, to ensure a non-negative bank account balance, a contract indicates that all `withdraw` operations must be visible to one another, forcing the operation to be executed with sequential consistency.
+Because correctness properties are specified *independent of a particular consistency model*, or set of consistency levels, they are *composable* with each other and *portable* to other datastores supporting different consistency options. However, the low-level primitives used in contracts may not be intuitive for programmers and still require reasoning about all the possible anomalies between operations.
+
+Indigo [@Balegas:15:Indigo] takes a different approach to expressing application requirements: instead of specifying visibility and ordering constraints, programmers write *invariants over abstract state and state transitions*, and annotate *post-conditions* on actions to express their side-effects in terms of the abstract state. They then perform a static analysis to determine where concurrent execution could violate the invariants and add coordination logic to avoid those conflicts. To revisit the bank account example, in Indigo, one would specify an invariant such as `forall x: balance(x) >= 0`, and then indicate that `withdraw(x, y)` decrements `balance(x)` by `y`.
+
+Indigo's approach provides an excellent way to express application-level semantics and have the system automatically figure out how to enforce them. The primary downside is that abstract state must be modeled separately from the true application state. Additionally, though their invariants can specify hard constraints, they do not have a way to express the soft constraints we discussed in [#constraints].
+
+## Transactions
+
+Transactions are a well-established way to provide stronger guarantees among some operations. By choosing the type and granularity of transactions, programmers have some control over the correctness and performance of their applications. Full ACID transactions, like strict serializability, require a global order so are prohibitive to scaling and high availability [@Pritchett:08:BASE]. Programmers do not need to give up all hope, though: there are several techniques for exposing additional concurrency within transactions to overcome this hurdle.
+
+### Transaction chopping
+
+This old technique [@Shasha:95] automates what programmers could do by hand: break up transactions into the minimal-sized pieces which must execute atomically, so that locks can be held only as long as absolutely necessary. This involves static analysis to find interleavings which must be disallowed and requires a mechanism for chaining transactions together so all the effects can be un-done on a later abort. A more recent system, Lynx [@Zhang:13:Lynx], additionally detects commutativity and wherever is not commutative, coordinates execution order across shards to allow transactions that would otherwise conflict to interleave safely.
+
+split transactions into groups and allow them to be concurrent [@Xie:15:ACIDAlt]
+
+### Salt transactions
+Observing that only some transactions are contentious and therefore problematic to run with ACID guarantees, the Salt system [@Xie:14:Salt] allows transactions with weaker guarantees ("BASE" transactions) to coexist safely with ACID transactions. Rather than give up ACID everywhere, using new locking schemes they ensure that BASE transactions do not violate the isolation guarantees of the ACID transactions. This allows programmers to convert transactions to the more error-prone eventually consistent semantics only *as needed* to achieve performance targets.
+
