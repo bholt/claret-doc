@@ -61,5 +61,7 @@ write me. test.
 [INCLUDE="intro"]
 [INCLUDE="programming"]
 [INCLUDE="trading"]
+[INCLUDE="techniques"]
+[INCLUDE="proposal"]
 
 [BIB]
