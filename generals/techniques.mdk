@@ -1,0 +1,13 @@
+# Techniques for avoiding contention
+
+## Transactions
+Programmers do not need to give up all hope, though: there are several techniques for exposing additional concurrency within transactions to overcome this hurdle.
+
+### Chopping and chaining
+This old technique [@Shasha:95] automates what programmers could do by hand: break up transactions into the minimal-sized pieces which must execute atomically, so that locks can be held only as long as absolutely necessary. This involves static analysis to find interleavings which must be disallowed and requires a mechanism for chaining transactions together so all the effects can be un-done on a later abort. 
+
+A more recent system, Lynx [@Zhang:13:Lynx], splits up transactions by shard and executes them as a *chain*, moving from shard to shard and coordinating execution order to allow conflicting transactions to interleave safely. Additionally, they statically find operations that are commutative and use the knowledge to avoid over-coordination.
+
+Callas [@Xie:15:ACIDAlt] takes this notion further 
+split transactions into groups and allow them to be concurrent [@Xie:15:ACIDAlt]
+

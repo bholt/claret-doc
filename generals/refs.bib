@@ -296,3 +296,77 @@
   year = {2014},
   month_numeric = {10}
 }
+@inproceedings{Alvaro:11:Bloom,
+  author = {Alvaro, Peter and Conway, Neil and Hellerstein, Joe and Marczak, William R},
+  booktitle = {Conference on Innovative Data Systems Research ({CIDR})},
+  date-added = {2015-09-23 20:51:05 +0000},
+  date-modified = {2015-11-09 02:24:02 +0000},
+  organization = {Citeseer},
+  pages = {249--260},
+  series = {CIDR},
+  title = {Consistency Analysis in Bloom: a CALM and Collected Approach.},
+  year = {2011}
+}
+@inproceedings{Conway:12:BloomL,
+  author = {Conway, Neil and Marczak, William R. and Alvaro, Peter and Hellerstein, Joseph M. and Maier, David},
+  booktitle = {Proceedings of the Third {ACM} Symposium on Cloud Computing - {SoCC} {\textquotesingle}12},
+  date-added = {2015-06-30 17:38:50 +0000},
+  date-modified = {2015-11-09 02:23:55 +0000},
+  doi = {10.1145/2391229.2391230},
+  publisher = {{ACM} Press},
+  series = {SoCC},
+  title = {Logic and lattices for distributed programming},
+  year = {2012}
+}
+@inproceedings{Alvaro:14:Blazes,
+  author = {Alvaro, Peter and Conway, Neil and Hellerstein, Joseph M. and Maier, David},
+  booktitle = {{IEEE} International Conference on Data Engineering},
+  date-added = {2015-11-09 02:24:25 +0000},
+  date-modified = {2015-11-09 02:25:00 +0000},
+  doi = {10.1109/icde.2014.6816639},
+  month = mar,
+  publisher = {Institute of Electrical {\\&} Electronics Engineers ({IEEE})},
+  title = {Blazes: Coordination analysis for distributed programs},
+  url = {http://dx.doi.org/10.1109/icde.2014.6816639},
+  year = {2014},
+  month_numeric = {3}
+}
+@techreport{Crooks:15:Tardis,
+  author = {Crooks, Natacha and Estrada, Nancy and Alvisi, Lorenzo and Clement, Allen},
+  date-added = {2015-11-09 00:46:00 +0000},
+  date-modified = {2015-11-09 00:50:30 +0000},
+  institution = {University of Texas at Austin},
+  month = jan,
+  number = {2186},
+  title = {TARDiS: Transactional Storage with Parallel Worlds},
+  url = {http://apps.cs.utexas.edu/tech_reports/reports/tr/TR-2186.pdf},
+  year = {2015},
+  month_numeric = {1}
+}
+@inproceedings{Burckhardt:12:ECTxn,
+  abstract = {<p>When distributed clients query or update shared data, eventual consistency can provide better availability than strong consistency models. However, programming and implementing such systems can be difficult unless we establish a reasonable consistency model, i.e. some minimal guarantees that programmers can understand and systems can provide effectively.  To this end, we propose a novel consistency model based on eventually consistent transactions. Unlike serializable transactions, eventually consistent transactions are ordered by two order relations (visibility and arbitration) rather than a single order relation. To demonstrate that eventually consistent transactions can be effectively implemented, we establish a handful of simple operational rules for managing replicas, versions and updates, based on graphs called revision diagrams. We prove that these rules are sufficient to guarantee correct implementation of eventually consistent transactions. Finally, we present two operational models (single server and server pool) of systems that provide eventually consistent transactions.</p>},
+  author = {Burckhardt, Sebastian and Fahndrich, Manuel and Leijen, Daan and Sagiv, Mooly},
+  booktitle = {Proceedings of the 22n European Symposium on Programming (ESOP)},
+  date-added = {2015-11-09 00:37:55 +0000},
+  date-modified = {2015-11-09 00:38:10 +0000},
+  month = mar,
+  publisher = {Springer},
+  title = {Eventually Consistent Transactions},
+  url = {http://research.microsoft.com/apps/pubs/default.aspx?id=158085},
+  year = {2012},
+  month_numeric = {3}
+}
+@inproceedings{Burckhardt:12:Cloud,
+  abstract = {<p>Mobile devices commonly access shared data stored on a server. To ensure responsiveness, many applications maintain local replicas of the shared data that remain instantly accessible even if the server is slow or temporarily unavailable. Despite its apparent simplicity and commonality, this scenario can be surprisingly challenging. In particular, a correct and reliable implementation of the communication protocol and the conflict resolution to achieve eventual consistency is daunting even for experts. To make eventual consistency more programmable, we propose the use of specialized cloud data types. These cloud types provide eventually consistent storage at the programming language level, and thus abstract the numerous implementation details (servers, networks, caches, protocols). We demonstrate (1) how cloud types enable simple programs to use eventually consistent storage without introducing undue complexity, and (2) how to provide cloud types using a system and protocol comprised of multiple servers and clients.</p>},
+  author = {Burckhardt, Sebastian and Fahndrich, Manuel and Leijen, Daan and Wood, Benjamin P.},
+  booktitle = {Proceedings of the 26th European Conference on Object-Oriented Programming (ECOOP)},
+  date-added = {2015-11-03 18:50:07 +0000},
+  date-modified = {2015-11-09 00:37:06 +0000},
+  month = jun,
+  publisher = {Springer},
+  series = {ECOOP},
+  title = {Cloud Types for Eventual Consistency},
+  url = {http://research.microsoft.com/apps/pubs/default.aspx?id=163842},
+  year = {2012},
+  month_numeric = {6}
+}
