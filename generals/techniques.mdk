@@ -5,7 +5,7 @@ So far, we have covered a number of programming models which helped mitigate con
 
 ## Combining
 Some operations on ADTs can be merged together *before* being applied to the object.
-This technique, known as *combining* [@flatCombining; @yew:combining-trees; @funnels] can drastically reduce contention on shared data structures and improve performance in situations where applying the combined operation is cheaper than applying the operations one-by-one. In distributed settings, combining can be even more useful as it effectively distributes synchronization for a single data structure over multiple hosts [@flat-combining-pgas13].
+This technique, known as *combining* [@flatCombining;@yew:combining-trees;@funnels] can drastically reduce contention on shared data structures and improve performance in situations where applying the combined operation is cheaper than applying the operations one-by-one. In distributed settings, combining can be even more useful as it effectively distributes synchronization for a single data structure over multiple hosts [@flat-combining-pgas13].
 
 Basically, combining exploits the *associativity* property of some operations to do part of the computation early, in parallel, before performing them on a shared data structure, where operations are serialized. Combining has been used in many different shared-memory systems to reduce contention and data movement; even MapReduce [@Dean:08:MapReduce] allows a *combiner* to be defined to lift part of the reducer's work into the mapper.
 
