@@ -1,5 +1,7 @@
 # Introduction {#intro}
 
+Imagine a young web app, bright-eyed and ready to face the world with a little local datastore to make sure it doesn't forget a moment of this exciting day. It reaches its thousandth customer and now that local datastore feels a bit cramped, so it swaps in a distributed key/value store that can grow with it. Then one day, it finally gets noticed — featured on TechCrunch and on the top of HackerNews — and suddenly it's inundated with people excited to try it out. The key/value store scales out to handle all the new data and users. But there is a problem: a couple nodes are receiving far more traffic than the rest. It turns out that Barack Obama just joined and everyone wants to see what he's doing. Other hot spots spring up here and there, whenever something important happens in the news, or 
+
 ## Contention
 
 Contention occurs naturally at the confluence of skewed real-world access patterns and write-heavy interactive apps...
