@@ -1,13 +1,10 @@
 # Mitigating Contention with Abstract Data Types
 
-## Completed Work
+## Combining with global shared data structures
 
-### Combining shared data structures
+## Claret: abstract data types for high-contention transactions
 
-### Claret
+## Disciplined inconsistency
+The way things currently are, weak consistency models force programmers to reason about orderings between individual operations, either by choosing a consistency model at a coarse grain and then reasoning about possible interleavings under that model, or specifying desired consistency or staleness on a per-operation basis.
 
-## Future Work
-
-### Disciplined Inconsistency
-
-
+The idea behind ADTs is to hide implementation details. Using IPA types, we can hide all the details of ordering, visibility, and staleness constraints behind the abstraction of data types with well-defined approximations. Relaxations are described in terms of weaker precision of values, wider ranges encompassing larger sets of possible values, wider probability distributions. They can be implemented using the wide variety of techniques we have covered in this paper.
