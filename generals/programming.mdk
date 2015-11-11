@@ -1,6 +1,26 @@
 
 <!-- Abstract data types have been used throughout most of the history of databases and concurrent systems to expose properties of applications to underlying systems.  -->
 
-~ Fig {#fig-constraints caption="Ordering and visibility constraints." }
+~ Center
+~~ Fig {#fig-constraints .zoom caption="Ordering and visibility constraints." }
 ![constraints](fig/constraints.pdf)
+~~
+~
+
+~ Center
+~~ Fig {#fig-uncertainty .zoom caption="Techniques for bounding uncertainty in terms of staleness and restricting possible values." }
+![uncertainty](fig/uncertainty.pdf)
+~~
+~
+
+~ Center
+~~ Fig {#fig-granularity .zoom caption="Granularity of various techinques. What is the best way for trading off consistency? For programmability?" }
+![granularity](fig/granularity.pdf)
+~~
+~
+
+~ Center
+~~ Fig {#fig-knowledge .zoom caption="Knowledge vs control: do techniques provide information to the programmer (about uncertainty/staleness/visibility), or do they give control over these properties?" }
+![knowledge](fig/knowledge.pdf){height=13em .align-center}
+~~
 ~
