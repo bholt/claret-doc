@@ -8,24 +8,39 @@ Then one day, pre-sales for the 7th Star Wars movie come out, almost 40 years af
 These hotspots overload your poor datastore, causing latencies to spike, users' connections to time out, and you have disappointed users who will not get to see the movie on opening night because you were not able to sell them a ticket.
 Even major players like Fandango, Regal, and AMC are plagued with service interruptions; some sites even crash or lose data.
 
-This kind of concentrated surge in traffic is a perfect illustration of the contention that occurs all the time in real-world workloads, from ticket sales to social networks. How do applications cope with this challenging workload? Many techniques over the many years have tackled this problem from different angles, from research on escrow and fragmenting aggregate fields in the 80s, to modern research on compiler-generated coordination logic from invariant annotations. Many techniques require a variety of changes to the programming model, while others improve underlying protocols and mechanisms. All are focused on exposing concurrency and making tasks simpler for programmers.
+This kind of concentrated surge in traffic is a perfect illustration of the contention that occurs all the time in real-world workloads, from ticket sales to social networks.
+Power law distributions are everywhere, from popularity of pages to number of followers, leading to network effects which magnify even the slightest signals. Events happening in realtime drive spikes in traffic — sporting events, political events. Taken all together, these effects create memes that propagate like viruses through social media and news sites. Interactivity is crucial to all of this — it both fuels the propagation of memes and directly causes contention.
+
+Paradoxically, though contention is not the average case, it is responsible for many of the most challenging problems: tail latency, failures, and inconsistency bugs.
+
+How do applications cope with this challenging workload?
+
+Many techniques over the many years have tackled this problem from different angles, from research on escrow and fragmenting aggregate fields in the 80s, to modern research on compiler-generated coordination logic from invariant annotations. Many techniques require a variety of changes to the programming model, while others improve underlying protocols and mechanisms. All are focused on exposing concurrency and making tasks simpler for programmers.
 This paper will explore the various dimensions upon which these techniques operate to expose concurrency and improve programmability and, using what we have learned from this prior work, propose a way to bring many of the techniques together under one simple and old abstraction: abstract data types.
 
 ## Mitigating contention
-
 ~Fig { #fig-hotspot caption="Overview of approaches for mitigating contention." }
 ![](fig/hotspot.pdf)
 ~
 
-Mitigating contention is about exposing concurrency. At the highest level, this can broken down into a few different broad approaches, shown in [#fig-hotspot].
+Mitigating contention is about exposing concurrency. At the highest level, this can be broken down into a few different broad approaches, shown in [#fig-hotspot].
 
 First, is there any concurrency on the contended record which can be exposed within this shard of the datastore? If operations on the record are commutative, then they can safely run concurrently without changing the semantics; *abstract locks* ([#sec-abstract-locks]) leverage this to allow transactions to overlap and avoid false conflicts. *Escrow* ([#sec-escrow]) allows the record to be treated as if it was split into a pool of fragments.
 
 Second, if clients are multithreaded, as is the case with frontend web servers that typically handle many end-user requests concurrently, then some of the synchronization work can be offloaded to them. *Combining* ([#sec-combining]) leverages associativity to allow operations to be merged locally and executed as a single operation remotely, reducing the amount of work done on the overloaded datastore. Other techniques like *leases* ([#sec-leases]) let client-side caches avoid costly invalidation messages.
 
-Third, the load on the contended shard can be reduced by allowing clients to interact directly with replicas rather than funneling all writes through the master as is done in strongly consistent systems.
+Third, the load on the contended shard can be reduced if clients are allowed to interact directly with replicas rather than funneling all writes through the master as is done in strongly consistent systems.
 However, this comes at a significant programmability cost: the illusion of a single copy of data is broken and programmers must now reason about replicated state.
 Replicas typically share updates among each other asynchronously, and clients may communicate with multiple replicas, so they can observe effects out of order, or perform updates which conflict and result in inconsistent states.
+
+## Balancing requirements
+Mitigating contention is just one of the many competing requirements placed on distributed applications. At the minimum, they are expected to be *scalable*, *fault tolerant*, and *highly available* — no matter how many users are active or where they are, they expect to be able to access and get something useful out of the app.
+
+These performance constraints compete with the desire for *programmability* and *correctness*. Fundamentally, strong consistency cannot be provided with high availability — replication must be exposed in some way.
+Strict serializability and ACID transactions are among the many useful programming abstractions that must be broken to achieve those performance properties.
+Applications are still expected to appear mostly consistent, so developers are forced to think carefully about how to build correct systems with weaker guarantees and choose where to focus their effort.
+
+
 
 The plethora of weak consistency models, such as eventual consistency or causal consistency, exist to provide more reasonable programming models for working with such replicated state. And the massive body of research aimed at reigning in those models attests to their weaknesses and the difficulty programmers have in using them.
 
