@@ -35,23 +35,23 @@ Package: [margin=1.5in]geometry
 .UnlinedFloat : after='&nl;[[**&label;.** ]{.caption-before}[&caption;]{.caption-text}]{.figure-caption html-elem=fig-caption}&nl;{notag}&nl;'
 
 ~Img: max-width=100%
-.zoom: width=35em text-align=center
+.zoom: width=35em tex-text-align=center
 
 ~ TexRaw
 \renewcommand{\arraystretch}{1.2}
 
 \apptocmd{\sloppy}{\hbadness 10000\relax}{}{}
 
-\setmainfont[Ligatures=TeX, Scale=0.9]{Lora}
+\setmainfont[Scale=0.9]{Lora}
 \setmonofont[Scale=0.85]{Anonymous Pro}
 
 ~
 ~ HtmlRaw
 <link href='https://fonts.googleapis.com/css?family=Anonymous+Pro:400,700,400italic,700italic|Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
 <script>
-if (screen && screen.width > 480) {
-  document.write('<script async defer src="//hypothes.is/embed.js"><\/script>');
-}
+// if (screen && screen.width > 480) {
+//  document.write('<script async defer src="http://hypothes.is/embed.js"><\/script>');
+// }
 </script>
 ~
 
