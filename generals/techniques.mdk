@@ -3,13 +3,13 @@
 So far, we have covered a number of programming models which helped mitigate contention by replicating data and weakening consistency. Now we will discuss some techniques that can be used to implement those programming models and actually expose concurrency within distributed systems. The goal of each of these techniques is to allow concurrency wherever it is safe and minimize the coordination necessary to accomplish it.
 <!-- Most of these techniques were designed to enforce strict correctness, such as strict commutativity among operations on an ADT. However, they can be co-opted to help enforce soft constraints as well.  -->
 
-## Combining
+## Combining {#sec-combining}
 Some operations on ADTs can be merged together *before* being applied to the object.
 This technique, known as *combining* [@flatCombining;@yew:combining-trees;@funnels] can drastically reduce contention on shared data structures and improve performance in situations where applying the combined operation is cheaper than applying the operations one-by-one. In distributed settings, combining can be even more useful as it effectively distributes synchronization for a single data structure over multiple hosts [@flat-combining-pgas13].
 
 Basically, combining exploits the *associativity* property of some operations to do part of the computation early, in parallel, before performing them on a shared data structure, where operations are serialized. Combining has been used in many different shared-memory systems to reduce contention and data movement; even MapReduce [@Dean:08:MapReduce] allows a *combiner* to be defined to lift part of the reducer's work into the mapper.
 
-## Abstract locks
+## Abstract locks {#sec-abstract-locks}
 
 ~ Tab { #tab-spec caption="Abstract Commutativity Specification for Set." }
 | Method             | Commute with   | When                        |
@@ -38,7 +38,7 @@ When used in the context of transactions (termed *transaction boosting*), abstra
 
 Provided a correct commutativity specification, abstract locks ensure linearizability — concurrent updates are only allowed when it is impossible to tell if they have been reordered. They are not designed for weakly consistent replicated data. For that, we must turn to the Law for inspiration.
 
-## Escrow, Reservations, and Leases
+## Escrow and Reservations {#sec-escrow}
 *Escrow* is a term from banking and legal proceedings where some amount of money is set aside and held by a third party in order to ensure it will be available for use at a later time after some (typically legal) condition is met. In database systems, this term has been borrowed for use in concurrency control to refer to "setting aside" some part of a record to be later committed.
 
 O'Neil's idea of *escrow* [@ONeil:86] came from work on Fast Path [@Gawlick:85] and Reuter's Transactional Method [@Reuter:82]. The idea was to increase concurrency on *aggregate fields*, such as fields keeping track of a count or a sum, which could become hot spots because they were updated frequently. The idea of *escrow* is to split up an aggregate value into a *pool* of partial values and allocate parts from the pool to transactions when they execute so that when they are ready to commit, they are guaranteed to be able to. For example, if a transaction is going to decrement an account balance as long there are sufficient funds, it will hold the amount it wishes to decrement *in escrow*. Other transactions can also decrement the balance, provided combined they will not leave the balance negative. If a transaction aborts, the escrowed values are returned to the pool.
@@ -47,8 +47,11 @@ Escrow can be extended to any *fragmentable object* [@Walborn:95], that is, any 
 
 *Reservations* [@Preguica:03] or *warranties* [@Liu:14:Warranties] can be thought of as escrow for replicated data. A reservation pre-allocates permission to do updates so that in the future they can be done without coordination. This moves coordination off the critical path and allows it to be amortized. For example, in Mobisnap [@Preguica:03] where they were first introduced, a salesman might reserve a number of tickets or a some quantity of a commodity, then while on the go, without connectivity, make a sale and know that it is safe to do so. Reservations are very easy to generalize — Indigo [@Balegas:15:Indigo] uses them to implement its application-specific conflict avoidance logic that includes auto-generated code.
 
-*Leases* are basically time-based reservations. First proposed for file system caches to avoid needing to send explicit invalidations [@Gray:89], they are now used in application caches in modern datacenters, such as in Facebook's Memcache system [@Nishtala:13:Memcache]. In addition to simply bounding staleness without explicit invalidation, leases can be used to indicate a promise that the value will not be updated for some time, or grant permission to perform updates for a certain amount of time [@Shrira:08].
-As opposed to reservations, a *lease* is set to expire at a particular time, so they are more suitable for situations where crashes are likely, rather than situations where guaranteed offline capabilities are desired.
+## Leases {#sec-leases}
+The problem with datastore reads is that by the time the client gets the result, it could already be out of date. Leases are a way of communicating how old a read is, by associating it with a time in the future when it should be considered stale.
+First proposed for file system caches to avoid needing to send explicit invalidations [@Gray:89], they are now used in application caches in modern datacenters, such as in Facebook's Memcache system [@Nishtala:13:Memcache]. In addition to simply bounding staleness without explicit invalidation, leases can be used to indicate a promise that the value will not be updated for some time.
+
+Leases can be combined with reservations to grant permission to perform updates for a fixed amount of time [@Shrira:08]. This has the benefit of allowing reservations to be reclaimed if a client crashes, or saving a return message if a recipient does not wish to use the reservation.
 
 ## Transactions
 [todo: this doesn't make sense] Programmers do not need to give up all hope, though: there are several techniques for exposing additional concurrency within transactions to overcome this hurdle.
