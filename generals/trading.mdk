@@ -1,11 +1,9 @@
 # Trading off consistency for performance
-
 In order to meet scalability, availability, and latency requirements, distributed systems programmers must routinely make trade-offs between consistency and performance [@Bailis:HAT;@Brewer:CAP;@Gilbert:CAP]. Continuing our recurring theme, the problem with consistency is not in the *average case*, but rather in the exceptional cases: those few *high contention* cases, and the *long tail* of disproportionately slow requests [@Dean:13:Tail].
 
 Many solutions have been proposed that deal with various aspects of the problem. Even just choosing which one is right in a given scenario is a daunting task, so in this section I will attempt to organize and categorize the various benefits and costs of each technique. But first we must discuss what consistency is.
 
 ## Consistency models
-
 Analogous to memory models in computer architecture, consistency models refer to the allowable reorderings of operations and their visibility in a distributed system. Differing from architecture memory models where strong coherence is assumed, consistency models frequently expose the existence of replicas to programmers. This makes them significantly more difficult to reason about, as if memory models were not complex enough.
 <!-- Consistency models can be loosely organized along an axis of increasing ordering guarantees. -->
 
@@ -25,7 +23,6 @@ There are too many variations on these and other models to enumerate, including 
 As a way of trading off consistency for performance, weak consistency models are a poor choice. A particular consistency model must often be chosen at a very coarse grain, possibly at the level of an entire database's configuration. Applications can enforce stronger guarantees on top of a weaker model by using various consensus protocols, but these must be chosen and implemented carefully, and the extra code written to handle this is not easily adapted to changes in the underlying consistency model.
 
 ##  Bounded staleness
-
 In theory, eventually consistent systems provide absolutely no guarantees during execution because there is no bound on the time it must take for updates to propagate, and there are almost no situations where updates are guaranteed not to occur. In practice, however, programmers typically observe very few actual consistency errors, even at large scale [@Lu:15:Facebook]. This is because the propagation time, or *inconsistency window* is typically very small, on the order of tens of milliseconds [@Bailis:12:PBS], so few accesses observe the gap. However, programmers cannot rely on these observations because they do not hold in all cases. High contention situations are particularly problematic because with more concurrent updates and accesses, the chances of observing inconsistencies is much higher, and the value is also likely to be further from the correct value.
 
 In order to help programmers reason about staleness, Bailis et al. [@Bailis:12:PBS] introduced a metric called *probabilistically bounded staleness* (PBS) which quantifies the staleness of accesses, either in terms of *time* or *versions*. By observing the distributions of propagation delays, round trip times, and rate of updates, their implementation builds a model of the system and uses it to predict staleness during execution.

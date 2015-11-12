@@ -16,7 +16,7 @@ Pdf Latex: xelatex
 
 Package: etoolbox
 Package: fontspec
-Package: [margin=1.5in]geometry
+Package: [left=1.75in,right=1.75in,top=1in,bottom=1in]geometry
 
 #todo: color=red font-size=x-small font-family=HelveticaNeue-Light before='[' after=']'
 
@@ -42,7 +42,7 @@ Package: [margin=1.5in]geometry
 
 \apptocmd{\sloppy}{\hbadness 10000\relax}{}{}
 
-\setmainfont[Scale=0.9]{Crimson Text}
+\setmainfont{Crimson}
 \setmonofont[Scale=0.85]{Anonymous Pro}
 
 ~
