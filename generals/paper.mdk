@@ -35,7 +35,7 @@ Package: [margin=1.5in]geometry
 .UnlinedFloat : after='&nl;[[**&label;.** ]{.caption-before}[&caption;]{.caption-text}]{.figure-caption html-elem=fig-caption}&nl;{notag}&nl;'
 
 ~Img: max-width=100%
-.zoom: width=35em tex-text-align=center
+.zoom: max-width=35em tex-text-align=center
 
 ~ TexRaw
 \renewcommand{\arraystretch}{1.2}
