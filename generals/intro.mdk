@@ -33,7 +33,7 @@ To be clear, techniques in the first and second categories can be applied to rep
 
 The third category requires much more drastic changes to programming models than the first two because it forces programmers to sacrifice consistency guarantees. However, weak consistency unlocks further improvements to performance properties like availability and lower latency that are impossible with strong consistency. In this work I will focus mostly on techniques that fall into this category because these are the most challenging to understand and require the most significant changes for programmers.
 
-## Balancing requirements
+## Balancing requirements {#sec-requirements}
 Mitigating contention is just one of the many competing requirements placed on distributed applications. At the minimum, they are expected to be *scalable*, *fault tolerant*, and *highly available* — no matter how many users are active or where they are, they expect to be able to access and get something useful out of the app.
 
 These performance constraints compete with the desire for *programmability* and *correctness*. Fundamentally, strong consistency cannot be provided with high availability — replication must be exposed in some way.
