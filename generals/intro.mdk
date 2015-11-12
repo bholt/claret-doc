@@ -12,26 +12,26 @@ This kind of concentrated surge in traffic is a perfect illustration of the cont
 Power law distributions are everywhere, from popularity of pages to number of followers, leading to network effects which magnify even the slightest signals. Events happening in realtime drive spikes in traffic — sporting events, political events. Taken all together, these effects create memes that propagate like viruses through social media and news sites. Interactivity is crucial to all of this — it both fuels the propagation of memes and directly causes contention.
 
 Paradoxically, though contention is not the average case, it is responsible for many of the most challenging problems: tail latency, failures, and inconsistency bugs.
-
-How do applications cope with this challenging workload?
-
-Many techniques over the many years have tackled this problem from different angles, from research on escrow and fragmenting aggregate fields in the 80s, to modern research on compiler-generated coordination logic from invariant annotations. Many techniques require a variety of changes to the programming model, while others improve underlying protocols and mechanisms. All are focused on exposing concurrency and making tasks simpler for programmers.
-This paper will explore the various dimensions upon which these techniques operate to expose concurrency and improve programmability and, using what we have learned from this prior work, propose a way to bring many of the techniques together under one simple and old abstraction: abstract data types.
+Most of the time, an application may work correctly, with low latency and no noticeable inconsistency. However, in that 99th percentile case, contention results in a hot spot, where latencies spike, failure rates go up, and in the case of weakly consistent systems, consistency can degrade, exposing bugs or resulting in user-visible inconsistencies.
 
 ## Mitigating contention
+Many techniques over the many years have tackled this problem from different angles, from research on escrow and fragmenting aggregate fields in the 80s [@ONeil:86], to modern research on compiler-generated coordination based on annotations [@Balegas:15:Indigo;@Sivaramakrishnan:15:Quelea]. Many techniques require a variety of changes to the programming model, while others improve underlying protocols and mechanisms. All are focused on exposing concurrency and making tasks simpler for programmers, but they can be broken down into three broad approaches, shown in [#fig-hotspot].
+
+<!-- This paper will explore the various dimensions upon which these techniques operate to expose concurrency and improve programmability and, using what we have learned from this prior work, propose a way to bring many of the techniques together under one simple and old abstraction: abstract data types. -->
+
 ~Fig { #fig-hotspot caption="Overview of approaches for mitigating contention." }
 ![](fig/hotspot.pdf)
 ~
 
-Mitigating contention is about exposing concurrency. At the highest level, this can be broken down into a few different broad approaches, shown in [#fig-hotspot].
+1. Is there any concurrency within the contended record which can be exposed? If operations on the record are commutative, they can safely run concurrently without changing the semantics; *abstract locks* ([#sec-abstract-locks]) leverage this to allow transactions to overlap and avoid false conflicts. *Escrow* ([#sec-escrow]) allows the record to be treated as if it was split into a pool of fragments.
 
-First, is there any concurrency on the contended record which can be exposed within this shard of the datastore? If operations on the record are commutative, then they can safely run concurrently without changing the semantics; *abstract locks* ([#sec-abstract-locks]) leverage this to allow transactions to overlap and avoid false conflicts. *Escrow* ([#sec-escrow]) allows the record to be treated as if it was split into a pool of fragments.
+2. If clients are multithreaded, as is the case with frontend web servers that typically handle many end-user requests concurrently, then some of the synchronization work can be offloaded to them. *Combining* ([#sec-combining]) leverages associativity to allow operations to be merged locally and executed as a single operation remotely, reducing the amount of work done on the overloaded datastore. Other techniques like *leases* ([#sec-leases]) let client-side caches avoid costly invalidation messages.
 
-Second, if clients are multithreaded, as is the case with frontend web servers that typically handle many end-user requests concurrently, then some of the synchronization work can be offloaded to them. *Combining* ([#sec-combining]) leverages associativity to allow operations to be merged locally and executed as a single operation remotely, reducing the amount of work done on the overloaded datastore. Other techniques like *leases* ([#sec-leases]) let client-side caches avoid costly invalidation messages.
+3. If clients are allowed to interact with weakly-synchronized replicas, the load on the contended shard can be reduced. However, this comes at a significant programmability cost: the illusion of a single copy of data is broken and programmers must now reason about replicated state. Weakly synchronized replicas share updates asynchronously, and clients may communicate with multiple replicas, so they can observe effects out of order, or perform updates which conflict and result in inconsistent states.
 
-Third, the load on the contended shard can be reduced if clients are allowed to interact directly with replicas rather than funneling all writes through the master as is done in strongly consistent systems.
-However, this comes at a significant programmability cost: the illusion of a single copy of data is broken and programmers must now reason about replicated state.
-Replicas typically share updates among each other asynchronously, and clients may communicate with multiple replicas, so they can observe effects out of order, or perform updates which conflict and result in inconsistent states.
+To be clear, techniques in the first and second categories can be applied to replicated state and maintain strong consistency. Strong consistency requires writes to be linearizable [@Herlihy:90:Linear], which can be accomplished with replication either by funneling through a single master or by a consensus protocol like Paxos [@Lamport:01:Paxos] that makes replicas appear like a single machine. Techniques like E-Paxos [@Moraru:13:EPaxos] would fall under (1) because they expose concurrency while maintaining the single-machine view.
+
+The third category requires much more drastic changes to programming models than the first two because it forces programmers to sacrifice consistency guarantees. However, weak consistency unlocks further improvements to performance properties like availability and lower latency that are impossible with strong consistency. In this work I will focus mostly on techniques that fall into this category because these are the most challenging to understand and require the most significant changes for programmers.
 
 ## Balancing requirements
 Mitigating contention is just one of the many competing requirements placed on distributed applications. At the minimum, they are expected to be *scalable*, *fault tolerant*, and *highly available* — no matter how many users are active or where they are, they expect to be able to access and get something useful out of the app.
@@ -40,64 +40,31 @@ These performance constraints compete with the desire for *programmability* and 
 Strict serializability and ACID transactions are among the many useful programming abstractions that must be broken to achieve those performance properties.
 Applications are still expected to appear mostly consistent, so developers are forced to think carefully about how to build correct systems with weaker guarantees and choose where to focus their effort.
 
+Luckily, not everything requires the same level of precision or consistency. 
+Some actions, such as selling the last ticket to Star Wars' opening night, require precise, consistent execution. Other situations, such as viewing the number of retweets for a popular tweet, do not need to be exactly correct — users may be satisfied as long as the number is the right order of magnitude. Even within the ticket sales example, there is room for relaxation: while there are still thousands of tickets remaining, the exact count shown to users need not be precise, though it ought to be close enough that users can estimate how soon it may sell out. These constraints, both *hard* and *soft*, are typically very difficult or impossible to express in current systems.
 
+[todo: figure showing ticket sales' counts at 1000 and at 1]
 
-The plethora of weak consistency models, such as eventual consistency or causal consistency, exist to provide more reasonable programming models for working with such replicated state. And the massive body of research aimed at reigning in those models attests to their weaknesses and the difficulty programmers have in using them.
+At the same time, there are hard and soft constraints on performance. Users demand speedy applications — the common wisdom is that companies lose money for every increase in response latency. Many systems have service-level agreements (SLAs) promising responses within a certain latency for all but the 99th percentile of requests. Throughput during peak times must be able to keep up with the load. Whatever trade offs are made to improve programmability must be balanced against meeting these performance targets, but it is not easy to quantify how changes will affect them.
 
+<!-- Programmers of these distributed applications must constantly juggle these competing hard and soft correctness and performance constraints. There are a huge variety of techniques that have been invented over the years for handling them: new concurrency control schemes, programming models, and data representations, to name a few. Each has its own trade-offs, requiring varying degrees of application changes support them. There ought to be an abstraction that can help programmers make these competing trade-offs and inherit the body of existing optimization techniques. -->
 
-In this work we will explore many ways of mitigating contention. 
-These problems and their solutions can be broken down along several axes:
+Programmers of these distributed applications must constantly juggle these competing hard and soft correctness and performance constraints.
+The plethora of weak consistency models, such as read-your-writes consistency or causal consistency, exist to provide more reasonable programming models for working with replicated state. The massive body of research aimed at reigning in those models attests to the difficulty programmers have in using them. To get a handle on how all the techniques relate to one another, we will explore them in terms of the properties they trade off:
 
 - Ordering constraints between operations
 - When and who updates become visible to
 - Uncertainty about the state in terms of staleness and possible values
 - Granularity: does it affect the whole system, specific records, or specific operations?
 
+## A better programming model
+After seeing a sampling of the wide variety of contention mitigating techniques, the natural question is how to bring them all together to give programmers a complete set of tools for exposing concurrency and trading off consistency. What that is really asking for is a programming model that can encompass that wide array of techniques. 
+The properties we want in such a programming model are:
 
+- Minimize unnecessary constraints, expose concurrency from the application
+- Allow trading off consistency for performance (latency, availability) 
+- Easy to reason about, meets programmer expectations
 
-## Concurrency
+Our proposed solution to this problem is an old one: *abstract data types* (ADTs). The core idea of ADTs is to present a clear abstract model of some state with operations on it, while hiding all the implementation details. Using ADTs as the building blocks for their applications, programmers can easily reason about their semantics. Distributed systems can take advantage of properties of the ADTs, such as commutativity, to reduce coordination, avoid conflicts, and improve performance. All the details of ordering constraints, visibility, and coordination can be hidden behind the abstraction of data types with well-defined behavior. Our implementations, in a distributed data analytics system, Grappa, and a prototype ADT-store, Claret, show significant performance improvements, especially under high contention. In future work, we propose using approximate data types to express soft constraints to take advantage of weak consistency where possible.
 
-Contention comes about *because* of concurrency. Lots of concurrent threads trying to access the shared resource.
-
-At the same time, concurrency is also our best tool to fight contention. We must find ways to increase concurrency *within the contended resource*, to allow more to use it at the same time.
-
-The trick is to find where this concurrency exists in applications.
-
-Eventually, there is no more strict concurrency to be exploited. The only way forward is to relax correctness. That's where replication comes in...
-
-## Replication
-
-Replication is done for many reasons: performance (introduce parallelism), reduce latency, fault tolerance, or availability.
-
-Geo-replication, mobile, and in-memory caches (memcached, Redis) are all examples of *replicated data*.
-
-We can't afford strict serializability, which would make them all appear as a single "machine", as we are used to in multi-core shared memory thanks to the efficiency of cache coherence. [todo: why not? why is it too expensive? (because of coordination? ordering constraints? — does cache coherence deal with order?)]
-
-Instead, we must deal with replicated data explicitly. Traditionally, we would do this with weak consistency models, analogous to weak memory models in computer architecture.
-
-Trade off consistency for performance, availability, etc.
-
-## Constraints {#constraints}
-
-Distributed applications have many competing requirements. At the very least, they are expected to be *scalable*, *fault tolerant*, and *highly available*. No matter how many users are active or where they are, they must be able to access the application and get something useful out of it.
-
-Competing with these desired properties is the need for *correctness* — an indulgence, to be sure, but some people seem to think they want it. Strong consistency, strict serializability, and ACID transactions are among the many useful programming tools that must be sacrificed to achieve the previous properties.
-
-Luckily, not everything requires the same level of precision or consistency. There are some actions, such as choosing the winning bid in an auction, or selling the last ticket, where exact correctness is required. However, there are many other situations, such as viewing recent popular tweets or trending hashtags, where users are unlikely to care or even know if the results are imprecise or stale. Even in the auction example, individuals glimpsing an auction in progress may tolerate a somewhat low estimate of the current top bid. While some of these constraints are *soft*, it is still desirable to be as close to correct as possible and there may be some threshold where incorrectness becomes intolerable. For instance, it is in the auction service's best interest to show the most up-to-date top bid in order to get the highest price and maximize the auction service's revenue and customer satisfaction.
-
-At the same time, there are hard and soft constraints on performance. Many services have service-level agreements (SLAs) promising a response within a given latency for all but the 99.9th percentile of requests. Hip startups must be able to handle all the requests from their exponentially growing user bases.
-
-Programmers of these distributed applications must constantly juggle these competing hard and soft correctness and performance constraints. There are a huge variety of techniques that have been invented over the years for handling them: new concurrency control schemes, programming models, and data representations, to name a few. Each has its own trade-offs, requiring varying degrees of application changes support them. There ought to be an abstraction that can help programmers make these competing trade-offs and inherit the body of existing optimization techniques.
-
-## Programming model wish list
-
-- Easy to reason about (composable, *meets programmer expectations*)
-- Minimize unnecessary constraints, expose application-level concurrency
-- Allow trading off consistency for performance (latency/availability)
-
-## Abstract data types: a new old programming model
-
-Abstract data types (ADTs), one of the oldest [todo: ?] abstractions of Computer Science, provide the core of our solution to the problem. ADTs expose a set of *logical operations* over *abstract state* of a data type while encapsulating the details of their implementation. This makes it easy for programmers and systems alike to reason about their behavior. This ease of reasoning extends to multiple data types, as ADTs can be composed in a variety of ways. Part of an ADT's specification is which operations are commutative or associative or monotonic with respect to the current state and each other, so they naturally express concurrency and ordering constraints, which systems can take advantage of. Finally, ADTs can be used to trade off precision as well by exposing inconsistency in the form of new data types and operations with error bounds, probability distributions, or other semantic approximations.
-
-This paper will explore the many existing ways of mitigating contention and managing weakly consistent replicated data and how ADTs can include all of them.
-[todo: ...]
+Before we get to that, we will explore the existing contention-mitigation techniques that will be used within the ADT abstraction.
