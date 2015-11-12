@@ -19,7 +19,7 @@ Many techniques over the many years have tackled this problem from different ang
 
 <!-- This paper will explore the various dimensions upon which these techniques operate to expose concurrency and improve programmability and, using what we have learned from this prior work, propose a way to bring many of the techniques together under one simple and old abstraction: abstract data types. -->
 
-~Fig { #fig-hotspot caption="Overview of approaches for mitigating contention." }
+~Fig { #fig-hotspot caption="Overview of approaches for mitigating contention, such as the hotspot in red." }
 ![](fig/hotspot.pdf)
 ~
 
