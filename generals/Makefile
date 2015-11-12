@@ -18,6 +18,10 @@ all: web-view
 refs.bib: $(SRCS)
 	../tools/findrefs.rb
 
+ifeq (, $(shell which omnigraffle-export))
+ $(shell touch fig/*.pdf)
+endif
+
 $(FIGS_OUT): fig/%.pdf: generals.graffle
 	omnigraffle-export -c $* generals.graffle $@
 
