@@ -1,10 +1,30 @@
 # Mitigating Contention with Abstract Data Types
+All together, the techniques described so far provide many useful tools for programmers to expose concurrency and trade off consistency to mitigate contention and improve performance.
+However, these techniques require information about the application or the programmer's intentions. Abstract locks require knowing the commutativity properties of operations. Consistency SLAs require the programmer to choose a set of SLAs for each operation. Quelea and Indigo both require programmers to write different annotations.
 
-## Combining with global shared data structures
+Abstract data types provide an interface that allows much of this information to be expressed in a way that is natural to programmers. They understand how a `Set` ADT behaves, and the system learns from this that `Set.add` operations commute with one another, but not always with `Set.size` ([#tab-spec]). Programmers can maximize the optimizations available to the system by selecting the most specific ADT for their usage. For instance, an application wishing to generate unique identifiers should prefer a `UniqueIDGenerator` over a generic `Counter`: incrementing a `Counter` must return the next number, but a `UniqueIDGenerator` lifts that restriction so can generate non-sequential IDs in parallel. Programmers can even provide their own application-specific ADTs or customize existing ones to make them more suitable.
+
+The concept of ADTs has been used to extend databases for many years – supporting custom indices and query planning [@Stonebraker:83;@Stonebraker:86], and concurrency control via abstract locks [@Herlihy:88;@Chrysanthis:91;@Badrinath:92;@Weihl:88:ADT]. Today's distributed systems deal with different challenges, and have evolved the many techniques described above to solve them, but they have not tied them back to the abstraction afforded by ADTs.
+
+So far, I have leveraged ADTs to mitigate contention by exposing concurrency in two different projects: Flat Combining in Grappa, and Claret. The final project, Disciplined Inconsistency, proposes to allow programmers to safely trade off consistency for performance by expressing tolerances and relaxations in terms of approximate ADTs.
+
+## Combining with global data structures in Grappa
 
 ## Claret: abstract data types for high-contention transactions
+One of the most popular key/value stores in use today is Redis [@redis], which is special in that it supports a much wider range of complex data types and many operations specific to each type. However, Redis does not support general distributed transactions because they are considered too expensive.
+
+*Claret* uses Redis's programming model, but leverages ADT properties to make distributed transactions practical even on high-contention workloads.
+Underneath the abstraction afforded by the complex data types, Claret implements abstract locks, combining, and a form of lock reordering called phasing. On three transactional workloads simulating realistic contention – a microbenchmark similar to YCSB+T [@YCSB-T], an online auction service, and a Twitter-like social network – Claret achieved a 3-50x speedup over naive transactions and within 67-82% of the performance without transactions.
+
+The ADTs used in Claret exposed concurrency without sacrificing safety or precision. Claret's optimizations addressed the first and second categories from [#fig-hotspot], unlocking safe concurrency within a single replica and offloading synchronization to clients. This leaves out a significant number of possibilities to further improve performance by trading off precision or consistency. The next project proposes to do just that.
 
 ## Disciplined inconsistency
-The way things currently are, weak consistency models force programmers to reason about orderings between individual operations, either by choosing a consistency model at a coarse grain and then reasoning about possible interleavings under that model, or specifying desired consistency or staleness on a per-operation basis.
+Weak consistency models force programmers to reason about orderings between individual operations, either by choosing a consistency model at a coarse grain and then reasoning about possible interleavings under that model, or specifying the desired consistency or staleness for each operation.
 
 The idea behind ADTs is to hide implementation details. Using IPA types, we can hide all the details of ordering, visibility, and staleness constraints behind the abstraction of data types with well-defined approximations. Relaxations are described in terms of weaker precision of values, wider ranges encompassing larger sets of possible values, wider probability distributions. They can be implemented using the wide variety of techniques we have covered in this paper.
+
+Now, consider again the scenario posed at the beginning, about a ticket sales app that failed to handle the load when the new Star Wars movie came out. Its programmers likely had several requirements in mind for the app's behavior. It should:
+
+- Sell each ticket to at most one user
+- Respond to user requests within 100ms
+- 
