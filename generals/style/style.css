@@ -8,7 +8,7 @@ body.madoko {
 
 .madoko code, .madoko pre {
   font-family: 'Anonymous Pro', monospace;
-  font-size: 15px;
+  font-size: 14px;
   text-rendering: optimizeLegibility;
 }
 
