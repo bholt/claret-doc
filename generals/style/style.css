@@ -3,6 +3,7 @@ body.madoko {
   font-family: 'Crimson Text', serif;
   font-size: 16px;
   font-weight: 300;
+  line-height: 1.2em;
 }
 
 .madoko code, .madoko pre {
