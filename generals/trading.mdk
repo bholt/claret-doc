@@ -20,12 +20,16 @@ There are a whole family of models similar to eventual consistency which add var
 
 There are too many variations on these and other models to enumerate, including combinations of them. Each restricts the possible reorderings, making some cases easier for programmers to reason about, while also reducing the flexibility of the system and reducing performance. For instance, many require *sticky sessions* [@Terry:94:Session], which forces clients to continue communicating with a particular replica, even if it is not the fastest, or lowest latency, or most up-to-date one available.
 
-As a way of trading off consistency for performance, weak consistency models are a poor choice. A particular consistency model must often be chosen at a very coarse grain, possibly at the level of an entire database's configuration. Applications can enforce stronger guarantees on top of a weaker model by using various consensus protocols, but these must be chosen and implemented carefully, and the extra code written to handle this is not easily adapted to changes in the underlying consistency model.
+As a way of trading off consistency for performance, weak consistency models are a poor choice. A particular consistency model must often be chosen at a very coarse grain, possibly at the level of an entire database's configuration. Applications can enforce stronger guarantees on top of a weaker model with various consensus protocols, but these must be chosen and implemented carefully, and the extra code written to handle this is not easily adapted to changes in the underlying consistency model.
+In general, weak consistency models are not modular: adding or changing an operation in one place may require changing assumptions about ordering elsewhere. Visibility constraints require considering all pairs of interacting operations to determine which orders are allowable.
 
 ##  Bounded staleness
 In theory, eventually consistent systems provide absolutely no guarantees during execution because there is no bound on the time it must take for updates to propagate, and there are almost no situations where updates are guaranteed not to occur. In practice, however, programmers typically observe very few actual consistency errors, even at large scale [@Lu:15:Facebook]. This is because the propagation time, or *inconsistency window* is typically very small, on the order of tens of milliseconds [@Bailis:12:PBS], so few accesses observe the gap. However, programmers cannot rely on these observations because they do not hold in all cases. High contention situations are particularly problematic because with more concurrent updates and accesses, the chances of observing inconsistencies is much higher, and the value is also likely to be further from the correct value.
 
 In order to help programmers reason about staleness, Bailis et al. [@Bailis:12:PBS] introduced a metric called *probabilistically bounded staleness* (PBS) which quantifies the staleness of accesses, either in terms of *time* or *versions*. By observing the distributions of propagation delays, round trip times, and rate of updates, their implementation builds a model of the system and uses it to predict staleness during execution.
+
+## CRDTs
+...
 
 ## Consistency-based SLAs
 [todo: figure showing an example SLA]

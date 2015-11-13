@@ -18,13 +18,39 @@ Underneath the abstraction afforded by the complex data types, Claret implements
 
 The ADTs used in Claret exposed concurrency without sacrificing safety or precision. Claret's optimizations addressed the first and second categories from [#fig-hotspot], unlocking safe concurrency within a single replica and offloading synchronization to clients. This leaves out a significant number of possibilities to further improve performance by trading off precision or consistency. The next project proposes to do just that.
 
-## Disciplined inconsistency
-Weak consistency models force programmers to reason about orderings between individual operations, either by choosing a consistency model at a coarse grain and then reasoning about possible interleavings under that model, or specifying the desired consistency or staleness for each operation.
+# Disciplined Inconsistency
+Our goal is to come up with a programming model that helps programmers balance all of these competing requirements; ideally, it should have the following properties:
 
-The idea behind ADTs is to hide implementation details. Using IPA types, we can hide all the details of ordering, visibility, and staleness constraints behind the abstraction of data types with well-defined approximations. Relaxations are described in terms of weaker precision of values, wider ranges encompassing larger sets of possible values, wider probability distributions. They can be implemented using the wide variety of techniques we have covered in this paper.
+- Expose safe concurrency  Minimize unnecessary constraints by exposing safe concurrency
+- Express where and what errors can be tolerated, so consistency can be traded for performance.
+- Communicate performance requirements such as target latency or availability.
+- Modular and easy to reason about.
 
-Now, consider again the scenario posed at the beginning, about a ticket sales app that failed to handle the load when the new Star Wars movie came out. Its programmers likely had several requirements in mind for the app's behavior. It should:
+At this point we have established that trading off consistency for performance is tricky business, involving making many decisions about what reorderings of operations should be allowed, when updates must be visible in order to ensure correct execution, or how consistent a read can be and still meet its latency SLA. Furthermore, programmers must make these decisions while keeping in mind that due to real-world effects, some data items will be significantly more contentious and inconsistent than others.
+The promise of ADTs is to hide implementation details – can we use them to hide some of these concerns? 
 
-- Sell each ticket to at most one user
-- Respond to user requests within 100ms
-- 
+With *imprecise, probabilistic and approximate (IPA) types*, we can express weaker constraints than previous ADTs, unlocking the possibility of using the techniques we have discussed to trade off consistency for performance.
+Operations on IPA types only allow views of the state that can be assured, which may mean withholding operations that would expose information preventing some optimization, or presenting users with less precise values such as ranges or distributions.
+IPA types encapsulate the ordering and visibility constraints necessary for whatever operations they allow, so they can be easily composed.
+
+<!-- The idea behind ADTs is to hide implementation details. Using IPA types, we can hide all the details of ordering, visibility, and staleness constraints behind the abstraction of data types with well-defined approximations. Relaxations are described in terms of weaker precision of values, wider ranges encompassing larger sets of possible values, wider probability distributions. They can be implemented using the wide variety of techniques we have covered in this paper. -->
+
+Now, consider again the scenario posed at the beginning, about a ticket sales app that failed to handle the load when the new Star Wars movie came out. Its programmers likely had several requirements in mind for the app's behavior:
+
+1. Do not sell more tickets than are available.
+2. Respond to user requests within 100ms or as fast as possible, from anywhere in the world.
+3. Show users the number of remaining tickets; this only needs to be a relatively close estimate.
+
+If we allow two replicas to both sell the last ticket, we will violate the first requirement, so we need to enforce strong consistency. However, this need not prevent replication at all times. Using escrow and reservations ([#sec-escrow]), we can distribute permissions to sell tickets among the replicas. Then, as long as there are tickets remaining, requests can be handled by any of the replicas. However, providing a precise count of remaining tickets would now require synchronizing all replicas. Luckily, (3) tells us that the count does not need to be precise.
+
+~ Fig {#fig-tickets caption="*Example IPA Type:* A `MovieTicket` ADT can be implemented using a more generic `Pool` type. Ticket sales must be strongly consistent, but the number of remaining tickets can be estimated, provided it gets more precise when there are few remaining." }
+![ticket sales example](fig/tickets.pdf)
+~
+
+
+## Dual bounds
+
+
+## Hard and soft constraints
+
+## Case studies

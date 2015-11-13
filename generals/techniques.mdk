@@ -47,11 +47,15 @@ Escrow can be extended to any *fragmentable object* [@Walborn:95], that is, any 
 
 *Reservations* [@Preguica:03] or *warranties* [@Liu:14:Warranties] can be thought of as escrow for replicated data. A reservation pre-allocates permission to do updates so that in the future they can be done without coordination. This moves coordination off the critical path and allows it to be amortized. For example, in Mobisnap [@Preguica:03] where they were first introduced, a salesman might reserve a number of tickets or a some quantity of a commodity, then while on the go, without connectivity, make a sale and know that it is safe to do so. Reservations are very easy to generalize — Indigo [@Balegas:15:Indigo] uses them to implement its application-specific conflict avoidance logic that includes auto-generated code.
 
+*Handoff* is a useful related technique which was used first to implement a scalable `Counter` CRDT [@Baquero:13:Handoff]. It allows replicas to redistribute permissions between replicas if some receive more requests than others, similar to how *work stealing* re-balances parallel tasks in Cilk [@Agrawal:07:Workstealing].
+
+
 ## Leases {#sec-leases}
 The problem with datastore reads is that by the time the client gets the result, it could already be out of date. Leases are a way of communicating how old a read is, by associating it with a time in the future when it should be considered stale.
 First proposed for file system caches to avoid needing to send explicit invalidations [@Gray:89], they are now used in application caches in modern datacenters, such as in Facebook's Memcache system [@Nishtala:13:Memcache]. In addition to simply bounding staleness without explicit invalidation, leases can be used to indicate a promise that the value will not be updated for some time.
 
 Leases can be combined with reservations to grant permission to perform updates for a fixed amount of time [@Shrira:08]. This has the benefit of allowing reservations to be reclaimed if a client crashes, or saving a return message if a recipient does not wish to use the reservation.
+
 
 ## Transactions
 [todo: this doesn't make sense] Programmers do not need to give up all hope, though: there are several techniques for exposing additional concurrency within transactions to overcome this hurdle.
