@@ -6,6 +6,11 @@ body.madoko {
   line-height: 1.2em;
 }
 
+.madoko .abstract {
+  font-size: 15px;
+  line-height: 1.2;
+}
+
 .madoko code, .madoko pre {
   font-family: 'Anonymous Pro', monospace;
   font-size: 14px;
