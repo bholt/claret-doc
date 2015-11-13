@@ -29,7 +29,7 @@ In theory, eventually consistent systems provide absolutely no guarantees during
 In order to help programmers reason about staleness, Bailis et al. [@Bailis:12:PBS] introduced a metric called *probabilistically bounded staleness* (PBS) which quantifies the staleness of accesses, either in terms of *time* or *versions*. By observing the distributions of propagation delays, round trip times, and rate of updates, their implementation builds a model of the system and uses it to predict staleness during execution.
 
 ## CRDTs
-...
+[todo: write me]
 
 ## Consistency-based SLAs
 [todo: figure showing an example SLA]
@@ -61,7 +61,7 @@ In it's pure form, Bloom's programming model can be quite restrictive, so later 
 ## Models inspired by distributed version control {#sec-revisions}
 One of the troubles with weakly consistent replication is that it is often not possible to construct a serializable history of an execution, which makes it very difficult to reason about which effects were visible to different clients at various points in time. Distributed version control systems (DVCS) like Git have inspired alternative ways of viewing concurrent execution. DVCSs allow individuals to work concurrently on *forks* or *branches* without interference and resolve conflicts at explicit *merge* points later. These histories are not serializable, but they still allow users to easily understand when effects become visible to different observers.
 
-The *push/pull model of transactions* formalized several consistency and transaction models in these terms inspired by DVCS. A model called *branch consistency* proposed for a system called TaRDIS [@Crooks:15:Tardis] uses the notion of branching and merging for isolation and conflict resolution in geo-replicated systems, delegating conflict resolution to applications.
+The *Push/Pull Model of Transactions* [@Koskinen:15:Pushpull] formalized several consistency and transaction models in these terms inspired by DVCS. A model called *branch consistency* proposed for a system called TaRDIS [@Crooks:15:Tardis] uses the notion of branching and merging for isolation and conflict resolution in geo-replicated systems, delegating conflict resolution to applications.
 
 *Concurrent revisions* [@Burckhardt:10:Revisions] proposes an execution model built around forking and joining state along with concurrent execution to make sharing explicit.
 In this model, concurrent tasks *fork* a copy of the state they access. Changes to forked state are only visible to that task and its descendants until the concurrent task is *joined* back in. On join, changes to forked data items are *merged* according to their type. For example, as a cumulative type, a forked `Counter` tracks increments made to it, and when *joined*, adds those increments to the original value. In this way, multiple concurrent tasks can increment the shared `Counter` without conflicting and it is clear exactly when their effects are made visible. Follow-on work extended the ideas of concurrent revisions and revision diagrams to reason about eventual consistency: in eventually consistent transactions [@Burckhardt:12:ECTxn] and  mobile/cloud applications [@Burckhardt:12:Cloud].

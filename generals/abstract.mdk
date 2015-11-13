@@ -1,0 +1,9 @@
+
+
+The online world is a dangerous place for interactive applications. A single post by Justin Bieber can slow Instagram to a crawl; a black and blue dress going viral sends Buzzfeed scrambling to stay afloat; Star Wars movie ticket pre-sales cause service interruptions for Fandango and crash others. Distributed application developers must work hard to handle these high-contention situations because though they are not the average case, they affect a large fraction of users.
+
+Techniques for mitigating contention abound, but many require programmers to make trade-offs between performance and consistency. In order to meet performance requirements such as high availability or latency targets, applications typically use weaker consistency models, shifting the burden of reasoning about replication to programmers. Developers must balance mechanisms which reign in consistency against their effect on performance and make difficult decisions about where precision is most critical.
+
+*Abstract data types* (ADTs) hide implementation details behind a clean abstract representation of state and behavior. 
+This high-level representation is easy for programmers build applications out of, and it also provides distributed systems with knowledge of application semantics, such as commutativity, which are necessary to apply contention-mitigating optimizations.
+With *imprecise, probabilistic, and approximate (IPA) types*, we can express weaker semantics than with traditional ADTs, enabling techniques for weak consistency to be used and allowing precision to be explicitly traded for performance where applications can tolerate error. In previous work, we have demonstrated that ADT awareness can result in significant performance improvements: 3-50x speedup in transaction throughput for high-contention workloads such as an eBay-like auction service and a Twitter-like social network. IPA types are proposed for future work.
