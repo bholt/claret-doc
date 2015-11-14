@@ -1,13 +1,13 @@
 # Trading off consistency for performance
 In order to meet scalability, availability, and latency requirements, distributed systems programmers must routinely make trade-offs between consistency and performance [@Bailis:HAT;@Brewer:CAP;@Gilbert:CAP]. Continuing our recurring theme, the problem with consistency is not in the *average case*, but rather in the exceptional cases: those few *high contention* cases, and the *long tail* of disproportionately slow requests [@Dean:13:Tail].
 
-Many solutions have been proposed that deal with various aspects of the problem. Even just choosing which one is right in a given scenario is a daunting task, so in this section I will attempt to organize and categorize the various benefits and costs of each technique. But first we must discuss what consistency is.
+Many solutions have been proposed that deal with various aspects of the problem; a useful overview of several can be found in [@Balegas:15:TowardsInvariants]. Even just choosing which one is right in a given scenario is a daunting task, so in this section I will attempt to organize and categorize the various benefits and costs of each technique. We will start with the most coarse-grained approach: consistency models.
 
 ## Consistency models
 Analogous to memory models in computer architecture, consistency models refer to the allowable reorderings of operations and their visibility in a distributed system. Differing from architecture memory models where strong coherence is assumed, consistency models frequently expose the existence of replicas to programmers. This makes them significantly more difficult to reason about, as if memory models were not complex enough.
 <!-- Consistency models can be loosely organized along an axis of increasing ordering guarantees. -->
 
-The strongest consistency model, *strict serializability* (Lamport's *sequential consistency* [@Lamport:79:SC] combined with Herlihy's *linearizability* [@Herlihy:90:Linear]) guarantees that operations appear to occur in a global serial order that all observers agree on and that corresponds to real time. This, and any form of consistency that requires enforcing a *global total order* is theoretically impossible to enforce with *high availability* due to the possibility of network partitions (this is the essence of the CAP theorem [@Brewer:CAP;@Gilbert:CAP]). In practice, strict serializability may not be wholly impractical for the average case, but ensuring it in *all* cases is prohibitively expensive.
+The strongest consistency model, *strict serializability* (roughly defined as Lamport's *sequential consistency* [@Lamport:79:SC] combined with Herlihy's *linearizability* [@Herlihy:90:Linear]) guarantees that operations appear to occur in a global serial order that all observers agree on and that corresponds to real time. This, and any form of consistency that requires enforcing a *global total order* is theoretically impossible to enforce with *high availability* due to the possibility of network partitions (this is the essence of the CAP theorem [@Brewer:CAP;@Gilbert:CAP]). In practice, strict serializability may not be wholly impractical for the average case, but ensuring it in *all* cases is prohibitively expensive.
 
 At the other extreme, *eventual consistency*, the least common denominator among consistency models, simply guarantees that if update operations stop occurring, all replicas will eventually reflect the same state [@Vogels:EC]. Under this model, programmers cannot count on subsequent operations reflecting the same state, because those operations could go to any replica at any time, and those replicas are continuously receiving updates from other nodes.
 
@@ -29,10 +29,29 @@ In theory, eventually consistent systems provide absolutely no guarantees during
 In order to help programmers reason about staleness, Bailis et al. [@Bailis:12:PBS] introduced a metric called *probabilistically bounded staleness* (PBS) which quantifies the staleness of accesses, either in terms of *time* or *versions*. By observing the distributions of propagation delays, round trip times, and rate of updates, their implementation builds a model of the system and uses it to predict staleness during execution.
 
 ## CRDTs
+[@Terry:95:Bayou] deterministic merge...
 [todo: write me]
 
 ## Consistency-based SLAs
-[todo: figure showing an example SLA]
+~ Fig { #fig-pileus caption="Pileus consistency-based SLA example." }
+~~ SubFigureRow
+~~~ SubFigure { caption="Code example." }
+```
+sla = ...
+c.put(key, value)
+value, consistency = c.get(key, sla)
+```
+
+~~~
+~~~ SubFigure { caption="Example Consistency SLA for a Shopping Cart." }
+| Consistency | Latency | Utility |
+|:-----------:|:-------:|:-------:|
+| Strong      | 300 ms  | 1.0     |
+| Eventual    | 300 ms  | 0.5     |
+|-------------|---------|---------|
+~~~
+~~
+~
 
 With *consistency based SLAs* [@Terry:13:SLAs], programmers can explicitly trade off consistency for latency. A consistency SLA specifies a target latency and a consistency level (e.g. 100 ms with read-my-writes). In this programming model, operations specify a set of desired SLAs, each associated with a *utility*. Using a prediction mechanism similar to PBS, the Pileus system attempts to determine which SLA to target to maximize utility, typically to achieve the best consistency possible within a certain latency.
 
@@ -41,7 +60,9 @@ Allowing users to specify their desired latencies and consistencies directly to 
 ## Annotating constraints
 [todo: figure showing annotations for both on bank account example]
 
-Some recent work has explored ways of enforcing stronger ordering guarantees where necessary within the context of eventual consistency. Commonly used eventually consistent datastores support variable consistency levels, such as Cassandra [@cassandra] on a per-operation basis, and Riak [@riak] on user-defined namespaces. However, they leave programmers to determine where to use stronger consistency in order to achieve their correctness goals.
+Several datastores allow consistency levels to be specified on a per-operation basis: research systems Gemini [@Li:12:RedBlue] (RedBlue consistency), and Walter [@Sovran:11:Walter], and production systems Cassandra [@cassandra] and Riak [@riak] (per object or namespace). However, they leave programmers to determine where to use stronger consistency in order to achieve their correctness goals, a very error-prone task. Recent work has explored ways of *automatically* choosing the correct consistency level or coordination strategy based on manual *annotations*.
+
+Sieve [@Li:14:Sieve] builds on top of Gemini, automatically determining where strong consistency is needed or selecting a suitable causally-consistent CRDT [todo: have these been defined yet?]. This relies on annotations: on the relational database schema to select the desired merge semantics in case of conflicts (e.g. last-writer-wins or add-over-remove), and a set of global application invariants.
 
 Quelea [@Sivaramakrishnan:15:Quelea] has programmers write *contracts* to describe ordering constraints between operations and then automatically selects the correct consistency level for each operation to satisfy all of the contracts. Contracts are specified in terms of low-level consistency properties such as *visibility* and *session order*.
 For example, to ensure a non-negative bank account balance, a contract indicates that all `withdraw` operations must be visible to one another, forcing the operation to be executed with sequential consistency.
