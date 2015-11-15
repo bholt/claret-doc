@@ -2,9 +2,9 @@
 In order to meet scalability, availability, and latency requirements, distributed systems programmers must routinely make trade-offs between consistency and performance [@Bailis:HAT;@Brewer:CAP;@Gilbert:CAP]. 
 In the *typical* case, consistency does not pose a problem, even for geo-replicated systems – most requests are reads, requests for the same user typically go to the same server, and inconsistency windows after updates are usually small [@Lu:15:Facebook;@Bailis:HAT]. Consistency becomes problematic in those exceptional *high contention* cases and the *long tail* of disproportionately slow requests [@Dean:13:Tail]. However, these cases are almost pathologically bad – high contention not only means many updates that cause inconsistent reads, but also more users makes it more likely to get noticed. The events most likely to cause problems are also the most news-worthy.
 
-Targeting performance for the average case can lead to catastrophic failures in the contentious cases, but the complexity of handling all of the worst cases damages programmability. This burden will become abundantly clear over the rest of this section as we look at the axes which programmers must consider in making their choices.
+Targeting performance for the average case can lead to catastrophic failures in the contentious cases, but the complexity of handling all of the worst cases damages programmability. This burden will become abundantly clear over the next few sections as we look at the axes which programmers must traverse in making their choices.
 
-## Ordering and visibility constraints
+# Ordering and visibility constraints
 Understanding the behavior of a sequence of operations in a program requires knowing all of the ordering and visibility constraints that govern what each operation returns and when each update actually runs. How these constraints are set is determined by the programming model.
 
 ## Consistency models
@@ -26,16 +26,74 @@ There are too many variations on these and other models to enumerate, including 
 As a way of trading off consistency for performance, weak consistency models are a poor choice. A particular consistency model must often be chosen at a very coarse grain, possibly at the level of an entire database's configuration. Applications can enforce stronger guarantees on top of a weaker model with various consensus protocols, but these must be chosen and implemented carefully, and the extra code written to handle this is not easily adapted to changes in the underlying consistency model.
 In general, weak consistency models are not modular: adding or changing an operation in one place may require changing assumptions about ordering elsewhere. Visibility constraints require considering all pairs of interacting operations to determine which orders are allowable.
 
-##  Bounded staleness
+
+## Transactions
+Transactions are a well-established way to provide stronger guarantees among some operations. By choosing the type and granularity of transactions, programmers have some control over the *ordering* and *visibility* of their operations. 
+Like strict serializability, full ACID transactions require a global order so are prohibitive to scaling and high availability, leading to the development of weaker transaction models.
+As the antithesis of the strong guarantees of ACID, some have termed these weaker semantics *"BASE"* (Basically Available, Soft state, Eventually Consistent) [@Pritchett:08:BASE]. Luckily, programmers are not restricted to simply choosing between these two extremes; some have proposed ways to bridge the gap.
+
+### Salt: Combining ACID and BASE
+Just as a small fraction of data items are responsible for the majority of contention, the same is true for transactions. Rather than forcing programmers to give up ACID semantics for their entire application, Salt [@Xie:14:Salt] allows transactions with BASE semantics to coexist safely with ACID transactions. Using new locking schemes, they ensure that transactions executing with weaker BASE semantics cannot violate the strong safety guarantees of the ACID transactions.
+
+Converting an ACID transaction to execute without those guarantees is an error-prone task; it involves considering all the new possible interleavings and establishing how to resolve all the possible conflicts without coordination. Salt's model means that programmers only need to "BASE-ify" the transactions causing performance or scaling problems. This makes it relatively straightforward to trade off consistency where necessary, but does not do much to help programmers deal with the weaker semantics.
+
+### RAMP transactions
+Even without guarantees of a serializable total order, there are still benefits to supporting atomic updates: preventing foreign key constraint violations, and ensuring that indexes and other derived data are as up-to-date as the backing data. In support of these safety properties, *RAMP (Read Atomic Multi-Partition) transactions* provide coordination-free atomic visibility for multiple updates. They work by *staging* updates on all participating shards so they can force the complete set of updates for a transaction to be made *visible* at one point in time. They dynamically detect racy reads and fix them by either selecting an appropriate staged version or waiting for another round of communication. Because these determinations are made locally, they cannot guarantee global mutual exclusion or serializability.
+
+## Models inspired by distributed version control {#sec-revisions}
+One of the troubles with weakly consistent replication is that it is often not possible to construct a serializable history of an execution, which makes it very difficult to reason about which effects were visible to different clients at various points in time. Distributed version control systems (DVCS) like Git have inspired alternative ways of viewing concurrent execution. DVCSs allow individuals to work concurrently on *forks* or *branches* without interference and resolve conflicts at explicit *merge* points later. These histories are not serializable, but they still allow users to easily understand when effects become visible to different observers.
+
+The *Push/Pull Model of Transactions* [@Koskinen:15:Pushpull] formalized several consistency and transaction models in these terms inspired by DVCS. A model called *branch cnsistency* proposed for a system called TaRDIS [@Crooks:15:Tardis] uses the notion of branching and merging for isolation and conflict resolution in geo-replicated systems, delegating conflict resolution to applications.
+
+*Concurrent revisions* [@Burckhardt:10:Revisions] proposes an execution model built around forking and joining state along with concurrent execution to make sharing explicit.
+In this model, concurrent tasks *fork* a copy of the state they access. Changes to forked state are only visible to that task and its descendants until the concurrent task is *joined* back in. On join, changes to forked data items are *merged* according to their type. For example, as a cumulative type, a forked `Counter` tracks increments made to it, and when *joined*, adds those increments to the original value. In this way, multiple concurrent tasks can increment the shared `Counter` without conflicting and it is clear exactly when their effects are made visible. Follow-on work extended the ideas of concurrent revisions and revision diagrams to reason about eventual consistency: in eventually consistent transactions [@Burckhardt:12:ECTxn] and  mobile/cloud applications [@Burckhardt:12:Cloud].
+
+These programming models show that there is hope for reasoning about weakly consistent replicated data. The *isolation types* and *cloud types* from concurrent revisions provide useful semantics for working with highly contended data. In these models, trading off consistency for performance is not as clear-cut; *revision diagrams* and DVCS histories imply strict coordination points. It is also unclear how to enforce global constraints on forked data. Consider again the ticket sales example: in order to ensure tickets are not over-sold, concurrent forks must somehow know how many of the remaining tickets they are allowed to sell, without knowing how many other forks exist, breaking the abstraction.
+
+## Annotating constraints
+~ Fig {#fig-annotations caption="*Annotating application invariants.* Annotations are used to determine where coordination is necessary and what consistency is required to enforce it." }
+![annotations](fig/annotations.pdf)
+~
+
+Several datastores allow consistency levels to be specified on a per-operation basis: research systems Gemini [@Li:12:RedBlue] (RedBlue consistency), and Walter [@Sovran:11:Walter], and production systems Cassandra [@cassandra] and Riak [@riak] (per object or namespace). However, they leave programmers to determine where to use stronger consistency in order to achieve their correctness goals, a very error-prone task. Recent work has explored ways of *automatically* choosing the correct consistency level or coordination strategy based on manual *annotations*.
+
+Sieve [@Li:14:Sieve] builds on top of Gemini, automatically determining where strong consistency is needed or selecting a suitable causally-consistent CRDT [todo: have these been defined yet?]. This relies on annotations: on the relational database schema to select the desired merge semantics in case of conflicts (e.g. last-writer-wins or add-over-remove), and a set of global application invariants.
+
+Quelea [@Sivaramakrishnan:15:Quelea] has programmers write *contracts* to describe ordering constraints between operations and then automatically selects the correct consistency level for each operation to satisfy all of the contracts. Contracts are specified in terms of low-level consistency properties such as *visibility* and *session order*.
+For example, to ensure a non-negative bank account balance, a contract indicates that all `withdraw` operations must be visible to one another, forcing the operation to be executed with sequential consistency.
+Because correctness properties are specified *independent of a particular consistency model*, or set of consistency levels, they are *composable* with each other and *portable* to other datastores supporting different consistency options. However, the low-level primitives used in contracts may not be intuitive for programmers and still require reasoning about all the possible anomalies between operations.
+
+Indigo [@Balegas:15:Indigo] takes a different approach to expressing application requirements: instead of specifying visibility and ordering constraints, programmers write *invariants over abstract state and state transitions*, and annotate *post-conditions* on actions to express their side-effects in terms of the abstract state. They then perform a static analysis to determine where concurrent execution could violate the invariants and add coordination logic to avoid those conflicts. To revisit the bank account example, in Indigo, one would specify an invariant such as `forall x: balance(x) >= 0`, and then indicate that `withdraw(x, y)` decrements `balance(x)` by `y`.
+
+Indigo's approach provides an excellent way to express application-level semantics and have the system automatically figure out how to enforce them. The primary downside is that abstract state must be modeled separately from the true application state. Additionally, though their invariants can specify hard constraints, they do not have a way to express the soft constraints we discussed in [#sec-requirements].
+
+## Review
+~ Center
+~~ Fig {#fig-constraints .zoom caption="Ordering and visibility constraints." }
+![constraints](fig/constraints.pdf)
+~~
+~
+
+[#fig-constraints] organizes the systems we have so far discussed along axes of increased ordering and visibility constraints. There is no *best* point in this space – increased ordering constraints come with restrictions which limit availability and increased latency. The best solutions, therefore, provide the most flexibility and control over the constraints they can enforce.
+
+Weak consistency models provide little in the way of ordering or visibility guarantees. With eventual consistency at the very bottom, Read-Your-Writes additionally constrains operations within a session to be visible to one another, while Monotonic Writes force some order among writes, and Monotonic Reads the *visibility* of those ordered writes.
+Of the consistency models, Causal provides the most programmer control – essentially arbitrary constraints can be created by forcing the system to consider them causally linked.
+
+RAMP transactions and Concurrent Revisions allow explicit control over visibility but little control over ordering between transactions, placing them at the top left of [#fig-constraints].
+Because Salt allows weaker transactions to interoperate with ACID transactions, it allows programmers to select from range of ordering and visibility levels depending on need.
+
+The annotation-based techniques provide the most explicit control over these constraints. Quelea, with contracts specifically on these constraints, provides the most control, but at a lower level of abstraction than Indigo's application-level invariants.
+
+
+## Uncertainty
+Another aspect of inconsistency is uncertainty about what values a variable may hold. Factoring out the effects of ordering and visibility constraints, which of course influence what values will be seen, we can analyze how techniques affect our reasoning about 
+
+###  Bounded staleness
 In theory, eventually consistent systems provide absolutely no guarantees during execution because there is no bound on the time it must take for updates to propagate, and there are almost no situations where updates are guaranteed not to occur. In practice, however, programmers typically observe very few actual consistency errors, even at large scale [@Lu:15:Facebook]. This is because the propagation time, or *inconsistency window* is typically very small, on the order of tens of milliseconds [@Bailis:12:PBS], so few accesses observe the gap. However, programmers cannot rely on these observations because they do not hold in all cases. High contention situations are particularly problematic because with more concurrent updates and accesses, the chances of observing inconsistencies is much higher, and the value is also likely to be further from the correct value.
 
 In order to help programmers reason about staleness, Bailis et al. [@Bailis:12:PBS] introduced a metric called *probabilistically bounded staleness* (PBS) which quantifies the staleness of accesses, either in terms of *time* or *versions*. By observing the distributions of propagation delays, round trip times, and rate of updates, their implementation builds a model of the system and uses it to predict staleness during execution.
 
-## CRDTs
-[@Terry:95:Bayou] deterministic merge...
-[todo: write me]
-
-## Consistency-based SLAs
+### Consistency-based SLAs
 ~ Fig { #fig-pileus caption="Pileus consistency-based SLA example." }
 ~~ SubFigureRow
 ~~~ SubFigure { caption="Code example." }
@@ -60,22 +118,9 @@ With *consistency based SLAs* [@Terry:13:SLAs], programmers can explicitly trade
 
 Allowing users to specify their desired latencies and consistencies directly to the system could be extremely powerful and freeing. However, because it is so fine-grained, the burden of choosing target latencies and consistency for each operation could be quite high, and it seems difficult to compose a sequence of operations and SLAs to achieve an overall target latency or correctness criteria.
 
-## Annotating constraints
-~ Fig {#fig-annotations caption="*Annotating application invariants.* Annotations are used to determine where coordination is necessary and what consistency is required to enforce it." }
-![annotations](fig/annotations.pdf)
-~
-
-Several datastores allow consistency levels to be specified on a per-operation basis: research systems Gemini [@Li:12:RedBlue] (RedBlue consistency), and Walter [@Sovran:11:Walter], and production systems Cassandra [@cassandra] and Riak [@riak] (per object or namespace). However, they leave programmers to determine where to use stronger consistency in order to achieve their correctness goals, a very error-prone task. Recent work has explored ways of *automatically* choosing the correct consistency level or coordination strategy based on manual *annotations*.
-
-Sieve [@Li:14:Sieve] builds on top of Gemini, automatically determining where strong consistency is needed or selecting a suitable causally-consistent CRDT [todo: have these been defined yet?]. This relies on annotations: on the relational database schema to select the desired merge semantics in case of conflicts (e.g. last-writer-wins or add-over-remove), and a set of global application invariants.
-
-Quelea [@Sivaramakrishnan:15:Quelea] has programmers write *contracts* to describe ordering constraints between operations and then automatically selects the correct consistency level for each operation to satisfy all of the contracts. Contracts are specified in terms of low-level consistency properties such as *visibility* and *session order*.
-For example, to ensure a non-negative bank account balance, a contract indicates that all `withdraw` operations must be visible to one another, forcing the operation to be executed with sequential consistency.
-Because correctness properties are specified *independent of a particular consistency model*, or set of consistency levels, they are *composable* with each other and *portable* to other datastores supporting different consistency options. However, the low-level primitives used in contracts may not be intuitive for programmers and still require reasoning about all the possible anomalies between operations.
-
-Indigo [@Balegas:15:Indigo] takes a different approach to expressing application requirements: instead of specifying visibility and ordering constraints, programmers write *invariants over abstract state and state transitions*, and annotate *post-conditions* on actions to express their side-effects in terms of the abstract state. They then perform a static analysis to determine where concurrent execution could violate the invariants and add coordination logic to avoid those conflicts. To revisit the bank account example, in Indigo, one would specify an invariant such as `forall x: balance(x) >= 0`, and then indicate that `withdraw(x, y)` decrements `balance(x)` by `y`.
-
-Indigo's approach provides an excellent way to express application-level semantics and have the system automatically figure out how to enforce them. The primary downside is that abstract state must be modeled separately from the true application state. Additionally, though their invariants can specify hard constraints, they do not have a way to express the soft constraints we discussed in [#sec-requirements].
+### CRDTs
+[@Terry:95:Bayou] deterministic merge...
+[todo: write me]
 
 ## Bloom
 Instead of finding the places where coordination is necessary, the philosophy of Bloom [@Alvaro:11:Bloom;@Conway:12:BloomL] is to find ways to write programs that completely avoid the need for coordination. The *CALM* (Consistency And Logical Monotonicity) principle advocated by this work formalizes the requirements for a program to be eventually consistent, obviating the need for coordination. It is built around the notion of monotonicity, where programs compute sets of facts that grow over time so that information is never lost and convergence can be guaranteed.
@@ -83,23 +128,3 @@ Instead of finding the places where coordination is necessary, the philosophy of
 In the Bloom model, programmers express applications as *statements* about monotonically growing sets of *facts*. These facts can be encoded as sets or other collections with suitable *merge functions* ensuring values of the type have a well-defined partial order [@Conway:12:BloomL]. Bloom statically ensures that programs compose these types in ways that are monotonic.
 
 In it's pure form, Bloom's programming model can be quite restrictive, so later work on Blazes [@Alvaro:14:Blazes] showed how the monotonicity analysis could be used in conjunction with annotations on traditional distributed applications to determine where coordination is unnecessary. This style of programming is somewhat similar to the models from Indigo and Quelea in the previous section, though the annotations in Blazes are on streams. Bloom and its variants can ensure *eventual* consistency, but this says nothing about how long it will take or what intermediate states will be observable, so in practice, users would still have to worry about observing stale or inconsistent states.
-
-## Models inspired by distributed version control {#sec-revisions}
-One of the troubles with weakly consistent replication is that it is often not possible to construct a serializable history of an execution, which makes it very difficult to reason about which effects were visible to different clients at various points in time. Distributed version control systems (DVCS) like Git have inspired alternative ways of viewing concurrent execution. DVCSs allow individuals to work concurrently on *forks* or *branches* without interference and resolve conflicts at explicit *merge* points later. These histories are not serializable, but they still allow users to easily understand when effects become visible to different observers.
-
-The *Push/Pull Model of Transactions* [@Koskinen:15:Pushpull] formalized several consistency and transaction models in these terms inspired by DVCS. A model called *branch consistency* proposed for a system called TaRDIS [@Crooks:15:Tardis] uses the notion of branching and merging for isolation and conflict resolution in geo-replicated systems, delegating conflict resolution to applications.
-
-*Concurrent revisions* [@Burckhardt:10:Revisions] proposes an execution model built around forking and joining state along with concurrent execution to make sharing explicit.
-In this model, concurrent tasks *fork* a copy of the state they access. Changes to forked state are only visible to that task and its descendants until the concurrent task is *joined* back in. On join, changes to forked data items are *merged* according to their type. For example, as a cumulative type, a forked `Counter` tracks increments made to it, and when *joined*, adds those increments to the original value. In this way, multiple concurrent tasks can increment the shared `Counter` without conflicting and it is clear exactly when their effects are made visible. Follow-on work extended the ideas of concurrent revisions and revision diagrams to reason about eventual consistency: in eventually consistent transactions [@Burckhardt:12:ECTxn] and  mobile/cloud applications [@Burckhardt:12:Cloud].
-
-These programming models show that there is hope for reasoning about weakly consistent replicated data. The *isolation types* and *cloud types* from concurrent revisions provide useful semantics for working with highly contended data. In these models, trading off consistency for performance is not as clear-cut; *revision diagrams* and DVCS histories imply strict coordination points. It is also unclear how to enforce global constraints on forked data. Consider again the ticket sales example: in order to ensure tickets are not over-sold, concurrent forks must somehow know how many of the remaining tickets they are allowed to sell, without knowing how many other forks exist, breaking the abstraction.
-
-## Transactions
-
-Transactions are a well-established way to provide stronger guarantees among some operations. By choosing the type and granularity of transactions, programmers have some control over the correctness and performance of their applications. Like strict serializability, full ACID transactions require a global order so are prohibitive to scaling and high availability. As the antithesis of the strong guarantees of ACID, some have termed the weaker semantics of eventual consistency *"BASE"* (Basically Available, Soft state, Eventually Consistent) [@Pritchett:08:BASE]. Luckily, programmers are no longer restricted to simply choosing between these two extremes; some have proposed ways to bridge the gap.
-
-### Salt: Combining ACID and BASE
-
-Just as a small fraction of data items are responsible for the majority of contention, the same is true for transactions. Rather than forcing programmers to give up ACID semantics for their entire application, Salt [@Xie:14:Salt] allows transactions with BASE semantics to coexist safely with ACID transactions. Using new locking schemes, they ensure that transactions executing with weaker BASE semantics cannot violate the strong safety guarantees of the ACID transactions.
-
-Converting an ACID transaction to execute without those guarantees is an error-prone task; it involves considering all the new possible interleavings and establishing how to resolve all the possible conflicts without coordination. Salt's model means that programmers only need to "BASE-ify" the transactions causing performance or scaling problems. This makes it relatively straightforward to trade off consistency where necessary, but does not do much to help programmers deal with the weaker semantics.
