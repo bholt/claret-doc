@@ -16,10 +16,10 @@ At the other extreme, *eventual consistency*, the least common denominator among
 
 There are a whole family of models similar to eventual consistency which add various ordering constraints:
 
-- *Monotonic writes* ensure that writes from a client are serialized.
-- *Monotonic reads* ensures that reads will not observe earlier values than have been seen by a particular client already
-- *Read-your-writes* ensures that a client will at least observe its own effects
-- *Causal consistency* ensures that operations from different clients causally following a write will observe that write (by some definition of *causation* which the system must track)
+- *Monotonic writes* (MW) ensure that writes from a client are serialized, enforcing *ordering* between writes.
+- *Monotonic reads* (MR) ensures that reads will not observe earlier values than have been seen by a particular client already, strengthening *visibility*.
+- *Read-your-writes* (RYW) ensures that a client will at least observe its own effects – primarily strengthening an aspect of *visibility*
+- *Causal consistency* ensures that operations from different clients causally following a write will observe that write (by some definition of *causation* which the system must track). This means that operations will be *visible to* and *ordered with* each other when applicable.
 
 There are too many variations on these and other models to enumerate, including combinations of them. Each restricts the possible reorderings, making some cases easier for programmers to reason about, while also reducing the flexibility of the system and reducing performance. For instance, many require *sticky sessions* [@Terry:94:Session], which forces clients to continue communicating with a particular replica, even if it is not the fastest, or lowest latency, or most up-to-date one available.
 
