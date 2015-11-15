@@ -48,21 +48,21 @@ At the same time, there are hard and soft constraints on performance. Users dema
 <!-- Programmers of these distributed applications must constantly juggle these competing hard and soft correctness and performance constraints. There are a huge variety of techniques that have been invented over the years for handling them: new concurrency control schemes, programming models, and data representations, to name a few. Each has its own trade-offs, requiring varying degrees of application changes support them. There ought to be an abstraction that can help programmers make these competing trade-offs and inherit the body of existing optimization techniques. -->
 
 Programmers of these distributed applications must constantly juggle these competing hard and soft correctness and performance constraints.
-The plethora of weak consistency models, such as read-your-writes consistency or causal consistency, exist to provide more reasonable programming models for working with replicated state. The massive body of research aimed at reigning in those models attests to the difficulty programmers have in using them. To get a handle on how all the techniques relate to one another, we will explore them in terms of the properties they trade off:
+The plethora of weak consistency models, such as read-your-writes consistency or causal consistency, exist to provide more reasonable programming models for working with replicated state. Yet the massive body of research aimed at reigning in those models attests to the difficulty programmers have in using them.
 
-- Ordering constraints between operations
-- When and who updates become visible to
-- Uncertainty about the state in terms of staleness and possible values
-- Granularity: does it affect the whole system, specific records, or specific operations?
+## Overview
 
-## A better programming model
-After seeing a sampling of the wide variety of contention mitigating techniques, the natural question is how to bring them all together to give programmers a complete set of tools for exposing concurrency and trading off consistency. What that is really asking for is a programming model that can encompass that wide array of techniques. 
-The properties we want in such a programming model are:
+To understand how the various techniques for managing consistency and performance relate to one another, we will explore them in terms of the properties they trade off:
 
-- Minimize unnecessary constraints, expose concurrency from the application
-- Allow trading off consistency for performance (latency, availability) 
-- Easy to reason about, meets programmer expectations
+- *Ordering* constraints between operations
+- *Visibility:* when and who updates become visible to
+- *Uncertainty* about the state in terms of staleness and possible values
 
-Our proposed solution to this problem is an old one: *abstract data types* (ADTs). The core idea of ADTs is to present a clear abstract model of some state with operations on it, while hiding all the implementation details. Using ADTs as the building blocks for their applications, programmers can easily reason about their semantics. Distributed systems can take advantage of properties of the ADTs, such as commutativity, to reduce coordination, avoid conflicts, and improve performance. All the details of ordering constraints, visibility, and coordination can be hidden behind the abstraction of data types with well-defined behavior. Our implementations, in a distributed data analytics system, *Grappa*, and a prototype ADT-store, *Claret*, show significant performance improvements, especially under high contention. In future work, we propose using approximate data types to express soft constraints to take advantage of weak consistency where possible.
+We will also discuss how each technique operates, in terms of:
 
-Before we get to that, we will explore the existing contention-mitigation techniques that will be used within the ADT abstraction.
+- *Granularity:* Does it affect the whole system, specific records, or specific operations?
+- *Knowledge vs control:* Are users granted additional information about performance or consistency or are they given explicit control?
+
+After exploring the space of existing techniques, we will propose a programming model that incorporates these disparate solutions into a single abstraction – using *abstract data types* (ADTs) to concisely describe application semantics and hide the details of the underlying consistency and coordination techniques. Our implementations, in a distributed data analytics system, *Grappa*, and a prototype ADT-store, *Claret*, show significant performance improvements, especially for high contention workloads. In future work, we propose using *imprecise, probabilistic, and approximate (IPA) types* to trade off precision in order to take advantage of weak consistency and replication for high availability and scalability.
+
+<!-- Our proposed solution to this problem is an old one: *abstract data types* (ADTs). The core idea of ADTs is to present a clear abstract model of some state with operations on it, while hiding all the implementation details. Using ADTs as the building blocks for their applications, programmers can easily reason about their semantics. Distributed systems can take advantage of properties of the ADTs, such as commutativity, to reduce coordination, avoid conflicts, and improve performance. All the details of ordering constraints, visibility, and coordination can be hidden behind the abstraction of data types with well-defined behavior.  -->
