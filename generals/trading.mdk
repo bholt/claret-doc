@@ -79,11 +79,11 @@ Indigo's approach provides an excellent way to express application-level semanti
 Weak consistency models provide little in the way of ordering or visibility guarantees. With eventual consistency at the very bottom, Read-Your-Writes additionally constrains operations within a session to be visible to one another, while Monotonic Writes force some order among writes, and Monotonic Reads the *visibility* of those ordered writes.
 Of the consistency models, Causal provides the most programmer control – essentially arbitrary constraints can be created by forcing the system to consider them causally linked.
 
-RAMP transactions and Concurrent Revisions allow explicit control over visibility but little control over ordering between transactions, placing them at the top left of [#fig-constraints].
+RAMP transactions and DVCS-like techniques allow explicit control over visibility but little control over ordering between transactions (or branches/forks), placing them at the top left of [#fig-constraints].
 Because Salt allows weaker transactions to interoperate with ACID transactions, it allows programmers to select from range of ordering and visibility levels depending on need.
 
 The annotation-based techniques provide the most explicit control over these constraints. Quelea, with contracts specifically on these constraints, provides the most control, but at a lower level of abstraction than Indigo's application-level invariants.
-
+So far, we have been dealing mostly in terms of plain reads and writes; the next section will show how to do better by placing bounds on the *allowable values*  and *staleness*.
 
 ## Uncertainty
 Another aspect of inconsistency is uncertainty about what values a variable may hold. Factoring out the effects of ordering and visibility constraints, which of course influence what values will be seen, we can analyze how techniques affect our reasoning about 
