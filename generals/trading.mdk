@@ -58,7 +58,9 @@ With *consistency based SLAs* [@Terry:13:SLAs], programmers can explicitly trade
 Allowing users to specify their desired latencies and consistencies directly to the system could be extremely powerful and freeing. However, because it is so fine-grained, the burden of choosing target latencies and consistency for each operation could be quite high, and it seems difficult to compose a sequence of operations and SLAs to achieve an overall target latency or correctness criteria.
 
 ## Annotating constraints
-[todo: figure showing annotations for both on bank account example]
+~ Fig {#fig-annotations caption="*Annotating application invariants.* Annotations are used to determine where coordination is necessary and what consistency is required to enforce it." }
+![annotations](fig/annotations.pdf)
+~
 
 Several datastores allow consistency levels to be specified on a per-operation basis: research systems Gemini [@Li:12:RedBlue] (RedBlue consistency), and Walter [@Sovran:11:Walter], and production systems Cassandra [@cassandra] and Riak [@riak] (per object or namespace). However, they leave programmers to determine where to use stronger consistency in order to achieve their correctness goals, a very error-prone task. Recent work has explored ways of *automatically* choosing the correct consistency level or coordination strategy based on manual *annotations*.
 
