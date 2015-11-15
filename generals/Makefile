@@ -8,7 +8,8 @@ FIGS := \
 	knowledge \
 	granularity \
 	hotspot \
-	tickets
+	tickets \
+	annotations
 
 SVG_SRCS := $(SRCS:%.mdk=out/%.mdk)
 FIGS_OUT := $(addsuffix .pdf, $(addprefix fig/, $(FIGS)))
