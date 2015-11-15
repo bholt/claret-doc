@@ -69,8 +69,8 @@ Indigo's approach provides an excellent way to express application-level semanti
 
 ## Review
 ~ Center
-~~ Fig {#fig-constraints .zoom caption="Ordering and visibility constraints." }
-![constraints](fig/constraints.pdf)
+~~ Fig {#fig-constraints .zoom max-height=20em caption="Ordering and visibility constraints." }
+![constraints](fig/constraints.pdf){max-height=17em}
 ~~
 ~
 
@@ -97,14 +97,9 @@ In order to help programmers reason about staleness, Bailis et al. [@Bailis:12:P
 ~ Fig { #fig-pileus caption="Pileus consistency-based SLA example." }
 ~~ SubFigureRow
 ~~~ SubFigure { caption="Code example." }
-```
-sla = ...
-c.put(key, value)
-value, consistency = c.get(key, sla)
-```
-
+![SLA code example](fig/sla.pdf){max-height=4.5em}
 ~~~
-~~~ SubFigure { caption="Example Consistency SLA for a Shopping Cart." }
+~~~ SubFigure { caption="SLA for a Shopping Cart." }
 | Consistency | Latency | Utility |
 |:-----------:|:-------:|:-------:|
 | Strong      | 300 ms  | 1.0     |
