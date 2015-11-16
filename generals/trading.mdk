@@ -81,8 +81,9 @@ Of the consistency models, Causal provides the most programmer control – essen
 
 RAMP transactions and DVCS-like techniques allow explicit control over visibility but little control over ordering between transactions (or branches/forks), placing them at the top left of [#fig-constraints].
 Because Salt allows weaker transactions to interoperate with ACID transactions, it allows programmers to select from range of ordering and visibility levels depending on need.
+Cassandra, Riak, Gemini, and Walter allow per-operation consistency levels to be set, which also provides a range of constraints, but with significant complexity for programmers.
 
-The annotation-based techniques provide the most explicit control over these constraints. Quelea, with contracts specifically on these constraints, provides the most control, but at a lower level of abstraction than Indigo's application-level invariants.
+The annotation-based techniques provide the most control over these constraints and also automate part of the task of choosing them. Quelea, with contracts specifically on these constraints, provides the most control, but at a lower level of abstraction than Indigo or Sieve's application-level invariants.
 So far, we have been dealing mostly in terms of plain reads and writes; the next section will show how to do better by placing bounds on the *allowable values*  and *staleness*.
 
 # Uncertainty

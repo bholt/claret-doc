@@ -1,5 +1,5 @@
-# Techniques for avoiding contention
-
+# Leveraging abstract data types
+[todo: introduce section as talking about abstract data types]
 So far, we have covered a number of programming models which helped mitigate contention by replicating data and weakening consistency. Now we will discuss some techniques that can be used to implement those programming models and actually expose concurrency within distributed systems. The goal of each of these techniques is to allow concurrency wherever it is safe and minimize the coordination necessary to accomplish it.
 <!-- Most of these techniques were designed to enforce strict correctness, such as strict commutativity among operations on an ADT. However, they can be co-opted to help enforce soft constraints as well.  -->
 

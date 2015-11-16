@@ -63,8 +63,8 @@ Package: [left=1.75in,right=1.75in,top=1in,bottom=1in]geometry
 ~
 
 [INCLUDE="intro"]
-[INCLUDE="programming"]
 [INCLUDE="trading"]
+[INCLUDE="programming"]
 [INCLUDE="techniques"]
 [INCLUDE="proposal"]
 
