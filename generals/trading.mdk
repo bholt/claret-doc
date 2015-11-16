@@ -67,7 +67,7 @@ Indigo [@Balegas:15:Indigo] takes a different approach to expressing application
 
 Indigo's approach provides an excellent way to express application-level semantics and have the system automatically figure out how to enforce them. The primary downside is that abstract state must be modeled separately from the true application state. Additionally, though their invariants can specify hard constraints, they do not have a way to express the soft constraints we discussed in [#sec-requirements].
 
-## Review
+## Review: Constraints
 ~ Center
 ~~ Fig {#fig-constraints .zoom max-height=20em caption="Ordering and visibility constraints." }
 ![constraints](fig/constraints.pdf){max-height=17em}
@@ -85,13 +85,47 @@ Because Salt allows weaker transactions to interoperate with ACID transactions, 
 The annotation-based techniques provide the most explicit control over these constraints. Quelea, with contracts specifically on these constraints, provides the most control, but at a lower level of abstraction than Indigo's application-level invariants.
 So far, we have been dealing mostly in terms of plain reads and writes; the next section will show how to do better by placing bounds on the *allowable values*  and *staleness*.
 
-## Uncertainty
-Another aspect of inconsistency is uncertainty about what values a variable may hold. Factoring out the effects of ordering and visibility constraints, which of course influence what values will be seen, we can analyze how techniques affect our reasoning about 
+# Uncertainty
+Factoring out the knowledge provided by ordering and visibility constraints, the state observed by operations is *uncertain* – subject to constraints on what *values* the piece of data may hold and how out-of-date the replica is.
+<!-- In the presence of any weak replication protocol, it takes some amount of time for updates to propagate, but so far none of the models discussed have been concerned about that staleness property. -->
 
-###  Bounded staleness
+## Restricted values
+One of the problems with programming with eventual consistency is ending up with conflicting writes that overwrite one another in unpredictable ways. The solution to this without enforcing mutual exclusion somehow is to define commutative deterministic *merge* functions that resolve conflicts resulting from concurrent updates. The vision of Bayou [@Terry:95:Bayou] was that applications would define custom merge functions over all of the application state so that users could work offline and automatically synchronize their changes next time they connected again. Though this has not caught on in any major way due to the difficulty (and non-modularity) of handling all possible combinations of updates in a way that is satisfactory to users, it has led to the development of libraries of data structures with this property.
+
+### CRDTs
+*Convergent or conflict-free replicated data types* (CRDTs) are data types that have such deterministic merge functions defined for them. Resolving conflicts deterministically requires making choices about the semantics of concurrent updates, leading to a proliferation of CRDTs for various use cases. Even simple data structures like Sets must have multiple variants such as those in [#tab-set-crdts] that resolve non-commuting operations (for sequential data types) differently.
+
+~ Center
+~~ Tab {#tab-set-crdts .zoom text-align=left caption="Example `Set` CRDTs. Variations are due to the fact that `add` and `remove` do not commute for a sequential `Set`."}
+|:-{width=0.6in}|:------------------------------|
+| **G-Set**     | "Grow-only" set, `remove` is simply disallowed |
+| **PN-Set**    | A counter per item matches `add`'s and `remove`'s, the set contains the item whenever there are more `add`'s. |
+| **OR-Set**    | "Observed-remove" set where causally-related `remove`s are observed, but `add` wins over `remove` when concurrent. |
+|---------------|-------------------------------|
+~~
+~
+
+CRDTs can be enormously useful because they allow concurrent updates to accumulate changes. Riak [@riak] implements several data types and encourages their use. Like ADTs,  CRDTs also provide a well-defined set of possible values that a variable can hold – restricted to changes made by supported operations. This is a clear advantage over simple *registers* that are completely overwritten on each write, making them unpredictable when the order of updates is uncertain. CRDTs can still suffer from many of the effects of eventual consistency – updates applied to different replicas mean clients could see divergent changes for some time – convergence does nothing to change that. Keep in mind that divergence *could* continue indefinitely thanks to eventual consistency – actual times are the subject of the next form of uncertainty we will discuss.
+
+### Bloom
+The philosophy of Bloom [@Alvaro:11:Bloom;@Conway:12:BloomL] is to find ways to write programs that avoid the need for coordination as much as possible. The *CALM principle* (Consistency And Logical Monotonicity) advocated by this work formalizes the requirements for an entire program to be eventually consistent, obviating any need for coordination. It is built around the notion of monotonicity, where programs compute sets of facts that grow over time so that information is never lost and convergence can be guaranteed.
+
+In the Bloom model, programmers express applications as *statements* about monotonically growing sets of *facts*. These facts can be encoded as sets or other collections with suitable *merge functions* ensuring values of the type have a well-defined partial order, such as CRDTs [@Conway:12:BloomL]. Bloom statically ensures that programs compose these types in ways that are monotonic.
+
+In its pure form, Bloom's programming model requires substantial changes to most applications, so later work on Blazes [@Alvaro:14:Blazes] showed how the monotonicity analysis could be applied to find where coordination is necessary in existing distributed applications by annotating components with Bloom's properties. This style of programming is somewhat different than the other annotation-based approaches of Indigo and Quelea because it focuses on *sealing* streams on coordination points. Bloom and its variants can ensure *eventual* consistency, but this says nothing about how long it will take or what intermediate states will be observable, so in practice, users would still have to worry about observing stale or inconsistent states.
+
+## Bounded staleness
 In theory, eventually consistent systems provide absolutely no guarantees during execution because there is no bound on the time it must take for updates to propagate, and there are almost no situations where updates are guaranteed not to occur. In practice, however, programmers typically observe very few actual consistency errors, even at large scale [@Lu:15:Facebook]. This is because the propagation time, or *inconsistency window* is typically very small, on the order of tens of milliseconds [@Bailis:12:PBS], so few accesses observe the gap. However, programmers cannot rely on these observations because they do not hold in all cases. High contention situations are particularly problematic because with more concurrent updates and accesses, the chances of observing inconsistencies is much higher, and the value is also likely to be further from the correct value.
 
-In order to help programmers reason about staleness, Bailis et al. [@Bailis:12:PBS] introduced a metric called *probabilistically bounded staleness* (PBS) which quantifies the staleness of accesses, either in terms of *time* or *versions*. By observing the distributions of propagation delays, round trip times, and rate of updates, their implementation builds a model of the system and uses it to predict staleness during execution.
+### Leases {#sec-leases}
+The problem with reads is that by the time the client gets the result, it could already be out of date, even without the additional complexity introduced by eventual consistency. Leases are a way of communicating how old a read is, by associating it with a time in the future when it should be considered stale.
+First proposed for file system caches to avoid needing to send explicit invalidations [@Gray:89], they are now used in application caches in modern datacenters, such as in Facebook's Memcache system [@Nishtala:13:Memcache]. In addition to simply bounding staleness without explicit invalidation, leases can be used to indicate a promise that the value will not be updated for some time.
+
+*Warranties* [@Liu:14:Warranties] extend leases to grant permission for holders to perform specific updates for a fixed amount of time. This has the benefit that permissions are automatically reclaimed after the time has elapsed, even if the holder crashed, and saving a reply message if the recipient does not wish to use the warranty. 
+
+### Probabilistically bounded staleness (PBS)
+In order to help programmers reason about staleness, Bailis et al. [@Bailis:12:PBS] introduced a metric called *probabilistically bounded staleness* (PBS) which quantifies the staleness of accesses, either in terms of *time* or *versions*. By observing the distributions of propagation delays, round trip times, and rate of updates, their implementation builds a model of the system and uses it to predict staleness during execution. Their observations on a production system confirmed that 
+They also discussed how, by choosing the number of replicas to send writes to or consult for reads, one can control staleness and suggested how PBS could be used to select the right balance.
 
 ### Consistency-based SLAs
 ~ Fig { #fig-pileus caption="Pileus consistency-based SLA example." }
@@ -113,13 +147,13 @@ With *consistency based SLAs* [@Terry:13:SLAs], programmers can explicitly trade
 
 Allowing users to specify their desired latencies and consistencies directly to the system could be extremely powerful and freeing. However, because it is so fine-grained, the burden of choosing target latencies and consistency for each operation could be quite high, and it seems difficult to compose a sequence of operations and SLAs to achieve an overall target latency or correctness criteria.
 
-### CRDTs
-[@Terry:95:Bayou] deterministic merge...
-[todo: write me]
+## Review: Uncertainty
+~ Center
+~~ Fig {#fig-uncertainty .zoom max-height=24em text-align=left caption="Bounding *uncertainty*  in terms of staleness and restricting values." }
+![uncertainty](fig/uncertainty.pdf){max-height=21em}
+~~
+~
 
-## Bloom
-Instead of finding the places where coordination is necessary, the philosophy of Bloom [@Alvaro:11:Bloom;@Conway:12:BloomL] is to find ways to write programs that completely avoid the need for coordination. The *CALM* (Consistency And Logical Monotonicity) principle advocated by this work formalizes the requirements for a program to be eventually consistent, obviating the need for coordination. It is built around the notion of monotonicity, where programs compute sets of facts that grow over time so that information is never lost and convergence can be guaranteed.
+[#fig-uncertainty] maps out the techniques we have covered along two axes: how much they bound staleness versus how they restrict the set of allowable values. Again, eventual consistency provides the least guarantees. In fact, most of the techniques covered earlier do not affect *staleness* hardly at all. However, stronger consistency models and the annotation-based techniques do restrict possible values by eliminating some conflicts. The major differentiator comes with the switch to using CRDTs to restrict operations to those supported for each data type, like with ADTs. Bloom, by restricting to monotonic transformations over Sets or CRDTs, has the most bounded values.
 
-In the Bloom model, programmers express applications as *statements* about monotonically growing sets of *facts*. These facts can be encoded as sets or other collections with suitable *merge functions* ensuring values of the type have a well-defined partial order [@Conway:12:BloomL]. Bloom statically ensures that programs compose these types in ways that are monotonic.
-
-In it's pure form, Bloom's programming model can be quite restrictive, so later work on Blazes [@Alvaro:14:Blazes] showed how the monotonicity analysis could be used in conjunction with annotations on traditional distributed applications to determine where coordination is unnecessary. This style of programming is somewhat similar to the models from Indigo and Quelea in the previous section, though the annotations in Blazes are on streams. Bloom and its variants can ensure *eventual* consistency, but this says nothing about how long it will take or what intermediate states will be observable, so in practice, users would still have to worry about observing stale or inconsistent states.
+Along the axis of *staleness*, obviously PBS provides additional knowledge about staleness, but little control. Leases, on the other hand, allow for a range of information about staleness to be conveyed, and warranties provide additional control over how values change by controlling permission to perform updates. Consistency SLAs allow latencies and consistency levels to be traded off, giving control over both axes of uncertainty to applications.

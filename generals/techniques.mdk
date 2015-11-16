@@ -45,19 +45,13 @@ O'Neil's idea of *escrow* [@ONeil:86] came from work on Fast Path [@Gawlick:85] 
 
 Escrow can be extended to any *fragmentable object* [@Walborn:95], that is, any data type providing a way to *split* itself into fragments of the same type, and a way to later *merge* the fragments back together. This is essentially the same criteria as for *monoids* used for aggregators in Summingbird [@summingbird], although used in the opposite way, and similar to the isolation types in Concurrent Revisions [#sec-revisions].
 
-*Reservations* [@Preguica:03] or *warranties* [@Liu:14:Warranties] can be thought of as escrow for replicated data. A reservation pre-allocates permission to do updates so that in the future they can be done without coordination. This moves coordination off the critical path and allows synchronization to be amortized when multiple updates share a reservation. For example, in Mobisnap [@Preguica:03] where they were first introduced, a salesman might reserve a number of tickets or a some quantity of a commodity, then while on the go, without connectivity, make a sale and know that it is safe to do so. 
+*Reservations* [@Preguica:03] can be thought of as escrow for replicated data. A reservation pre-allocates permission to do updates so that in the future they can be done without coordination. This moves coordination off the critical path and allows synchronization to be amortized when multiple updates share a reservation. For example, in Mobisnap [@Preguica:03] where they were first introduced, a salesman might reserve a number of tickets or a some quantity of a commodity, then while on the go, without connectivity, make a sale and know that it is safe to do so. Combining reservations with *leases* (discussed earlier in [#sec-leases]) allows them to be reclaimed automatically after a certain time has elapsed. Exo-leasing [@Shrira:08:ExoLeasing], not quite using *lease* the same way, further extends escrow and reservations to be decentralized and exchangeable among offline clients.
 
-Reservations are very easy to generalize — Indigo [@Balegas:15:Indigo] uses them to implement its application-specific conflict avoidance logic that includes auto-generated code. A similar implementation of numeric invariant preservation called *bounded counters* [@Balegas:15:Invariants] was built on top of Riak, an eventually consistent datastore.
+Reservations are easy to generalize — Indigo [@Balegas:15:Indigo] uses them to implement its application-specific conflict avoidance logic that includes auto-generated code. A similar implementation of numeric invariant preservation called *bounded counters* [@Balegas:15:Invariants] was built on top of Riak, an eventually consistent datastore.
 
 One problem that arises in distributing reservations is imbalance: if some replicas receive more requests than others, they may use up all of their reserved updates before others do. In these situations, techniques such as the *demarcation protocol* [@BarbaraMilla:94:Demarcation;@Balegas:15:TowardsInvariants], or *handoff* [@Baquero:13:Handoff] can allow replicas to redistribute permissions or re-balance per-replica limits. These techniques operate similar to *work-stealing* in Cilk [@Agrawal:07:Workstealing].
 
-## Leases {#sec-leases}
-The problem with datastore reads is that by the time the client gets the result, it could already be out of date. Leases are a way of communicating how old a read is, by associating it with a time in the future when it should be considered stale.
-First proposed for file system caches to avoid needing to send explicit invalidations [@Gray:89], they are now used in application caches in modern datacenters, such as in Facebook's Memcache system [@Nishtala:13:Memcache]. In addition to simply bounding staleness without explicit invalidation, leases can be used to indicate a promise that the value will not be updated for some time.
-
-Leases can be combined with reservations to grant permission to perform updates for a fixed amount of time [@Shrira:08]. This has the benefit of allowing reservations to be reclaimed if a client crashes, or saving a return message if a recipient does not wish to use the reservation.
-
-
+<!--
 ## Transactions
 [todo: this doesn't make sense] Programmers do not need to give up all hope, though: there are several techniques for exposing additional concurrency within transactions to overcome this hurdle.
 
@@ -70,5 +64,6 @@ Callas [@Xie:15:ACIDAlt] takes this notion further
 split transactions into groups and allow them to be concurrent [@Xie:15:ACIDAlt]
 
 ### Boosting
+-->
 
 
