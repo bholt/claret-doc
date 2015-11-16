@@ -128,18 +128,9 @@ In order to help programmers reason about staleness, Bailis et al. [@Bailis:12:P
 They also discussed how, by choosing the number of replicas to send writes to or consult for reads, one can control staleness and suggested how PBS could be used to select the right balance.
 
 ### Consistency-based SLAs
-~ Fig { #fig-pileus caption="Pileus consistency-based SLA example." }
-~~ SubFigureRow
-~~~ SubFigure { caption="Code example." }
-![SLA code example](fig/sla.pdf){max-height=4.5em}
-~~~
-~~~ SubFigure { caption="SLA for a Shopping Cart." }
-| Consistency | Latency | Utility |
-|:-----------:|:-------:|:-------:|
-| Strong      | 300 ms  | 1.0     |
-| Eventual    | 300 ms  | 0.5     |
-|-------------|---------|---------|
-~~~
+~ Center
+~~ Fig { #fig-pileus .zoom caption="Example Consistency-based SLA: Shopping cart." }
+![SLA code example](fig/sla.pdf){max-height=7.5em}
 ~~
 ~
 
