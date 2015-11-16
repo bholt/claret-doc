@@ -1,22 +1,72 @@
 # Mitigating Contention with Abstract Data Types
-All together, the techniques described so far provide many useful tools for programmers to expose concurrency and trade off consistency to mitigate contention and improve performance.
+<!--
+All together, the techniques described so far provide many useful tools for exposing concurrency and replication to mitigate contention.
+
 However, these techniques require information about the application or the programmer's intentions. Abstract locks require knowing the commutativity properties of operations. Consistency SLAs require the programmer to choose a set of SLAs for each operation. Quelea and Indigo both require programmers to write different annotations.
+-->
 
-Abstract data types provide an interface that allows much of this information to be expressed in a way that is natural to programmers. They understand how a `Set` ADT behaves, and the system learns from this that `Set.add` operations commute with one another, but not always with `Set.size` ([#tab-spec]). Programmers can maximize the optimizations available to the system by selecting the most specific ADT for their usage. For instance, an application wishing to generate unique identifiers should prefer a `UniqueIDGenerator` over a generic `Counter`: incrementing a `Counter` must return the next number, but a `UniqueIDGenerator` lifts that restriction so can generate non-sequential IDs in parallel. Programmers can even provide their own application-specific ADTs or customize existing ones to make them more suitable.
+In order to perform the many contention mitigation techniques available, the system must have knowledge of the desired application semantics.
+Our proposed solution to this problem is an old one: *abstract data types* (ADTs). The core idea of ADTs is to present a clear *abstract model of state and behavior*, while hiding all the implementation details.
+With ADTs, applications describe their semantics to the underlying system *by construction*, allowing it to take advantage of properties, such as commutativity, to reduce coordination, avoid conflicts, and improve performance.
+All the details of ordering constraints, visibility, and coordination can be hidden behind the abstraction of data types with well-defined behavior. 
 
-The concept of ADTs has been used to extend databases for many years – supporting custom indices and query planning [@Stonebraker:83;@Stonebraker:86], and concurrency control via abstract locks [@Herlihy:88;@Chrysanthis:91;@Badrinath:92;@Weihl:88:ADT]. Today's distributed systems deal with different challenges, and have evolved the many techniques described above to solve them, but they have not tied them back to the abstraction afforded by ADTs.
+ADTs are a natural interface for developers to express application semantics.
+They understand how a `Set` ADT behaves, and the system knows from a specification like [#tab-spec] that `add` operations always commute with one another but only with `size` under some circumstances. Programmers can maximize the optimizations available to the system by selecting the most specific ADT for their usage. For instance, an application wishing to generate unique identifiers should prefer a `UniqueIDGenerator` over a generic `Counter`: incrementing a `Counter` must return the next number, but a `UniqueIDGenerator` lifts that restriction so can generate non-sequential IDs in parallel. Programmers can even provide their own application-specific ADTs or customize existing ones to make them more suitable.
 
-So far, I have leveraged ADTs to mitigate contention by exposing concurrency in two different projects: Flat Combining in Grappa, and Claret. The final project, Disciplined Inconsistency, proposes to allow programmers to safely trade off consistency for performance by expressing tolerances and relaxations in terms of approximate ADTs.
+The concept of ADTs has long been used to extend databases: supporting indices and query planning for custom data types [@Stonebraker:83;@Stonebraker:86], concurrency control via abstract locks [@Herlihy:88;@Chrysanthis:91;@Badrinath:92;@Weihl:88:ADT].
+
+Today's distributed systems deal with new challenges, and have evolved the many techniques described above to solve them. Unfortunately, many of the lessons learned about the benefits of the ADT abstraction were not carried forward into modern distributed systems. Many were lost in the move from relational databases to "NoSQL" datastores. We are just now beginning to figure out how to leverage type-level semantics in systems with weak replication through CRDTs and Bloom.
+
+My work has pushed for the use of ADTs to allow systems to better mitigate the capricious, high-contention situations that cause so much trouble to applications. In Grappa, a high-performance system for irregular data analytics, we used *combining* to improve throughput on globally shared data structures. In *Claret*, we showed how ADTs can be used to improve performance of distributed transactions. Finally, I will propose *Disciplined Inconsistency*, a way to safely trade off consistency for performance with approximate ADTs.
 
 ## Combining with global data structures in Grappa
+Grappa [@grappa-usenix15] is a system we built for irregular data analytics. 
+In order to tolerate the latency of communicating between nodes in commodity clusters, Grappa requires significant concurrency; luckily applications like graph analytics typically have abundant data parallelism which can be exploited.
+Such applications often require shared data structures to store data itself (such as a graph), collect intermediate results, and to support the underlying runtime. Because of the massive number of parallel threads needed for latency tolerance, these shared, distributed data structures are a source of significant contention. Naive locking strategies, even fine-grained, resulted in excessive serialization, preventing these data structures from being used as intended.
+
+*Combining* [@flatCombining;@yew:combining-trees;@funnels] is a technique which can reduce contention on shared data by distributing synchronization. Basically, combining exploits the *associativity* of some ADT operations which can be merged together into a larger aggregate operation *before* being applied to the shared data structure. For example, individual `Set.add` operations can be combined into a single operation that adds multiple elements. Doing so moves some of the synchronization off of the hot data structure – now several separate synchronizations are just one. This is useful because combining can be done in parallel on many different threads. In some situations, operations even *annihilate* one another – that is, they cancel each other out, as is the case with a `push` and `pop` to a stack – which eliminates any need for global coordination of those particular operations.
+
+Combining has been used in many different shared-memory systems to reduce contention and data movement. In a similar way, MapReduce allows a *combiner* to be defined to lift part of the reducer's work into the mapper [@Dean:08:MapReduce]. We applied the concept to Grappa's distributed shared data structures and observed significant performance improvements [@flat-combining-pgas13]. In the distributed setting, combining can be even more effective as local synchronization within a node can eliminate many costly round-trip communications to other nodes. We also developed an extensible framework for developing data structures with combining for Grappa applications.
 
 ## Claret: abstract data types for high-contention transactions
 One of the most popular key/value stores in use today is Redis [@redis], which is special in that it supports a much wider range of complex data types and many operations specific to each type. However, Redis does not support general distributed transactions because they are considered too expensive.
+We observed that by treating Redis's data types as ADTs, we could expose significantly more concurrency between transactions to make them practical even for high-contention workloads. One technique crucial to this is *abstract locks*.
 
-*Claret* uses Redis's programming model, but leverages ADT properties to make distributed transactions practical even on high-contention workloads.
-Underneath the abstraction afforded by the complex data types, Claret implements abstract locks, combining, and a form of lock reordering called phasing. On three transactional workloads simulating realistic contention – a microbenchmark similar to YCSB+T [@YCSB-T], an online auction service, and a Twitter-like social network – Claret achieved a 3-50x speedup over naive transactions and within 67-82% of the performance without transactions.
+### Abstract locks {#sec-abstract-locks}
+~ Tab { #tab-spec caption="Abstract Commutativity Specification for Set." }
+| Method             | Commute with   | When                        |
+|:-------------------|:---------------|:----------------------------|
+|`add(x): void`      | `add(y)`       | $\forall x, y$              |
+|--------------------|----------------|-----------------------------|
+|`remove(x): void`   | `remove(y)`    | $\forall x, y$              |
+|                    | `add(y)`       | $x \ne y$                   |
+|--------------------|----------------|-----------------------------|
+|`size(): int`       | `add(x)`       | $x \in Set$                 |
+|                    | `remove(x)`    | $x \notin Set$              |
+|--------------------|----------------|-----------------------------|
+|`contains(x): bool` | `add(y)`       | $x \ne y \lor y \in Set$    |
+|                    | `remove(y)`    | $x \ne y \lor y \notin Set$ |
+|                    | `size()`       | $\forall x$                 |
+|--------------------|----------------|-----------------------------|
+~
 
-The ADTs used in Claret exposed concurrency without sacrificing safety or precision. Claret's optimizations addressed the first and second categories from [#fig-hotspot], unlocking safe concurrency within a single replica and offloading synchronization to clients. This leaves out a significant number of possibilities to further improve performance by trading off precision or consistency. The next project proposes to do just that.
+Databases commonly use *reader/writer locks* to control access to records in conjunction with a protocol such as two-phase locking to ensure isolation between transactions.
+With reader/writer locks, multiple readers can hold the lock at the same time because they do not modify it, but anyone wishing to perform mutation must hold an *exclusive* writer lock.
+*Abstract locks* [@Schwarz:84:ADT;@Weihl:88:ADT;@Herlihy:88;@Badrinath:92;@Chrysanthis:91] generalize this notion to any operations which can logically run concurrently on the same object.
+Abstract locks are defined for a particular ADT in terms of a *commutativity specification* which describes with pairs of operations commute with one another: a function of the methods, arguments, return values, and abstract state of their target. An example specification for a `Set` is shown in [#tab-spec].
+
+When used in the context of transactions (termed *transaction boosting*), abstract locks can drastically reduce conflicts by allowing more operations to execute concurrently on the same record [@Herlihy:PPoPP08]. This is particularly crucial for highly contended records, where the chances of having concurrent operations is high, and serializing operations can become a bottleneck. In essence, abstract locks allow transactions to overlap more, only serializing when they absolutely must in order to ensure they cannot observe inconsistent state.
+
+### Claret
+Our prototype ADT-store, *Claret*, has a similar programming model to Redis
+Underneath the abstraction afforded by the ADTs, Claret implements abstract locks, combining, and a form of lock reordering called phasing. On three transactional workloads simulating realistic contention – a microbenchmark similar to YCSB+T [@YCSB-T], an online auction service, and a Twitter-like social network – Claret achieved a 3-50x speedup over naive transactions and within 67-82% of the performance without transactions.
+
+## Reveling in the bounty of inaccuracy
+
+The ADTs used in Grappa and Claret exposed concurrency without sacrificing safety or correctness. This imposed a limit to the amount of concurrency they could exploit.
+We compared the performance of Claret's transactions against the same workloads without transactions. Though Claret's transactions were competitive, they fundamentally could not out-perform the non-transactional workload because they could not allow conflicting operations to be executed concurrently. For example, no matter how much commutativity abstract locks could expose, `Bid` and `ViewAuction` transactions had to be separated because `ViewAuction` required viewing the current maximum bid. What if we could relax this requirement and allow clients to view inaccurate results? What can be done to make this as safe as possible?
+
+As we have discussed throughout this paper, there are significant performance benefits to be had by relaxing consistency and exposing weak replication. To give developers full control over these opportunities, we must allow them to trade off consistency in their applications. The next project proposes to do just that by using a new class of ADTs.
 
 # Disciplined Inconsistency
 Our goal is to come up with a programming model that helps programmers balance all of these competing requirements; ideally, it should have the following properties:

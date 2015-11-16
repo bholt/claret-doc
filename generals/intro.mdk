@@ -14,7 +14,7 @@ Power law distributions are everywhere, from popularity of pages to number of fo
 Paradoxically, though contention is not the average case, it is responsible for many of the most challenging problems: tail latency, failures, and inconsistency bugs.
 Most of the time, an application may work correctly, with low latency and no noticeable inconsistency. However, in that 99th percentile case, contention results in a hot spot, where latencies spike, failure rates go up, and in the case of weakly consistent systems, consistency can degrade, exposing bugs or resulting in user-visible inconsistencies.
 
-## Mitigating contention
+## Mitigating contention {#sec-hotspot}
 Many techniques over many years have tackled this problem from different angles, from research on escrow and fragmenting aggregate fields in the 80s [@ONeil:86], to modern research on compiler-generated coordination based on annotations [@Balegas:15:Indigo;@Sivaramakrishnan:15:Quelea]. Some require a variety of changes to the programming model, while others improve underlying protocols and mechanisms. All are focused on exposing concurrency and making tasks simpler for programmers, but they can be broken down into three broad approaches, shown in [#fig-hotspot].
 
 <!-- This paper will explore the various dimensions upon which these techniques operate to expose concurrency and improve programmability and, using what we have learned from this prior work, propose a way to bring many of the techniques together under one simple and old abstraction: abstract data types. -->

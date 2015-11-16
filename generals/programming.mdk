@@ -28,4 +28,4 @@ Expressing abstract state and behavior *by construction*, as in Bloom, is powerf
 We have chosen to focus on *abstract data types* because they support this by-construction expression of semantics but are more natural for programmers to use than Bloom's statements over facts.
 Just like with CRDTs, there may need to be many variants of data types in order to capture the desired consistency/performance properties desired by each application, but ADTs still allow significant re-use.
 
-In the remaining sections of this paper we will show how ADTs can be used as the programming model to express application semantics, describing prior techniques to leveraging ADTs and demonstrating how they can be used to mitigate contention in a modern context.
+In the remaining sections of this paper we will show how we have used ADTs to express application semantics, describing prior techniques of leveraging ADTs and showing how we have extended it further.
