@@ -256,19 +256,6 @@
   title = {Logic and lattices for distributed programming},
   year = {2012}
 }
-@inproceedings{Alvaro:14:Blazes,
-  author = {Alvaro, Peter and Conway, Neil and Hellerstein, Joseph M. and Maier, David},
-  booktitle = {{IEEE} International Conference on Data Engineering},
-  date-added = {2015-11-09 02:24:25 +0000},
-  date-modified = {2015-11-09 02:25:00 +0000},
-  doi = {10.1109/icde.2014.6816639},
-  month = mar,
-  publisher = {Institute of Electrical {\\&} Electronics Engineers ({IEEE})},
-  title = {Blazes: Coordination analysis for distributed programs},
-  url = {http://dx.doi.org/10.1109/icde.2014.6816639},
-  year = {2014},
-  month_numeric = {3}
-}
 @techreport{Crooks:15:Tardis,
   author = {Crooks, Natacha and Estrada, Nancy and Alvisi, Lorenzo and Clement, Allen},
   date-added = {2015-11-09 00:46:00 +0000},
@@ -321,19 +308,6 @@
   url = {http://sampa.cs.washington.edu/papers/holt-pgas13.pdf},
   year = {2013},
   month_numeric = {10}
-}
-@article{Dean:08:MapReduce,
-  author = {Dean, Jeffrey and Ghemawat, Sanjay},
-  date-added = {2015-11-09 04:39:35 +0000},
-  date-modified = {2015-11-09 04:42:44 +0000},
-  journal = {Communications of the ACM},
-  keywords = {CACM},
-  number = {1},
-  pages = {107--113},
-  publisher = {ACM},
-  title = {MapReduce: Simplified data processing on large clusters},
-  volume = {51},
-  year = {2008}
 }
 @article{Schwarz:84:ADT,
   author = {Schwarz, Peter M. and Spector, Alfred Z.},
@@ -513,19 +487,6 @@
   title = {Leases: an efficient fault-tolerant mechanism for distributed file cache consistency},
   url = {http://dx.doi.org/10.1145/74850.74870},
   year = {1989}
-}
-@inproceedings{Nishtala:13:Memcache,
-  address = {Lombard, IL},
-  author = {Nishtala, Rajesh and Fugal, Hans and Grimm, Steven and Kwiatkowski, Marc and Lee, Herman and Li, Harry C. and McElroy, Ryan and Paleczny, Mike and Peek, Daniel and Saab, Paul and Stafford, David and Tung, Tony and Venkataramani, Venkateshwaran},
-  booktitle = {Presented as part of the 10th USENIX Symposium on Networked Systems Design and Implementation (NSDI 13)},
-  date-added = {2015-11-09 05:24:23 +0000},
-  date-modified = {2015-11-09 05:25:13 +0000},
-  isbn = {978-1-931971-00-3},
-  pages = {385--398},
-  publisher = {USENIX},
-  title = {Scaling Memcache at Facebook},
-  url = {https://www.usenix.org/conference/nsdi13/technical-sessions/presentation/nishtala},
-  year = {2013}
 }
 @inproceedings{flatCombining,
   author = {Hendler, Danny and Incze, Itai and Shavit, Nir and Tzafrir, Moran},
@@ -710,19 +671,6 @@
   url = {http://doi.acm.org/10.1145/1229428.1229448},
   year = {2007}
 }
-@inproceedings{Koskinen:15:Pushpull,
-  author = {Koskinen, Eric and Parkinson, Matthew},
-  booktitle = {{ACM} {SIGPLAN} Conference on Programming Language Design and Implementation ({PLDI})},
-  date-added = {2015-11-09 01:10:45 +0000},
-  date-modified = {2015-11-13 19:22:15 +0000},
-  doi = {10.1145/2737924.2737995},
-  keywords = {eventual consistency},
-  publisher = {Association for Computing Machinery ({ACM})},
-  series = {PLDI},
-  title = {The Push/Pull Model of Transactions},
-  url = {http://dx.doi.org/10.1145/2737924.2737995},
-  year = {2015}
-}
 @article{Balegas:15:Invariants,
   author = {Balegas, Valter and Serra, Diogo and Duarte, Sergio and Ferreira, Carla and Shapiro, Marc and Rodrigues, Rodrigo and Pregui{\c c}a, Nuno},
   date-added = {2015-11-14 03:32:50 +0000},
@@ -894,4 +842,57 @@
   url = {http://sampa.cs.washington.edu/papers/grappa-usenix-2015.pdf},
   year = {2015},
   month_numeric = {7}
+}
+@article{Dean:08:MapReduce,
+  author = {Dean, Jeffrey and Ghemawat, Sanjay},
+  date-added = {2015-11-09 04:39:35 +0000},
+  date-modified = {2015-11-17 00:52:10 +0000},
+  journal = {Communications of the ACM},
+  number = {1},
+  pages = {107--113},
+  publisher = {ACM},
+  title = {MapReduce: Simplified data processing on large clusters},
+  volume = {51},
+  year = {2008}
+}
+@inproceedings{Koskinen:15:Pushpull,
+  author = {Koskinen, Eric and Parkinson, Matthew},
+  booktitle = {{ACM} {SIGPLAN} Conference on Programming Language Design and Implementation ({PLDI})},
+  date-added = {2015-11-09 01:10:45 +0000},
+  date-modified = {2015-11-17 00:53:08 +0000},
+  doi = {10.1145/2737924.2737995},
+  keywords = {eventual consistency, coordination},
+  publisher = {Association for Computing Machinery ({ACM})},
+  series = {PLDI},
+  title = {The Push/Pull Model of Transactions},
+  url = {http://dx.doi.org/10.1145/2737924.2737995},
+  year = {2015}
+}
+@inproceedings{Alvaro:14:Blazes,
+  author = {Alvaro, Peter and Conway, Neil and Hellerstein, Joseph M. and Maier, David},
+  booktitle = {{IEEE} International Conference on Data Engineering},
+  date-added = {2015-11-09 02:24:25 +0000},
+  date-modified = {2015-11-17 00:52:57 +0000},
+  doi = {10.1109/icde.2014.6816639},
+  keywords = {bloom, coordination, annotations},
+  month = mar,
+  publisher = {Institute of Electrical {\\&} Electronics Engineers ({IEEE})},
+  title = {Blazes: Coordination analysis for distributed programs},
+  url = {http://dx.doi.org/10.1109/icde.2014.6816639},
+  year = {2014},
+  month_numeric = {3}
+}
+@inproceedings{Nishtala:13:Memcache,
+  address = {Lombard, IL},
+  author = {Nishtala, Rajesh and Fugal, Hans and Grimm, Steven and Kwiatkowski, Marc and Lee, Herman and Li, Harry C. and McElroy, Ryan and Paleczny, Mike and Peek, Daniel and Saab, Paul and Stafford, David and Tung, Tony and Venkataramani, Venkateshwaran},
+  booktitle = {Presented as part of the 10th USENIX Symposium on Networked Systems Design and Implementation (NSDI 13)},
+  date-added = {2015-11-09 05:24:23 +0000},
+  date-modified = {2015-11-17 00:52:29 +0000},
+  isbn = {978-1-931971-00-3},
+  keywords = {leases},
+  pages = {385--398},
+  publisher = {USENIX},
+  title = {Scaling Memcache at Facebook},
+  url = {https://www.usenix.org/conference/nsdi13/technical-sessions/presentation/nishtala},
+  year = {2013}
 }
