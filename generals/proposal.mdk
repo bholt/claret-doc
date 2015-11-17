@@ -71,7 +71,7 @@ As we have discussed throughout this paper, there are significant performance be
 # Disciplined Inconsistency
 Our goal is to come up with a programming model that helps programmers balance all of these competing requirements; ideally, it should have the following properties:
 
-- Expose safe concurrency  Minimize unnecessary constraints by exposing safe concurrency
+- Minimize unnecessary constraints by exposing safe concurrency
 - Express where and what errors can be tolerated, so consistency can be traded for performance.
 - Communicate performance requirements such as target latency or availability.
 - Easy to reason about and modular
@@ -98,9 +98,73 @@ If we allow two replicas to both sell the last ticket, we will violate the first
 [#fig-tickets] shows a possible way of specifying this movie ticket sale as an IPA type. In this example, we derive our `MovieTickets` type from a generic `Pool` that ensures `take` operations are unique and upper-bounded by the number of items in the pool, and supports approximate size. Target latency would not necessarily need to be expressed as part of the type, but 
 Without some form of bound, the approximate size is somewhat underspecified. In this case the application's SLA requests a bounded latency but a best-effort value, so the latency bound serves to determine how the size will be obtained and how approximate it will be. Alternatively, we could imagine a different application wishing to instead specify a target value bound, such as a maximum 10% error. We will address this duality next.
 
-## Dual bounds
+## Duel of duals
+Consistency and performance are coupled – more consistency requires coordination which costs performance; achieving performance targets may require sacrificing consistency.
+We have covered many techniques that acknowledge this tradeoff and allow applications either to specify weaker consistency in order gain performance or specify coordination requirements and give up some performance. However, only Pileus's consistency-based SLAs [@Terry:13:SLAs] made performance targets explicit and provided *feedback* to programs about the consistency achieved. 
 
+Throughout this paper we have seen that distributed systems require give and take: more consistency requires more coordination and costs performance, achieving performance goals requires sacrificing consistency or precision.
 
-## Hard and soft constraints
+It is common for applications specifications to include *performance bounds*, such as target latencies specified by an SLA, or the requirement that a service be *highly available*. Performance bounds imply more uncertainty in terms of values – consistency is weaker, reads are forced to take whatever they can get, even if it is stale. So, when specifying a performance bound, why do programming models not provide an estimate of the *uncertainty* of the value returned?
+
+In other situations, perhaps only a certain amount of error can be tolerated. For example, when viewing a tweet with only a few retweets, one would expect the count to be exact, because being off by even 1 would be obvious. However, when viewing a super popular tweet, like a Justin Bieber selfie, the number of retweets could be in the millions, so it can be off by thousands. In these situations, it would be useful to be able to specify an *error tolerance*, such as a 10% tolerance on the count. As the dual of performance-bounded operations, perhaps the programming model ought to provide estimates or analysis of the *performance uncertainty* for operations with bounded error. Error bounds will also typically need to come with some form of *confidence level*.
+
+In our work, we aim to provide all of these as options so that no matter the situation, programmers have the tools they need to make those tradeoffs.
+
+As an aside, the goals of BlinkDB [@Agarwal:13:BlinkDB] bear a lot of similarity to ours, except they trade off the amount of data touched rather than consistency. In BlinkDB, SQL queries with aggregates (such as `count` or `average`) are annotated with either *time bounds* or *error bounds*, and the database uses sampling to get the best answer it can within the bounds. Their approach requires partial knowledge of the distribution and maintenance of "stratified samples" in order to be able to estimate the error with confidence. We will need different approaches to estimate error under weak consistency.
+
+## IPA Types
+What kinds of approximations do we need to be able to express? How do they manifest themselves as ADTs?
+
+### Bounds
+
+There are several forms of constraints which we will aim to support. These are extensions to the constraints supported by Indigo [@Balegas:15:Indigo].
+
+**Numeric constraints.** These can apply either to simple standalone numeric values, or more commonly to integer quantities associated with data structures, such as the cardinality of a Set. Constraints can be hard upper or lower bounds, or a *tolerance* of some distance from the precise value (such as the 10% tolerance we mentioned earlier). *Uniqueness*, a common desirable constraint [@Balegas:15:Indigo;@Bailis:15:Feral], is a degenerate case with an upper bound of 1.
+
+**Filter or membership constraints.** Another 
+
+### Uncertainty
+Our plan to express the result uncertainty in the type comes from Uncertain&lt;T&gt; [@Bornholt:14:UncertainT]. However, we do not anticipate many situations where we will know the probability distribution of values, so our uncertain types are different.
+
+- `Range<T>`: Specifies a range of values with a lower and upper bound. Users can query to see if a value is in the range.
+- `Gaussian<T>`: A distribution specified by the mean and standard deviation, possibly with certain confidence level.
+- `Stale<T>`: Encodes 
+
+## Implementation
+
+- escrow, reservations
+- `Uncertain<T>`
 
 ## Case studies
+### Twitter
+~ Center
+~~ Fig {#fig-retwis .zoom caption="*Twitter clone:* Loading a user's timeline with IPA types."}
+![](fig/retwis.pdf){max-height=20em}
+~~
+~
+
+Twitter is subject to all kinds of extreme contention resulting from realtime events, and power law effects. Famously, early in Twitter's lifetime, it would go down any time traffic spiked, such as during World Cup goals; each time showing the now famous Fail Whale [@failwhale]. Even late in its life, Twitter was slowed to a standstill at the 2014 Oscars when Ellen Degeneres tweeted a selfie with several celebrities which was retweeted at record-breaking speed.
+Luckily, there are many aspects of Twitter that are amenable to inconsistency. In fact, most of the real Twitter application is served out of their eventually consistent datastore, Manhattan [@manhattan]. However, if we can quantify specific places where accuracy is unnecessary, perhaps we will not need to give up consistency everywhere else.
+
+**Followers, retweets, favorites counts.** As mentioned before, for an extremely popular tweet, these counts are truncated – Justin Bieber's profile lists that he has "69.8M" followers rather than the precise value, because it is constantly changing (but not often by more than 100,000...), and his most recent tweet was retweeted "20K" times. On the other hand, most tweets have few favorites, and if those counts are off they will be noticed. This is a perfect place for a tolerance-based constraint that will scale with the size of the count.
+
+**Missing tweets.** Another possible relaxation is which tweets appear in a timeline. If a timeline is missing a recent tweet, odds are good the user will not be able to tell. This may be a situation where a performance bound is called for – no one wants to wait a long time for their timeline. This could then return a measure of the *staleness* of the timeline, such as the latest point in time before which tweets are guaranteed to be included.
+
+For Claret, we implemented a much-simplified Twitter clone based on a Redis application called Retwis [@retwis]. It supports
+
+### Auction
+Auction services are generally considered a class of applications requiring strong consistency. Finding the correct maximum bid, in spite of any amount of traffic, is crucial for fairness. However, they also have significant contention problems as some auctions receive far more bids than the average (they follow a power law), and bidding ramps up right before the auction closes. Allowing as many bids as possible during that late stage is crucial to keeping users happy and maximizing revenue.
+
+**Current high bid.** While an auction is ongoing, users typically want to know what the going rate is so they can decide if they are willing to over-bid. If this is changing frequently, the high bid is going to change rapidly. At that point, users are unable to really tell what the current bid will be when they actually make their own bid. Therefore, they probably do not need to see the most precise version of the bid. Some estimate of the current maximum bid, provided it is reasonably accurate, is acceptable because the true high bid can still be found later. This is an ideal situation for a latency-bound operation that returns a range of possible values or a probability distribution.
+
+**Stale listings.** 
+
+### Ticket Sales
+We have used the movie ticket sales example throughout this paper, but to reiterate, there are a number of interesting challenges in supporting ticket sales. The movie ticket example is a bit contrived because no one theater will have all that many seats available, so contention will be distributed even for popular movies. However, ticket sales for other events with much larger venues can experience serious problems with contention. We already discussed how the *remaining tickets* field is a candidate for approximation.
+
+FusionTicket [@FusionTicket] is an open source web application for selling tickets to events that has been used in some recent transactions research as a benchmark [@Xie:14:Salt;@Xie:15:ACIDAlt]. We will use this benchmark as a starting point and look for other places where contention is a problem and where error can be tolerated.
+
+### Streaming analytics
+Trending topics, realtime recommendations, and performance monitoring are just a few examples of the kinds of analytics services like Twitter or Facebook perform continuously. These features can be crucial to user engagement. However, they can also typically be treated as a best-effort or "nice to have" addition to the experience; whenever performance becomes a problem, these features can be dialed back. Furthermore, they are typically informed by machine learning algorithms which introduce significant noise. Therefore, they are prime candidates for disciplined inconsistency.
+
+One concrete example: Twitter's revamped streaming analytics platform, Heron [@Kulkarni:15:Heron], supports a feature called *backpressure*. When a downstream processing element becomes overloaded and is unable to keep up with the rate of incoming data, it will fall behind and no longer be *realtime*. Backpressure tells upstream data generators to dial back their output, typically done by sampling, until the backlog is under control and processing returns to normal. This can cause discontinuities in the output of analytics which may persist if programmers do not handle it correctly. Perhaps some form of probabilistic data type could be used to communicate the sampling rate of data items, making it simpler for programmers to handle these cases.
