@@ -32,6 +32,9 @@ Transactions are a well-established way to provide stronger guarantees among som
 Like strict serializability, full ACID transactions require a global order so are prohibitive to scaling and high availability, leading to the development of weaker transaction models.
 As the antithesis of the strong guarantees of ACID, some have termed these weaker semantics *"BASE"* (Basically Available, Soft state, Eventually Consistent) [@Pritchett:08:BASE]. Luckily, programmers are not restricted to simply choosing between these two extremes; some have proposed ways to bridge the gap.
 
+### Transaction chopping and chaining
+Some techniques can expose limited extra concurrency between transactions without requiring programmers to sacrifice ACID semantics. Transaction chopping [@Shasha:95] automates a task programmers could do by hand: breaking transactions into minimal-sized atomic pieces, determined by a static analysis of interleavings. A more recent system, Lynx [@Zhang:13:Lynx] executes split transactions as a *chain*, hopping from shard to shard, coordinating the order of execution to allow conflicting transactions to safely interleave. Finally, Callas [@Xie:15:ACIDAlt] groups transactions that commute with each other to allow them to execute concurrently. Transaction boosting [@Herlihy:PPoPP08] similarly allows transactions to overlap when they commute, but at the level of individual operations.
+
 ### Salt: Combining ACID and BASE
 Just as a small fraction of data items are responsible for the majority of contention, the same is true for transactions. Rather than forcing programmers to give up ACID semantics for their entire application, Salt [@Xie:14:Salt] allows transactions with BASE semantics to coexist safely with ACID transactions. Using new locking schemes, they ensure that transactions executing with weaker BASE semantics cannot violate the strong safety guarantees of the ACID transactions.
 
