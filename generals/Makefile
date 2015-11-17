@@ -10,7 +10,8 @@ FIGS := \
 	hotspot \
 	tickets \
 	annotations \
-	sla
+	sla \
+	retwis
 
 SVG_SRCS := $(SRCS:%.mdk=out/%.mdk)
 FIGS_OUT := $(addsuffix .pdf, $(addprefix fig/, $(FIGS)))
