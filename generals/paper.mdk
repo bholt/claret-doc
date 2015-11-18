@@ -29,6 +29,7 @@ Package: [all]hypcap
 
 ~H1: label='[§@h1]{.heading-label}' replace="/§//"
 ~H2: label='[§@h1.@h1-h2]{.heading-label}' replace="/§//"
+~H3: label='[§@h1.@h1-h2.@h1-h2-h3]{.heading-label}' replace="/§//"
 
 ~Fig : label='[Figure\ @fig]{.figure-label}' toc=tof .Float .LinedFloat float-env=figure float-name=Figure
 ~Tab : label='[Table\ @tab]{.figure-label}' toc=tof .Float .UnlinedFloat float-env=table float-name=Table

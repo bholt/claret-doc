@@ -5,15 +5,13 @@
 ~~
 ~
 
-~ Fig {#fig-knowledge .zoom caption="Knowledge vs control: do techniques provide information to the programmer (about uncertainty/staleness/visibility), or do they give control over these properties?" }
+~ Fig {#fig-knowledge .zoom caption="Which techniques provide additional knowledge (about uncertainty/staleness/visibility), and which give control over these properties?" }
 ~~ Center
 ![knowledge](fig/knowledge.pdf){max-height=9em}
 ~~
 ~
 
-We have now discussed many techniques for balancing the trade offs between consistency and performance in terms of how they manipulate constraints and bounds. However, the various programming models also differ how they expect programmers to express their desires and what control they provide.
-
-What is the best granularity to express the high-level requirements of an application to the system? [#fig-granularity] organizes the programming models by levels of granularity: from coarse-grained full-system models to fine-grained per-operation control.
+We have now discussed many techniques for balancing the tradeoffs between consistency and performance in terms of how they manipulate constraints and bounds. However, the various programming models also differ how they expect programmers to express their desires and what control they provide. What is the best granularity to express the high-level requirements of an application to the system? [#fig-granularity] organizes the programming models by levels of granularity: from coarse-grained full-system models to fine-grained per-operation control. [#fig-knowledge] categorizes the techniques by whether they provide additional knowledge about the system or whether they give explicit control to programmers. 
 
 We previously mentioned that consistency models are prohibitively coarse-grained, especially considering that contention is the exceptional case and that most transactions are not problematic for performance.
 
@@ -22,10 +20,11 @@ At the opposite extreme, some datastores, such as Cassandra, allow choosing a co
 CRDTs and isolation types from Concurrent Revisions occupy another spot in the granularity space – they specify constraints in terms of *types*. This allows them to couple consistency with state – a data-centric approach. Indigo and Bloom associate application-level invariants with types.
 
 High-level approaches – Indigo, Quelea, Sieve, and Bloom – automate the process of analyzing where coordination must occur and selecting appropriate synchronization to ensure correctness. This automation relieves programmers of the error-prone task of selecting fine-grained consistency levels and allows them to better span the constraint axes. Automation aids *modularity* as well – synthesized coordination rules can be adjusted whenever new functionality is added.
-In order to do their job, these systems must know about the *abstract state* and *state transitions* or *abstract behavior* (together we will refer to these as *semantics*) which make up the application. In Indigo, semantics are exposed *manually* in pre- and post-condition annotations; similarly in Blazes. In Bloom, the semantics are implicit in the monotonic structures used to build the application, so no additional annotation is required.
+In order to do their job, these systems must know about the *abstract state* and *behavior* (together we will refer to these as *semantics*) which make up the application. In Indigo, semantics are exposed *manually* in pre- and post-condition annotations; similarly in Blazes. In Bloom, the semantics are implicit in the monotonic structures used to build the application, so no additional annotation is required.
 
-Expressing abstract state and behavior *by construction*, as in Bloom, is powerful. It is less burdensome and error-prone than manual annotation, and more reusable. Going this route tends to require total buy-in for the application – annotations can be more handy for incremental adoption.
-We have chosen to focus on *abstract data types* because they support this by-construction expression of semantics but are more natural for programmers to use than Bloom's statements over facts.
-Just like with CRDTs, there may need to be many variants of data types in order to capture the desired consistency/performance properties desired by each application, but ADTs still allow significant re-use.
+Expressing abstract state and behavior *by construction*, as in Bloom, is powerful. It is less burdensome and error-prone than manual annotation and more reusable.
+<!-- Going this route tends to require total buy-in for the application, whereas annotations can be more easily used for incremental adoption. -->
+We have chosen to focus on *abstract data types* because they support this by-construction expression of semantics but are more natural for programmers to use than Bloom's statements and facts.
+As with CRDTs, there may need to be many variants of data types in order to capture the desired consistency/performance properties desired by each application, but ADTs still allow significant re-use.
 
-In the remaining sections of this paper we will show how we have used ADTs to express application semantics, describing prior techniques of leveraging ADTs and showing how we have extended it further.
+In the remaining sections of this paper we will show how we have used ADTs to express application semantics, describe prior techniques of leveraging ADTs, and show how we have extended them.
