@@ -17,6 +17,8 @@ body.madoko {
   line-height: 1.05;
 }
 
+div.title.para-block { font-size: 38px !important; }
+
 .madoko code, .madoko pre {
   font-family: 'Anonymous Pro', monospace;
   font-size: 14px;
