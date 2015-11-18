@@ -34,7 +34,8 @@ We observed that by treating Redis's data types as ADTs, we could expose signifi
 
 ### Abstract locks {#sec-abstract-locks}
 ~ Tab { #tab-spec caption="Abstract Commutativity Specification for Set." }
-| Method             | Commute with   | When                        |
+~~ Center
+| Method             | Commutes with   | When                        |
 |:-------------------|:---------------|:----------------------------|
 |`add(x): void`      | `add(y)`       | $\forall x, y$              |
 |--------------------|----------------|-----------------------------|
@@ -48,6 +49,7 @@ We observed that by treating Redis's data types as ADTs, we could expose signifi
 |                    | `remove(y)`    | $x \ne y \lor y \notin Set$ |
 |                    | `size()`       | $\forall x$                 |
 |--------------------|----------------|-----------------------------|
+~~
 ~
 
 Databases commonly use *reader/writer locks* to control access to records in conjunction with a protocol such as two-phase locking to ensure isolation between transactions.
@@ -128,15 +130,15 @@ These can apply either to simple standalone numeric values, or more commonly to 
 ### IPA Types
 Most operations with a performance or value bound will return a value with some form of uncertain type, depending on how the bound is fulfilled. These types fall into 3 different categories: *inconsistent*, *probabilistic*, or *approximate*.
 
-#### Approximate types
+#### Approximate types.
 These types are the simplest for programmers to use, and should be preferred. Approximate types encode the set of all possible correct values. Note that in situations of replication, there is likely no single globally *correct* value – different replicas can hold different values simultaneously, and there could be any number of staged operations whose final commit order is yet unknown. 
 Example approximate types include `Interval<T>`, which specifies an upper and lower bound on possible types. Any type with a defined *partial order over values* (a lattice) can be represented as an interval: numeric types are obvious, but a *set*, for example, could have an interval defined by a number of items that may or may not be in the set. An interval could also be defined as a *point* and *radius* – for example, a mean &plusmn; 5% – depending on the desired semantics.
 
-#### Probabilistic types
+#### Probabilistic types.
 In some situations, guaranteeing the hard bounds encoded by approximate types is too expensive. Bounds can be weakened by providing a probabilistic guarantee instead. These typically take the form of a distribution, such as a gaussian defined by a mean and standard deviation, with a certain confidence level. For example, PBS's models do not ensure hard bounds on staleness but rather a probability distribution that defines whether it is correct or not. We expect programmers to use these types for simple inference questions, such as "Is the value greater than 100 with 95% confidence?", in order to determine if something should be displayed.
 This is closely related to how `Uncertain<T>` [@Bornholt:14:UncertainT] allows programmers to reason about uncertain values coming from sensors.
 
-#### Inconsistent types
+#### Inconsistent types.
 Finally, in the worst cases, there may be no way to bound the potential values. For instance, any technique providing hard bounds may need to limit the rate at which updates are applied to replicas. If absolute maximum availability or throughput is required, then those restrictions cannot be applied. However, we can still help programmers be *disciplined* about these unsafe cases using *inconsistent types*. 
 
 These types are the most opaque. At most, they may provide a measure of staleness, such as a `Stale<T>`, which would allow users to know how out of date the value is, and potentially surface this to the user. An example of this is shown in [#fig-retwis]. However, even a nearly completely opaque `Inconsistent<T>` can help protect inconsistent values from accidentally flowing into consistent computations, similar to how *taint analysis* prevents secure values from being leaked.
@@ -158,8 +160,8 @@ Once we have established the potential using manual implementation, we will inve
 
 ## Case studies
 ### Twitter
-~ Center
-~~ Fig {#fig-retwis .zoom caption="*Twitter clone:* Loading a user's timeline with IPA types."}
+~ Fig {#fig-retwis .zoom caption="*Twitter clone:* Loading a user's timeline with IPA types."}
+~~ Center
 ![](fig/retwis.pdf){max-height=20em}
 ~~
 ~

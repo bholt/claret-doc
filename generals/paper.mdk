@@ -1,4 +1,4 @@
-title:       Mitigating Contention&br; in Distributed Systems
+title:       Mitigating Contention in Distributed Systems
 
 author:      Brandon Holt
 affiliation: University of Washington
@@ -16,6 +16,7 @@ Pdf Latex: xelatex
 
 Package: etoolbox
 Package: fontspec
+Package: tabulary
 Package: [left=1.75in,right=1.75in,top=1in,bottom=1in]geometry
 
 #todo: color=red font-size=x-small font-family=HelveticaNeue-Light before='[' after=']'
@@ -30,12 +31,15 @@ Package: [left=1.75in,right=1.75in,top=1in,bottom=1in]geometry
 ~Listing : label='[Listing\ @listing]{.figure-label}' toc=tof .Float .LinedFloat float-env=listing float-name=Listing
 
 .Float : tex-env-outer=figure[&tex-float-placement;] tex-float-placement="tbp"
+@html .Float: margin-left=auto margin-right=auto
 
 .LinedFloat : after='&nl;*********{.figureline}&nl;[[**&label;.** ]{.caption-before}[&caption;]{.caption-text}]{.figure-caption html-elem=fig-caption}&nl;{notag}&nl;'
 .UnlinedFloat : after='&nl;[[**&label;.** ]{.caption-before}[&caption;]{.caption-text}]{.figure-caption html-elem=fig-caption}&nl;{notag}&nl;'
 
 ~Img: max-width=100%
 .zoom: max-width=80% tex-text-align=center
+
+@tex .zoom50: width=80%
 
 ~ TexRaw
 \renewcommand{\arraystretch}{1.2}

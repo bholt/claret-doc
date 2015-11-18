@@ -73,11 +73,12 @@ Indigo [@Balegas:15:Indigo] takes a different approach to expressing application
 Indigo's approach provides an excellent way to express application-level semantics and have the system automatically figure out how to enforce them. The primary downside is that abstract state must be modeled separately from the true application state. Additionally, though their invariants can specify hard constraints, they do not have a way to express the soft constraints we discussed in [#sec-requirements].
 
 ## Review: Constraints
-~ Center
-~~ Fig {#fig-constraints .zoom max-height=20em caption="Ordering and visibility constraints." }
+~ Fig {#fig-constraints .zoom max-height=20em caption="Ordering and visibility constraints." }
+~~ Center
 ![constraints](fig/constraints.pdf){max-height=17em}
 ~~
 ~
+
 
 [#fig-constraints] organizes the systems we have so far discussed along axes of increased ordering and visibility constraints. There is no *best* point in this space – increased ordering constraints come with restrictions which limit availability and increased latency. The best solutions, therefore, provide the most flexibility and control over the constraints they can enforce.
 
@@ -101,13 +102,22 @@ One of the problems with programming with eventual consistency is ending up with
 ### CRDTs {#sec-crtds}
 *Convergent or conflict-free replicated data types* (CRDTs) are data types that have such deterministic merge functions defined for them. Resolving conflicts deterministically requires making choices about the semantics of concurrent updates, leading to a proliferation of CRDTs for various use cases. Even simple data structures like Sets must have multiple variants such as those in [#tab-set-crdts] that resolve non-commuting operations (for sequential data types) differently.
 
-~ Center
-~~ Tab {#tab-set-crdts .zoom text-align=left caption="Example `Set` CRDTs. Variations are due to the fact that `add` and `remove` do not commute for a sequential `Set`."}
-|:-{width=0.6in}|:------------------------------|
+~ Tab {#tab-set-crdts .zoom caption="Example `Set` CRDTs. Variations are due to the fact that `add` and `remove` do not commute for a sequential `Set`."}
+~~ HtmlOnly
+|:-{width=0.6in}-|:---------------------------|
 | **G-Set**     | "Grow-only" set, `remove` is simply disallowed |
 | **PN-Set**    | A counter per item matches `add`'s and `remove`'s, the set contains the item whenever there are more `add`'s. |
 | **OR-Set**    | "Observed-remove" set where causally-related `remove`s are observed, but `add` wins over `remove` when concurrent. |
 |---------------|-------------------------------|
+~~
+~~ TexRaw
+\begin{tabular}{p{0.1\linewidth}p{0.82\linewidth}}
+\hline
+\textbf{G-Set}     &``Grow-only'' set, \mdcode{remove} is simply disallowed \\
+\textbf{PN-Set}    & A counter per item matches \mdcode{add}'s and \mdcode{remove}'s, the set contains the item whenever there are more \mdcode{add}'s. \\
+\textbf{OR-Set}    & ``Observed-remove'' set where causally-related \mdcode{remove}s are observed, but \mdcode{add} wins over \mdcode{remove} when concurrent. \\
+\hline
+\end{tabular}
 ~~
 ~
 
@@ -159,8 +169,8 @@ With *consistency based SLAs* [@Terry:13:SLAs], programmers can explicitly trade
 Allowing users to specify their desired latencies and consistencies directly to the system is powerful. However, because it is so fine-grained, the burden of choosing target latencies and consistency for each operation could be quite high, and it seems difficult to compose a sequence of operations and SLAs to achieve an overall target latency or correctness criteria.
 
 ## Review: Uncertainty
-~ Center
-~~ Fig {#fig-uncertainty .zoom max-height=24em text-align=left caption="Bounding *uncertainty*  in terms of staleness and restricting values." }
+~ Fig {#fig-uncertainty .zoom max-height=24em text-align=left caption="Bounding *uncertainty*  in terms of staleness and restricting values." }
+~~ Center
 ![uncertainty](fig/uncertainty.pdf){max-height=21em}
 ~~
 ~

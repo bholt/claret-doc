@@ -1,13 +1,13 @@
 # Programming model comparison
-~ Center
-~~ Fig {#fig-granularity .zoom caption="Granularity of various techinques. What is the best way for trading off consistency? For programmability?" }
-![granularity](fig/granularity.pdf)
+~ Fig {#fig-granularity .zoom caption="Granularity of various techinques. What is the best way for trading off consistency? For programmability?" }
+~~ Center
+![granularity](fig/granularity.pdf){max-height=12em}
 ~~
 ~
 
-~ Center
-~~ Fig {#fig-knowledge .zoom caption="Knowledge vs control: do techniques provide information to the programmer (about uncertainty/staleness/visibility), or do they give control over these properties?" }
-![knowledge](fig/knowledge.pdf){max-height=8em}
+~ Fig {#fig-knowledge .zoom caption="Knowledge vs control: do techniques provide information to the programmer (about uncertainty/staleness/visibility), or do they give control over these properties?" }
+~~ Center
+![knowledge](fig/knowledge.pdf){max-height=9em}
 ~~
 ~
 
