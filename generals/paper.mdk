@@ -71,5 +71,6 @@ Package: [left=1.75in,right=1.75in,top=1in,bottom=1in]geometry
 [INCLUDE="trading"]
 [INCLUDE="programming"]
 [INCLUDE="proposal"]
+[INCLUDE="conclusion"]
 
 [BIB]

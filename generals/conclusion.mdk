@@ -1,0 +1,4 @@
+# Conclusion
+To navigate the treacherous seas of the Internet, today's distributed applications must be ready to cut through the waves of contention. Many capable techniques, like abstract locks, escrow, and consistency-based SLAs, are on hand, but the ship that holds them together is the abstraction afforded by ADTs. 
+ADTs give programmers a powerful way to express application semantics by construction; IPA types allow them to trade off performance for precision in a disciplined way.
+Rather than battening down the hatches just to stay afloat, by adjusting the sails just right to handle the gusts, applications can sail on through the storm.
