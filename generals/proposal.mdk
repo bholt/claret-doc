@@ -19,7 +19,7 @@ Today's distributed systems deal with new challenges, and have evolved the many 
 
 My work has pushed for the use of ADTs to allow systems to better mitigate the capricious, high-contention situations that cause so much trouble to applications. In Grappa, a high-performance system for irregular data analytics, we used *combining* to improve throughput on globally shared data structures. In *Claret*, we showed how ADTs can be used to improve performance of distributed transactions. Finally, I will propose *Disciplined Inconsistency*, a way to safely trade off consistency for performance with approximate ADTs.
 
-## Combining with global data structures in Grappa
+## Combining with global data structures in Grappa {#sec-combining}
 Grappa [@grappa-usenix15] is a system we built for irregular data analytics. 
 In order to tolerate the latency of communicating between nodes in commodity clusters, Grappa requires significant concurrency; luckily applications like graph analytics typically have abundant data parallelism which can be exploited.
 Such applications often require shared data structures to store data itself (such as a graph), collect intermediate results, and to support the underlying runtime. Because of the massive number of parallel threads needed for latency tolerance, these shared, distributed data structures are a source of significant contention. Naive locking strategies, even fine-grained, resulted in excessive serialization, preventing these data structures from being used as intended.
