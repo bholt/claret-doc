@@ -68,7 +68,7 @@ We compared the performance of Claret's transactions against the same workloads 
 
 As we have discussed throughout this paper, there are significant performance benefits to be had by relaxing consistency and exposing weak replication. To give developers full control over these opportunities, we must allow them to trade off consistency in their applications. The next project proposes to do just that by using a new class of ADTs.
 
-# Disciplined Inconsistency
+# Disciplined Inconsistency {#sec-disciplined}
 Our goal is to come up with a programming model that helps programmers balance all of these competing requirements; ideally, it should have the following properties:
 
 - Minimize unnecessary constraints by exposing safe concurrency
@@ -95,8 +95,9 @@ If we allow two replicas to both sell the last ticket, we will violate the first
 ![ticket sales example](fig/tickets.pdf)
 ~
 
-[#fig-tickets] shows a possible way of specifying this movie ticket sale as an IPA type. In this example, we derive our `MovieTickets` type from a generic `Pool` that ensures `take` operations are unique and upper-bounded by the number of items in the pool, and supports approximate size. Target latency would not necessarily need to be expressed as part of the type, but 
-Without some form of bound, the approximate size is somewhat underspecified. In this case the application's SLA requests a bounded latency but a best-effort value, so the latency bound serves to determine how the size will be obtained and how approximate it will be. Alternatively, we could imagine a different application wishing to instead specify a target value bound, such as a maximum 10% error. We will address this duality next.
+[#fig-tickets] shows a possible way of specifying this movie ticket sale as an IPA type. In this example, we derive our `MovieTickets` type from a generic `Pool` that ensures `take` operations are unique and upper-bounded by the number of items in the pool, and supports approximate size. 
+Without some form of bound, the approximate size is somewhat underspecified. In this case the application's SLA requests a bounded latency but a best-effort value, so the latency bound serves to determine how the size will be obtained and how approximate it will be. Alternatively, we could imagine a different application wishing to instead specify a target value bound, such as a maximum 10% error. 
+We address this duality between performance and precision next.
 
 ## Duel of duals
 Consistency and performance are coupled – more consistency requires coordination which costs performance; achieving performance targets may require sacrificing consistency.
@@ -104,7 +105,7 @@ We have covered many techniques that acknowledge this tradeoff and allow applica
 
 Throughout this paper we have seen that distributed systems require give and take: more consistency requires more coordination and costs performance, achieving performance goals requires sacrificing consistency or precision.
 
-It is common for applications specifications to include *performance bounds*, such as target latencies specified by an SLA, or the requirement that a service be *highly available*. Performance bounds imply more uncertainty in terms of values – consistency is weaker, reads are forced to take whatever they can get, even if it is stale. So, when specifying a performance bound, why do programming models not provide an estimate of the *uncertainty* of the value returned?
+It is common today for the specifications for applications to include *performance bounds*, such as target latencies specified by an SLA, or the requirement that a service be *highly available*. More strict performance bounds imply more uncertainty in terms of values – consistency is weaker, reads are forced to take whatever they can get, even if it is stale. Because it is not surfaced explicitly, this increase in uncertainty can go unaddressed, leading to noticeable consistency issues later. Instead, can we make these uncertainties explicit in the programming model, ensuring programmers handle them correctly?
 
 In other situations, perhaps only a certain amount of error can be tolerated. For example, when viewing a tweet with only a few retweets, one would expect the count to be exact, because being off by even 1 would be obvious. However, when viewing a super popular tweet, like a Justin Bieber selfie, the number of retweets could be in the millions, so it can be off by thousands. In these situations, it would be useful to be able to specify an *error tolerance*, such as a 10% tolerance on the count. As the dual of performance-bounded operations, perhaps the programming model ought to provide estimates or analysis of the *performance uncertainty* for operations with bounded error. Error bounds will also typically need to come with some form of *confidence level*.
 
@@ -112,28 +113,48 @@ In our work, we aim to provide all of these as options so that no matter the sit
 
 As an aside, the goals of BlinkDB [@Agarwal:13:BlinkDB] bear a lot of similarity to ours, except they trade off the amount of data touched rather than consistency. In BlinkDB, SQL queries with aggregates (such as `count` or `average`) are annotated with either *time bounds* or *error bounds*, and the database uses sampling to get the best answer it can within the bounds. Their approach requires partial knowledge of the distribution and maintenance of "stratified samples" in order to be able to estimate the error with confidence. We will need different approaches to estimate error under weak consistency.
 
-## IPA Types
-What kinds of approximations do we need to be able to express? How do they manifest themselves as ADTs?
+## Programming model
+What kinds of approximations do we need to be able to express? How do they manifest themselves as ADTs? In the *Disciplined Inconsistency* programming model, bounds are defined on ADTs, and operations return *IPA types*.
 
-### Bounds
+### Specifying bounds on ADTs
+There are several forms of constraints which we will aim to support. These include some of the constraints supported by Indigo [@Balegas:15:Indigo] that are compatible with ADTs, extended with new hard and *soft* constraints. We expect bounds to typically be expressed on application-specific ADTs, as in [#fig-tickets] and [#fig-retwis].
 
-There are several forms of constraints which we will aim to support. These are extensions to the constraints supported by Indigo [@Balegas:15:Indigo].
+#### Numeric constraints
+These can apply either to simple standalone numeric values, or more commonly to integer quantities associated with data structures, such as the cardinality of a Set. Constraints can be hard upper or lower bounds, or a *tolerance* of some distance from the precise value (such as the 10% tolerance we mentioned earlier). *Uniqueness*, a common desirable constraint [@Balegas:15:Indigo;@Bailis:15:Feral], is a degenerate case with an upper bound of 1.
 
-**Numeric constraints.** These can apply either to simple standalone numeric values, or more commonly to integer quantities associated with data structures, such as the cardinality of a Set. Constraints can be hard upper or lower bounds, or a *tolerance* of some distance from the precise value (such as the 10% tolerance we mentioned earlier). *Uniqueness*, a common desirable constraint [@Balegas:15:Indigo;@Bailis:15:Feral], is a degenerate case with an upper bound of 1.
+#### Filter or membership constraints.
+[todo: ???]
 
-**Filter or membership constraints.** Another 
+### IPA Types
+Most operations with a performance or value bound will return a value with some form of uncertain type, depending on how the bound is fulfilled. These types fall into 3 different categories: *inconsistent*, *probabilistic*, or *approximate*.
 
-### Uncertainty
-Our plan to express the result uncertainty in the type comes from Uncertain&lt;T&gt; [@Bornholt:14:UncertainT]. However, we do not anticipate many situations where we will know the probability distribution of values, so our uncertain types are different.
+#### Approximate types
+These types are the simplest for programmers to use, and should be preferred. Approximate types encode the set of all possible correct values. Note that in situations of replication, there is likely no single globally *correct* value – different replicas can hold different values simultaneously, and there could be any number of staged operations whose final commit order is yet unknown. 
+Example approximate types include `Interval<T>`, which specifies an upper and lower bound on possible types. Any type with a defined *partial order over values* (a lattice) can be represented as an interval: numeric types are obvious, but a *set*, for example, could have an interval defined by a number of items that may or may not be in the set. An interval could also be defined as a *point* and *radius* – for example, a mean &plusmn; 5% – depending on the desired semantics.
 
-- `Range<T>`: Specifies a range of values with a lower and upper bound. Users can query to see if a value is in the range.
-- `Gaussian<T>`: A distribution specified by the mean and standard deviation, possibly with certain confidence level.
-- `Stale<T>`: Encodes 
+#### Probabilistic types
+In some situations, guaranteeing the hard bounds encoded by approximate types is too expensive. Bounds can be weakened by providing a probabilistic guarantee instead. These typically take the form of a distribution, such as a gaussian defined by a mean and standard deviation, with a certain confidence level. For example, PBS's models do not ensure hard bounds on staleness but rather a probability distribution that defines whether it is correct or not. We expect programmers to use these types for simple inference questions, such as "Is the value greater than 100 with 95% confidence?", in order to determine if something should be displayed.
+This is closely related to how `Uncertain<T>` [@Bornholt:14:UncertainT] allows programmers to reason about uncertain values coming from sensors.
+
+#### Inconsistent types
+Finally, in the worst cases, there may be no way to bound the potential values. For instance, any technique providing hard bounds may need to limit the rate at which updates are applied to replicas. If absolute maximum availability or throughput is required, then those restrictions cannot be applied. However, we can still help programmers be *disciplined* about these unsafe cases using *inconsistent types*. 
+
+These types are the most opaque. At most, they may provide a measure of staleness, such as a `Stale<T>`, which would allow users to know how out of date the value is, and potentially surface this to the user. An example of this is shown in [#fig-retwis]. However, even a nearly completely opaque `Inconsistent<T>` can help protect inconsistent values from accidentally flowing into consistent computations, similar to how *taint analysis* prevents secure values from being leaked.
 
 ## Implementation
+The implementation of Disciplined Inconsistency involves developing the frontend programming model based on ADTs with additional bounds, and integrating it with a backend *enforcement system* which integrates many of the prior techniques covered in this document.
 
-- escrow, reservations
-- `Uncertain<T>`
+### Enforcement system
+The prior techniques discussed in this document provide ample ways to enforce invariants and perform efficient coordination. We will focus primarily on *escrow*, *reservations*, and *leases*, integrated with ideas from *abstract locks* to implement most of the coordination required for *approximate types*. Indigo [@Balegas:15:Indigo] demonstrated one way of combining abstract locks ("multi-level locks" in their terminology) with reservations to implement the wide range of constraints they supported. For instance, numeric constraints can be implemented using *escrow* to distribute permissions among all the replicas. For example, to implement our `Pool` type from [#fig-tickets], we could create an escrow *piece* for each ticket ahead of time, then distribute those among the replicas. When clients execute a `take`, a piece is allocated from the pool of remaining operations. If the `take` aborts before finishing, the piece is simply returned to the pool. Likewise if a replica goes offline, the pieces are not actually lost – they can be reclaimed after a period of time and re-used.
+
+Another component of the enforcement system will behave similarly to PBS and Pileus's consistency SLA system, to provide *probabilistic* uncertainty. In these systems, hard guarantees are not enforced as with escrow reservations. Instead, this subsystem monitors various health metrics about the system: replication latency, write load, etc. These factors can then be fed into simple predictive models to make judgements about the probability that a given value is being updated currently.
+
+Largely unmodified CRDTs provide the basis for data type implementations that do not use reservations to prevent conflicts. Operations on these types should return some form of IPA type – by default, just an `Inconsistent<T>`, but if version vectors or other staleness information is available, more expressive IPA types can be used.
+
+### Implementation strategy
+As a first pass, the programming model will simply be hand-written data types supporting a small number of configurable latency and value bounds. These data types will at first manually specify how they are to be enforced using components from the enforcement system described above.
+
+Once we have established the potential using manual implementation, we will investigate ways of automatically generating the correct enforcement given specified latency bounds and IPA types. Another avenue of potential investigation is to see if the bounds annotations can be used to infer the correct IPA types, or at least do static type checking to ensure that the interface is enforceable with the desired bounds.
 
 ## Case studies
 ### Twitter
@@ -150,19 +171,19 @@ Luckily, there are many aspects of Twitter that are amenable to inconsistency. I
 
 **Missing tweets.** Another possible relaxation is which tweets appear in a timeline. If a timeline is missing a recent tweet, odds are good the user will not be able to tell. This may be a situation where a performance bound is called for – no one wants to wait a long time for their timeline. This could then return a measure of the *staleness* of the timeline, such as the latest point in time before which tweets are guaranteed to be included.
 
-For Claret, we implemented a much-simplified Twitter clone based on a Redis application called Retwis [@retwis]. It supports
+For Claret, we implemented a simplified Twitter clone based on a Redis application called Retwis [@retwis]. This application will be extended to use disciplined inconsistency to further improve performance and availability.
 
 ### Auction
-Auction services are generally considered a class of applications requiring strong consistency. Finding the correct maximum bid, in spite of any amount of traffic, is crucial for fairness. However, they also have significant contention problems as some auctions receive far more bids than the average (they follow a power law), and bidding ramps up right before the auction closes. Allowing as many bids as possible during that late stage is crucial to keeping users happy and maximizing revenue.
+Auction services are generally considered a class of applications requiring strong consistency. Finding the correct maximum bid, in spite of any amount of traffic, is crucial for fairness. However, they also have significant contention problems as some auctions receive far more bids than the average (they follow a power law), and bidding ramps up right before the auction closes. Allowing as many bids as possible during that late stage is crucial to keeping users happy and maximizing revenue. We base our implementation on the functionality of Rubis [@Amza:02:Rubis].
 
 **Current high bid.** While an auction is ongoing, users typically want to know what the going rate is so they can decide if they are willing to over-bid. If this is changing frequently, the high bid is going to change rapidly. At that point, users are unable to really tell what the current bid will be when they actually make their own bid. Therefore, they probably do not need to see the most precise version of the bid. Some estimate of the current maximum bid, provided it is reasonably accurate, is acceptable because the true high bid can still be found later. This is an ideal situation for a latency-bound operation that returns a range of possible values or a probability distribution.
 
-**Stale listings.** 
+**Stale listings.** Rubis allows clients to browse currently open auctions by region or category. In this view, one could imagine wanting to show an estimate of the price and other relevant information about the auctions. However, it could be prohibitively expensive to get accurate, up-to-date bid information. Furthermore, in large deployments, popular categories could have many new auctions opening constantly. These both seem like situations where a stale version, either of the list of current auctions, or the current bids for each auction, would be acceptable.
 
 ### Ticket Sales
 We have used the movie ticket sales example throughout this paper, but to reiterate, there are a number of interesting challenges in supporting ticket sales. The movie ticket example is a bit contrived because no one theater will have all that many seats available, so contention will be distributed even for popular movies. However, ticket sales for other events with much larger venues can experience serious problems with contention. We already discussed how the *remaining tickets* field is a candidate for approximation.
 
-FusionTicket [@FusionTicket] is an open source web application for selling tickets to events that has been used in some recent transactions research as a benchmark [@Xie:14:Salt;@Xie:15:ACIDAlt]. We will use this benchmark as a starting point and look for other places where contention is a problem and where error can be tolerated.
+FusionTicket [@FusionTicket] is an open source web application for selling tickets to events that has been used in some recent transactions research as a benchmark [@Xie:14:Salt;@Xie:15:ACIDAlt]. We could use this benchmark as a starting point and look for additional places where contention is a problem and where error can be tolerated.
 
 ### Streaming analytics
 Trending topics, realtime recommendations, and performance monitoring are just a few examples of the kinds of analytics services like Twitter or Facebook perform continuously. These features can be crucial to user engagement. However, they can also typically be treated as a best-effort or "nice to have" addition to the experience; whenever performance becomes a problem, these features can be dialed back. Furthermore, they are typically informed by machine learning algorithms which introduce significant noise. Therefore, they are prime candidates for disciplined inconsistency.
