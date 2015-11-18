@@ -64,6 +64,6 @@ web-view: web
 	open -a Safari out/$(NAME).html
 
 clean:
-	rm -r out paper-web.mdk
+	rm -rf out paper-web.mdk
 
 .PHONY: all clean pdf web pdf-view web-view
