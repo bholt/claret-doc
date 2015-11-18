@@ -121,11 +121,17 @@ What kinds of approximations do we need to be able to express? How do they manif
 ### Specifying bounds on ADTs
 There are several forms of constraints which we will aim to support. These include some of the constraints supported by Indigo [@Balegas:15:Indigo] that are compatible with ADTs, extended with new hard and *soft* constraints. We expect bounds to typically be expressed on application-specific ADTs, as in [#fig-tickets] and [#fig-retwis].
 
-#### Numeric constraints
+#### Numeric constraints.
 These can apply either to simple standalone numeric values, or more commonly to integer quantities associated with data structures, such as the cardinality of a Set. Constraints can be hard upper or lower bounds, or a *tolerance* of some distance from the precise value (such as the 10% tolerance we mentioned earlier). *Uniqueness*, a common desirable constraint [@Balegas:15:Indigo;@Bailis:15:Feral], is a degenerate case with an upper bound of 1.
 
 #### Filter or membership constraints.
-[todo: ???]
+Akin to bloom filters, applications may wish to ensure with some probability that a set contains all of the correct values. Using approximate reservations or PBS, the system could have some idea of whether any new items had been added to a container ADT. Applications wishing to use even more fine-grained "filters" could specify that items fitting a certain description should be handled differently. For example, Facebook may wish to guarantee that close friends' posts appear consistently on a user's timeline, while others can be opportunistic.
+
+#### Latency bound.
+To meet latency SLAs, operations can have specified latency bounds. Using a mechanism like Pileus's predictive monitors, the system could choose which replicas to use in order to meet certain latency requirements. These bounds cannot be hard bounds, so, like real SLAs, they would typically be associated with a target percentile.
+
+#### Availability requirement.
+If a situation demands high availability, regardless of cost, then it could use a constraint like this to ensure that the system returns a result from any available replica without mediation.
 
 ### IPA Types
 Most operations with a performance or value bound will return a value with some form of uncertain type, depending on how the bound is fulfilled. These types fall into 3 different categories: *inconsistent*, *probabilistic*, or *approximate*.
