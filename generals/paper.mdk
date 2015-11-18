@@ -27,6 +27,10 @@ Package: [all]hypcap
 
 ~P,~Span: replace="/\[(?:TODO|todo):\s*(.*?)\]/[\1]{#todo}/g"
 
+~H1: tex-cmd=\section
+~H2: tex-cmd=\subsection
+~H3: tex-cmd=\subsubsection
+
 ~H1: label='[§@h1]{.heading-label}' replace="/§//"
 ~H2: label='[§@h1.@h1-h2]{.heading-label}' replace="/§//"
 ~H3: label='[§@h1.@h1-h2.@h1-h2-h3]{.heading-label}' replace="/§//"
@@ -54,6 +58,8 @@ Package: [all]hypcap
 ~ TexRaw
 % redefines the caption setup of the figures environment in the beamer class.
 \captionsetup[figure]{labelformat=empty}
+
+\setcounter{secnumdepth}{0}
 
 \renewcommand{\arraystretch}{1.2}
 
