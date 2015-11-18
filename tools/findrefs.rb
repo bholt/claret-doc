@@ -38,12 +38,17 @@ if File.exist? allbib
   end
   
   if changed
-    # remove BibDesk fields
+    # cleanup bib items
+    # - remove BibDesk fields
+    # - remove URL if DOI present
     proj_bib.each do |e|
-      fields = e.to_hash.keys.keep_if{|k| k =~ /^bdsk/}
-      if not fields.empty?
-        fields.each{|f| e.delete(f) }
+      bdsk = e.to_hash.keys.keep_if{|k| k =~ /^bdsk/}
+      if not bdsk.empty?
+        bdsk.each{|f| e.delete(f) }
       end
+      
+      e.delete("url") if e["doi"]
+      
     end
     # save back to file 'refs.bib' file
     proj_bib.save_to(f)
