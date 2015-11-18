@@ -6,21 +6,24 @@ affiliation: University of Washington
 email:       bholt@cs.uw.edu
 
 Heading Base: 2
-Bib style:    plainnat
 Bibliography: refs.bib
 doc class:    [10pt]article
 css:          style/style.css
 Logo: False
 
 Latex: ../tools/lualatexdvi
-Pdf Latex: xelatex
+Pdf Latex: lualatex
 
 Package: etoolbox
 Package: fontspec
 Package: tabulary
 Package: [left=1.75in,right=1.75in,top=1in,bottom=1in]geometry
+Package: caption
+Package: [all]hypcap
 
 #todo: color=red font-size=x-small font-family=HelveticaNeue-Light before='[' after=']'
+
+~a: .tex-tooltip
 
 ~P,~Span: replace="/\[(?:TODO|todo):\s*(.*?)\]/[\1]{#todo}/g"
 
@@ -37,12 +40,20 @@ Package: [left=1.75in,right=1.75in,top=1in,bottom=1in]geometry
 .LinedFloat : after='&nl;*********{.figureline}&nl;[[**&label;.** ]{.caption-before}[&caption;]{.caption-text}]{.figure-caption html-elem=fig-caption}&nl;{notag}&nl;'
 .UnlinedFloat : after='&nl;[[**&label;.** ]{.caption-before}[&caption;]{.caption-text}]{.figure-caption html-elem=fig-caption}&nl;{notag}&nl;'
 
+.figure-caption: tex-cmd=\caption
+.caption-text  : tex-cmd=
+.figure-label  : tex-cmd=
+
+
 ~Img: max-width=100%
 .zoom: max-width=80% tex-text-align=center
 
 @tex .zoom50: width=80%
 
 ~ TexRaw
+% redefines the caption setup of the figures environment in the beamer class.
+\captionsetup[figure]{labelformat=empty}
+
 \renewcommand{\arraystretch}{1.2}
 
 \apptocmd{\sloppy}{\hbadness 10000\relax}{}{}
