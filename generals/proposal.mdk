@@ -81,7 +81,7 @@ Our goal is to come up with a programming model that helps programmers balance a
 At this point we have established that trading off consistency for performance is tricky business, involving making many decisions about what reorderings of operations should be allowed, when updates must be visible in order to ensure correct execution, or how consistent a read can be and still meet its latency SLA. Furthermore, programmers must make these decisions while keeping in mind that due to real-world effects, some data items will be significantly more contentious and inconsistent than others.
 The promise of ADTs is to hide implementation details – can we use them to hide some of these concerns? 
 
-With *imprecise, probabilistic and approximate (IPA) types*, we can express weaker constraints on ADTs, unlocking the possibility of using the techniques we have discussed to trade off consistency for performance.
+With *inconsistent, probabilistic and approximate (IPA) types*, we can express weaker constraints on ADTs, unlocking the possibility of using the techniques we have discussed to trade off consistency for performance.
 Operations on IPA types only allow views of the state that can assure correct semantics, which may mean disallowing operations that would expose too much, or exposing values that encode a range or distribution rather than a precise value.
 IPA types encapsulate the ordering and visibility constraints necessary for whatever operations they allow, so users do not need to interact with complex consistency models, and these types can subsequently be composed. Of course, it leaves programmers with a different set of problems to deal with, which we will get to, but which we posit are an better alternative.
 
@@ -93,7 +93,7 @@ Let us consider again the scenario posed at the beginning, about a ticket sales 
 
 If we allow two replicas to both sell the last ticket, we will violate the first requirement, so our model must express this as a hard constraint. Using *escrow*, a technique we will explain next, we can distribute permissions to sell tickets among the replicas so that while there are many tickets remaining, the requests can be handled by any replica safely. However, now providing a precise count of remaining tickets requires synchronizing all replicas. Luckily, (2) tells us that the count does not need to be precise, which allows us to meet (3)'s requirement by accessing whichever replica is nearest or fastest.
 
-~ Fig {#fig-tickets caption="*Example IPA Type:* A `MovieTicket` ADT can be implemented using a more generic `Pool` type. Ticket sales must be strongly consistent, but the number of remaining tickets can be estimated, provided it gets more precise when there are few remaining." }
+~ Fig {#fig-tickets caption="A `MovieTicket` ADT can be implemented using a more generic `Pool` type. Ticket sales must be strongly consistent, but the number of remaining tickets can be approximate, provided it gets more precise when there are few remaining." }
 ![ticket sales example](fig/tickets.pdf)
 ~
 
