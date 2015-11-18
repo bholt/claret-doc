@@ -4,6 +4,8 @@ body.madoko {
   font-size: 16px;
   font-weight: 300;
   line-height: 1.2em;
+  text-align: justify;
+  text-justify: inter-word;
 }
 
 .madoko .abstract {
