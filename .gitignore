@@ -1,4 +1,4 @@
 data/*.pdf
 data/*.csv
 .ipynb_checkpoints/
-Scratch.ipynb
+/Scratch.ipynb
