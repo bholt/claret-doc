@@ -85,6 +85,10 @@ web: out/$(NAME).html
 web-view: web
 	open -a Safari out/$(NAME).html
 
+deploy: final web
+	cp out/$(NAME).pdf out/$(NAME).html ../.pages/
+	cd ../.pages/ && git add . && git commit -m"." && git push
+
 clean:
 	rm -r out paper-web.mdk plots/*.pdf plots/*.svg
 

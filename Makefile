@@ -9,6 +9,5 @@ all:
 	$(MAKE) -C full
 
 deploy:
-	$(MAKE) -C eurosys final web
-	$(MAKE) -C generals final web
-	scp eurosys/out/claret-eurosys.{pdf,html} generals/out/generals.{pdf,html} $(dest)/drafts/
+	$(MAKE) -C eurosys deploy
+	$(MAKE) -C generals deploy

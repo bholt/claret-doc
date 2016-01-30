@@ -45,10 +45,14 @@ out/paper.pdf: $(SRCS) $(DEPS) $(FIGS_OUT)
 
 pdf: out/paper.pdf
 
-final: pdf
-	cd out && pdfstill paper.pdf && mv paper.still.pdf generals.pdf
-	cp out/generals.pdf ../generated/
-	cd ../generated/ && git add . && git commit -m"." && git push
+out/generals.pdf: out/paper.pdf
+	cd out && pdfstill paper.pdf && mv paper.still.pdf $(NAME).pdf
+
+final: out/$(NAME).pdf
+
+deploy: final web
+	cp out/$(NAME).pdf out/$(NAME).html ../.pages/
+	cd ../.pages/ && git add . && git commit -m"." && git push
 
 pdf-view: pdf
 	open -a Skim out/paper.pdf
@@ -68,4 +72,4 @@ web-view: web
 clean:
 	rm -rf out paper-web.mdk
 
-.PHONY: all clean pdf web pdf-view web-view
+.PHONY: all clean pdf web pdf-view web-view final deploy
