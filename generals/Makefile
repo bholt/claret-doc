@@ -47,6 +47,8 @@ pdf: out/paper.pdf
 
 final: pdf
 	cd out && pdfstill paper.pdf && mv paper.still.pdf generals.pdf
+	cp out/generals.pdf ../generated/
+	cd ../generated/ && git add . && git commit -m"." && git push
 
 pdf-view: pdf
 	open -a Skim out/paper.pdf
