@@ -9,5 +9,5 @@ all:
 	$(MAKE) -C full
 
 deploy:
-	$(MAKE) -C eurosys deploy
+	$(MAKE) -C usenix16 deploy
 	$(MAKE) -C generals deploy
