@@ -13,7 +13,7 @@ If the system knew which constraints were relevant to the application, then it c
 Databases and distributed systems have long used properties such as commutativity to reduce coordination and synchronization, but they rely on having a predefined schema or restricting operations to only those that are coordination-free.
 
 
-In this work, we propose a new way to express high-level application semantics through *abstract data types* (ADTs) and consequently avoid unnecessary synchronization in distributed transactions. ADTs allow users and systems alike to reason about their logical behavior, including algebraic properties like commutativity, rather than the low-level operations used to implement them. The datastore can leverage this higher-level knowledge to avoid conflicts, allowing transactions to interleave and execute concurrently without changing the observable behavior. Programmers benefit from the flexibility and expressivity of ADTs, reusing data structures from a common library or implementing custom ADTs for their specific use case.
+In this work, we propose a new way to express high-level semantics through *abstract data types* (ADTs) and consequently avoid unnecessary synchronization in distributed transactions. ADTs allow users and systems alike to reason about their logical behavior, including algebraic properties like commutativity, rather than the low-level operations used to implement them. The datastore can leverage this higher-level knowledge to avoid conflicts, allowing transactions to interleave and execute concurrently without changing the observable behavior. Programmers benefit from the flexibility and expressivity of ADTs, reusing data structures from a common library or implementing custom ADTs for their specific use case.
 
 Our prototype ADT-store, *Claret*, demonstrates how ADT awareness can be added to a datastore to make strongly consistent distributed transactions practical. It is the first non-relational system to leverage ADT semantics to reduce conflicts between distributed transactions.
 Rather than requiring a relational data model with a fixed schema, Claret encourages programmers to use whatever data structures naturally express their application.
@@ -22,7 +22,7 @@ Datastores supporting complex datatypes and operations are already popular. Many
 
 *Claret* uses the logical properties of data types to communicate application-level semantics to the system so it can perform optimizations on both the client and server side. In [#sec-leveraging], we show how commutativity can be used to avoid false conflicts (*boosting*) and ordering constraints (*phasing*), and how associativity can be applied to reduce load on the datastore (*combining*).
 
-On high-contention workloads, the combined optimizations achieve up to a 49x improvement in peak transaction throughput over traditional concurrency control on a synthetic microbenchmark, up to 4.3x on an auction benchmark based on Rubis [@Amza:02], and 3.6x on a Twitter clone based on Retwis [@retwis]. While Claret's optimizations help most in high-contention cases, its performance on read-heavy workloads with little contention is unaffected. Claret's transactions can achieve 67-82% of the throughput possible without transactions, which represents an upper bound on the performance of our datastore.
+On high-contention workloads, the combined optimizations achieve up to a 49x improvement in peak transaction throughput over traditional concurrency control on a synthetic microbenchmark, up to 4.3x on an auction benchmark based on Rubis [@Amza:02], and 3.6x on a Twitter clone based on Retwis [@retwis]. While Claret's optimizations help most in high-contention cases, its performance on workloads with little contention is unaffected. Claret's transactions achieve 67-82% of the throughput possible without transactions, which represents an upper bound on the performance of our datastore.
 
 This work makes the following contributions:
 
@@ -30,4 +30,4 @@ This work makes the following contributions:
 - Implementation of optimizations leveraging ADT semantics: *transaction boosting*, *operation combining*, and *phasing*
 - Evaluation of the impact of these optimizations on raw transaction performance and benchmarks modeling real-world contention
 
-In the remainder of this paper, we describe the design of the system and evaluate the impact ADT-enabled optimizations have on transaction performance. But first, we must delve more deeply into what causes contention in real applications.
+In this paper, we describe the design of the system and evaluate the impact ADT-enabled optimizations have on transaction performance. But first, we must delve more deeply into what causes contention in real applications.

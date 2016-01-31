@@ -1,15 +1,15 @@
 # Expressing abstract behavior {#sec-expressing}
 
-Just as in any software design, building Claret applications involves choosing the right data structures. There are many valid ways of composing ADTs within transactions for a correct implementation, but to achieve the best performance, the programmer must express as much of the high-level abstract behavior as possible through ADT operations, such as atomicity and commutativity.
+As in any software design, building Claret applications involves choosing the right data structures. There are many valid ways of composing ADTs within transactions, but to achieve the best performance, one should express as much high-level abstract behavior as possible through ADT operations.
 
-Typically, the more specialized an ADT is, the more concurrency it can expose, so finding the closest match for each use case is essential.
-For example, an application needing to generate unique identifiers should not use a counter, which must return the next number in the sequence, because this is very difficult to scale (as implementers of TPC-C [@TPCC], which explicitly requires this, know well). Instead, a `UniqueID` type succinctly expresses that non-sequential IDs are okay, and can implement it in a way that is fully commutative.
+Typically, the more specialized an ADT is, the more concurrency it can expose, so finding the closest match is essential.
+For example, one could use a counter to generate unique identifiers, but counters must return numbers in sequence, which is difficult to scale (as implementers of TPC-C [@TPCC], which explicitly requires this, know well). A special `UniqueID` type succinctly communicates that non-sequential IDs are acceptable, allowing a commutative implementation.
 
-Claret has a library of pre-defined ADTs, shown in [#tab-adt-list] which were used to implement the applications in this paper.
+Claret has a library of pre-defined ADTs ([#tab-adt-list]) used to implement the applications in this paper.
 Reusing existing ADTs saves implementation time and effort, but may not always expose the maximum amount of concurrency.
 Custom ADTs can express more complex application-specific properties, but the developer is responsible for specifying the abstract behavior for Claret.
 [todo: example: bank account adt? (not one of our apps, but there is an easy-to-describe custom adt there)]
-The next sections will show how ADT behavior is specified in Claret to expose abstract properties of ADTs for use in the optimizations previously described.
+The next sections will show how ADT behavior is specified in Claret to expose abstract properties of ADTs for our optimizations to leverage.
 
 ~ Tab { #tab-adt-list caption="Library of built-in data types."}
 | Data type      | Description                               |
@@ -61,11 +61,12 @@ However, we need something besides this declarative representation to communicat
 ![Abstract lock interface](fig/abstract-lock.pdf){.onecol}
 ~
 
-In Claret, each data type describes its commutativity by implementing the *abstract lock* interface shown in [#lock-interface]. This imperative interface allows data types to be arbitrarily introspective when determining commutativity. In our pessimistic (locking) implementation, the client must acquire locks for its operations before executing them. When the datastore receives a lock request for an operation on a record, the concurrency controller queries the abstract lock associated with the record using its `acquire` method, which checks the new operation against the other operations currently holding the lock to determine if it can execute concurrently (commutes) with all of them.
+In Claret, each data type describes its commutativity by implementing the *abstract lock* interface shown in [#lock-interface]. This imperative interface allows data types to be arbitrarily introspective when determining commutativity. In our implementation, clients must acquire locks for each operation before executing them. When the datastore receives a lock request for an operation on a record, the concurrency controller queries the abstract lock associated with the record using its `acquire` method, which checks the new operation against the other operations currently holding the lock to determine if it can execute concurrently (commutes) with all of them.
+
+Implementations of the interface typically keep a set of the current lock-holders and which operations are currently permitted to share the lock.
+
 
 A traditional reader/writer lock can be implemented in this way by tracking all the transactions currently reading a record when it's in *reading* mode, only allowing a write (*exclusive* mode) when all readers have released their locks. More permissive abstract locks can be implemented simply by adding additional modes, such as *appending* for sets or lists, which allow all `add` operations. More fine-grained commutativity tracking can be done, at the cost of increased computation in the lock acquire step. For instance, a set `add` could acquire the lock during a read-only mode if the set already contains the item it adds.
-
-### Transaction boosting
 
 Claret uses abstract locks to perform transaction boosting. With these locks, programmers can be assured that transactions will only conflict with each other on operations that do not commute. In our auction application, `bid`s are performed by adding to a `topk` set (as in [#fig-levels]). For popular items and near the end of auctions, the `ItemBids` `zset` will be the most highly contended, but because `add`s commute, those `bid` transactions will not conflict with each other.
 

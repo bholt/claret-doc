@@ -21,10 +21,10 @@ Each record has a type, determined by a tag associated with its key so invalid o
 The particular client bindings employed are not essential to this work; our code examples will use Python-like syntax similar to Redis's Python bindings though our actual implementation uses C++. An example of an ADT implementation of the Bid transaction is shown in [#fig-levels].
 
 ## Consistency model
+Weak consistency models require programmers to understand and guard against all potentially problematic interleavings. With Claret, programmers instead focus on choosing ADTs that best represent their desired behavior, naturally exposing opportunities for optimization.
 
-Rather than relying on weaker consistency models, Claret aims to use application semantics to make strong consistency practical. Instead of guarding actions in case of inconsistency, application programmers focus on exposing concurrency by choosing ADTs that best represent their desired behavior.
-
-Individual operations in Claret are strictly linearizable, committing atomically on the shard that owns the record. Each record, including aggregates, behaves as a single object living on one shard. Atomicity is determined by the granularity of individual ADT operations. Custom ADTs allow arbitrarily complex application logic to be performed atomically, provided they conceptually operate on a single "record". Composing actions between multiple objects requires transactions.
+Individual operations in Claret are strictly linearizable, committing atomically on the shard that owns the record. Each record, including aggregate types, behaves as a single object living on one shard. Atomicity is determined by the granularity of ADT operations.
+Custom ADTs can allow arbitrarily complex application logic to be atomic, provided they can localized to a single object, but in general, composing operations requires transactions.
 
 ## Transactions {#sec-transactions}
 
@@ -32,7 +32,7 @@ Individual operations in Claret are strictly linearizable, committing atomically
 ![Application-level versus key/value store level](fig/app-level.pdf){width=100%}
 ~
 
-~ Fig { #fig-rubis-conflicts caption="High-level overview of important Rubis transactions, implemented with ADTs. Lines show conflicts between operations, many of which are either eliminated due to commutativity by boosting or mediated by phasing." }
+~ Fig { #fig-rubis-conflicts caption="Overview of important Rubis transactions implemented with ADTs. Lines show conflicts between operations, many of which are either eliminated due to commutativity by boosting or mediated by phasing." }
 ![Example ADT version of Bid transaction](fig/rubis-conflicts.pdf){.onecol}
 ~
 
@@ -43,7 +43,7 @@ To support arbitrary ADT operations in transactions, each operation is split int
 Once locks for all operations in a transaction have been acquired, a transaction commit is sent to each participating shard, which executes the *commit* part of each of the *prepared* operations. The commit stage performs any necessary mutation on the record and releases the lock.
 
 Similar to Spanner [@Spanner], clients do not read their own writes; due to the buffering of mutations, operations always observe the state prior to the beginning of the transaction.
-We use a lock-based approach rather than optimistic concurrency control (OCC), but OCC should also benefit in similar ways from Claret's optimizations. [todo: OCC is known to fall over at high contention, phasing would not work with OCC?]
+We chose a lock-based approach; we briefly explain in [#sec-boosting] how this approach could similarly benefit optimistic concurrency control (OCC).
 
 Claret does not require major application modifications to express concurrency. From the clients' view, there are no fundamental differences between using Redis and Claret (except the addition of distributed transactions and custom types).
 Under the hood, however, Claret will use its knowledge about ADTs to improve performance in ways which we describe next.
