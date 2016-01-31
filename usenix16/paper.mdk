@@ -1,8 +1,6 @@
-title:       Claret: Avoiding Contention in Distributed Transactions with Abstract Data Types
-author: Paper #120
-
-_author:      Brandon Holt, Irene Zhang, Dan Ports, Mark Oskin, Luis Ceze
-_affiliation: University of Washington
+title:       Claret: Avoiding Contention in Transactions with Abstract Data Types
+author:      Brandon Holt, Irene Zhang, Dan Ports, Mark Oskin, Luis Ceze
+affiliation: University of Washington
 _email:       {bholt,iyzhang,dkrp,oskin,luisceze}\@cs.uw.edu
 
 latex: ../tools/lualatexdvi
@@ -11,7 +9,7 @@ pdf latex: xelatex
 Heading Base: 2
 Bib style:    plainnat
 Bibliography: refs.bib
-doc class:    [twocolumn,10pt,preprint]article
+doc class:    [twocolumn,10pt]article
 package: usenix
 
 css:          style/style.css
