@@ -11,13 +11,15 @@ pdf latex: xelatex
 Heading Base: 2
 Bib style:    plainnat
 Bibliography: refs.bib
-doc class:    [preprint]style/sigplanconf-eurosys.cls
+doc class:    [twocolumn,10pt,preprint]article
+package: usenix
+
 css:          style/style.css
 Logo: False
 Package: etoolbox
 Package: fontspec
 
-.onecol: css-width=80% width=3.3in
+.onecol: css-width=80% width=3.1in
 
 #todo: color=red font-size=x-small font-family=HelveticaNeue-Light before='[' after=']'
 
@@ -32,7 +34,7 @@ Package: fontspec
 ~Tab : label='[Table\ @tab]{.figure-label}' toc=tof .Float .UnlinedFloat float-env=table float-name=Table
 ~Listing : label='[Listing\ @listing]{.figure-label}' toc=tof .Float .LinedFloat float-env=listing float-name=Listing
 
-.Float : tex-env-outer=figure[&tex-float-placement;] tex-float-placement="tbp"
+.Float : tex-env-outer=figure[&tex-float-placement;] tex-float-placement="t"
 
 .LinedFloat : after='&nl;*********{.figureline}&nl;[[**&label;.** ]{.caption-before}[&caption;]{.caption-text}]{.figure-caption html-elem=fig-caption}&nl;{notag}&nl;'
 .UnlinedFloat : after='&nl;[[**&label;.** ]{.caption-before}[&caption;]{.caption-text}]{.figure-caption html-elem=fig-caption}&nl;{notag}&nl;'
@@ -46,7 +48,7 @@ Package: fontspec
 \apptocmd{\sloppy}{\hbadness 10000\relax}{}{}
 
 \setmainfont{Times}
-\setmonofont[Scale=0.85]{Hasklig}
+\setmonofont[Scale=0.85]{Anonymous Pro}
 ~
 
 ~ HtmlRaw

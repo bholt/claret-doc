@@ -53,9 +53,9 @@ Our final way to control contention is to vary the zipfian parameter used to sel
 At low zipfian, the distribution is mostly uniform over the 10,000 keys, so most operations are concurrent simply because they fall on different keys, though because of the significantly write-heavy workload, Claret's optimizations do help modestly. As the zipfian distribution becomes more skewed, transactions contend more often on fewer, more popular, records. With less inter-record concurrency, we rely more on abstract locks (boosting) to expose concurrency within records.
 
 For high skew, even without transactions we see a steady drop in performance simply due to serializing operations on the few shards unlucky enough to hold the especially popular keys.
-However, combining is able to save the day here, because at high skew, there is a very good chance of finding operations to combine with, offloading significant load from the otherwise-overloaded popular shards. Our implementation of combining requires operations to be split into the acquire and commit phases, so it cannot be used without transactions. Though workloads overall do not typically follow such extreme distributions, they may accurately model behavior during exceptional situations, such as BuzzFeed's dress moment.
+However, combining is able to save the day here, because at high skew, there is a very good chance of finding operations to combine with, offloading significant load from the otherwise-overloaded popular shards. Our implementation of combining requires operations to be split into the acquire and commit phases, so it cannot be used without transactions. Though distributions during normal execution are generally more moderate, extreme skew models behavior during exceptional situations like BuzzFeed's viral dress.
 
-Now that we understand how these optimizations perform under various degrees of contention, we turn to some benchmarks modeling contention in real-world scenarios.
+Now that we have looked at various degrees of artificial contention, our next benchmarks exhibit contention modelled on real-world scenarios.
 
 ## RUBiS
 
