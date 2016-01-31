@@ -15,7 +15,7 @@
 
 <!--contention prevents scaling; contention comes from real-world interactions -->
 
-Systems interacting with the real world often exhibit some common patterns which lead to contention: power-law distributions, network effects, and realtime events. However, much of this contention can be mitigated by understanding what semantics are desired at the application level.
+Systems interacting with the real world often exhibit some common patterns that lead to contention: power-law distributions, network effects, and realtime events. However, much of this contention can be mitigated by understanding what semantics are desired at the application level.
 
 ## Power laws everywhere
 
