@@ -87,7 +87,7 @@ web-view: web
 
 deploy: final web
 	cp out/$(NAME).pdf out/$(NAME).html ../.pages/
-	cd ../.pages/ && git add . && git commit -m"." && git push
+	cd ../.pages/ && git add . && git commit -m"." && git pull --rebase && git push
 
 clean:
 	rm -r out paper-web.mdk plots/*.pdf plots/*.svg
