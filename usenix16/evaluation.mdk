@@ -33,22 +33,18 @@ We start with a 50% read, 50% write workload and a modest zipfian parameter of 0
 The dotted pink line in [#plot-rawmix] shows performance of the same workload where operations are executed independently, without transactions (though performance is still measured in terms of the "transactions" of groups of 4 operations). These operations execute without conflicting, since they do not acquire locks, instead executing immediately on the records in a linearizable [@Herlihy:90] fashion. This serves as a reasonable upper bound on the throughput possible with our servers.
 Claret achieves 63% of that upper bound on throughput on this workload, though of course with strong consistency.
 
-### Varying operation mix
-
 ~ Fig { #plot-mix caption="*Peak throughput, varying operation mix.* Boosting is increasingly important with a higher fraction of adds. Phasing is essential for any mixed workload." }
 ![Varying mix](plots/rawmix-mix.pdf){ .onecol }
 ~
 
-[#plot-mix] shows throughput as we vary the percentage of commutable write operations (`add`).
+**Varying operation mix.** [#plot-mix] shows throughput as we vary the percentage of commutable write operations (`add`).
 From this experiment, we can conclude that phasing is useful even for relatively light amounts of writes because it helps ensure that `add` operations get their turn amidst all the read operations, and phasing is made even more useful with abstract locks (boosting), where sets regularly alternate between `add` and `read` phases. Moreover, we observe that combining can benefit even read-only or write-only workloads because it allows transactions to share results, reducing load on the servers.
-
-### Varying key distribution
 
 ~ Fig { #plot-zipf caption="*Peak throughput, varying key distribution.* Higher zipfian results in greater skew and contention; boosting and phasing together expose concurrency. At extreme skew, combining reduces load on hot records, which our non-transactional mode cannot do." }
 ![Varying zipfian](plots/rawmix-zipf.pdf){ .onecol }
 ~
 
-Our final way to control contention is to vary the zipfian parameter used to select keys; [#plot-zipf] shows throughput results with 50% `add`s. 
+**Varying key distribution.** Our final way to control contention is to vary the zipfian parameter used to select keys; [#plot-zipf] shows throughput results with 50% `add`s. 
 At low zipfian, the distribution is mostly uniform over the 10,000 keys, so most operations are concurrent simply because they fall on different keys, though because of the significantly write-heavy workload, Claret's optimizations do help modestly. As the zipfian distribution becomes more skewed, transactions contend more often on fewer, more popular, records. With less inter-record concurrency, we rely more on abstract locks (boosting) to expose concurrency within records.
 
 For high skew, even without transactions we see a steady drop in performance simply due to serializing operations on the few shards unlucky enough to hold the especially popular keys.
@@ -99,11 +95,15 @@ Overall, we can see that boosting and phasing are crucial to achieving reasonabl
 ![Retwis](plots/retwis-tput.pdf){ .onecol }
 ~
 
-Retwis is a simplified Twitter clone designed originally for Redis [@redis]. Data structures such as lists and sets are used track each user's followers and posts and keep a materialized up-to-date timeline for each user (represented as a sorted set). On top of Retwis's basic functionality, we added a "repost" action that behaves like Twitter's "retweet". Not being a true benchmark itself, Retwis doesn't specify a workload, so we simulate a realistic workload using a synthetic graph with power-law degree distribution and a simple model for user behavior for posting and reposting.
+Retwis is a simplified Twitter clone designed originally for Redis [@redis]. Data structures such as lists and sets are used track each user's followers and posts and keep a materialized up-to-date timeline for each user (represented as a sorted set).
+Retwis doesn't specify a workload, so we simulate a realistic workload using a synthetic graph with power-law degree distribution and a simple model for user behavior. The user model chooses between actions: `loadTimeline`, `newUser`, `follow`, `unfollow`, and `post`, `repost` (like Twitter's "retweet").
 
 For our synthetic graph, we use the Kronecker graph generator from the Graph 500 benchmark [@graph500] which is designed to produce the same power-law degree distributions found in natural graphs. We use a Kronecker graph of approximately 65,000 users, with an average number of followers of 16 (scale 16 with an edge-factor of 16). [#plot-retwis-dists] (left) shows that the distribution of followers per user follows a power law as intended.
 
-We use a simple model of user behavior to determine when and which posts to repost. Each time we load the most recent posts in a timeline for a random user (uniformly selected), they are sorted by the number of times they have already been reposted, and a discrete geometric distribution (skewed toward 0) is used to select the number of these to repost. The distribution of reposts resulting from our model is shown in [#plot-retwis-dists] (right), which follows a power law distribution: a decent approximation of the "viral" propagation effect observed in real social networks. Note that a small number of posts are reposted so much that they end up on over a quarter of users' timelines.
+We use a simple model of user behavior to determine when and which posts to repost. 
+After each timeline action, we rank the posts by how many reposts they already have and repost the most popular ones with probability determined by a geometric distribution
+
+Each time we load the most recent posts in a timeline for a random user (uniformly selected), they are sorted by the number of times they have already been reposted, and a discrete geometric distribution (skewed toward 0) is used to select the number of these to repost. The distribution of reposts resulting from our model is shown in [#plot-retwis-dists] (right), which follows a power law distribution: a decent approximation of the "viral" propagation effect observed in real social networks. Note that a small number of posts are reposted so much that they end up on over a quarter of users' timelines.
 
 [#plot-retwis] shows throughput on two different workloads. Read-heavy models steady-state Twitter traffic, while the post-heavy workload models periods of above-average posting, such as during live events. 
 We show only the results with phasing because the non-phasing baseline had too many transactions it was unable to complete. On the read-heavy workload, which models steady-state Twitter traffic, r/w locks are able to keep up reasonably well; after all, reading timelines is easy as long as they do not change frequently.

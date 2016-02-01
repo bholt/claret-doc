@@ -63,7 +63,7 @@ However, we need something besides this declarative representation to communicat
 
 In Claret, each data type describes its commutativity by implementing the *abstract lock* interface shown in [#lock-interface]. This imperative interface allows data types to be arbitrarily introspective when determining commutativity. In our implementation, clients must acquire locks for each operation before executing them. When the datastore receives a lock request for an operation on a record, the concurrency controller queries the abstract lock associated with the record using its `acquire` method, which checks the new operation against the other operations currently holding the lock to determine if it can execute concurrently (commutes) with all of them.
 
-Implementations of this interface typically keep a set of the current lock-holders. They determine which operations are currently permitted to share the lock by dividing them into *modes*. For example, reader/writer locks have a *read* mode for all read-only operations and an *exclusive* mode for the rest, while abstract locks have additional modes, such as *append* mode for sets which allows all `add`s. More fine-grained tracking can be done in `acquire` to expose more concurrency: for instance, a `contains` operation could be allowed during append mode if the item already exists.
+Implementations of this interface typically keep a set of the current lock-holders. They determine which operations are currently permitted to share the lock by dividing them into *modes*. For example, reader/writer locks have a *read* mode for all read-only operations and an *exclusive* mode for the rest, while abstract locks have additional modes, such as an *append* mode for sets which allows all `add`s. More fine-grained tracking in `acquire` can expose more concurrency; for instance, `contains` can execute during *append* if the item already exists.
 
 ### Phaser interface { #sec-phaser }
 
@@ -71,14 +71,14 @@ Implementations of this interface typically keep a set of the current lock-holde
 ![Phaser interface](fig/phaser.pdf){.onecol}
 ~
 
-Phasing requires knowing how to divide operations into *phases*, similar to the *modes* for locks, but rather than tracking which operations currently hold the lock, the *phaser* associated with a record tracks all the operations waiting to acquire the lock. When an operation fails to acquire the lock, the controller *enqueues* the operation with the phaser. When a phase completes, the abstract lock *signals* the phaser, requesting operations to start a new phase, switching *modes*.
+Phasing requires knowing how to divide operations into *phases*, similar to the *modes* for locks, but rather than tracking which operations currently hold the lock, the *phaser* associated with a record tracks all the operations waiting to acquire the lock. When an operation fails to acquire the lock, the controller *enqueues* it with the phaser. When a phase completes, the abstract lock *signals* the phaser, requesting operations for a new phase.
 
 The simplest implementations keep queues corresponding to each mode. [#lst-phaser], for example, shows `adders`, which will contain all operations that may insert into the set (just `add`), and `readers`, which includes any read-only operations (`size`, `contains`, `range`, etc).
 As with abstract locks, more complicated phaser implementations can allow operations to be in multiple modes or use more complex state-dependent logic to determine which operations to signal.
 
 ## Combiners
 
-~ Fig { #fig-combining caption="Combining `range` operations: the second operation's result can be computed locally from the first because its range is a subset of the first, so the two can be combined." }
+~ Fig { #fig-combining caption="Combining `range` operations: the second operation's result can be computed locally because its range is a subset of the first, so the two can be combined." }
 ![Combiner for range](fig/combiner.pdf){.onecol}
 ~
 
