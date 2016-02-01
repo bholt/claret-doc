@@ -2,11 +2,11 @@
 
 To understand the potential performance impact of the optimizations enabled by ADTs, we built a prototype in-memory ADT-store in C++, dubbed Claret. Our design follows the architecture previously described in [#system-diagram], with keys distributed among shards by consistent hashing, though related keys may be co-located using tags as in Redis. Records are kept in their in-memory representations as in Redis to avoid serializing and deserializing except for operations from the clients. Clients are multi-threaded, modeling frontend servers handling many concurrent end-user requests, and use ethernet sockets and protocol buffers to communicate with the data servers.
 
-As discussed before, Claret uses a standard two-phase locking (2PL) scheme to isolate transactions.
-The baseline uses reader/writer locks which allow any number of read-only operations in parallel, but requires an exclusive lock for operations that modify the record. When boosting is enabled, these are replaced with abstract locks, which allow any operations that commute with one another to hold the lock at the same time. By default, operations retry whenever they fail to acquire a lock; with phasing, replies are sent whenever the lock is finally acquired, so retries are only used to resolve deadlocks or lost packets.
+As discussed before, Claret uses two-phase locking (2PL) to isolate transactions.
+The baseline uses reader/writer locks. When boosting is enabled, these are replaced with abstract locks. By default, operations retry whenever they fail to acquire a lock; with phasing, replies are sent whenever the lock is finally acquired, so retries are only used to resolve deadlocks or lost packets.
 
-This prototype does not currently provide fault-tolerance or durability. These could be implemented by replicating shards or logging operations to persistent storage.
-Synchronizing with replicas or the filesystem is expected to increase the time spent holding locks. In 2PL, the longer locks are held, lower throughput and higher latency are expected. Claret increases the number of clients which can simultaneously hold locks, so providing fault tolerance should be expected to exaggerate the results we obtained.
+Our prototype does not provide fault-tolerance or durability. These could be implemented by replicating shards or logging operations to persistent storage.
+Synchronizing with replicas or the filesystem is expected to increase the time spent holding locks. In 2PL, the longer locks are held, lower throughput and higher latency are expected. Claret increases the number of clients which can simultaneously hold locks, so adding fault tolerance would be expected to reinforce our findings.
 
 In our evaluation, we wish to understand the impact our ADT optimizations have on throughput and latency under various contention scenarios. First, we use a microbenchmark to directly tune contention by varying operation mix and key distribution. We then move on to explore scenarios modeling real-world contention in two benchmarks – Rubis: an online auction service, and Retwis: a Twitter clone.
 
@@ -26,18 +26,16 @@ The following experiments are run on our own cluster in RedHat Linux, un-virtual
 This microbenchmark performs a random mix of operations, similar to YCSB or YCSB+T [@YCSB;@YCSB-T], that allows us to explicitly control the degree of contention.
 Each transaction executes a fixed number of operations (4), randomly selecting either a read operation (`set.size`), or a commutative write operation (`set.add`), and keys selected randomly with a zipfian distribution from a pool of 10,000 keys. 
 By varying the percentage of `add`s, we control the number of potential conflicting operations. Importantly, `add`s commute with one another, but not with `size`, so even with boosting, conflicts remain.
-The zipfian parameter, &alpha;, determines the shape of the distribution; a value of 1 corresponds to Zipf's Law, lower values are shallower and more uniform, higher values more skewed. YCSB sets &alpha; near 1; we explore a range of parameters in [#plot-zipf].
+The zipfian parameter, &alpha;, determines the shape of the distribution; a value of 1 corresponds to Zipf's Law, lower values are shallower and more uniform, higher values more skewed. YCSB sets &alpha; near 1; we explore a range of parameters.
 
- <!-- but other prior work [@Breslau:99] found that lower values of &alpha;, ranging from 0.64 to 0.83, better characterized the workloads they studied. We explore a range of &alpha;'s in [#plot-zipf], but default to 0.6 elsewhere to be conservative, since Claret's optimizations perform better with more skew. -->
-
-First, we start with a 50% read, 50% write workload and a modest zipfian parameter of 0.6, and vary the number of clients. [#plot-rawmix] shows a throughput versus latency plot with lines showing each condition as we vary the number of clients (from 8 to 384). We see immediately that the baseline, using traditional r/w locks, reaches peak throughput with few clients and then latencies go up and throughput suffers as more clients create more contention. Using abstract locks (*boosting*) to expose more concurrency increases peak throughput somewhat. Using phasing in addition (dashed lines) results in significant throughput improvement and lower latency. This is because phasing ensures that all transactions get their turn while also improving the chances that operations will commute.
+We start with a 50% read, 50% write workload and a modest zipfian parameter of 0.6, and vary the number of clients. [#plot-rawmix] shows a throughput versus latency plot with lines showing each condition as we vary the number of clients (from 8 to 384). We see immediately that the baseline, using traditional r/w locks, reaches peak throughput with few clients before latencies spike; throughput suffers as additional clients create more contention. Abstract locks (*boosting*) expose more concurrency, increasing peak throughput. Adding phasing (dashed lines) results in significant improvement in peak throughput. This is because phasing ensures that all transactions get their turn while also improving the chances of operations commuting.
 
 The dotted pink line in [#plot-rawmix] shows performance of the same workload where operations are executed independently, without transactions (though performance is still measured in terms of the "transactions" of groups of 4 operations). These operations execute without conflicting, since they do not acquire locks, instead executing immediately on the records in a linearizable [@Herlihy:90] fashion. This serves as a reasonable upper bound on the throughput possible with our servers.
 Claret achieves 63% of that upper bound on throughput on this workload, though of course with strong consistency.
 
 ### Varying operation mix
 
-~ Fig { #plot-mix caption="*Peak throughput, varying operation mix.* With even just 20% `add`s, throughput plummets without phasing, which helps `adds` get a chance to run between all the reads. With higher `add` ratios, boosting becomes important." }
+~ Fig { #plot-mix caption="*Peak throughput, varying operation mix.* Boosting is increasingly important with a higher fraction of adds. Phasing is essential for any mixed workload." }
 ![Varying mix](plots/rawmix-mix.pdf){ .onecol }
 ~
 
@@ -46,7 +44,7 @@ From this experiment, we can conclude that phasing is useful even for relatively
 
 ### Varying key distribution
 
-~ Fig { #plot-zipf caption="*Peak throughput, varying key distribution.* Higher zipfian results in more skew and greater contention; boosting is essential to expose concurrency on hot records. At extreme skew, combining becomes much more likely to occur, while our non-transactional mode is unable to benefit from it." }
+~ Fig { #plot-zipf caption="*Peak throughput, varying key distribution.* Higher zipfian results in greater skew and contention; boosting and phasing together expose concurrency. At extreme skew, combining reduces load on hot records, which our non-transactional mode cannot do." }
 ![Varying zipfian](plots/rawmix-zipf.pdf){ .onecol }
 ~
 
