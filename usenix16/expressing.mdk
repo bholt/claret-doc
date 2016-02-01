@@ -89,6 +89,6 @@ Remember from [#sec-transactions] that operations are split into *execute* and *
 
 To avoid excessive matching, only operations declared *combinable* are compared. The client-side library keeps track of outstanding combinable operations with a map of combiners indexed by key. Combiners are registered after a lock is acquired and removed when the operation commits. Before sending an acquire request for a combinable operation, the client checks the map for that key. If none is found, or the combine fails, it is sent to the server as usual. If it succeeds, the result is returned immediately, and Claret handles merging the two transactions as described before in [#sec-combining].
 
-**Adding a new ADT.**
+## Adding a custom ADT
 The ADTs provided by Claret are all implemented using these interfaces to communicate their commutativity and associativity to Claret's concurrency control system. To implement a custom ADT that can take advantage of all of the optimizations, programmers must simply implement an abstract lock, phaser, and combiner. 
 ADT designers could choose to use simple implementations similar to those in Claret that just divide operations statically into modes, or experts could use more state-dependent logic to provide fine-grained concurrency if needed.
