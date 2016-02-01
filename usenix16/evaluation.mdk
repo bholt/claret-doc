@@ -46,9 +46,9 @@ From this experiment, we can conclude that phasing is useful even for relatively
 
 **Varying key distribution.** 
 [#plot-zipf] shows throughput with a 50/50 operation mix, controlling contention by adjusting the zipfian skew parameter used to choose keys.
-At low zipfian, the distribution is mostly uniform over the 10,000 keys, so most operations are concurrent simply because they fall on different keys, and Claret has little benefit. As the distribution becomes more skewed, transactions contend more often on fewer, more popular, records. With less inter-record concurrency, we rely on abstract locks (boosting) to expose concurrency within records.
+At low zipfian, the distribution is mostly uniform over the 10,000 keys, so most operations are concurrent simply because they fall on different keys, and Claret shows little benefit. As the distribution becomes more skewed, transactions contend on a smaller set of popular records. With less inter-record concurrency, we rely on abstract locks (boosting) to expose concurrency within records.
 
-At high skew, even without transactions there is a steady drop in performance simply due to serializing operations on the few shards unlucky enough to hold the popular keys.
+At high skew, there is a steady drop in performance simply due to serializing operations on the few shards unlucky enough to hold the popular keys.
 However, skew increases the chance of finding operations to combine with, so combining is able to offload significant load from the hot shards.
 Our implementation of combining requires operations to be split into the acquire and commit phases, so it cannot be used without transactions. Though distributions during normal execution are typically more moderate, extreme skew models the behavior during exceptional situations like BuzzFeed's viral dress.
 
@@ -64,7 +64,7 @@ Now that we have looked at various degrees of artificial contention, our next be
 ![Rubis](plots/rubis-conflicts.pdf){ .onecol width=3.1in }
 ~
 
-The RUBiS benchmark [@Amza:02] imitates an online auction service similar to those described back in [#sec-realworld]. There are 8 different kinds of transactions: `OpenAuction`, `ViewAuction`, `CloseAuction`, `Bid`, `Browse`, `AddComment`, `AddUser`, `ViewUser`, but `ViewAuction` and `Bid` dominate the workload. The benchmark specifies a workload consisting of a mix of these transactions and the average bids per auction that should result. However, the *distribution* of bids (by item and time) was unspecified.
+The RUBiS benchmark [@Amza:02] imitates an online auction service like the one described in [#sec-realworld]. The 8 transaction types and their frequencies are shown in [#tbl-workloads]; `ViewAuction` and `Bid` dominate the workload. The benchmark specifies a workload consisting of a mix of these transactions and the average bids per auction. However, the distribution of bids (by item and time) was unspecified.
 
 Our implementation models the bid distributions observed by subsequent studies [@Akula:04;@Akula:07], with bids per item following a power law and the frequency of bids increasing exponentially at the end of an auction.
 Otherwise, we follow the parameters specified in [@Amza:02]: 30,000 items, divided into 62 regions and 40 categories, with an average of 10 bids per item, though in our case this is distributed according to a zipfian with $\alpha = 1$.
@@ -72,7 +72,8 @@ Otherwise, we follow the parameters specified in [@Amza:02]: 30,000 items, divid
 [#plot-rubis] shows results for two different workloads: read-heavy (10% bid transactions), and bid-heavy (50% bid). 
 For the read-heavy workload, phasing provides reasonable performance, as bids do not often come in at a high enough rate to require commutativity. However, during high bidding times, modeled by our bid-heavy workload, it is essential to allow bids to commute. Claret maintains nearly the same throughput in this situation as the read-heavy workload, roughly 2x better than r/w locks and 68% of non-transactional performance. Considering the importance of getting bids correct, this seems like an acceptable tradeoff.
 
-The spikes of contention observed in prior work when popular auctions close [@Akula:04] typically cause momentary drops in performance which can be noticeable even to users not involved in a closing auction. Analyzing a trace of throughput over the execution of our benchmarks, we observed that boosting significantly reduced variability in throughput by 2x. The minimum throughput (over 5s windows) was also increased from 9,000 transactions per second for the baseline plus phasing, to 12,000 for boosting.
+Prior work [@Akula:04] observed contention spikes when popular auctions closed, leading to momentary performance drops which could be noticeable to even to users elsewhere on the site.
+Analyzing a trace of throughput over time, we observed that boosting significantly reduced variability in throughput by 2x. The minimum throughput (over 5s windows) was also increased from 9k txn/s for the baseline with phasing to 12k for boosting.
 
 [#fig-rubis-conflicts] showed which conflicts should be affected by Claret; in [#plot-rubis-conflicts] we validate those predictions by plotting the actual number of conflicts for the most significant edges in the conflict graph. Using a log scale, it is apparent that boosting all but eliminates Bid-Bid conflicts, but Bid-View conflicts have gone up; now that there are more bids, the chances of conflicting with `ViewAuction` have increased. The introduction of phasing and combining eliminate much of the remaining conflicts.
 
@@ -84,20 +85,22 @@ Overall, we can see that boosting and phasing are crucial to achieving reasonabl
 ![Retwis](plots/retwis-tput.pdf){ .onecol }
 ~
 
-Retwis is a simplified Twitter clone designed originally for Redis [@redis]. Data structures such as lists and sets are used track each user's followers and posts and keep a materialized up-to-date timeline for each user (represented as a sorted set).
-Retwis doesn't specify a workload, so we simulate a realistic workload using a synthetic graph with power-law degree distribution and a simple model for user behavior. The user model chooses between actions: `loadTimeline`, `newUser`, `follow`, `unfollow`, and `post`, `repost` (like Twitter's "retweet").
+~ Tab { #tbl-workloads caption="Transaction mix for benchmark workloads." }
+![Workloads](fig/workloads.pdf){ .onecol width=3.1in }
+~
+
+Retwis is a simplified Twitter clone designed originally for Redis [@redis]. Data structures such as lists and sets are used track each user's followers and posts and keep a materialized up-to-date timeline for each user (as a `zset`). It is worth noting that in our implementation, `Post` and `Repost` are executed as transactions, including when they append to all their followers' timelines, but when timelines are read, loading each tweet is done in a separate transaction.
+Retwis doesn't specify a workload, so we simulate a realistic workload using a synthetic graph with power-law degree distribution and a simple user model.
 
 We use the Kronecker graph generator from the Graph 500 benchmark [@graph500], which is designed to produce the same power-law degree distributions found in natural graphs. These experiments generate a graph with approximately 65,000 users and an average of 16 followers per user (out-degree follows a power law).
 
-We use a simple model of user behavior to determine when and which posts to repost. 
-After each timeline action, we rank the posts by how many reposts they already have and repost the most popular ones with probability determined by a geometric distribution
+Our simple model of user behavior determines when and which posts to repost. 
+After each timeline action, we rank the posts by how many reposts they already have and repost the most popular ones with probability determined by a geometric distribution. The resulting distribution of reposts follows a power law, approximating the viral propagation effects observed in real social networks.
 
-Each time we load the most recent posts in a timeline for a random user (uniformly selected), they are sorted by the number of times they have already been reposted, and a discrete geometric distribution (skewed toward 0) is used to select the number of these to repost. The resulting distribution of reposts follows a power law, an approximation of the "viral" propagation effect observed in real social networks. Note that a small number of posts are reposted so much that they end up on over a quarter of users' timelines.
-
-[#plot-retwis] shows throughput on two different workloads. Read-heavy models steady-state Twitter traffic, while the post-heavy workload models periods of above-average posting, such as during live events. 
+[#plot-retwis] shows throughput on two workloads, listed in [#tbl-workloads]. Read-heavy models steady-state Twitter traffic, while the post-heavy workload models periods of above-average posting, such as during live events. 
 We show only the results with phasing because the non-phasing baseline had too many transactions it was unable to complete. On the read-heavy workload, which models steady-state Twitter traffic, r/w locks are able to keep up reasonably well; after all, reading timelines is easy as long as they do not change frequently.
 However, the post-heavy workload shows that when contention increases, the performance of r/w locks falls off much more drastically than with boosting. Combining even appears to pay off when there are enough clients to find matches.
 
-Unlike auctions, Twitter is typically characterized as a non-transactional application because users are willing to tolerate minor inconsistencies. This tradeoff is clear when performance is as flat as the reader/writer performance is in these plots. However, when we look at the non-transactional throughput in these plots, we see that Claret achieves up to 82% of its throughput. Even without transactions, it suffers from the additional work caused by the higher ratio of posting, causing throughput (in terms of completed actions) to go down overall during high posting. With performance that close, it may be worth considering the benefits of using stronger consistency more often.
+Unlike auctions, Twitter is typically characterized as a non-transactional application because users are willing to tolerate minor inconsistencies. This tradeoff is clear when performance is as flat as the reader/writer performance is in these plots. However, with Claret's optimizations, it is able to achieve up to 82% of the non-transactional performance. This is largely due to the heavy amount of reads, even for our post-heavy workload. In situations where inconsistent timelines are more likely to be noticed, such as ongoing conversations, it may be worth paying this smaller overhead.
 
 This embodies the philosophy behind Claret: if the true concurrency in the application can be exposed, then correctness need not be sacrificed, and applications which require correctness, like auctions, need not suffer for it. By leveraging the data structures programmers naturally choose to use, Claret exposes concurrency without burdening developers. It is worth noting that these experiments do not include weaker consistency that can be enabled by replicating shards in an eventually consistent way. Leveraging ADTs in such settings is something we plan on investigating next.

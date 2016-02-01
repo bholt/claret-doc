@@ -21,7 +21,8 @@ FIGS := \
 	abstract-lock \
 	phaser \
 	rubis-conflicts \
-	combiner
+	combiner \
+	workloads
 
 fig/system-diagram.pdf: ../Claret.graffle
 	$(call graffleFigure,$<,System,$@)

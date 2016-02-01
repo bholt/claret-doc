@@ -440,8 +440,8 @@ data.retwis <- function(select="*", where="client = 'dsretwis'") {
   
   
   lvl <- c(
-    'read-heavy: ~5% post/repost',
-    'post-heavy: ~50% post/repost'
+    'read-heavy',
+    'post-heavy'
   )
   
   d$workload <- factor(revalue(d$mix, c(
