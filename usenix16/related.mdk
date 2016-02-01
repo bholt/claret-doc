@@ -20,8 +20,8 @@ Claret's strictly linearizable model exposes concurrency without relaxing consis
 Bloom [@Bloom;@BloomL] helps programmers design applications in ways that do not require distributed coordination, but requires substantial changes to programs. Claret's model is natural for anyone familiar with Redis.
 
 
-**Complex datatypes in NoSQL.**
-There is a recent trend toward supporting complex data types in NoSQL datastores. Redis [@redis], one of the most popular key/value stores, has a broad command set supporting operations on several complex data types, but cannot be easily extended with new data types, nor does it support transactions.
+**Complex data structures in NoSQL stores.**
+There is a recent trend toward supporting complex data structures in NoSQL datastores. Redis [@redis], one of the most popular key/value stores, has a broad command set supporting operations on several complex data types, but cannot be easily extended with new data types, nor does it support transactions.
 Hyperdex [@hyperdex;@hyperdex-web] supports atomic operations on common data structures, and transactions [@hyperdex-warp]. MongoDB [@mongodb] supports atomically updating documents.
 
 These systems support data types to make data modeling easier, not for performance. Claret leverages the same data types to expose concurrency and is designed to be extended with custom types.
