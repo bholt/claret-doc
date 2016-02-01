@@ -16,6 +16,7 @@ css:          style/style.css
 Logo: False
 Package: etoolbox
 Package: fontspec
+Package: microtype
 
 .onecol: css-width=80% width=3.25in
 
