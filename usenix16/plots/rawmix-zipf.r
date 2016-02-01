@@ -70,7 +70,7 @@ save(
 
 save(
   ggplot(subset.modes(subset(d.mix.mean, commute_ratio != 0.5)), aes(
-    x = num(commute_ratio),
+    x = num(commute_ratio)*100,
     y = throughput,
     group = cc_ph, fill = cc_ph, color = cc_ph, linetype = cc_ph
   ))+
@@ -79,7 +79,7 @@ save(
   stat_summary(geom='point', fun.y=max)+
   # stat_summary(geom='text', fun.y=max, size=1.2)+
   expand_limits(y=0)+
-  scale_x_continuous(breaks=c(0.0,0.2,0.4,0.6,0.8,1.0))+
+  scale_x_continuous(breaks=c(0,20,40,60,80,100))+
   scale_y_continuous(labels=function(x){ x/1000+'k' })+
   # color_scales('', my_palette)+
   # cc_scales(title='Mode:', guide = guide_legend(nrow = 3))+
