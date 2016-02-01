@@ -42,4 +42,4 @@ Similar to Spanner [@Spanner], clients do not read their own writes; due to the 
 We chose a lock-based approach; we briefly explain in [#sec-boosting] how this approach could similarly benefit optimistic concurrency control (OCC).
 
 Claret does not require major application modifications to express concurrency. From the clients' view, there are no fundamental differences between using Redis and Claret (except the addition of distributed transactions and custom types).
-Under the hood, however, Claret will use its knowledge about ADTs to improve performance in ways which we describe next.
+Under the hood, however, Claret will use its knowledge about ADTs to improve performance in a number of ways that we describe next.
