@@ -37,8 +37,10 @@ Claret's transactions achieve 63% of that throughput on this workload.
 ![Varying mix](plots/rawmix-mix.pdf){ .onecol }
 ~
 
-**Varying operation mix.** [#plot-mix] shows throughput as we vary the percentage of commutable write operations (`add`).
-From this experiment, we can conclude that phasing is useful even for relatively light amounts of writes because it helps ensure that `add` operations get their turn amidst all the read operations, and phasing is made even more useful with abstract locks (boosting), where sets regularly alternate between `add` and `read` phases. Moreover, we observe that combining can benefit even read-only or write-only workloads because it allows transactions to share results, reducing load on the servers.
+**Varying operation mix.** [#plot-mix] shows throughput as we vary the percentage of commutative write operations (`add`), with keys selected with a modest 0.6 zipfian distribution.
+Boosting becomes more important as the fraction of commutative `add`s increases. 
+Phasing has a significant performance impact for any mixed workload, as it helps commutative operations run concurrently; tracing the execution, we observed that records regularly alternated between `add` and `read` phases.
+Combining shows a modest improvement for all workloads, even for read-only and write-only, because it occasionally allows transactions to share locks (and the result of reads) without burdening the server.
 
 ~ Fig { #plot-zipf caption="*Peak throughput, varying key distribution.* Higher zipfian results in greater skew and contention; boosting and phasing together expose concurrency. At extreme skew, combining reduces load on hot records, which our non-transactional mode cannot do." }
 ![Varying zipfian](plots/rawmix-zipf.pdf){ .onecol }
@@ -92,7 +94,7 @@ Overall, we can see that boosting and phasing are crucial to achieving reasonabl
 Retwis is a simplified Twitter clone designed originally for Redis [@redis]. Data structures such as lists and sets are used track each user's followers and posts and keep a materialized up-to-date timeline for each user (as a `zset`). It is worth noting that in our implementation, `Post` and `Repost` are each a single transaction, including appending to all followers' timelines, but when viewing timelines, we load each post in a separate transaction.
 
 Retwis doesn't specify a workload, so we simulate a realistic workload using a synthetic graph with power-law degree distribution and a simple user model.
-We use the Kronecker graph generator from the Graph 500 benchmark [@graph500], which is designed to produce the same power-law degree distributions found in natural graphs. These experiments generate a graph with approximately 65,000 users and an average of 16 followers per user (out-degree follows a power law).
+We use the Kronecker graph generator from the Graph 500 benchmark [@graph500], which is designed to produce the same power-law degree distributions found in natural graphs. These experiments generate a graph with approximately 65,000 users and an average of 16 followers per user.
 
 Our simple model of user behavior determines when and which posts to repost. 
 After each timeline action, we rank the posts by how many reposts they already have and repost the most popular ones with probability determined by a geometric distribution. The resulting distribution of reposts follows a power law, approximating the viral propagation effects observed in real social networks.
@@ -101,7 +103,8 @@ After each timeline action, we rank the posts by how many reposts they already h
 We show only the results with phasing because the non-phasing baseline had too many transactions it was unable to complete. On the read-heavy workload, which models steady-state Twitter traffic, r/w locks are able to keep up reasonably well; after all, reading timelines is easy as long as they do not change frequently.
 However, the post-heavy workload shows that when contention increases, the performance of r/w locks falls off much more drastically than with boosting. Combining even appears to pay off when there are enough clients to find matches.
 
-Unlike auctions, Twitter is typically characterized as a non-transactional application because users are willing to tolerate minor inconsistencies. This tradeoff is clear when performance is as flat as the reader/writer performance is in these plots. However, with Claret's optimizations, it is able to achieve up to 82% of the non-transactional performance. This is largely due to the heavy amount of reads, even for our post-heavy workload. In situations where inconsistent timelines are more likely to be noticed, such as ongoing conversations, it may be worth paying this smaller overhead.
+Unlike auctions, many situations in Twitter are tolerant of minor inconsistencies, making it acceptable to implement without transactions in order to aid scalability.
+This tradeoff is clear when performance is as flat as the baseline performance is in these plots. However, with Claret's optimizations, it is able to achieve up to 82% of the non-transactional performance. In situations where inconsistent timelines are more likely to be noticed, such as ongoing conversations, it may be worth paying this much smaller overhead.
 
 **Evaluation summary.** We find that leveraging commutativity via boosting and phasing is clearly beneficial under all of our simulated scenarios, showing greater benefit under more extreme contention resulting from high skew or heavy writing. 
 Combining appears mostly ineffectual in our benchmarks, but does not hinder performance. In the most dire circumstances of extreme contention, having combining as an optional release valve for offloading work could be useful.
