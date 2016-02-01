@@ -1,6 +1,6 @@
 # Evaluation {#sec-eval}
 
-To understand the potential performance impact of the optimizations enabled by ADTs, we built a prototype in-memory ADT-store in C++, dubbed Claret. Our design follows the architecture previously described in [#system-diagram], with keys distributed among shards by consistent hashing, though related keys may be co-located using tags as in Redis. Records are kept in their in-memory representations, avoiding serializing. Clients are multi-threaded, modeling frontend servers handling many concurrent end-user requests, and use ethernet sockets and protocol buffers to communicate with the data servers.
+To understand the potential performance impact of the optimizations enabled by ADTs, we built a prototype in-memory ADT-store in C++, dubbed Claret. Our design follows the architecture previously described in [#system-diagram], with keys distributed among shards by consistent hashing, though related keys may be co-located using tags as in Redis. Records are kept in their in-memory representations, avoiding serialization. Clients are multi-threaded, to model frontend servers handling many concurrent end-user requests, and use ethernet sockets and protocol buffers to communicate with the data servers.
 
 As discussed before, Claret uses two-phase locking (2PL) to isolate transactions.
 The baseline uses reader/writer locks. When boosting is enabled, these are replaced with abstract locks. By default, operations retry whenever they fail to acquire a lock; with phasing, replies are sent whenever the lock is finally acquired, so retries are only used to resolve deadlocks or lost packets.
@@ -30,7 +30,7 @@ The zipfian parameter, &alpha;, determines the shape of the distribution; a valu
 
 We start with a 50% read, 50% write workload and a modest zipfian parameter of 0.6, and vary the number of clients. [#plot-rawmix] shows a throughput versus latency plot with lines showing each condition as we vary the number of clients (from 8 to 384). The baseline, using traditional r/w locks, reaches peak throughput with few clients before latencies spike; throughput suffers as additional clients create more contention. Abstract locks (*boosting*) expose more concurrency, increasing peak throughput. Adding phasing (dashed lines) results in significant improvement in peak throughput. This is because phasing ensures that all transactions get their turn while also improving the chances of commuting.
 
-The dotted pink line in [#plot-rawmix] shows performance of the same workload with operations executed independently, without transactions (though performance is still measured in terms of the "transactions" of groups of 4 operations). These operations executing immediately on the records in a linearizable [@Herlihy:90] fashion without locks. This serves as a reasonable upper bound on the throughput possible with our servers.
+The dotted pink line in [#plot-rawmix] shows performance of the same workload with operations executed independently, without transactions (though performance is still measured in terms of the "transactions" of groups of 4 operations). These operations execute immediately on the records in a linearizable [@Herlihy:90] fashion without locks. This serves as a reasonable upper bound on the throughput possible with our servers.
 Claret's transactions achieve 63% of that throughput on this workload.
 
 ~ Fig { #plot-mix caption="*Peak throughput, varying operation mix.* Boosting is increasingly important with a higher fraction of adds. Phasing is essential for any mixed workload." }
@@ -42,7 +42,7 @@ Boosting becomes more important as the fraction of commutative `add`s increases.
 Phasing has a significant performance impact for any mixed workload, as it helps commutative operations run concurrently; tracing the execution, we observed that records regularly alternated between `add` and `read` phases.
 Combining shows a modest improvement for all workloads, even for read-only and write-only, because it occasionally allows transactions to share locks (and the result of reads) without burdening the server.
 
-~ Fig { #plot-zipf caption="*Peak throughput, varying key distribution.* Higher zipfian results in greater skew and contention; boosting and phasing together expose concurrency. At extreme skew, combining reduces load on hot records, which our non-transactional mode cannot do." }
+~ Fig { #plot-zipf caption="*Peak throughput, varying key distribution.* Higher Zipf parameter results in greater skew and contention; boosting and phasing together expose concurrency. At extreme skew, combining reduces load on hot records, which our non-transactional mode cannot do." }
 ![Varying zipfian](plots/rawmix-zipf.pdf){ .onecol }
 ~
 
@@ -53,8 +53,6 @@ At low zipfian, the distribution is mostly uniform over the 10,000 keys, so most
 At high skew, there is a steady drop in performance simply due to serializing operations on the few shards unlucky enough to hold the popular keys.
 However, skew increases the chance of finding operations to combine with, so combining is able to offload significant load from the hot shards.
 Our implementation of combining requires operations to be split into the acquire and commit phases, so it cannot be used without transactions. Though distributions during normal execution are typically more moderate, extreme skew models the behavior during exceptional situations like BuzzFeed's viral dress.
-
-Now that we have looked at various degrees of artificial contention, our next benchmarks exhibit contention modeled on real-world scenarios.
 
 ## RUBiS
 
@@ -99,14 +97,14 @@ We use the Kronecker graph generator from the Graph 500 benchmark [@graph500], w
 Our simple model of user behavior determines when and which posts to repost. 
 After each timeline action, we rank the posts by how many reposts they already have and repost the most popular ones with probability determined by a geometric distribution. The resulting distribution of reposts follows a power law, approximating the viral propagation effects observed in real social networks.
 
-[#plot-retwis] shows throughput on two workloads, listed in [#tbl-workloads]. Read-heavy models steady-state Twitter traffic, while the post-heavy workload models periods of above-average posting, such as during live events. 
-We show only the results with phasing because the non-phasing baseline had too many transactions it was unable to complete. On the read-heavy workload, which models steady-state Twitter traffic, r/w locks are able to keep up reasonably well; after all, reading timelines is easy as long as they do not change frequently.
+[#plot-retwis] shows throughput on two workloads, listed in [#tbl-workloads]. The read-heavy workload models steady-state Twitter traffic, while the post-heavy workload models periods of above-average posting, such as during live events. 
+We only show the results with phasing because the non-phasing baseline had too many failed transactions. On the read-heavy workload, r/w locks are able to keep up reasonably well; after all, reading timelines is easy as long as they do not change frequently.
 However, the post-heavy workload shows that when contention increases, the performance of r/w locks falls off much more drastically than with boosting. Combining even appears to pay off when there are enough clients to find matches.
 
 Unlike auctions, many situations in Twitter are tolerant of minor inconsistencies, making it acceptable to implement without transactions in order to aid scalability.
 This tradeoff is clear when performance is as flat as the baseline performance is in these plots. However, with Claret's optimizations, it is able to achieve up to 82% of the non-transactional performance. In situations where inconsistent timelines are more likely to be noticed, such as ongoing conversations, it may be worth paying this much smaller overhead.
 
 **Evaluation summary.** We find that leveraging commutativity via boosting and phasing is clearly beneficial under all of our simulated scenarios, showing greater benefit under more extreme contention resulting from high skew or heavy writing. 
-Combining appears mostly ineffectual in our benchmarks, but does not hinder performance. In the most dire circumstances of extreme contention, having combining as an optional release valve for offloading work could be useful.
-Moreover, these improvements come with a programming model mostly identical to Redis's because these applications only required simple ADTs already built into Redis.
+Combining appears mostly ineffectual in our benchmarks, but does not hinder performance. In the most dire circumstances of extreme contention, having combining as an optional release valve for offloading work is useful.
+Moreover, these improvements come with a programming model largely identical to Redis's, which is sufficient for many applications that only require simple ADTs already built into Redis.
 More complex applications will likely require more complex ADTs to expose the available concurrency, but Claret's interfaces allow it to be extended with custom ADTs, though it may be for experts only.

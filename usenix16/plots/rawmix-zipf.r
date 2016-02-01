@@ -52,7 +52,7 @@ save(
     y = throughput,
     group = cc_ph, fill = cc_ph, color = cc_ph, linetype = cc_ph
   ))+
-  xlab('Zipfian parameter')+ylab('Peak throughput (txn/s)')+
+  xlab('Zipf parameter')+ylab('Peak throughput (txn/s)')+
   stat_summary(geom='line', fun.y=max)+
   stat_summary(geom='point', fun.y=max)+
   # geom_text(size=1.2)+
