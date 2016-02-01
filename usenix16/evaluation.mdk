@@ -64,10 +64,6 @@ Now that we have looked at various degrees of artificial contention, our next be
 ![Rubis](plots/rubis-conflicts.pdf){ .onecol }
 ~
 
-~ Fig { #plot-rubis-samples caption="Trace of throughput over time for Rubis (both with phasing). The workload is characterized by bursts of high-contention bidding activity. Boosting smooths out the performance, reducing variability by 2.8x."}
-![Rubis sampled throughput](plots/rubis-samples.pdf){.onecol}
-~
-
 The RUBiS benchmark [@Amza:02] imitates an online auction service similar to those described back in [#sec-realworld]. There are 8 different kinds of transactions: `OpenAuction`, `ViewAuction`, `CloseAuction`, `Bid`, `Browse`, `AddComment`, `AddUser`, `ViewUser`, but `ViewAuction` and `Bid` dominate the workload. The benchmark specifies a workload consisting of a mix of these transactions and the average bids per auction that should result. However, the *distribution* of bids (by item and time) was unspecified.
 
 Our implementation models the bid distributions observed by subsequent studies [@Akula:04;@Akula:07], with bids per item following a power law and the frequency of bids increasing exponentially at the end of an auction.
@@ -77,8 +73,6 @@ Otherwise, we follow the parameters specified in [@Amza:02]: 30,000 items, divid
 For the read-heavy workload, phasing provides reasonable performance, as bids do not often come in at a high enough rate to require commutativity. However, during high bidding times, modeled by our bid-heavy workload, it is essential to allow bids to commute. Claret maintains nearly the same throughput in this situation as the read-heavy workload, roughly 2x better than r/w locks and 68% of non-transactional performance. Considering the importance of getting bids correct, this seems like an acceptable tradeoff.
 
 [#fig-rubis-conflicts] showed which conflicts should be affected by Claret; in [#plot-rubis-conflicts] we validate those predictions by plotting the actual number of conflicts for the most significant edges in the conflict graph. Using a log scale, it is apparent that boosting all but eliminates Bid-Bid conflicts, but Bid-View conflicts have gone up; now that there are more bids, the chances of conflicting with `ViewAuction` have increased. The introduction of phasing and combining eliminate much of the remaining conflicts.
-
-Another interesting feature of auctions is the spikes in contention due to auctions closing, observed by prior work [@Akula:04]. By looking at a trace of throughput over the execution of our benchmark ([#plot-rubis-samples]), we observe those contention spikes as momentary drops in throughput. We see less variance over time with boosting enabled because the concurrency between bid transactions allows the datastore to keep up with the increased demand better.
 
 Overall, we can see that boosting and phasing are crucial to achieving reasonable transaction performance in Rubis even during heavy bidding. If an auction service is unable to keep up with the rate of bidding, it will result in a loss of revenue and a lack of trust from users, so a system like Claret could prove invaluable to them.
 
