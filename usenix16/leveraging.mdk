@@ -25,24 +25,26 @@ Redis has a `zset` type representing a sorted or ranked set: it associates a sco
 Abstract data types decouple their abstract behavior from their low-level concrete implementation.
 Abstract operations can have properties such as commutativity, associativity, or monotonicity, which define how they can be reordered or executed concurrently, while the concrete implementation takes care of performing the necessary synchronization.
 
-Knowledge of these properties can be used by the datastore in many ways to improve performance. First, we will show how commutativity can be used in the concurrency control system to avoid false conflicts (*boosting*) and ordering constraints (*phasing*). Then we will give an example of how associativity can be applied to reduce the load on the datastore (*combining*).
+Knowledge of these properties can be used in many ways to improve performance. First, we show how commutativity can be used in the concurrency control system to avoid false conflicts (*boosting*) and ordering constraints (*phasing*). Then we give an example of how associativity can be applied to reduce the load on the datastore (*combining*).
 
 ## Transaction boosting {#sec-boosting}
 
 To ensure strong isolation, all transactional storage systems implement some form of concurrency control. A common approach is strict two-phase-locking (S2PL), where a transaction acquires locks on all records in the execution phase before performing any irreversible changes. 
+However, in distributed systems, holding locks is costly because large round-trip latencies cause them to be held for long periods, depriving the system of much of its potential parallelism.
+Allowing operations to *share* locks is essential to providing reasonable throughput and latency for transactions.
 Reader/writer locks are commonly used to allow transactions reading the same record to execute concurrently, but force transactions writing the record to wait for exclusive access.
 
 *Abstract locks* [@Schwarz:84;@Weihl:1988;@Herlihy:88;@Badrinath:92;@Chrysanthis:91] generalize reader-writer locks to any operations that can logically run concurrently. When associated with an ADT, they allow operations that commute to hold the lock at the same time.
 For the `topk` set, `add` operations can all hold the lock at the same time, but reading operations such as `size` must wait. The same idea can be applied to OCC: operations only cause conflicts if the abstract lock doesn't allow them to execute concurrently with other outstanding operations.
 
-Using abstract locks to improve concurrency in transactions is known as *transaction boosting* [@Herlihy:PPoPP08] in the transactional memory community. However, this technique can be even more valuable to distributed transactions because their performance depends on how long locks are held. Waiting for one lock causes a cascade of waiting as others wait on the locks the blocked transaction holds. Every operation that can share an abstract lock reduces the time the rest of its locks are held for, which can have a big impact on performance.
-In OCC-based systems, boosting would reduce the abort rate because fewer operations conflict with one another.
+Known as *transaction boosting* [@Herlihy:PPoPP08] in the transactional memory literature, using abstract locks is even more important for distributed transactions which support massively more parallelism but have much longer latencies. Abstract locks directly increase the number of transactions which can execute concurrently.
+In OCC-based systems, boosting can reduce the abort rate because fewer operations conflict with one another.
 
 Boosting is essential for highly contended records, such as bids on a popular auction as it is about to close. If all the bids are serialized because they are thought to conflict, then fewer can complete and the final price could be lower. Using a `topk` set whose `add` operations naturally commute allows more bids to complete.
 
 ## Phasing {#sec-phasing}
 
-Sometimes the order that operations happen to arrive causes problems with abstract locks. In particular, they only help if the operations that commute with each other arrive together; poor interleaving can result in little effect. *Phasing* reorders operations so that commuting operations execute together. This is a generalization of a recent technique called *phase reconciliation* [@Narula:OSDI14].
+Sometimes the order that operations happen to arrive causes problems with abstract locks. In particular, they only help if the operations that commute with each other arrive together; poor interleaving can result in little effect. *Phasing* reorders operations so that commuting operations execute together, similar to batching.
 
 Each ADT defines a *phaser* that is responsible for grouping operations into *phases* that execute together. The interface will be described in more detail in [#sec-phaser]. Each record (or rather, the lock on the record), has its own phaser which keeps track of which mode is currently executing and keeps queues of operations in other modes waiting to acquire the lock. The phaser then cycles through these modes, switching to the next when all the operations in a phase have committed. Abstract locks, which have more distinct modes, benefit more than reader/writer locks, which must still serialize all writes.
 

@@ -73,7 +73,7 @@ Otherwise, we follow the parameters specified in [@Amza:02]: 30,000 items, divid
 In the read-heavy workload, bids do not often come in at a high enough rate to require commutativity, so phasing alone suffices. However, during heavy bidding times, commutativity is essential: Claret maintains nearly the same throughput in this situation as the read-heavy workload, roughly 2x better than r/w locks and 68% of non-transactional performance. Considering the importance of getting bids correct, this seems an acceptable tradeoff.
 
 Prior work [@Akula:04] observed contention spikes when popular auctions closed, leading to momentary performance drops which could be noticeable to even to users elsewhere on the site.
-Analyzing a trace of throughput over time, we observed that boosting significantly reduced variability in throughput by 2x. The minimum throughput (over 5s windows) was also increased from 9k txn/s for the baseline with phasing to 12k for boosting.
+Analyzing a trace of throughput over time, we observed that boosting significantly reduced variability in throughput by 2x. The minimum throughput (over 5-second windows) was also increased from 9k txn/s for the baseline with phasing to 12k.
 
 [#fig-rubis-conflicts] showed which conflicts should be affected by Claret; in [#plot-rubis-conflicts] we validate those predictions by plotting the actual number of conflicts for the most significant edges in the conflict graph. Using a log scale, it is apparent that boosting all but eliminates Bid-Bid conflicts, but Bid-View conflicts have gone up; now that there are more bids, the chances of conflicting with `ViewAuction` have increased. The introduction of phasing and combining eliminate much of the remaining conflicts.
 
@@ -89,9 +89,9 @@ Overall, we can see that boosting and phasing are crucial to achieving reasonabl
 ![Workloads](fig/workloads.pdf){ .onecol width=3.1in }
 ~
 
-Retwis is a simplified Twitter clone designed originally for Redis [@redis]. Data structures such as lists and sets are used track each user's followers and posts and keep a materialized up-to-date timeline for each user (as a `zset`). It is worth noting that in our implementation, `Post` and `Repost` are executed as transactions, including when they append to all their followers' timelines, but when timelines are read, loading each tweet is done in a separate transaction.
-Retwis doesn't specify a workload, so we simulate a realistic workload using a synthetic graph with power-law degree distribution and a simple user model.
+Retwis is a simplified Twitter clone designed originally for Redis [@redis]. Data structures such as lists and sets are used track each user's followers and posts and keep a materialized up-to-date timeline for each user (as a `zset`). It is worth noting that in our implementation, `Post` and `Repost` are each a single transaction, including appending to all followers' timelines, but when viewing timelines, we load each post in a separate transaction.
 
+Retwis doesn't specify a workload, so we simulate a realistic workload using a synthetic graph with power-law degree distribution and a simple user model.
 We use the Kronecker graph generator from the Graph 500 benchmark [@graph500], which is designed to produce the same power-law degree distributions found in natural graphs. These experiments generate a graph with approximately 65,000 users and an average of 16 followers per user (out-degree follows a power law).
 
 Our simple model of user behavior determines when and which posts to repost. 

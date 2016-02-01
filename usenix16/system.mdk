@@ -5,7 +5,7 @@
 ~
 
 The concept of ADTs could be applied to many different datastores and systems. For Claret, we focus on one commonly employed system architecture, shown in [#system-diagram]: a sharded datastore shared by many stateless replicated application servers within a single datacenter.
-For horizontal scalability, datastores are typically divided into many shards, each containing a subset of the key space (often using consistent hashing), running on different hosts (nodes or cores).
+For horizontal scalability, datastores are divided into many shards, each containing a subset of the key space (often using consistent hashing), running on different hosts (nodes or cores).
 Frontend servers are the *clients* in our model, implementing the core application logic and exposing it via APIs to end users which might be mobile clients or web servers. These servers are replicated to mitigate failures, but each instance may handle many concurrent end-user connections, mediating access to the backing datastore where application state resides.
 
 Claret operates between application servers and the datastore.
@@ -35,8 +35,8 @@ Custom ADTs can allow arbitrarily complex application logic to be atomic, provid
 **Transaction model.**
 Claret implements interactive distributed transactions with strict serializable isolation, similar to Spanner [@Spanner], with standard `begin`, `commit`, and `abort` functions and automatic retries. Claret supports general transactions: clients are free to perform any operations on any records within the scope of the transaction. It uses strict two-phase locking and acquires locks for each record accessed during transaction execution.
 
-We support arbitrary ADT operation in transactions by splitting them into two parts, *prepare* and *commit*, executed on the shard holding the record. *Prepare* attempts to acquire the lock for the record; when it has been acquired, *prepare* may read any data it wishes from the record to compute the *result* returned to the caller. Operations without a return value do nothing after acquiring the lock, simply returning control to the calling transaction.
-Once locks for all operations in a transaction have been acquired, a request is sent to each participating shard to execute the *commit* part of each of the *prepared* operations, which performs any mutation on the record and releases the lock.
+We support arbitrary ADT operation in transactions by splitting them into two parts, *acquire* and *commit*, which both run on the shard holding the record. *Acquire* attempts to acquire the lock for the record; when it has been acquired, it may read any data it wishes from the record to compute a result returned to the caller. Operations without a return value do nothing after acquiring the lock, simply returning control to the calling transaction.
+Once locks for all operations in a transaction have been acquired, a *commit* is sent to each participating shard to run the *execute* part of all the operations, performing any mutation on the record and releasing the lock.
 Similar to Spanner [@Spanner], clients do not read their own writes; due to the buffering of mutations, operations always observe the state prior to the beginning of the transaction.
 
 We chose a lock-based approach; we briefly explain in [#sec-boosting] how this approach could similarly benefit optimistic concurrency control (OCC).
