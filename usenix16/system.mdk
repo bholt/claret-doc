@@ -24,7 +24,7 @@ Weak consistency models require programmers to understand and guard against all 
 Individual operations in Claret are strictly linearizable, committing atomically on the shard that owns the record. Each record, including aggregate types, behaves as a single object living on one shard. Atomicity is determined by the granularity of ADT operations.
 Custom ADTs can allow arbitrarily complex application logic to be atomic, provided they can localized to a single object, but in general, composing operations requires transactions.
 
-~ Fig { #fig-levels .wide caption="At the application level, many transactions ought to commute with one another, such as these Bid transactions, but when translated down to put and get operations, this knowledge is lost." }
+~ Fig { #fig-levels .wide caption="At the application level, it is clear that bid transactions commute, but when translated down to put and get operations, this knowledge is lost. Using an ADT like a `topk` set preserves this commutativity information." }
 ![Application-level versus key/value store level](fig/app-level.pdf){width=100%}
 ~
 

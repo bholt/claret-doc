@@ -15,13 +15,11 @@
 
 <!--contention prevents scaling; contention comes from real-world interactions -->
 
-Systems interacting with the real world exhibit common patterns that lead to contention: power-law distributions, network effects, and realtime events. However, much of this contention can be mitigated by understanding behavior at the application level.
+<!-- Systems interacting with the real world exhibit common patterns that lead to contention: power-law distributions, network effects, and realtime events. However, much of this contention can be mitigated by understanding behavior at the application level. -->
 
-## Power laws everywhere
-
-Natural phenomena have a tendency to follow power law distributions, from physical systems to social groups.
-Zipf's Law is the observation that the frequency of words in a natural language follows a power law (specifically, frequency is inversely proportional to the rank).
-The connectivity of social networks is another well-known example: a small number of nodes (people) account for a large fraction of the connections, while most people have relatively few connections. Power laws can play off of each other, leading to other interesting properties, such as low diameter or *small-world* networks (colloquially, "six degrees of separation"). Network effects serve to amplify small signals into massive amounts of activity, such as occurs when a meme goes viral. Finally, systems with a real-time component end up with spikes of activity as events occur in real life. For example, goals during World Cup games cause spikes in Twitter traffic, famously causing the "fail whale" to appear [@failwhale].
+**Power laws are everywhere.**
+Natural phenomena have a tendency to follow power law distributions, from physical systems to social groups: from Zipf's Law which observed that the frequency of words in natural language follows a power law, to the power-law degree distributions that cause low diameter networks (colloquially "six degrees of separation").
+Network effects serve to amplify small signals into massive amounts of activity, such as when a meme goes viral. Finally, systems with a real-time component end up with spikes of activity as events occur in real life: in it's early days, goals during World Cup games famously caused Twitter to crash and show the "fail whale" [@failwhale].
 
 To discuss this more concretely throughout the rest of this paper, we will use an eBay-like online auction service, based on the well-known RUBiS benchmark [@Amza:02]. At its core, this service allows users to put items up for auction, browse auctions by region and category, and place bids on open auctions. While running, an auction service is subjected to a mix of requests to open and close auctions but is dominated by bidding and browsing actions.
 
@@ -29,8 +27,7 @@ Studies of real-world auction sites [@Akula:04;@Akula:07;@Menasce:07] have obser
 
 An auction site's ability to handle these peak bidding times is crucial: a slow-down in service caused by a popular auction may prevent bidders from reaching their maximum price (especially considering the automation often employed by bidders). The ability to handle contentious bids will be directly related to revenue, as well as being responsible for user satisfaction. Additionally, this situation is not suitable for weaker consistency. Therefore, we must find ways to satisfy performance needs without sacrificing strong consistency.
 
-## Application-level commutativity
-
+**Applications have commutativity.**
 Luckily, auctions and many other applications share something besides power laws: commutativity.
 At the application level, it should be clear that bids on an item can be reordered with one another, provided that the correct maximum bid can still be tracked. When the auction closes, or whenever someone views the current maximum bid, that imposes an ordering which bids cannot move beyond.
 In the example in [#fig-levels], it is clear that the maximum bid observed by the `View` action will be the same if the two bids are executed in either order. That is to say, the bids *commute* with one another.

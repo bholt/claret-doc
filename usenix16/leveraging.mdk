@@ -20,7 +20,7 @@
 <!-- As was alluded to earlier, data types hold the key. Specifically, the notion of  -->
 
 In Claret, programmers express application-level semantics by choosing the most specific ADT for their needs, either by choosing from the built-in ADTs ([#tab-adt-list]) or implementing their own (see [#sec-expressing]). In [#fig-levels], we saw that `Bid` transactions should commute; we just need know the current high bid.
-A `topk` set meets our needs: it associates a score with each item, but is optimized to track those with the highest scores. Because `topk.add` operations commute, `Bid` transactions no longer conflict.
+Redis has a `zset` type representing a sorted or ranked set: it associates a score with each item and allows elements to be retrieved by score. A `topk` set is a specialization of `zset` optimized to keep track of only the highest-ranked items. A `topk` meets our needs for bids perfectly. Furthermore, `topk.add` operations commute so `Bid` transactions no longer conflict.
 
 Abstract data types decouple their abstract behavior from their low-level concrete implementation.
 Abstract operations can have properties such as commutativity, associativity, or monotonicity, which define how they can be reordered or executed concurrently, while the concrete implementation takes care of performing the necessary synchronization.
