@@ -33,10 +33,10 @@ Custom ADTs can allow arbitrarily complex application logic to be atomic, provid
 ~
 
 **Transaction model.**
-Claret implements interactive distributed transactions with strict serializable isolation, similar to Spanner [@Spanner], with standard `begin`, `commit`, and `abort` functions and automatic retries. Claret supports general transactions: clients are free to perform any operations on any records within the scope of the transaction. It uses strict two-phase locking and acquires locks for each record accessed during transaction execution.
+Claret implements interactive distributed transactions with strict serializable isolation, similar to Spanner [@Spanner], with standard `begin`, `commit`, and `abort` functions and automatic retries. Claret supports general transactions: clients are free to perform any operations on any records within the scope of the transaction. It uses strict two-phase locking, acquiring a lock for each record before accessing it during transaction execution.
 
-We support arbitrary ADT operation in transactions by splitting them into two parts, *acquire* and *commit*, which both run on the shard holding the record. *Acquire* attempts to acquire the lock for the record; when it has been acquired, it may read any data it wishes from the record to compute a result returned to the caller. Operations without a return value do nothing after acquiring the lock, simply returning control to the calling transaction.
-Once locks for all operations in a transaction have been acquired, a *commit* is sent to each participating shard to run the *execute* part of all the operations, performing any mutation on the record and releasing the lock.
+We support arbitrary ADT operation in transactions by splitting them into two parts, *execute* and *commit*, which both run on the shard holding the record. *Execute* attempts to acquire the lock for the record; when it succeeds, it executes the operation *read-only* to compute a result. Operations without a return value do nothing after acquiring the lock, simply returning control to the calling transaction.
+Once locks for all operations in a transaction have been acquired, a *commit* is sent to each participating shard to run the *commit* part of all the operations, performing any mutation on the record and releasing the lock.
 Similar to Spanner [@Spanner], clients do not read their own writes; due to the buffering of mutations, operations always observe the state prior to the beginning of the transaction.
 
 We chose a lock-based approach; we briefly explain in [#sec-boosting] how this approach could similarly benefit optimistic concurrency control (OCC).
