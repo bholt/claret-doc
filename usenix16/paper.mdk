@@ -17,7 +17,7 @@ Logo: False
 Package: etoolbox
 Package: fontspec
 
-.onecol: css-width=80% width=3.1in
+.onecol: css-width=80% width=3.25in
 
 #todo: color=red font-size=x-small font-family=HelveticaNeue-Light before='[' after=']'
 

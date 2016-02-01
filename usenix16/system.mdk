@@ -1,7 +1,7 @@
 # System model {#sec-transactions}
 
 ~ Fig { #system-diagram caption="*System model:* End-user requests are handled by replicated stateless application servers which all share a sharded datastore. Claret operates between these two layers, extending the datastore with ADT-aware concurrency control (*Claret server*) and adding functionality to the app servers to perform ADT operations and coordinate transactions (*Claret client*)." }
-![Claret System Diagram](fig/system-diagram.pdf){.onecol}
+![Claret System Diagram](fig/system-diagram.pdf){.onecol width=3.1in}
 ~
 
 The concept of ADTs could be applied to many different datastores and systems. For Claret, we focus on one commonly employed system architecture, shown in [#system-diagram]: a sharded datastore shared by many stateless replicated application servers within a single datacenter.
@@ -29,7 +29,7 @@ Custom ADTs can allow arbitrarily complex application logic to be atomic, provid
 ~
 
 ~ Fig { #fig-rubis-conflicts caption="Overview of important Rubis transactions implemented with ADTs. Lines show conflicts between operations, many of which are either eliminated due to commutativity by boosting or mediated by phasing." }
-![Example ADT version of Bid transaction](fig/rubis-conflicts.pdf){.onecol}
+![Example ADT version of Bid transaction](fig/rubis-conflicts.pdf){.onecol width=3.1in}
 ~
 
 **Transaction model.**

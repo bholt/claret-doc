@@ -61,7 +61,7 @@ Now that we have looked at various degrees of artificial contention, our next be
 ~
 
 ~ Fig { #plot-rubis-conflicts caption="Breakdown of conflicts between Rubis transactions (minor contributors omitted) with 256 clients on bid-heavy workload (averaged). As predicted by [#fig-rubis-conflicts], boosting drastically reduces Bid-Bid conflicts, and phasing drastically reduces the remaining conflicts." }
-![Rubis](plots/rubis-conflicts.pdf){ .onecol }
+![Rubis](plots/rubis-conflicts.pdf){ .onecol width=3.1in }
 ~
 
 The RUBiS benchmark [@Amza:02] imitates an online auction service similar to those described back in [#sec-realworld]. There are 8 different kinds of transactions: `OpenAuction`, `ViewAuction`, `CloseAuction`, `Bid`, `Browse`, `AddComment`, `AddUser`, `ViewUser`, but `ViewAuction` and `Bid` dominate the workload. The benchmark specifies a workload consisting of a mix of these transactions and the average bids per auction that should result. However, the *distribution* of bids (by item and time) was unspecified.
