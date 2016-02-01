@@ -8,7 +8,7 @@ The baseline uses reader/writer locks. When boosting is enabled, these are repla
 Our prototype does not provide fault-tolerance or durability. These could be implemented by replicating shards or logging operations to persistent storage.
 Synchronizing with replicas or the filesystem is expected to increase the time spent holding locks. In 2PL, the longer locks are held, lower throughput and higher latency are expected. Claret increases the number of clients which can simultaneously hold locks, so adding fault tolerance would be expected to reinforce our findings.
 
-In our evaluation, we wish to understand the impact our ADT optimizations have on throughput and latency under various contention scenarios. First, we use a microbenchmark to directly tune contention by varying operation mix and key distribution. We then move on to explore scenarios modeling real-world contention in two benchmarks – Rubis: an online auction service, and Retwis: a Twitter clone.
+We wish to understand the impact our ADT optimizations have on throughput and latency under various contention scenarios. First, we use a microbenchmark to directly tune contention by varying operation mix and key distribution. We then move on to explore scenarios modeling real-world contention in two benchmarks – Rubis: an online auction service, and Retwis: a Twitter clone.
 
 The following experiments are run un-virtualized on a RedHat Linux cluster. Each node has dual 6-core 2.66 GHz Intel Xeon X5650 processors with 24 GB of memory, connected by a 40Gb Mellanox ConnectX-2 InfiniBand network, but using normal TCP-over-Infiniband rather than specializing to leverage this hardware's RDMA support. Experiments are run with 4 single-threaded shards running on 4 different nodes, with 4 clients running on other nodes with variable numbers of threads. Average round-trip times between nodes for UDP packets are 150 &mu;s, with negligible packet loss.
 
@@ -39,7 +39,7 @@ Claret's transactions achieve 63% of that throughput on this workload.
 
 **Varying operation mix.** [#plot-mix] shows throughput as we vary the percentage of commutative write operations (`add`), with keys selected with a modest 0.6 zipfian distribution.
 Boosting becomes more important as the fraction of commutative `add`s increases. 
-Phasing has a significant performance impact for any mixed workload, as it helps commutative operations run concurrently; tracing the execution, we observed that records regularly alternated between `add` and `read` phases.
+Phasing has a significant impact for any mixed workload, as it helps commutative operations run concurrently; tracing the execution, we observed that records regularly alternated between `add` and `read` phases.
 Combining shows a modest improvement for all workloads, even for read-only and write-only, because it occasionally allows transactions to share locks (and the result of reads) without burdening the server.
 
 ~ Fig { #plot-zipf caption="*Peak throughput, varying key distribution.* Higher Zipf parameter results in greater skew and contention; boosting and phasing together expose concurrency. At extreme skew, combining reduces load on hot records, which our non-transactional mode cannot do." }
@@ -102,9 +102,9 @@ We only show the results with phasing because the non-phasing baseline had too m
 However, the post-heavy workload shows that when contention increases, the performance of r/w locks falls off much more drastically than with boosting. Combining even appears to pay off when there are enough clients to find matches.
 
 Unlike auctions, many situations in Twitter are tolerant of minor inconsistencies, making it acceptable to implement without transactions in order to aid scalability.
-This tradeoff is clear when performance is as flat as the baseline performance is in these plots. However, with Claret's optimizations, it is able to achieve up to 82% of the non-transactional performance. In situations where inconsistent timelines are more likely to be noticed, such as ongoing conversations, it may be worth paying this much smaller overhead.
+This tradeoff is clear when performance is as flat as the baseline performance is in these plots. However, with Claret's optimizations, it is able to achieve up to 82% of the non-transactional performance. In situations where inconsistent timelines are more likely to be noticed, such as conversations, it may be worth paying this overhead.
 
 **Evaluation summary.** We find that leveraging commutativity via boosting and phasing is clearly beneficial under all of our simulated scenarios, showing greater benefit under more extreme contention resulting from high skew or heavy writing. 
 Combining appears mostly ineffectual in our benchmarks, but does not hinder performance. In the most dire circumstances of extreme contention, having combining as an optional release valve for offloading work is useful.
 Moreover, these improvements come with a programming model largely identical to Redis's, which is sufficient for many applications that only require simple ADTs already built into Redis.
-More complex applications will likely require more complex ADTs to expose the available concurrency, but Claret's interfaces allow it to be extended with custom ADTs, though it may be for experts only.
+More complex applications may require custom ADTs.

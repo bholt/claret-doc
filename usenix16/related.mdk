@@ -1,19 +1,19 @@
 # Related Work
 
 **Improving Transaction Concurrency.**
-Several recent systems have explored ways of exposing more concurrency between transactions. An old technique, transaction chopping [@Shasha:95], statically analyzes transactions and splits them to reduce the time locks are held for. Recently, Lynx [@Zhang:SOSP13] extended this to find commutativity and introduced a form of runtime pipelining to allow conflicting transactions to interleave safely.
+Several recent systems have explored ways of exposing more concurrency between transactions. An old technique, transaction chopping [@Shasha:95], statically analyzes transactions and splits them to reduce the time locks are held for. Recently, Lynx [@Zhang:SOSP13] introduced a form of runtime pipelining to allow conflicting transaction pieces to interleave.
 
 Salt and Callas [@Xie:14;@Xie:15] introduced ways of separating transactions that often conflict from the rest so they can be handled differently. In Salt, problematic transactions were rewritten to operate with weaker consistency, which Callas improved upon to maintain the same ACID properties by using runtime pipelining within a group.
 Boosting and phasing could both be applied within one of these groups along with runtime pipelining to expose concurrency among frequently conflicting transactions. It would be interesting to explore whether Claret's ADT knowledge could be used to inform Callas's grouping decisions, which are crucial to performance.
 
 **ADTs and Commutativity.**
 The importance of commutativity is well known in databases and distributed systems.
-ADTs were first used in databases in the 1980s to support indices for custom data types [@Stonebraker:83;@Stonebraker:86], and for concurrency control [@Schwarz:84;@Weihl:1988;@Herlihy:88;@Fekete:90]. That work introduced abstract locks to allow databases to leverage commutativity and also allowed user-defined types that expressed their abstract behavior to the database. Another classic system [@Spector:85] used type-based locks in an early form of distributed transactions.
+ADTs were first used in databases in the 1980s to support indices for custom data types [@Stonebraker:83;@Stonebraker:86], and for concurrency control [@Schwarz:84;@Weihl:1988;@Herlihy:88;@Fekete:90]. That work introduced abstract locks to allow databases to leverage commutativity and also allowed user-defined types to express their abstract behavior to the database. Another classic system [@Spector:85] used type-based locks in an early form of distributed transactions.
 
-To improve scalability and flexibility, modern NoSQL stores gave up the knowledge afforded by pre-defined schemas, but recent work has started to show how these systems can still leverage commutativity.
-Lynx [@Zhang:SOSP13] allows users to annotate parts of transactions as commutative to improve performance.
-HyFlow [@Kim:EuroPar13] combines multi-versioning and commutativity to reorder commutative transactions before others, provided the entire transaction can be marked as commutative.
-Claret finds commutativity naturally as part of application design and exposes more fine-grained concurrency via abstract locks.
+To improve scalability and flexibility, NoSQL stores gave up the knowledge afforded by predefined schemas, but recent work has shown how these systems can still leverage commutativity.
+Lynx [@Zhang:SOSP13] allows users to annotate parts of transactions as commutative.
+HyFlow [@Kim:EuroPar13] combines multi-versioning and commutativity to reorder commutative transactions before others, but requires annotating entire transactions as commutative.
+ADTs naturally express commutativity as part of application design and abstract locks expose more fine-grained concurrency.
 
 Doppel [@Narula:OSDI14], a multicore in-memory database, allows commutative operations on highly contended records to be performed in parallel *phases* with a technique called *phase reconciliation*; Claret's *phasers* are more general in that they expose pairwise operation commutativity on arbitrary ADTs, but do not parallelize across cores.
 

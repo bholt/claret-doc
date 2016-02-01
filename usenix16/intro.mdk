@@ -5,11 +5,11 @@ In February 2015, a picture of a black and blue dress exploded across the intern
 
 These traffic spikes are the product of a number of factors in real world systems such as power law distributions and live events. The increasing interactivity of modern web applications results in significant contention due to writes in datastores. Even content consumption generates write traffic as providers track user behavior to personalize their experience, target ads, or collect statistics [@summingbird].
 
-To avoid catastrophic failures and mitigate poor tail behavior, significant engineering effort must go into handling these challenging high-contention scenarios. The reason writes are such a problem is that they impose ordering constraints requiring synchronization in order to have any form of consistency.
+To avoid catastrophic failures and mitigate poor tail behavior, significant engineering effort must go into handling these challenging high-contention scenarios. Writes are such a problem because they impose ordering constraints requiring synchronization in order to have any form of consistency.
 Luckily, many of these orderings are actually irrelevant from the perspective of the application. For example, it is not necessary to keep track of the order in which people retweeted Ellen's selfie.
 
-One way to avoid constraints is to use eventual consistency but then applications must deal with inconsistent data, especially in cases with high contention.
-If the system knew which constraints were relevant to the application, then it could expose significantly more concurrency by eliminating false conflicts and avoiding synchronization, allowing it to handle writing spikes without sacrificing correctness.
+One way to avoid constraints is to use eventual consistency, but then applications must deal with inconsistent data, especially in high-contention cases.
+If the system knew which constraints were relevant to the application, then it could expose significantly more concurrency, allowing it to handle writing spikes without sacrificing correctness.
 Databases and distributed systems have long used properties such as commutativity to reduce coordination and synchronization, but they rely on having a predefined schema or restricting operations to only those that are coordination-free.
 This is particularly expensive in distributed systems where coordination and locking across a number of machines is required.
 
@@ -21,7 +21,7 @@ Rather than requiring a relational data model with a fixed schema, Claret encour
 
 Datastores supporting complex datatypes and operations are already popular. Many [@cassandra;@voldemort] support simple collections such as *lists*, *sets*, and *maps*, and even custom objects (e.g. protocol buffers). Redis [@redis], one of the most popular key/value stores, supports a large, fixed set of complex data types and a number of operations specific to each type. Currently, these datastores treat data types as just blackboxes with special update functions.
 
-*Claret* uses the logical properties of data types to communicate application-level semantics to the system so it can perform optimizations on both the client and server side. In [#sec-leveraging], we show how commutativity can be used to avoid false conflicts (*boosting*) and ordering constraints (*phasing*), and how associativity can be applied to reduce load on the datastore (*combining*).
+Claret uses the logical properties of data types to communicate application-level semantics to the system so it can perform optimizations on both the client and server side. In [#sec-leveraging], we show how commutativity can be used to avoid false conflicts (*boosting*) and ordering constraints (*phasing*), and how associativity can be applied to reduce load on the datastore (*combining*).
 
 On high-contention workloads, the combined optimizations achieve up to a 49x improvement in peak transaction throughput over traditional concurrency control on a synthetic microbenchmark, up to 4.3x on an auction benchmark based on Rubis [@Amza:02], and 3.6x on a Twitter clone based on Retwis [@retwis]. While Claret's optimizations help most in high-contention cases, its performance on workloads with little contention is unaffected. Claret's transactions achieve 67-82% of the throughput possible without transactions, which represents an upper bound on the performance of our datastore.
 

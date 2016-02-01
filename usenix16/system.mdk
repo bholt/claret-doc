@@ -6,7 +6,7 @@
 
 The concept of ADTs could be applied to many different datastores and systems. For Claret, we focus on one commonly employed system architecture, shown in [#system-diagram]: a sharded datastore shared by many stateless replicated application servers within a single datacenter.
 For horizontal scalability, datastores are divided into many shards, each containing a subset of the key space (often using consistent hashing), running on different hosts (nodes or cores).
-Frontend servers are the *clients* in our model, implementing the core application logic and exposing it via APIs to end users which might be mobile clients or web servers. These servers are replicated to mitigate failures, but each instance may handle many concurrent end-user connections, mediating access to the backing datastore where application state resides.
+Frontend servers are the *clients* in our model, implementing the core application logic and exposing it via APIs to end users that may be mobile clients or web servers. These servers are replicated to mitigate failures, but each instance may handle many concurrent end-user connections, mediating access to the backing datastore where application state resides.
 
 Claret operates between application servers and the datastore.
 Applications model their state using ADTs and operations on them, as they would in Redis, but differing from Redis, Claret strongly encourages the use of transactions to ease reasoning about consistency.
@@ -22,7 +22,7 @@ The particular client bindings employed are not essential to this work; our code
 **Consistency model.**
 Weak consistency models require programmers to understand and guard against all potentially problematic interleavings. With Claret, programmers instead focus on choosing ADTs that best represent their desired behavior, naturally exposing opportunities for optimization.
 Individual operations in Claret are strictly linearizable, committing atomically on the shard that owns the record. Each record, including aggregate types, behaves as a single object living on one shard. Atomicity is determined by the granularity of ADT operations.
-Custom ADTs can allow arbitrarily complex application logic to be atomic, provided they can localized to a single object, but in general, composing operations requires transactions.
+Custom ADTs can allow arbitrarily complex application logic to be atomic, provided they can be localized to a single object, but in general, composing operations requires transactions.
 
 ~ Fig { #fig-levels .wide caption="At the application level, it is clear that bid transactions commute, but when translated down to put and get operations, this knowledge is lost. Using an ADT like a `topk` set preserves this commutativity information." }
 ![Application-level versus key/value store level](fig/app-level.pdf){width=100%}
