@@ -1,5 +1,6 @@
 suppressPackageStartupMessages(require(RMySQL))
 suppressPackageStartupMessages(require(sqldf))
+suppressPackageStartupMessages(require(plotly))
 suppressPackageStartupMessages(require(ggplot2))
 suppressPackageStartupMessages(require(reshape2))
 options(RMySQL.dbname="claret") # (rest comes from $HOME/.my.cnf)
@@ -18,6 +19,14 @@ library('sitools')
 
 si.labels <- function(...) { function(x) gsub(" ", "", f2si(x,...)) }
 k.labels <- function(x) { x/1000 + 'k' }
+
+COMMON_DIR <- getwd()
+
+b.strong <- "consistency:strong"
+b.weak <- "consistency:weak"
+b.l10 <- "latency:10ms"
+b.l50 <- "latency:50ms"
+
 
 COMB <- "boosting\n + combining"
 COMM <- "boosting"
@@ -111,6 +120,21 @@ to.hist <- function(j) {
   df1 <- data.frame(x=num(names(l1)), y=vals(l1))
   df1 <- df1[order(df1$x),]
 }
+
+# Melt fields matching a given regex; parse out identifiers from the regex group, 
+# into a new field given by `label`. Values available in the `value` field.
+#
+# Example:
+#   ggplot(melt.by(d, 'op', 'mean_latency_(contains|size)'), 
+#          aes(x=x, y=value, color=op))...
+melt.by <- function(data, label, regex) {
+    fields <- names(data)[grep(regex, names(data))]
+    m <- melt(data, measure=fields)
+    m[label] <- capply(m$variable, function(s) gsub(regex, '\\1', s))
+    m
+}
+
+factor.remap <- function(col, map) factor(revalue(col, map), levels=vals(map))
 
 replace_txn_codes <- function(orig,codes) Reduce(function(o,k){ gsub("(['\"(,])"+codes[[k]]+"(?=['\",)])", "\\1"+k+"\\2", o, perl=T) }, names(codes), init=jsfix(orig))
 
@@ -300,6 +324,18 @@ cc_ph_scales <- function(name = 'Mode', guide = guide_legend(nrow = 7), ...) {
   )
 }
 
+ipa.scales <- function(name = 'Bounds', guide = guide_legend(nrow=4), ...) {
+  colors <- c()
+  colors[[b.strong]] <- c.yellow
+  colors[[b.weak]] <- c.red
+  colors[[b.l10]] <- c.blue
+  colors[[b.l50]] <- c.green
+  
+  list(
+    scale_fill_manual(values=colors, name=name, guide=guide, ...),
+    scale_color_manual(values=colors, name=name, guide=guide, ...)
+  )
+}
 
 my_theme <- function() theme(
   panel.background = element_rect(fill="white"),
@@ -333,6 +369,44 @@ theme_mine <- list(
   my_theme()
 )
 
+group.legend <- function(title='Bounds') list(
+    scale_fill_discrete(guide=guide_legend(title=title)),
+    scale_color_discrete(guide=guide_legend(title=title))
+)
+
+
+data.ipa.rawmix <- function(where="honeycomb_mode is not null and out_actual_time_length is not null") data.or.csv (
+  csv = COMMON_DIR+'/data/ipa_rawmix.csv',
+  gen = function(){
+    d <- db("select * from ipa_rawmix where timers_cass_op_latency_count is not null and " + where)
+    fields <- names(d)[grepl(".*(_count|_rate|_p\\d+|_max|_min|_mean)$", names(d))]
+    for (f in fields) d[[f]] <- num(d[[f]])
+    
+    d$duration <- d$ipa_duration
+    d$load <- num(d$ipa_concurrent_requests)
+
+    d$op_rate <- d$timers_cass_op_latency_mean_rate
+    d$op_lat_mean <- d$timers_cass_op_latency_mean
+    d$op_lat_median <- d$timers_cass_op_latency_p50
+    
+    d$mean_lat_add      <- d$timers_add_latency_mean
+    d$mean_lat_contains <- d$timers_contains_latency_mean
+    d$mean_lat_size     <- d$timers_size_latency_mean
+    
+    d$rate_add      <- d$timers_add_latency_mean_rate
+    d$rate_contains <- d$timers_contains_latency_mean_rate
+    d$rate_size     <- d$timers_size_latency_mean_rate
+    
+    conds <- c(
+      # uniform='Normal but variable',
+      normal='Normal',
+      slowpoke_flat='Slow replica',
+      world='Geo-distributed'
+    )
+    d$condition <- factor(revalue(d$honeycomb_mode, conds), levels=vals(conds))
+    
+    return(d)
+})
 
 data.owl <- function(where="meters_retwis_op_count is not null") {
   d <- db("select * from ipa_owl where meters_retwis_op_count is not null and " + where)
