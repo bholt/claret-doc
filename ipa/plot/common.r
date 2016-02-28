@@ -10,7 +10,7 @@ suppressPackageStartupMessages(library(scales))
 suppressPackageStartupMessages(require(grid))
 suppressPackageStartupMessages(require(plyr))
 suppressPackageStartupMessages(require(yaml))
-suppressPackageStartupMessages(require(extrafont))
+suppressPackageStartupMessages(library(extrafont))
 suppressPackageStartupMessages(require(tcltk))
 
 library('Unicode')
@@ -26,6 +26,7 @@ b.strong <- "consistency:strong"
 b.weak <- "consistency:weak"
 b.l10 <- "latency:10ms"
 b.l50 <- "latency:50ms"
+b.t10 <- "tolerance:0.1"
 
 
 COMB <- "boosting\n + combining"
@@ -326,14 +327,27 @@ cc_ph_scales <- function(name = 'Mode', guide = guide_legend(nrow = 7), ...) {
 
 ipa.scales <- function(name = 'Bounds', guide = guide_legend(nrow=4), ...) {
   colors <- c()
-  colors[[b.strong]] <- c.yellow
-  colors[[b.weak]] <- c.red
-  colors[[b.l10]] <- c.blue
-  colors[[b.l50]] <- c.green
+  colors[[b.strong]] <- c.gray
+  colors[[b.weak]]   <- c.gray
+  colors[[b.l10]]    <- c.blue
+  colors[[b.l50]]    <- c.blue
+  colors[[b.t10]]    <- c.green
+  
+  solid  <- 1
+  dashed <- 2
+  dotted <- 3
+  lines <- c()
+  lines[[b.strong]] <- dashed
+  lines[[b.weak]]   <- dotted
+  lines[[b.l10]]    <- solid
+  lines[[b.l50]]    <- dashed
+  lines[[b.t10]]    <- solid
   
   list(
     scale_fill_manual(values=colors, name=name, guide=guide, ...),
-    scale_color_manual(values=colors, name=name, guide=guide, ...)
+    scale_color_manual(values=colors, name=name, guide=guide, ...),
+    scale_linetype_manual(values=lines, name = name, guide = guide, ...),
+    expand_limits(y = 0)
   )
 }
 
@@ -357,16 +371,28 @@ my_theme <- function() theme(
   legend.key.width = unit(26,'pt'),
   legend.title.align = 0.5,
   legend.margin = unit(0,'pt'),
-  legend.title = element_text(size=10)
+  legend.title = element_text(size=10),
+  strip.background = element_blank() # no bg for facet labels
 )
 
-theme_mine <- list(
-  scale_fill_manual(values=my_palette),
-  # To use for line and point colors, add
-  scale_color_manual(values=my_palette),
-  # To use for fills, add
-  # basic black and white theme
-  my_theme()
+font_roboto <- function() theme(
+  text = element_text(size=12, family="Roboto"),
+  strip.text.x = element_text(family="Roboto", color="black", face="bold"),
+  strip.text.y = element_text(family="Roboto", color="black", face="bold")
+)
+
+font_helvetica <- function() theme(
+  text = element_text(size=12, family="Helvetica"),
+  strip.text.x = element_text(color="black", face="bold"),
+  strip.text.y = element_text(color="black", face="bold")
+)
+
+theme_mine <- function() list(
+  theme_light(),
+  font_helvetica(),
+  theme(
+    strip.background = element_blank()
+  )
 )
 
 group.legend <- function(title='Bounds') list(
