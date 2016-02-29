@@ -22,28 +22,10 @@ k.labels <- function(x) { x/1000 + 'k' }
 
 COMMON_DIR <- getwd()
 
-b.strong <- "consistency:strong"
-b.weak <- "consistency:weak"
-b.l10 <- "latency:10ms"
-b.l50 <- "latency:50ms"
-b.t10 <- "tolerance:0.1"
-
-
-COMB <- "boosting\n + combining"
-COMM <- "boosting"
-RW   <- "r/w locks"
-PH   <- "\n + phasing"
-ALL  <- "all"
-COMM_PH <- "boosting\n+\nphasing"
-BASE <- "\n(baseline)"
-NOTXN <- "without\ntransactions"
-BETT <- "better "
-
 parse.args <- function() {
   options <- commandArgs(trailingOnly=TRUE)
   list(fname=options[1])
 }
-
 
 cat.yaml <- function(o) cat(as.yaml(o))
 
@@ -82,7 +64,7 @@ capply <- function(col, func) unlist(lapply(col, func))
 
 vals <- function(lst) unlist(lst, use.names=F)
 
-db.csv <- function(file) {
+db.cstv <- function(file) {
   d <- read.csv(file = file)
   d$cc_ph <- factor(d$cc_ph, levels=c(COMB+PH,COMM+PH,RW+PH,COMB,COMM,RW+BASE,NOTXN))
   d
@@ -96,7 +78,7 @@ data.or.csv <- function(csv, gen) {
       d
     }, error = function(e) {
       error.database_unreachable(e)
-      d <- db.csv(file = csv)
+      d <- db.cstv(file = csv)
     }
   )
 }
@@ -192,44 +174,6 @@ c.red    <- "#D55E00"
 c.pink   <- "#CC79A7"
 c.gray   <- "#999999"
 
-my_palette <- c(
-  'rw'=c.yellow,
-  'simple'=c.blue,
-  'comm'=c.blue,
-  
-  'approx'=c.green,
-  'precise'=c.blue,
-  
-  'reader/writer'=c.yellow,
-  'commutative: approx'=c.green,
-  'commutative: precise'=c.blue,
-
-  'Locking / OCC'=c.yellow,
-  'Claret-Approx'=c.green,
-  'Claret'=c.blue,
-  
-  'follow'=c.blue,
-  'newuser'=c.yellow,
-  'post'=c.green,
-  'repost'=c.red,
-  'timeline'=c.pink,
-  
-  'kronecker'=c.blue,
-  
-  'read'=c.pink,
-  'write'=c.green,
-  
-  'none'=c.gray  
-)
-
-my_palette[[RW]]   <- c.gray
-my_palette[[RW+BASE]]   <- c.gray
-my_palette[[COMM]] <- c.blue
-my_palette[[COMB]] <- c.green
-my_palette[[PH]]   <- c.pink
-my_palette[[ALL]]  <- c.yellow
-my_palette[[NOTXN]] <- c.pink
-
 # The palette with grey:
 cbPalette <- c("#0072B2", "#E69F00", "#009E73", "#D55E00", "#CC79A7", "#56B4E9", "#F0E442", "#999999")
 
@@ -247,132 +191,6 @@ legend.bottom <- function() list(
     legend.box = 'horizontal',
     legend.title.align = 1
   )
-)
-
-my_colors <- function(title="") list(
-  scale_fill_manual(values=my_palette, name=title),
-  # To use for line and point colors, add
-  scale_color_manual(values=my_palette, name=title)
-)
-
-cc_scales <- function(title="Concurrency control:", ...) {
-  linetype_map <- c()
-  linetype_map[[COMM]] <- 1
-  linetype_map[[RW]] <- 2
-  list(
-    scale_fill_manual(values=my_palette, name=title, ...),
-    scale_color_manual(values=my_palette, name=title, ...),
-    scale_linetype_manual(name=title, values=linetype_map, ...)
-  )
-}
-
-phasing.linetype <- function(title="Phasing:", ...) {
-  # scale_linetype_manual(name=title, values=c('yes'=2, 'no'=1)),
-  scale_linetype_manual(name=title, values=c('on'=2, 'off'=1), ...)
-    # labels=c('\u2713','\u2717'))
-    # labels=c(as.u_char('2713'), as.u_char('2717')))
-}
-
-subset.modes <- function(d) subset(d, cc_ph %in% c(RW+BASE, RW+PH, COMM+PH, COMB+PH, NOTXN))
-
-cc_ph_scales <- function(name = 'Mode', guide = guide_legend(nrow = 7), ...) {
-  colors <- c()
-  colors[[RW+BASE]] <- c.gray
-  colors[[RW+PH]] <- c.gray
-  colors[[COMM]] <- c.blue
-  colors[[COMM+PH]] <- c.blue
-  colors[[BETT+COMM]] <- c.red
-  colors[[BETT+COMM+PH]] <- c.red
-  colors[[COMB]] <- c.green
-  colors[[COMB+PH]] <- c.green
-  colors[[BETT+COMB]] <- c.yellow
-  colors[[BETT+COMB+PH]] <- c.yellow
-  colors[[NOTXN]] <- c.pink
-  
-  dashed <- 2
-  dotted <- 3
-  lines <- c()
-  lines[[RW+BASE]] <- 1
-  lines[[RW+PH]] <- dashed
-  lines[[COMM]] <- 1
-  lines[[COMM+PH]] <- dashed
-  lines[[COMB]] <- 1
-  lines[[COMB+PH]] <- dashed
-  lines[[BETT+COMM]] <- 1
-  lines[[BETT+COMM+PH]] <- dashed
-  lines[[BETT+COMB]] <- 1
-  lines[[BETT+COMB+PH]] <- dashed
-  lines[[NOTXN]] <- dotted
-
-  shapes <- c()
-  shapes[[RW+BASE]] <- 1
-  shapes[[RW+PH]] <- 1
-  shapes[[COMM]] <- 2
-  shapes[[COMM+PH]] <- 2
-  shapes[[COMB]] <- 3
-  shapes[[COMB+PH]] <- 3
-  shapes[[BETT+COMM]] <- 2
-  shapes[[BETT+COMM+PH]] <- 2
-  shapes[[BETT+COMB]] <- 3
-  shapes[[BETT+COMB+PH]] <- 3
-  shapes[[NOTXN]] <- 4
-  
-  list(
-    scale_fill_manual(values=colors, name = name, guide = guide, ...),
-    scale_color_manual(values=colors, name = name, guide = guide, ...),
-    scale_linetype_manual(values=lines, name = name, guide = guide, ...),
-    scale_shape_manual(values=shapes, name = name, guide = guide, ...)
-  )
-}
-
-ipa.scales <- function(name = 'Bounds', guide = guide_legend(nrow=4), ...) {
-  colors <- c()
-  colors[[b.strong]] <- c.gray
-  colors[[b.weak]]   <- c.gray
-  colors[[b.l10]]    <- c.blue
-  colors[[b.l50]]    <- c.blue
-  colors[[b.t10]]    <- c.green
-  
-  solid  <- 1
-  dashed <- 2
-  dotted <- 3
-  lines <- c()
-  lines[[b.strong]] <- dashed
-  lines[[b.weak]]   <- dotted
-  lines[[b.l10]]    <- solid
-  lines[[b.l50]]    <- dashed
-  lines[[b.t10]]    <- solid
-  
-  list(
-    scale_fill_manual(values=colors, name=name, guide=guide, ...),
-    scale_color_manual(values=colors, name=name, guide=guide, ...),
-    scale_linetype_manual(values=lines, name = name, guide = guide, ...),
-    expand_limits(y = 0)
-  )
-}
-
-my_theme <- function() theme(
-  panel.background = element_rect(fill="white"),
-  panel.border = element_rect(fill=NA, color="grey50"),
-  panel.grid.major.x = element_blank(),
-  panel.grid.minor.x = element_blank(),
-  panel.grid.major.y = element_line(color="grey80", size=0.2),
-  panel.grid.minor.y = element_blank(), #element_line(color="grey90", size=0.2),
-  strip.background = element_rect(fill="grey90", color="grey50"),
-  strip.background = element_rect(fill="grey80", color="grey50"),
-  axis.ticks = element_line(colour="black"),
-  panel.grid = element_line(colour="black"),
-  axis.text.y = element_text(colour="black"),
-  axis.text.x = element_text(colour="black"),
-  text = element_text(size=9, family="Helvetica"),
-  legend.key = element_rect(fill=NA, color=NA),
-  legend.text = element_text(lineheight=0.9),
-  legend.key.height = unit(24,'pt'),
-  legend.key.width = unit(26,'pt'),
-  legend.title.align = 0.5,
-  legend.margin = unit(0,'pt'),
-  legend.title = element_text(size=10),
-  strip.background = element_blank() # no bg for facet labels
 )
 
 font_roboto <- function() theme(
@@ -400,12 +218,69 @@ group.legend <- function(title='Bounds') list(
     scale_color_discrete(guide=guide_legend(title=title))
 )
 
+# get columns of `d` by `regex`
+cgrep <- function(d, regex) d[grep(regex,names(d))]
+
+
+theme.bar <-function() theme(
+  axis.text.x = element_text(angle = 45, hjust = 1),
+  axis.title.x = element_blank(),
+  legend.position="none"
+)
+
+bounds <- c(
+  'consistency:strong' = 'strong (read)',
+  'consistency:strongwrite' = 'strong (write)',
+  'tolerance:0.05' = 'error: 5%',
+  'tolerance:0.1' = 'error: 10%',
+  'latency:50ms' = 'latency: 50ms',
+  'latency:10ms' = 'latency: 10ms',
+  'consistency:weak' = 'weak'
+)
+
+b.cst <- "consistency:strong"
+b.csw <- "consistency:strongwrite"
+b.cwk <- "consistency:weak"
+b.l10 <- "latency:10ms"
+b.l50 <- "latency:50ms"
+b.t10 <- "tolerance:0.1"
+b.t05 <- "tolerance:0.05"
+
+ipa.scales <- function(name = 'Bounds', guide = guide_legend(nrow=8), ...) {
+  colors <- c()
+  colors[[ bounds[[b.csw]] ]] <- c.gray
+  colors[[ bounds[[b.cst]] ]] <- c.gray
+  colors[[ bounds[[b.cwk]] ]] <- c.red
+  colors[[ bounds[[b.l10]] ]] <- c.blue
+  colors[[ bounds[[b.l50]] ]] <- c.blue
+  colors[[ bounds[[b.t10]] ]] <- c.green
+  colors[[ bounds[[b.t05]] ]] <- c.green
+  
+  solid  <- 1
+  dashed <- 2
+  dotted <- 3
+  lines <- c()
+  lines[[ bounds[[b.csw]] ]] <- dashed
+  lines[[ bounds[[b.cst]] ]] <- solid
+  lines[[ bounds[[b.cwk]] ]] <- dotted
+  lines[[ bounds[[b.l10]] ]] <- solid
+  lines[[ bounds[[b.l50]] ]] <- dashed
+  lines[[ bounds[[b.t05]] ]] <- solid
+  lines[[ bounds[[b.t10]] ]] <- dashed
+  
+  list(
+    scale_fill_manual(values=colors, name=name, guide=guide, ...),
+    scale_color_manual(values=colors, name=name, guide=guide, ...),
+    scale_linetype_manual(values=lines, name = name, guide = guide, ...),
+    expand_limits(y = 0)
+  )
+}
 
 data.ipa.rawmix <- function(where="honeycomb_mode is not null and out_actual_time_length is not null") data.or.csv (
   csv = COMMON_DIR+'/data/ipa_rawmix.csv',
   gen = function(){
     d <- db("select * from ipa_rawmix where timers_cass_op_latency_count is not null and " + where)
-    fields <- names(d)[grepl(".*(_count|_rate|_p\\d+|_max|_min|_mean)$", names(d))]
+    fields <- names(d)[grepl(".*(_count|_rate|_p\\d+|_max|_min|_mean|_ms)(_\\d)?$", names(d))]
     for (f in fields) d[[f]] <- num(d[[f]])
     
     d$duration <- d$ipa_duration
@@ -423,13 +298,34 @@ data.ipa.rawmix <- function(where="honeycomb_mode is not null and out_actual_tim
     d$rate_contains <- d$timers_contains_latency_mean_rate
     d$rate_size     <- d$timers_size_latency_mean_rate
     
-    conds <- c(
-      # uniform='Normal but variable',
-      normal='Normal',
-      slowpoke_flat='Slow replica',
-      world='Geo-distributed'
-    )
-    d$condition <- factor(revalue(d$honeycomb_mode, conds), levels=vals(conds))
+    for (f in c('refreshes','out_of_bounds','immediates','incrs','reads')) {
+      d[["res_"+f+"_total"]] <- rowSums(cgrep(d,'res_counters_'+f+'_count_'))
+    }
+    
+    for (f in c('cass_op', 'weak_read', 'strong_read', 'weak_write', 'strong_write')) {
+      d[['res_'+f+'_lat_mean']] <- rowMeans(cgrep(d,'res_timers_'+f+'_latency_mean_'))
+    }
+    
+    low <- 128
+    high <- 4096
+    
+    conds <- c()
+    conds[[x('normal',low)]] <- 'Normal'
+    conds[[x('normal',high)]] <- 'Normal (high load)'
+    conds[[x('slowpoke_flat',low)]] <- 'Slow replica'
+    conds[[x('world',low)]] <- 'Geo-distributed'
+    
+    d$condition <- factor.remap(x(d$honeycomb_mode,d$load), conds)
+    
+    d$bound <- factor.remap(d$ipa_bound, c(
+      'consistency:strong' = 'strong (read)',
+      'consistency:strongwrite' = 'strong (write)',
+      'tolerance:0.05' = 'error: 5%',
+      'tolerance:0.1' = 'error: 10%',
+      'latency:10ms' = 'latency: 10ms',
+      'latency:50ms' = 'latency: 50ms',
+      'consistency:weak' = 'weak'
+    ))
     
     return(d)
 })
@@ -451,198 +347,7 @@ data.owl <- function(where="meters_retwis_op_count is not null") {
   return(d)
 }
 
-data.rubis <- function(select="*", where="client = 'rubis'") {
-  d <- 
-    if(exists("DATA.MODE") && DATA.MODE == 'local') {
-      d.tmp <- do.call("rbind", fromJSON("freeze/rubis.csv"))
-      sql(sprintf("select * from `d.tmp` where total_time is not null and %s",where))
-    } else {
-      suppressWarnings(db(sprintf("select * from rubis where total_time is not null and %s", where),
-        factors=c('nshards', 'nclients'),
-        numeric=c('total_time', 'txn_count', 'nthreads')
-      ))
-    }
 
-  d$state <- gsub('.*/(.*)', '\\1', d$loaddir)
-    
-  d$zmix <- sprintf('%s/%s', d$mix, d$alpha)
-  
-  # fields intended to be totals rather than averages should be mult. by nclients
-  fields <- names(d)[grepl(".*(_count|_retries|_failed|_latency)$", names(d))]
-  for (f in fields) d[[f]] <- num(d$nclients) * d[[f]]
-  # cat("# computing total for fields: "); cat(fields); cat("\n")
-  d$prepare_total <- d$prepare_retries + d$txn_count
-  d$prepare_retry_rate <- d$prepare_retries / d$prepare_total
-  
-  # compute avg latencies for each txn type
-  txns <- gsub('rubis_(.*)_count', '\\1', names(d[,grepl('rubis_(.*)_count',names(d))]))
-  for (t in txns) d[["rubis_"+t+"_avg_latency_ms"]] <- d[["rubis_"+t+"_latency"]] / d[["rubis_"+t+"_count"]]
-  
-  d$throughput <- d$txn_count / d$total_time
-  d$avg_latency_ms <- d$txn_time / d$txn_count * 1000
-  
-  d$rubis_txn_count <- with(d, rubis_AddUser_count + rubis_BrowseItems_count + rubis_CloseAuction_count + rubis_NewBid_count + rubis_NewComment_count + rubis_OpenAuction_count + rubis_UserSummary_count + rubis_ViewAuction_count)
-  
-  return(d)
-}
-
-data.papoc <- function(where) {
-  d <- db(
-    sprintf("select * from tapir where total_time is not null and %s", where),
-    factors=c('nshards', 'nclients'),
-    numeric=c('total_time', 'txn_count')
-  )
-  
-  d$failure_rate <- d$txn_failed / (d$txn_count + d$txn_failed)
-  d$throughput <- d$txn_count * num(d$nclients) / d$total_time
-  # d$throughput <- d$ntxns * num(d$nclients) / d$total_time
-  d$avg_latency_ms <- d$txn_time / d$txn_count * 1000
-  
-  d$prepare_total <- d$prepare_retries + d$txn_count
-  d$prepare_retry_rate <- d$prepare_retries / d$prepare_total
-    
-  d$Graph <- capply(d$gen, function(s) gsub('kronecker:.+','kronecker',s))
-  
-  
-  d$workload <- suppressWarnings(factor(revalue(d$mix, c(
-    'geom_repost'='repost-heavy',
-    'read_heavy'='read-heavy',
-    'update_heavy'='mixed'
-  )), levels=c('repost-heavy','read-heavy','mixed')))
-  
-  d$zmix <- sprintf('%s/%s', d$mix, d$alpha)
-  
-  d$facet <- sprintf('shards: %d\n%s\n%d users\n%s', num(d$nshards), d$zmix, d$initusers, d$Graph)
-
-  d$gen_label <- sprintf('%d users\n%s', d$initusers, d$Graph)
-  
-  return(d)
-}
-
-data.ldbc <- function(where = "ldbc_config is not null", melt='ldbc_results') {
-  d <- 
-    if(exists("DATA.MODE") && DATA.MODE == 'local') {
-      print(getwd())
-      d_ldbc <- read.delim('freeze/ldbc.csv', sep=',')
-      d_ldbc$ldbc_results <- as.character(d_ldbc$ldbc_results)
-      d_ldbc$client_metrics <- as.character(d_ldbc$client_metrics)
-      sql(sprintf("select * from `d_ldbc` where ldbc_results is not null and %s",where))
-    } else {
-      db(sprintf("select * from ldbc where ldbc_results is not null and ldbc_results != \"\" and %s", where))
-    }
-  
-  if (melt == 'ldbc_results') {
-    d <- adply(d, 1, function(r){
-      o <- fromJSON(r$ldbc_results)
-      m <- o$all_metrics
-      mr <- m$run_time
-      wavg_mean_latency <- sum(mr$mean * mr$count) / sum(mr$count) / 1e6
-      colnames(mr) <- sprintf("time_%s", colnames(mr))
-    
-      cm <- fromJSON(r$client_metrics)
-    
-      data.frame(
-        throughput=as.numeric(r$ntotal)/as.numeric(o$total_duration)*1e6,
-        total_time=o$total_duration,
-        wavg_mean_latency=wavg_mean_latency,
-        name=o$all_metrics$name,
-        count=o$all_metrics$count,
-        mr
-      )
-    })
-    d$per_tput <- as.numeric(d$count) / d$total_time
-    d$name <- gsub('^.*(?:(Query\\d)|\\d(.*))$','\\1\\2',d$name)
-    d
-  } else if (melt == 'client_metrics') {
-    d <- adply(d, 1, function(r){
-      o <- fromJSON(r$ldbc_results)
-      cm <- fromJSON(r$client_metrics)
-      data.frame(
-        throughput=as.numeric(r$ntotal)/as.numeric(o$total_duration)*1e6,
-        total_time=o$total_duration,
-        count=r$ntotal,
-        cm
-      )
-    })
-    d$per_tput <- as.numeric(d$count) / d$total_time
-    d
-  } else {
-    d <- adply(d, 1, function(r){
-      o <- fromJSON(r$ldbc_results)
-      cm <- fromJSON(r$client_metrics)
-      data.frame(
-        throughput=as.numeric(r$ntotal)/as.numeric(o$total_duration)*1e6,
-        total_time=o$total_duration,
-        count=r$ntotal,
-        cm
-      )
-    })
-    d$per_tput <- as.numeric(d$count) / d$total_time
-    d
-  }
-}
-
-data.rawmix <- function(where="total_time is not null") {
-  d <- db(sprintf("select * from rawmix where total_time is not null and %s", where),
-    factors=c('nshards'),
-    numeric=c('total_time', 'txn_count')
-  )
-  
-  d$zmix <- sprintf('%s%% – α %s', num(d$commute_ratio)*100, d$alpha)
-  
-  # fields intended to be totals rather than averages should be mult. by nclients
-  fields <- names(d)[grepl(".*(_count|_retries|_failed|_latency)$", names(d))]
-  for (f in fields) d[[f]] <- num(d$nclients) * d[[f]]
-  # cat("# computing total for fields: "); cat(fields); cat("\n")
-  d$prepare_total <- d$prepare_retries + d$txn_count
-  d$prepare_retry_rate <- d$prepare_retries / d$prepare_total
-  
-  # compute avg latencies for each txn type
-  txns <- c('add','card')
-  for (t in txns) 
-    d[["raw_"+t+"_avg_latency_ms"]] <- d[["raw_"+t+"_time"]] / d[["raw_"+t+"_count"]]
-  
-  d$throughput <- d$txn_count / d$total_time
-  d$avg_latency_ms <- d$txn_time / d$txn_count * 1000
-  
-  d$failure_rate <- d$txn_failed / (d$txn_count + d$txn_failed)  
-  d$op_retry_ratio <- d$op_retries / d$op_count
-    
-  return(d)
-}
-
-data.stress <- function(where="clientmode = 'stress'") {
-  d <- db(paste("select * from stress where total_time is not null and ", where),
-    factors=c('nshards', 'nclients'),
-    numeric=c('total_time', 'txn_count')
-  )
-  d$failure_rate <- d$txn_failed / (d$txn_count + d$txn_failed)
-  d$throughput <- d$txn_count * num(d$nclients) / d$total_time
-  d$avg_latency_ms <- d$txn_time / d$txn_count * 1000
-
-  d$prepare_total <- d$prepare_retries + d$txn_count
-  d$prepare_retry_rate <- d$prepare_retries / d$prepare_total
-
-  d$op_retries_total <- d$op_retries * num(d$nclients)
-  d$op_retry_ratio <- d$op_retries / d$op_count
-
-  d$opmix <- factor(revalue(d$mix, c(
-    'mostly_update'='35% read / 65% update',
-    'update_heavy'='50% read / 50% update',
-    'read_heavy'='90% read / 10% update'
-  )))
-
-  d$workload <- factor(revalue(d$mix, c(
-    'mostly_update'='update-heavy',
-    'update_heavy'='mixed',
-    'read_heavy'='read-heavy'
-  )))
-
-  d$zmix <- sprintf('%s/%s', d$mix, d$alpha)
-  d$facet <- sprintf('%s\n%d keys', d$zmix, d$nkeys)
-  
-  return(d)
-}
 
 
 error.database_unreachable <- function(e) {
