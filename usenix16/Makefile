@@ -4,6 +4,10 @@ define graffleFigure
 	pdf2svg $(3) $(SVG)
 endef
 
+ifeq (, $(shell which omnigraffle-export))
+ $(shell touch fig/*.pdf)
+endif
+
 all: pdf-view
 
 RSCRIPT := $(shell git rev-parse --show-toplevel)/docker/Rscript
