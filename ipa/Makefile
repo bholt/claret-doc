@@ -52,8 +52,10 @@ out/$(NAME).pdf: out/paper.pdf
 
 final: out/$(NAME).pdf
 
-deploy: final web
+deploy-copy-only: final web
 	cp out/$(NAME).pdf out/$(NAME).html ../.pages/
+
+deploy: deploy-copy-only
 	cd ../.pages/ && git add . && git commit -m"." && git push
 
 pdf-view: pdf
@@ -74,4 +76,4 @@ web-view: web
 clean:
 	rm -rf out paper-web.mdk
 
-.PHONY: all clean pdf web pdf-view web-view final deploy
+.PHONY: all clean pdf web pdf-view web-view final deploy deploy-copy-only

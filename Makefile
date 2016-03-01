@@ -9,5 +9,7 @@ all:
 	$(MAKE) -C full
 
 deploy:
-	$(MAKE) -C usenix16 deploy
-	$(MAKE) -C generals deploy
+	$(MAKE) -C usenix16 deploy-copy-only
+	$(MAKE) -C generals deploy-copy-only
+	$(MAKE) -C ipa deploy-copy-only
+	cd .pages && git add . && git commit -m"⚡︎" && git push
