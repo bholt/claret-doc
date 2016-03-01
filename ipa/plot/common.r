@@ -151,10 +151,10 @@ label_pretty <- function(variable, value) {
 
 geom_mean <- function(geom) stat_summary(fun.y='mean', geom=geom, labeller=label_pretty)
 
-geom_meanbar <- function(labeller=label_pretty) {
+geom_meanbar <- function(barwidth=0.7, position='dodge') {
   return(list(
-    stat_summary(fun.y=mean, geom='bar', position='dodge'),
-    stat_summary(fun.data=mean_cl_normal, geom='errorbar', width=0.2, position='dodge')
+    stat_summary(fun.y=mean, geom='bar', position=position, width=barwidth),
+    stat_summary(fun.data=mean_cl_normal, geom='errorbar', size=0.3, width=0.2, position=position, color='black')
   ))
 }
 
