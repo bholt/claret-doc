@@ -2,6 +2,9 @@ NAME := generals
 SRCS := $(wildcard *.mdk)
 DEPS := refs.bib out/style Makefile
 
+GRAFFLE := ../tools/graffle.sh
+
+
 FIGS := \
 	constraints \
 	uncertainty \
@@ -22,12 +25,8 @@ all: web-view
 refs.bib: $(SRCS)
 	../tools/findrefs.rb
 
-ifeq (, $(shell which omnigraffle-export))
- $(shell touch fig/*.pdf)
-endif
-
 $(FIGS_OUT): fig/%.pdf: generals.graffle
-	omnigraffle-export -c $* generals.graffle $@
+	$GRAFFLE generals.graffle $* $@
 
 $(FIGS_SVG): fig/%.svg: fig/%.pdf
 	pdf2svg $< $@
