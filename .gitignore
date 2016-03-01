@@ -4,3 +4,4 @@ data/*.csv
 /Scratch.ipynb
 /.pages
 plotlyJupyterHTML
+out/

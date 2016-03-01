@@ -1,0 +1,88 @@
+title: Disciplined Inconsistency
+
+author: Brandon Holt, James Bornholt, Irene Zhang, Dan Ports, Mark Oskin, Luis Ceze
+affiliation: University of Washington
+email: {bholt,bornholt,iyzhang,dkrp,oskin,luisceze}@cs.uw.edu
+
+Heading Base: 2
+Bibliography: refs.bib
+doc class:    [preprint]style/sigplanconf
+css:          style/style.css
+Logo: False
+
+Latex: ../tools/lualatexdvi
+Pdf Latex: xelatex
+
+Package: etoolbox
+Package: fontspec
+Package: tabulary
+Package: [left=1.75in,right=1.75in,top=1in,bottom=1in]geometry
+Package: caption
+Package: [all]hypcap
+
+#todo: color=red font-size=x-small font-family=HelveticaNeue-Light before='[' after=']'
+
+~a: .tex-tooltip
+
+~P,~Span: replace="/\[(?:TODO|todo):\s*(.*?)\]/[\1]{#todo}/g"
+
+~H1: tex-cmd=\section
+~H2: tex-cmd=\subsection
+~H3: tex-cmd=\subsubsection
+
+~H1: label='[§@h1]{.heading-label}' replace="/§//"
+~H2: label='[§@h1.@h1-h2]{.heading-label}' replace="/§//"
+~H3: label='[§@h1.@h1-h2.@h1-h2-h3]{.heading-label}' replace="/§//"
+
+~Fig : label='[Figure\ @fig]{.figure-label}' toc=tof .Float .LinedFloat float-env=figure float-name=Figure
+~Tab : label='[Table\ @tab]{.figure-label}' toc=tof .Float .UnlinedFloat float-env=table float-name=Table
+~Listing : label='[Listing\ @listing]{.figure-label}' toc=tof .Float .LinedFloat float-env=listing float-name=Listing
+
+.Float : tex-env-outer=figure[&tex-float-placement;] tex-float-placement="tbp"
+@html .Float: margin-left=auto margin-right=auto
+
+.LinedFloat : after='&nl;*********{.figureline}&nl;[[**&label;.** ]{.caption-before}[&caption;]{.caption-text}]{.figure-caption html-elem=fig-caption}&nl;{notag}&nl;'
+.UnlinedFloat : after='&nl;[[**&label;.** ]{.caption-before}[&caption;]{.caption-text}]{.figure-caption html-elem=fig-caption}&nl;{notag}&nl;'
+
+.figure-caption: tex-cmd=\caption
+.caption-text  : tex-cmd=
+.figure-label  : tex-cmd=
+
+
+~Img: max-width=100%
+.zoom: max-width=80% tex-text-align=center
+
+@tex .zoom50: width=80%
+
+~ TexRaw
+% redefines the caption setup of the figures environment in the beamer class.
+\captionsetup[figure]{labelformat=empty}
+
+\setcounter{secnumdepth}{0}
+
+\renewcommand{\arraystretch}{1.2}
+
+\apptocmd{\sloppy}{\hbadness 10000\relax}{}{}
+
+\setmainfont{Crimson}
+\setmonofont[Scale=0.85]{Anonymous Pro}
+
+~
+~ HtmlRaw
+<link href='https://fonts.googleapis.com/css?family=Crimson+Text:400,400italic,700italic,700|Anonymous+Pro:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+<script>
+// if (screen && screen.width > 480) {
+//  document.write('<script async defer src="http://hypothes.is/embed.js"><\/script>');
+// }
+</script>
+~
+
+[TITLE]
+
+~ Abstract
+[INCLUDE="abstract"]
+~
+
+[INCLUDE="introduction"]
+
+[BIB]
