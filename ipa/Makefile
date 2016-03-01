@@ -22,12 +22,8 @@ SVG_SRCS := $(SRCS:%.mdk=out/%.mdk)
 FIGS_OUT := $(addsuffix .pdf, $(addprefix fig/, $(FIGS)))
 FIGS_SVG := $(addsuffix .svg, $(addprefix fig/, $(FIGS)))
 
-ifeq (, $(shell which omnigraffle-export))
- $(shell touch fig/*.pdf)
-endif
-
 $(FIGS_OUT): fig/%.pdf: ipa.graffle
-	omnigraffle-export -c $* ipa.graffle $@
+	$GRAFFLE ipa.graffle $* $@
 
 $(FIGS_SVG): fig/%.svg: fig/%.pdf
 	pdf2svg $< $@

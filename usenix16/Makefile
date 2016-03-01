@@ -1,14 +1,7 @@
-define graffleFigure
-	$(eval SVG := $(subst .pdf,.svg,$(3)))
-	omnigraffle-export -c $(2) $(1) $(3)
-	pdf2svg $(3) $(SVG)
-endef
-
-ifeq (, $(shell which omnigraffle-export))
- $(shell touch fig/*.pdf)
-endif
 
 all: pdf-view
+
+GRAFFLE := ../tools/graffle.sh
 
 RSCRIPT := $(shell git rev-parse --show-toplevel)/docker/Rscript
 
@@ -28,31 +21,18 @@ FIGS := \
 	combiner \
 	workloads
 
-fig/system-diagram.pdf: ../Claret.graffle
-	$(call graffleFigure,$<,System,$@)
+FIGS_OUT := $(addsuffix .pdf, $(addprefix fig/, $(FIGS)))
+FIGS_SVG := $(addsuffix .svg, $(addprefix fig/, $(FIGS)))
 
-fig/app-level.pdf: ../Claret.graffle
-	$(call graffleFigure,$<,Levels,$@)
+$(FIGS_OUT): fig/%.pdf: ../Claret.graffle
+	$GRAFFLE ../Claret.graffle $* $@
 
-fig/adt-bid.pdf: ../Claret.graffle
-	$(call graffleFigure,$<,ADT,$@)
-
-fig/abstract-lock.pdf: ../Claret.graffle
-	$(call graffleFigure,$<,AbstractLock,$@)
-
-fig/phaser.pdf: ../Claret.graffle
-	$(call graffleFigure,$<,Phaser,$@)
-
-fig/combiner.pdf: ../Claret.graffle
-	$(call graffleFigure,$<,Combiner,$@)
-
-fig/rubis-conflicts.pdf: ../Claret.graffle
-	$(call graffleFigure,$<,Rubis,$@)
+$(FIGS_SVG): fig/%.svg: fig/%.pdf
+	pdf2svg $< $@
 
 PLOTS := $(filter-out plots/common.r, $(wildcard plots/*.r))
 
 PLOT_PDFS := $(PLOTS:%.r=%.pdf)
-FIGS_OUT := $(FIGS:%=fig/%.pdf)
 SVG_SRCS := $(SRCS:%.mdk=out/%.mdk)
 
 %.pdf: %.r plots/common.r
