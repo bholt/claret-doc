@@ -50,7 +50,7 @@ out/generals.pdf: out/paper.pdf
 final: out/$(NAME).pdf
 
 deploy-copy-only: final web
-	cp out/$(NAME).pdf out/$(NAME).html ../.pages/
+	cp out/$(NAME).pdf out/$(NAME).html ../../gen
 
 deploy: deploy-copy-only
 	cd ../../gen && git add . && git commit -m"." && git push

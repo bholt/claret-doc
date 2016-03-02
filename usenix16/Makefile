@@ -72,7 +72,7 @@ web-view: web
 	open -a Safari out/$(NAME).html
 
 deploy-copy-only: final web
-	cp out/$(NAME).pdf out/$(NAME).html ../.pages/
+	cp out/$(NAME).pdf out/$(NAME).html ../../gen
 
 deploy: deploy-copy-only
 	cd ../../gen && git add . && git commit -m"." && git pull --rebase && git push
