@@ -279,7 +279,7 @@ ipa.scales <- function(name = 'Bounds', guide = guide_legend(nrow=8), ...) {
 data.ipa.rawmix <- function(where="honeycomb_mode is not null and out_actual_time_length is not null") data.or.csv (
   csv = COMMON_DIR+'/data/ipa_rawmix.csv',
   gen = function(){
-    d <- db("select * from ipa_rawmix where timers_cass_op_latency_count is not null and " + where)
+    d <- db("select * from ipa_rawmix where out_actual_time_length is not null and " + where)
     fields <- names(d)[grepl(".*(_count|_rate|_p\\d+|_max|_min|_mean|_ms)(_\\d)?$", names(d))]
     for (f in fields) d[[f]] <- num(d[[f]])
     
