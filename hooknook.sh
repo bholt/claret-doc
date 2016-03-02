@@ -15,7 +15,7 @@ if [ $(docker ps | grep $container | wc -l) -eq '0' ]; then
   dexec 'git config --global user.name "Hooknook"'
   dexec 'git config --global user.email "<>"'
   dexec 'git config --global push.default matching'
-  dexec 'cd claret-doc; git checkout gh-pages; git checkout master; git worktree add .pages gh-pages'
+  dexec 'git clone git@github.com:bholt/gen.git'
 
   dexec 'cd claret-doc; make deploy'
 

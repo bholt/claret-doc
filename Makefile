@@ -11,7 +11,7 @@ deploy:
 	$(MAKE) -C usenix16 deploy-copy-only
 	$(MAKE) -C generals deploy-copy-only
 	$(MAKE) -C ipa deploy-copy-only
-	cd .pages && git add . && git commit -m"⚡︎" && git push
+	cd ../gen && git add . && git commit -am"⚡︎" && git push
 
 
 .PHONY: all deploy hooknook

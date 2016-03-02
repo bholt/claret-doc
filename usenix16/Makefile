@@ -75,7 +75,7 @@ deploy-copy-only: final web
 	cp out/$(NAME).pdf out/$(NAME).html ../.pages/
 
 deploy: deploy-copy-only
-	cd ../.pages/ && git add . && git commit -m"." && git pull --rebase && git push
+	cd ../../gen && git add . && git commit -m"." && git pull --rebase && git push
 
 clean:
 	rm -rf out paper-web.mdk plots/*.pdf plots/*.svg
