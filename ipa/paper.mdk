@@ -64,7 +64,7 @@ Package: [all]hypcap
 
 \apptocmd{\sloppy}{\hbadness 10000\relax}{}{}
 
-\setmainfont{Crimson}
+\setmainfont{Times}
 \setmonofont[Scale=0.85]{Anonymous Pro}
 
 ~
