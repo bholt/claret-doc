@@ -5,8 +5,7 @@ name := $(shell echo $(rawname) | sed "s/\#/-/")
 
 dest := bicycle:/cse/web/homes/bholt
 
-all:
-	$(MAKE) -C full
+all: deploy
 
 deploy:
 	$(MAKE) -C usenix16 deploy-copy-only

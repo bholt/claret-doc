@@ -35,6 +35,7 @@ PLOTS := $(filter-out plots/common.r, $(wildcard plots/*.r))
 PLOT_PDFS := $(PLOTS:%.r=%.pdf)
 SVG_SRCS := $(SRCS:%.mdk=out/%.mdk)
 
+
 %.pdf: %.r plots/common.r
 	 $(RSCRIPT) $<
 	
@@ -77,6 +78,6 @@ deploy: deploy-copy-only
 	cd ../.pages/ && git add . && git commit -m"." && git pull --rebase && git push
 
 clean:
-	rm -r out paper-web.mdk plots/*.pdf plots/*.svg
+	rm -rf out paper-web.mdk plots/*.pdf plots/*.svg
 
 .PHONY: all clean pdf web pdf-view web-view deploy deploy-copy-only
