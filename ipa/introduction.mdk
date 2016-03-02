@@ -4,3 +4,5 @@ Inconsistency is eternally relevant.
 Discipline is essential. An army walks on its type system.
 
 Many key/value stores support customizable consistency. Cassandra [@cassandra], for instance, allows clients to choose, for each query, how many replicas the coordinator should communicate with: from `ALL` to `ONE` (with some additional cases outside those that are only valid in certain situations).
+
+[todo: actually write intro]
