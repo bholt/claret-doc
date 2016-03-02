@@ -3,7 +3,7 @@ all: pdf-view
 
 GRAFFLE := ../tools/graffle.sh
 
-RSCRIPT := $(shell git rev-parse --show-toplevel)/docker/Rscript
+RSCRIPT := Rscript --slave
 
 SRCS := $(wildcard *.mdk)
 

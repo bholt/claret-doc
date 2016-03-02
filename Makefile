@@ -13,3 +13,6 @@ deploy:
 	$(MAKE) -C generals deploy-copy-only
 	$(MAKE) -C ipa deploy-copy-only
 	cd .pages && git add . && git commit -m"⚡︎" && git push
+
+
+.PHONY: all deploy hooknook
