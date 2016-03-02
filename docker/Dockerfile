@@ -83,6 +83,8 @@ RUN cd /usr/local/share/fonts &&\
 
 RUN apt-get install -y ruby-dev && gem install bibtex-ruby
 
+RUN apt-get install -y texlive-generic-extra
+
 VOLUME /src
 WORKDIR /src
 
