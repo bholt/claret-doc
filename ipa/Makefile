@@ -4,7 +4,7 @@ DEPS := refs.bib out/style Makefile
 
 RSCRIPT := $(shell git rev-parse --show-toplevel)/docker/Rscript
 
-all: web-view
+all: pdf-view
 
 refs.bib: $(SRCS)
 	../tools/findrefs.rb

@@ -5,8 +5,11 @@ affiliation: University of Washington
 email: {bholt,bornholt,iyzhang,dkrp,oskin,luisceze}@cs.uw.edu
 
 Heading Base: 2
+Bib style:    plainnat
 Bibliography: refs.bib
-doc class:    [preprint]style/sigplanconf
+doc class:    [10pt,numbers]style/sigplanconf
+Package:      [1stsubmission]style/oopsla2016
+
 css:          style/style.css
 Logo: False
 
@@ -16,7 +19,6 @@ Pdf Latex: xelatex
 Package: etoolbox
 Package: fontspec
 Package: tabulary
-Package: [left=1.75in,right=1.75in,top=1in,bottom=1in]geometry
 Package: caption
 Package: [all]hypcap
 
