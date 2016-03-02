@@ -1,5 +1,5 @@
 #!/bin/bash
-if [ command -v omnigraffle-export >/dev/null 2>&1 ]; then
+if ! command -v omnigraffle-export >/dev/null 2>&1 ; then
   touch $3
 else
   SVG=${3/.pdf/.svg}

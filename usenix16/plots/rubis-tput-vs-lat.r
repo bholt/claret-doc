@@ -60,7 +60,7 @@ save(
   ))+
   xlab('Clients')+ylab('Throughput (txn/s)')+
   stat_summary(geom='line', fun.y=mean)+
-  stat_summary(geom='point', fun.y=mean, guide=F)+
+  stat_summary(geom='point', fun.y=mean)+
   scale_x_continuous(trans=log2_trans(), breaks=c(8,16,32,64,128,256))+
   scale_y_continuous(breaks = c(0, 5000, 10000, 15000, 20000), labels = si.labels())+
   expand_limits(x=0, y=0)+

@@ -26,7 +26,7 @@ refs.bib: $(SRCS)
 	../tools/findrefs.rb
 
 $(FIGS_OUT): fig/%.pdf: generals.graffle
-	$GRAFFLE generals.graffle $* $@
+	$(GRAFFLE) generals.graffle $* $@
 
 $(FIGS_SVG): fig/%.svg: fig/%.pdf
 	pdf2svg $< $@
@@ -63,7 +63,7 @@ out/$(NAME).html: $(SVG_SRCS) $(DEPS) $(FIGS_SVG)
 	mv out/paper.mdk paper-web.mdk
 	madoko -v --odir=out paper-web.mdk
 	rm paper-web.mdk
-	mv out/{paper-web,$(NAME)}.html
+	mv out/paper-web.html out/$(NAME).html
 
 web: out/$(NAME).html
 

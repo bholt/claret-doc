@@ -25,7 +25,7 @@ FIGS_OUT := $(addsuffix .pdf, $(addprefix fig/, $(FIGS)))
 FIGS_SVG := $(addsuffix .svg, $(addprefix fig/, $(FIGS)))
 
 $(FIGS_OUT): fig/%.pdf: ../Claret.graffle
-	$GRAFFLE ../Claret.graffle $* $@
+	$(GRAFFLE) ../Claret.graffle $* $@
 
 $(FIGS_SVG): fig/%.svg: fig/%.pdf
 	pdf2svg $< $@
@@ -64,7 +64,7 @@ out/$(NAME).html: $(SVG_SRCS) $(DEPS) $(PLOT_PDFS) $(FIGS_OUT)
 	mv out/paper.mdk paper-web.mdk
 	madoko -v --odir=out paper-web.mdk
 	rm paper-web.mdk
-	mv out/{paper-web,$(NAME)}.html
+	mv out/paper-web.html out/$(NAME).html
 
 web: out/$(NAME).html
 
