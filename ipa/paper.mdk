@@ -22,7 +22,7 @@ Package: tabulary
 Package: caption
 Package: [all]hypcap
 
-#todo: color=red font-size=x-small font-family=HelveticaNeue-Light before='[' after=']'
+#todo: color=red font-size=small font-family=Lato-Light before='[' after=']'
 
 ~a: .tex-tooltip
 
