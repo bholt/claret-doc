@@ -1,4 +1,5 @@
 # Introduction
+~~ Notes
 - Applications have performance requirements
 	- Sometimes explicit in the form of SLAs, promising a certain latency or availability
 	- Sometimes more implicit (i.e. every additional ms of latency reduces revenue)
@@ -23,3 +24,4 @@
 	- Couples the effects of mutating operations with reads
 	- Concise and modular: re-use data types, no annotations on individual operations
 	- Safe: inconsistency expressed as return types
+~~

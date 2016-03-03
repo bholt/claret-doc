@@ -24,6 +24,8 @@ Package: [all]hypcap
 
 #todo: color=red font-size=small font-family=Lato-Light before='[' after=']'
 
+~Notes: color=gray font-size=90% font-family=Lato-Light
+
 ~a: .tex-tooltip
 
 p,ul,ol,li { replace="/\[(?:TODO|todo):\s*(.*?)\]/[\1]{#todo}/g" }
@@ -81,6 +83,7 @@ p,ul,ol,li { replace="/\[(?:TODO|todo):\s*(.*?)\]/[\1]{#todo}/g" }
 ~
 
 [INCLUDE="introduction"]
+[INCLUDE="types"]
 [INCLUDE="related"]
 
 [BIB]

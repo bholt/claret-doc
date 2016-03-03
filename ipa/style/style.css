@@ -13,6 +13,10 @@ body.madoko {
   line-height: 1.1;
 }
 
+.madoko .abstract>p:first-child:before {
+  content: none;
+}
+
 .madoko .title {
   line-height: 1.05;
 }
