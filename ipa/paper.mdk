@@ -15,6 +15,7 @@ Logo: False
 
 Latex: ../tools/lualatexdvi
 Pdf Latex: xelatex
+Math Mode: mathjax
 
 Package: etoolbox
 Package: fontspec

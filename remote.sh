@@ -3,7 +3,7 @@ DIR="${BASH_SOURCE%/*}"
 cd $DIR
 server=ibex.syslab
 dest='/scratch/$USER/claret-doc'
-echo ">>> copying files to $server:$dest/.."
+echo ">>> copying files to $server:$dest"
 ssh $server mkdir -p $dest
 rsync -a . $server:$dest
 echo ">>> building remotely"

@@ -1,7 +1,6 @@
 # Type System
 ~~ Notes
 - IPA type lattice
-	- Inconsistent (&perp;)
-	- Consistent (top)
+	- Inconsistent ($\bot$)
+	- Consistent ($\top$)
 ~~
-
