@@ -2,5 +2,13 @@
 ~~ Notes
 - IPA type lattice
 	- Inconsistent ($\bot$)
+	- `Rushed | Interval | Leased` 
 	- Consistent ($\top$)
+- Performance bounds
+	- `Set[ID] with Consistency(Strong)`
+	- `Set[ID] with LatencyBound(50 ms) -> contains(ID): Rushed[Boolean]`
+	- `Counter with ErrorTolerance(5%) -> read(): Interval[Long]`
+- Semantics of mixed consistency levels?
+- Futures
+	- (talk about how everything is implemented with futures, or just elide that?)
 ~~

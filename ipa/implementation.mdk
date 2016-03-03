@@ -1,0 +1,21 @@
+# Implementation
+We demonstrate one possible instantiation of the Disciplined Inconsistency model with an implementation of a Scala client, using Cassandra as the backing store. Most of the functionality required to implement the model is relatively datastore-agnostic; most Dynamo-style datastores support some form of tunable consistency, so porting our implementation to another backing datastore such as Riak should be possible.
+
+[todo: explain the basics of how Cassandra's consistency levels work]
+[see: Cassandra Consistency](http://docs.datastax.com/en/cassandra/3.x/cassandra/dml/dmlAboutDataConsistency.html)
+
+
+## Latency bounds
+As discussed earlier, a common desire is to be able to guarantee a certain response time, for example in order to meet an SLA. However, within that window of time, we would like to provide the strongest guarantees possible, so that users typically observe consistent, up-to-date data.
+
+Conceptually, any Dynamo-style datastore implements configurable consistency levels by adjusting the number of replicas that a client request waits for a response from. [todo: explain first how it would work conceptually by sending read requests to a quorum of replicas, and then proceeding with whatever we have when time is up; then explain how in Cassandra we have to cheat by issuing reads in parallel]
+
+
+## Reservations
+In order to implement the `Interval` bounds, we build on the concept of *escrow* and *reservations* [@ONeil:86;@Gawlick:85;@Reuter:82;@Preguica:03].
+
+We implement reservations as a middleware layer: a reservation server runs alongside each Cassandra server. Any operations with error tolerance bounds are routed to a reservation server, using the Cassandra client's knowledge of which replicas are up.
+
+
+## Leases
+[todo: ???]
