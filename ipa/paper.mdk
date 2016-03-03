@@ -26,7 +26,7 @@ Package: [all]hypcap
 
 ~a: .tex-tooltip
 
-~P,~Span: replace="/\[(?:TODO|todo):\s*(.*?)\]/[\1]{#todo}/g"
+p,ul,ol,li { replace="/\[(?:TODO|todo):\s*(.*?)\]/[\1]{#todo}/g" }
 
 ~H1: tex-cmd=\section
 ~H2: tex-cmd=\subsection
@@ -67,7 +67,7 @@ Package: [all]hypcap
 \apptocmd{\sloppy}{\hbadness 10000\relax}{}{}
 
 \setmainfont{Times}
-\setmonofont[Scale=0.85]{Anonymous Pro}
+\setmonofont[Scale=0.9]{Anonymous Pro}
 
 ~
 ~ HtmlRaw
