@@ -81,5 +81,6 @@ Package: [all]hypcap
 ~
 
 [INCLUDE="introduction"]
+[INCLUDE="related"]
 
 [BIB]

@@ -1,0 +1,24 @@
+# Related Work
+
+## Consistency Models
+A vast number of consistency models have been proposed over the years. From Lamport's *sequential consistency* [@Lamport:79:SC] and Herlihy's *linearizability* [@Herlihy:90:Linear] on the strong side, to *eventual consistency* [@Vogels:EC] at the other extreme. A variety of intermediate models fit elsewhere in the spectrum, each making different trade-offs balancing high performance and availability against ease of programming. For example, a family of models including *read-your-writes* and *monotonic reads* use *sticky sessions* [@Terry:94:Session], which reduces availability in a small way, but provides users with a bit more certainty about what values they will observe.
+
+A single global consistency model for an entire database or application is restrictive; some datastores support configuring consistency at a finer granularity: Cassandra [@cassandra] per operation, Riak [@riak] on an object or namespace granularity, as well as others [@Li:12:RedBlue;@Sovran:11:Walter].
+
+## Explicit performance bounds
+It is difficult for programmers to determine the correct consistency level for each operation. Ideally, everything would be as consistent as possible, but in some situations, performance needs (such as availability) force inconsistency. 
+
+[todo: will probably have to introduce this earlier when explaining `Rushed`, but putting the text here for now]
+With *consistency-based SLAs* in Pileus [@Terry:13:SLAs], programmers can explicitly trade off consistency for latency. A consistency SLA specifies a target latency and a consistency level (e.g. 100 ms with read-my-writes). In this programming model, operations specify a set of desired SLAs, each associated with a *utility*. Using a prediction mechanism similar to PBS, Pileus attempts to determine which SLA to target to maximize utility, typically to achieve the best consistency possible within a certain latency.
+
+In Pileus, SLAs are specified on each *read* operation, which returns both the value it got and the achieved consistency level. This allows programs to behave different depending on changing conditions. Our `Rushed` IPA types, which were inspired by Pileus, provide a more disciplined way to let programmers express how behavior should depend on consistency, protecting them from inadvertently misusing the returned value. In addition, Pileus's SLAs are assigned only to individual reads; writes are all assumed to be the same, and data type is not considered. Working with latency bounds at the ADT level allows reads and writes to be coupled, enabling more potential optimizations.
+
+## Controlling staleness
+Most eventually consistent models provides no guarantees about how long it will take for updates to propagate. However, there are several techniques to help bound the staleness of reads.
+
+*Leases* are an old technique that essentially gives reads an *expiration date*: the datastore promises not to modify the value that was just read until the lease term is over. First proposed to avoid explicit invalidations in distributed file system caches [@Gray:89], leases have since been used in a multitude of ways: in Facebook's Memcache system [@Nishtala:13:Memcache] for invalidations, Google's Chubby [@Burrows:2006:Chubby] and Spanner [@Spanner] to adjust the frequency of heartbeat messages, and on mobile clients with exo-leases [@Shrira:08:ExoLeasing]. Warranties [@Liu:14:Warranties] are a generalization of leases, allowing arbitrary assertions over state or behavior. [todo: explain how our leases relate]
+
+## Using types
+*Convergent* (or *conflict-free*) *replicated data types* (CRDTs) [@Shapiro:SSS11:CRDT] are data types designed for eventual consistency. Similar to how IPA types express weakened semantics which allow for implementation on weak consistency, CRDTs guarantee that they will converge on eventual consistency by forcing all update operations to commute. For example, Set `add` and `remove` typically do not commute, but a CRDT called an OR-Set re-defines them so that `add` wins over `remove`, making them commute again. CRDTs can be enormously useful because they allow concurrent updates with sane semantics, but they are still only eventually (or causally) consistent, so users must still deal with temporary divergence and out-of-date reads, and they do not incorporate performance bounds or variable accuracy.
+
+Bloom [@Alvaro:11:Bloom;@Conway:12:BloomL;@Alvaro:14:Blazes] is a language and runtime system for defining whole applications that are guaranteed to converge. Based around a conceptual monotonically growing set of facts, the language encourages coordination-free computation, but automatically creates synchronization points where necessary.
