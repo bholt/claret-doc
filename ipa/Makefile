@@ -4,7 +4,9 @@ DEPS := refs.bib out/style Makefile
 
 RSCRIPT := $(shell git rev-parse --show-toplevel)/docker/Rscript
 
-all: web-view
+all:
+	../remote.sh make -C ipa final web
+	open -a Safari out/$(NAME).html
 
 refs.bib: $(SRCS)
 	../tools/findrefs.rb
