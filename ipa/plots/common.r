@@ -229,7 +229,7 @@ theme.bar <-function() theme(
 )
 
 bounds <- c(
-  'consistency:strong' = 'strong (read)',
+  'consistency:strong' = 'strong',
   'consistency:strongwrite' = 'strong (write)',
   'tolerance:0.05' = 'error: 5%',
   'tolerance:0.1' = 'error: 10%',
@@ -317,15 +317,7 @@ data.ipa.rawmix <- function(where="honeycomb_mode is not null and out_actual_tim
     
     d$condition <- factor.remap(x(d$honeycomb_mode,d$load), conds)
     
-    d$bound <- factor.remap(d$ipa_bound, c(
-      'consistency:strong' = 'strong (read)',
-      'consistency:strongwrite' = 'strong (write)',
-      'tolerance:0.05' = 'error: 5%',
-      'tolerance:0.1' = 'error: 10%',
-      'latency:10ms' = 'latency: 10ms',
-      'latency:50ms' = 'latency: 50ms',
-      'consistency:weak' = 'weak'
-    ))
+    d$bound <- factor.remap(d$ipa_bound, bounds)
     
     return(d)
 })
