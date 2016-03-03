@@ -1,8 +1,25 @@
 # Introduction
-Inconsistency is eternally relevant.
-
-Discipline is essential. An army walks on its type system.
-
-Many key/value stores support customizable consistency. Cassandra [@cassandra], for instance, allows clients to choose, for each query, how many replicas the coordinator should communicate with: from `ALL` to `ONE` (with some additional cases outside those that are only valid in certain situations).
-
-[todo: actually write intro]
+- Applications have performance requirements
+	- Sometimes explicit in the form of SLAs, promising a certain latency or availability
+	- Sometimes more implicit (i.e. every additional ms of latency reduces revenue)
+- Constantly balancing performance vs correctness / programmability
+	- If it isn't scaling well, or latencies are too high, then relax consistency in some places and hope...
+- This is error prone: every time you change consistency, there are new reorderings and conditions to consider
+	- new edge cases to handle, *implicit* in the consistency model
+	- accidentally leak into places that weren't intended to be weakened
+- Worse: conditions can change at any moment; node goes down, network unreliable, traffic surges
+	- In test environment, inconsistency is typically unlikely
+	- Adverse conditions in production can cause errors that never appeared in testing, or are very difficult to test for
+	- No way to know if you've caught them all
+- Furthermore, when conditions are good, there's no need to resort to weak consistency
+- It would be great if we had a way to:
+	- Express performance bounds
+		- Have the system help achieve them
+	- Make inconsistency explicit and restricted
+		- handle different cases in a disciplined way
+		- restrict possible values, and where they can be used
+- So the question is: *where to introduce this abstraction?*
+	- As part of the data type!
+	- Couples the effects of mutating operations with reads
+	- Concise and modular: re-use data types, no annotations on individual operations
+	- Safe: inconsistency expressed as return types
