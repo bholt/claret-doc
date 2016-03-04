@@ -298,7 +298,7 @@ data.ipa.rawmix <- function(where="honeycomb_mode is not null and out_actual_tim
     d$rate_contains <- d$timers_contains_latency_mean_rate
     d$rate_size     <- d$timers_size_latency_mean_rate
     
-    for (f in c('refreshes','out_of_bounds','immediates','incrs','reads')) {
+    for (f in c('refreshes','out_of_bounds','immediates','incrs','reads', 'cached_reads')) {
       d[["res_"+f+"_total"]] <- rowSums(cgrep(d,'res_counters_'+f+'_count_'))
     }
     
@@ -306,7 +306,7 @@ data.ipa.rawmix <- function(where="honeycomb_mode is not null and out_actual_tim
       d[['res_'+f+'_lat_mean']] <- rowMeans(cgrep(d,'res_timers_'+f+'_latency_mean_'))
     }
     
-    low <- 128
+    low <- 512
     high <- 4096
     
     conds <- c()
@@ -314,6 +314,12 @@ data.ipa.rawmix <- function(where="honeycomb_mode is not null and out_actual_tim
     conds[[x('normal',high)]] <- 'Normal (high load)'
     conds[[x('slowpoke_flat',low)]] <- 'Slow replica'
     conds[[x('world',low)]] <- 'Geo-distributed'
+    # conds[[x('google',low)]] <- 'Google (low)'
+    conds[[x('google',2048)]] <- 'Google'
+    # conds[[x('google',high)]] <- 'Google (high)'
+    # conds[[x('amazon',low)]] <- 'Amazon (low)'
+    conds[[x('amazon',2048)]] <- 'Amazon'
+    # conds[[x('amazon',high)]] <- 'Amazon (high)'
     
     d$condition <- factor.remap(x(d$honeycomb_mode,d$load), conds)
     
