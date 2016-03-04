@@ -1,0 +1,24 @@
+# Evaluation
+[todo: explain how we simulate network conditions using `tc netem` and `docker` 🐳]
+
+## Microbenchmarks
+~~ Notes
+- Latency bound
+	- show how it can meet various latency bounds, compared with Strong and Weak
+	- show that 95th percentile still meets latency bound!
+	- show how many achieved stronger consistency, and how that correlates with actual consistency violations
+- Reservations
+	- show link between tighter bounds and lower performance
+	- tie performance to the number of strong reads/reservation refreshes we had to do
+	- show how interval width gets smaller with fewer writes
+~~
+
+## Applications
+### Shopping Cart
+[todo: demonstrate loading cart with a latency bound, but not allowing users to check out without doing a strong read]
+
+### TicketSleuth
+[todo: ticket sales app demonstrating hard lower bounds on counters]
+
+### Twitter clone
+[todo: demonstrating error tolerance for Counter (number of retweets), and latency bound for loading the timeline]
