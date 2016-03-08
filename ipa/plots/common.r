@@ -235,7 +235,8 @@ bounds <- c(
   'tolerance:0.1' = 'error: 10%',
   'latency:50ms' = 'latency: 50ms',
   'latency:10ms' = 'latency: 10ms',
-  'consistency:weak' = 'weak'
+  'consistency:weak' = 'weak',
+  'consistency:weakwrite' = 'weak (write)'
 )
 
 b.cst <- "consistency:strong"
@@ -251,6 +252,7 @@ ipa.scales <- function(name = 'Bounds', guide = guide_legend(nrow=8), ...) {
   colors[[ bounds[[b.csw]] ]] <- c.gray
   colors[[ bounds[[b.cst]] ]] <- c.gray
   colors[[ bounds[[b.cwk]] ]] <- c.red
+  colors[[ bounds[['consistency:weakwrite']] ]] <- c.red
   colors[[ bounds[[b.l10]] ]] <- c.blue
   colors[[ bounds[[b.l50]] ]] <- c.blue
   colors[[ bounds[[b.t10]] ]] <- c.green
@@ -260,6 +262,7 @@ ipa.scales <- function(name = 'Bounds', guide = guide_legend(nrow=8), ...) {
   dashed <- 2
   dotted <- 3
   lines <- c()
+  lines[[ bounds[['consistency:weakwrite']] ]] <- dotted
   lines[[ bounds[[b.csw]] ]] <- dashed
   lines[[ bounds[[b.cst]] ]] <- solid
   lines[[ bounds[[b.cwk]] ]] <- dotted
@@ -306,10 +309,13 @@ data.ipa.rawmix <- function(where="honeycomb_mode is not null and out_actual_tim
       d[['res_'+f+'_lat_mean']] <- rowMeans(cgrep(d,'res_timers_'+f+'_latency_mean_'))
     }
     
+    d$res_cass_op_count <- rowMeans(cgrep(d,'res_timers_cass_op_latency_count_'))
+    
     low <- 512
     high <- 4096
     
     conds <- c()
+    conds[[x('flat5', 2048)]] <- 'Fast (5ms)'
     conds[[x('normal',low)]] <- 'Normal'
     conds[[x('normal',high)]] <- 'Normal (high load)'
     conds[[x('slowpoke_flat',low)]] <- 'Slow replica'
