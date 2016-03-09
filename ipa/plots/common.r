@@ -231,6 +231,8 @@ theme.bar <-function() theme(
 bounds <- c(
   'consistency:strong' = 'strong',
   'consistency:strongwrite' = 'strong (write)',
+  'tolerance:0' = 'error: 0%',
+  'tolerance:0.01' = 'error: 1%',
   'tolerance:0.05' = 'error: 5%',
   'tolerance:0.1' = 'error: 10%',
   'latency:50ms' = 'latency: 50ms',
@@ -246,6 +248,9 @@ b.l10 <- "latency:10ms"
 b.l50 <- "latency:50ms"
 b.t10 <- "tolerance:0.1"
 b.t05 <- "tolerance:0.05"
+b.t01 <- "tolerance:0.01"
+b.t00 <- "tolerance:0"
+
 
 ipa.scales <- function(name = 'Bounds', guide = guide_legend(nrow=8), ...) {
   colors <- c()
@@ -257,6 +262,8 @@ ipa.scales <- function(name = 'Bounds', guide = guide_legend(nrow=8), ...) {
   colors[[ bounds[[b.l50]] ]] <- c.blue
   colors[[ bounds[[b.t10]] ]] <- c.green
   colors[[ bounds[[b.t05]] ]] <- c.green
+  colors[[ bounds[[b.t01]] ]] <- c.green
+  colors[[ bounds[[b.t00]] ]] <- c.green
   
   solid  <- 1
   dashed <- 2
@@ -268,8 +275,10 @@ ipa.scales <- function(name = 'Bounds', guide = guide_legend(nrow=8), ...) {
   lines[[ bounds[[b.cwk]] ]] <- dotted
   lines[[ bounds[[b.l10]] ]] <- solid
   lines[[ bounds[[b.l50]] ]] <- dashed
-  lines[[ bounds[[b.t05]] ]] <- solid
-  lines[[ bounds[[b.t10]] ]] <- dashed
+  lines[[ bounds[[b.t01]] ]] <- solid
+  lines[[ bounds[[b.t05]] ]] <- dashed
+  lines[[ bounds[[b.t10]] ]] <- dotted
+  lines[[ bounds[[b.t00]] ]] <- solid
   
   list(
     scale_fill_manual(values=colors, name=name, guide=guide, ...),
