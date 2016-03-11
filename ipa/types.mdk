@@ -1,13 +1,24 @@
 # Type System
 ~~ Notes
-- IPA type lattice
-	- Inconsistent ($\bot$)
-	- `Rushed | Interval | Leased` 
-	- Consistent ($\top$)
+- High-level goals
+	- Explicit performance bounds (latency)
+	- Explicit approximation bounds (error tolerance)
+	- Results in IPA types which express the resulting uncertainty
+- ADTs
+	- can't just express these on the *read* side, most require knowing how the *write* was done
+	- e.g. `Consistency = Read.Consistency + Write.Consistency`, so `Write.ALL + Read.ONE = Strong`, or `Write.QUORUM + Read.QUORUM = Strong`
+	- Other benefits of annotating ADTs:
+		- portable / reusable
+		- modular
+	- Similar to Indigo's ([@Indigo]) invariants, but expressing performance and approximation bounds
 - Performance bounds
 	- `Set[ID] with Consistency(Strong)`
 	- `Set[ID] with LatencyBound(50 ms) -> contains(ID): Rushed[Boolean]`
 	- `Counter with ErrorTolerance(5%) -> read(): Interval[Long]`
+- IPA type lattice
+	- Inconsistent ($\bot$)
+	- `Rushed | Interval | Leased` 
+	- Consistent ($\top$)
 - Semantics of mixed consistency levels?
 - Futures
 	- (talk about how everything is implemented with futures, or just elide that?)
