@@ -11,7 +11,7 @@
 		- portable / reusable
 		- modular
 	- Similar to Indigo's ([@Indigo]) invariants, but expressing performance and approximation bounds
-- Performance bounds
+- **Bounds**
 	- `Set[ID] with Consistency(Strong)`
 	- `Set[ID] with LatencyBound(50 ms) -> contains(ID): Rushed[Boolean]`
 	- `Counter with ErrorTolerance(5%) -> read(): Interval[Long]`

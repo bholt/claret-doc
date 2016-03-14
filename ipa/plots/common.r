@@ -288,6 +288,75 @@ ipa.scales <- function(name = 'Bounds', guide = guide_legend(nrow=8), ...) {
   )
 }
 
+data.ipa.common <- function(table="ipa_rawmix", where="honeycomb_mode is not null and out_actual_time_length is not null") data.or.csv (
+  csv = COMMON_DIR+'/data/ipa_'+table+'.csv',
+  gen = function(){
+    d <- db("select * from "+table+" where out_actual_time_length is not null and " + where)
+    fields <- names(d)[grepl(".*(_count|_rate|_p\\d+|_max|_min|_mean|_ms)(_\\d)?$", names(d))]
+    for (f in fields) d[[f]] <- num(d[[f]])
+    
+    d$duration <- d$ipa_duration
+    d$load <- num(d$ipa_concurrent_requests)
+
+    d$op_rate <- d$timers_cass_op_latency_mean_rate
+    d$op_lat_mean <- d$timers_cass_op_latency_mean
+    d$op_lat_median <- d$timers_cass_op_latency_p50
+    
+    d$res_cass_op_count <- rowMeans(cgrep(d,'res_timers_cass_op_latency_count_'))
+    
+    low <- 512
+    high <- 4096
+    
+    conds <- c()
+    conds[[x('flat5', 2048)]] <- 'Fast (5ms)'
+    conds[[x('normal',low)]] <- 'Normal'
+    conds[[x('normal',high)]] <- 'Normal (high load)'
+    conds[[x('slowpoke_flat',low)]] <- 'Slow replica'
+    conds[[x('world',low)]] <- 'Geo-distributed'
+    # conds[[x('google',low)]] <- 'Google (low)'
+    conds[[x('google',2048)]] <- 'Google'
+    # conds[[x('google',high)]] <- 'Google (high)'
+    # conds[[x('amazon',low)]] <- 'Amazon (low)'
+    conds[[x('amazon',2048)]] <- 'Amazon'
+    # conds[[x('amazon',high)]] <- 'Amazon (high)'
+    
+    d$condition <- factor.remap(x(d$honeycomb_mode,d$load), conds)
+    
+    d$bound <- factor.remap(d$ipa_bound, bounds)
+    
+    return(d)
+})
+
+data.ipa.tickets <- function(where="out_actual_time_length is not null") {
+  d <- data.ipa.common(table="ipa_tickets", where=where)
+  
+  # compute totals for reservation counters
+  counters <- c('incr', 'decr', 'init', 'read', 'cached', 'expired', 'forwards')
+  
+  for (f in counters) d[["res_"+f+"_total"]] <- rowSums(cgrep(d,'res_counters_'+f+'_count_'))
+  
+  # compute means for other reservation metrics
+  timers <- c('consume')
+  for (f in timers) d[['res_'+f+'_lat_mean']] <- rowMeans(cgrep(d,'res_timers_'+f+'_latency_mean_'))
+  
+  # aliases
+  aliases <- c(
+    read_lat_mean='timers_read_latency_mean',
+    read_lat_median='timers_read_latency_p50',
+    read_lat_p95='timers_read_latency_p95',
+    read_lat_p99='timers_read_latency_p99',
+    read_count='timers_read_latency_count',
+    take_lat_mean='timers_take_latency_mean',
+    take_lat_median='timers_take_latency_p50',
+    take_lat_p95='timers_take_latency_p95',
+    take_lat_p99='timers_take_latency_p99',
+    take_count='timers_take_latency_count'
+  )
+  for (n in names(aliases)) d[[n]] <- d[[aliases[n]]]
+  
+  return(d)
+}
+
 data.ipa.rawmix <- function(where="honeycomb_mode is not null and out_actual_time_length is not null") data.or.csv (
   csv = COMMON_DIR+'/data/ipa_rawmix.csv',
   gen = function(){
