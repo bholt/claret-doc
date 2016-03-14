@@ -11,6 +11,10 @@
 		- portable / reusable
 		- modular
 	- Similar to Indigo's ([@Indigo]) invariants, but expressing performance and approximation bounds
+- Types of annotation
+	- "static" bounds like `Consistency(Strong)` that fix a policy upfront
+	- "dynamic" bounds like `LatencyBound(50 ms)` that choose a policy at invocation time
+	- per-method bounds for ADTs (e.g. `Set[ID]` has `size` and `contains?` methods that could have different bounds)
 - **Bounds**
 	- `Set[ID] with Consistency(Strong)`
 	- `Set[ID] with LatencyBound(50 ms) -> contains(ID): Rushed[Boolean]`
@@ -19,7 +23,16 @@
 	- Inconsistent ($\bot$)
 	- `Rushed | Interval | Leased` 
 	- Consistent ($\top$)
+- Rushed
+	- Consistency level achieved
+- Interval
+	- min, max, contains?, etc
+	- linearizable within the error bound -- as long as we stay within the bound, everything is strongly consistent
+- Leased goes away
 - Semantics of mixed consistency levels?
+	- If every operation comes back strong, it's just like strong consistency was chosen in advance -- so everything is linearizable
 - Futures
 	- (talk about how everything is implemented with futures, or just elide that?)
+- All writes are statically at a certain consistency level
+	- Why? So we don't have to reason about interactions with reads (would need flow analysis)
 ~~
