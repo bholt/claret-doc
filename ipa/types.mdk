@@ -1,4 +1,32 @@
 # Type System
+
+<!-- Developers of distributed applications 
+today manually manage the consistency--performance trade-off.
+Managing these trade-offs is error-prone 
+because they require changing the consistency model 
+at the granularity of individual operations.
+The reliability of the resulting applications is also unclear,
+because local changes in the consistency model may propagate to other operations,
+and testing against every possible relaxation is difficult. -->
+
+We propose a programming model for distributed data 
+that uses types to control the consistency--performance trade-off.
+Rather than changing the consistency of individual operations,
+our model builds on *abstract data types* (ADTs)
+annotated with consistency policies.
+These *inconsistent, performance-bound, approximate types* (IPA types)
+help developers trade consistency for performance in a disciplined manner.
+The type system provides two important benefits:
+
+* **Safety**: the type system tracks the consistency level of each result, and prevents inconsistent data from flowing into consistent data without explicit endorsement, in the style of EnerJ ([@TODO]).
+* **Performance**: Consistency annotations on the ADT itself allow dynamic selection of consistency policies at run time
+
+This section presents the IPA type system, 
+including the available consistency policies
+and the semantics of operations made under those policies.
+Section [#Implementation] presents the implementation
+of the IPA type system.
+
 ~~ Notes
 - High-level goals
 	- Explicit performance bounds (latency)
