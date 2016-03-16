@@ -2,7 +2,8 @@ NAME := ipa
 SRCS := $(wildcard *.mdk)
 DEPS := refs.bib out/style Makefile
 
-RSCRIPT := $(shell git rev-parse --show-toplevel)/docker/Rscript
+# RSCRIPT := $(shell git rev-parse --show-toplevel)/docker/Rscript
+RSCRIPT := Rscript
 
 all: web-view
 	# ../remote.sh make -C ipa final web
@@ -11,12 +12,10 @@ all: web-view
 refs.bib: $(SRCS)
 	../tools/findrefs.rb
 
-PLOT_PDFS := $(PLOTS:%.r=%.pdf)
 FIGS_OUT := $(FIGS:%=fig/%.pdf)
-SVG_SRCS := $(SRCS:%.mdk=out/%.mdk)
 
-%.pdf: %.r plots/common.r
-	 $(RSCRIPT) $<
+plots/%.pdf: plots/%.r plots/common.r
+	cd plots; $(RSCRIPT) $*.r
 
 FIGS := 
 
@@ -24,13 +23,15 @@ SVG_SRCS := $(SRCS:%.mdk=out/%.mdk)
 FIGS_OUT := $(addsuffix .pdf, $(addprefix fig/, $(FIGS)))
 FIGS_SVG := $(addsuffix .svg, $(addprefix fig/, $(FIGS)))
 
+PLOTS := $(filter-out plots/common.r, $(wildcard plots/*.r))
+PLOT_PDFS := $(PLOTS:%.r=%.pdf)
+
 $(FIGS_OUT): fig/%.pdf: ipa.graffle
 	$(GRAFFLE) ipa.graffle $* $@
 
 $(FIGS_SVG): fig/%.svg: fig/%.pdf
 	pdf2svg $< $@
 	
-PLOTS := $(filter-out plots/common.r, $(wildcard plots/*.r))
 
 out/%.mdk: %.mdk
 	mkdir -p out
@@ -59,7 +60,7 @@ deploy: deploy-copy-only
 pdf-view: pdf
 	open -a Skim out/paper.pdf
 
-out/$(NAME).html: $(SVG_SRCS) $(DEPS) $(FIGS_SVG) $(PLOT_PDFS)
+out/$(NAME).html: $(SVG_SRCS) $(DEPS) $(FIGS_SVG) $(PLOTS_SVG)
 	../tools/pdf2svg.sh
 	mv out/paper.mdk paper-web.mdk
 	madoko -v --odir=out paper-web.mdk
