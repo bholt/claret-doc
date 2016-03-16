@@ -40,7 +40,7 @@ out/style:
 	mkdir -p out
 	cd out && ln -s ../style
 
-out/paper.pdf: $(SRCS) $(DEPS) $(FIGS_OUT)
+out/paper.pdf: $(SRCS) $(DEPS) $(FIGS_OUT) $(PLOT_PDFS)
 	madoko -v --pdf --odir=out --tex paper.mdk
 
 pdf: out/paper.pdf
@@ -59,7 +59,7 @@ deploy: deploy-copy-only
 pdf-view: pdf
 	open -a Skim out/paper.pdf
 
-out/$(NAME).html: $(SVG_SRCS) $(DEPS) $(FIGS_SVG)
+out/$(NAME).html: $(SVG_SRCS) $(DEPS) $(FIGS_SVG) $(PLOT_PDFS)
 	../tools/pdf2svg.sh
 	mv out/paper.mdk paper-web.mdk
 	madoko -v --odir=out paper-web.mdk
