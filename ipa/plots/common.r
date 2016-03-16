@@ -240,7 +240,8 @@ low <- 512
 high <- 4096
 
 conds <- c()
-conds[[x('flat5', 2048)]] <- 'Uniform (5ms)'
+conds[[x('flat5', 128)]] <- 'Uniform\n(5ms)'
+conds[[x('flat5', 4096)]] <- 'High load'
 conds[[x('normal',low)]] <- 'Normal'
 conds[[x('normal',high)]] <- 'Normal (high load)'
 conds[[x('slowpoke_flat',low)]] <- 'Slow replica'

@@ -1,7 +1,18 @@
 # Evaluation
 [todo: explain how we simulate network conditions using `tc netem` and `docker` 🐳]
 
-## Microbenchmarks
+~ Tab { #tab-conditions caption="Simulated network conditions" }
+| Condition label   | Latencies (milliseconds)                 |
+|:------------------|:-----------------------------------------|
+| Local             | <1, <1, <1                               |
+| Uniform/High load | 5, 5, 5                                  |
+| Slow replica      | 10, 10, 100                              |
+| Google            | 1&plusmn;.3, 110&plusmn;5, 160&plusmn;5  |
+| Amazon            | 1&plusmn;.3, 80&plusmn;10, 200&plusmn;50 |
+|-------------------|------------------------------------------|
+~
+
+## Counter microbenchmark
 ~~ Notes
 - Latency bound
 	- show how it can meet various latency bounds, compared with Strong and Weak
@@ -13,9 +24,23 @@
 	- show how interval width gets smaller with fewer writes
 ~~
 
-~ Fig { #plot-rawmix-counter caption="Counter benchmark: mean latency of random mix of increments and reads, under various conditions." }
-![](plots/rawmix-counter.pdf){ .onecol }
+~ Fig { #plot-counter caption="Counter benchmark: mean latency for a random mix of counter ops (20% increment, 80% read), with various IPA bounds, under various conditions." }
+![](plots/rawmix_counter.pdf){ .onecol }
 ~
+
+We start by measuring the performance of a very simple application that randomly increments and reads from a number of counters with different IPA bounds. [#plot-counter] shows the average latency of a 20% increment, 80% read workload over 200 counters randomly selected using a zipfian distribution.
+
+### Latency bounds
+
+~ Fig { #plot-counter-lbound caption="Consistency of latency-bound operations. Strong consistency is rarely possible within 10ms. With one slow replica, most reads can still achieve strong consistency, but with high network latencies or heavy load, it degrades to use weak consistency." }
+![](plots/counter_lbound.pdf){ .onecol }
+~
+
+~ Fig { #plot-counter-lbound-tail caption="Latency bounds reduce unpredictable tail latency." }
+![](plots/counter_lbound_tail.pdf){ .onecol }
+~
+
+Latency bounds aim to provide predictable performance for clients while attempting to maximize consistency. Under favorable conditions, when latencies and load are low, it is often possible to achieve strong consistency. Figure [#plot-counter] shows the average latency of 
 
 
 ## Applications
