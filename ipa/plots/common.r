@@ -231,7 +231,7 @@ cgrep <- function(d, regex) d[grep(regex,names(d))]
 
 
 theme.bar <-function() theme(
-  axis.text.x = element_text(angle = 45, hjust = 1),
+  axis.text.x = element_text(angle = 45, hjust = 1, size=8),
   axis.title.x = element_blank(),
   legend.position="none"
 )
@@ -240,7 +240,7 @@ low <- 512
 high <- 4096
 
 conds <- c()
-conds[[x('flat5', 2048)]] <- 'Normal\n(5ms)'
+conds[[x('flat5', 2048)]] <- 'Uniform (5ms)'
 conds[[x('normal',low)]] <- 'Normal'
 conds[[x('normal',high)]] <- 'Normal (high load)'
 conds[[x('slowpoke_flat',low)]] <- 'Slow replica'
@@ -262,7 +262,7 @@ bounds <- list(
   'latency:50ms' = 'latency: 50ms',
   'latency:20ms' = 'latency: 20ms',
   'latency:10ms' = 'latency: 10ms',
-  'consistency:weak' = 'weak',
+  'consistency:weak' = 'weak/strong',
   'consistency:weakwrite' = 'weak'
 )
 
@@ -378,60 +378,68 @@ data.ipa.tickets <- function(where="out_actual_time_length is not null") {
   return(d)
 }
 
-data.ipa.rawmix <- function(where="honeycomb_mode is not null and out_actual_time_length is not null") data.or.csv (
-  csv = COMMON_DIR+'/data/ipa_rawmix.csv',
-  gen = function(){
-    d <- db("select * from ipa_rawmix where out_actual_time_length is not null and " + where)
-    fields <- names(d)[grepl(".*(_count|_rate|_p\\d+|_max|_min|_mean|_ms)(_\\d)?$", names(d))]
-    for (f in fields) d[[f]] <- num(d[[f]])
-    
-    d$duration <- d$ipa_duration
-    d$load <- num(d$ipa_concurrent_requests)
+data.ipa.rawmix <- function(where="honeycomb_mode is not null and out_actual_time_length is not null") {
+  d <- db("select * from ipa_rawmix where out_actual_time_length is not null and " + where)
+  fields <- names(d)[grepl(".*(_count|_rate|_p\\d+|_max|_min|_mean|_ms)(_\\d)?$", names(d))]
+  for (f in fields) d[[f]] <- num(d[[f]])
+  
+  d$duration <- d$ipa_duration
+  d$load <- num(d$ipa_concurrent_requests)
 
-    d$op_rate <- d$timers_cass_op_latency_mean_rate
-    d$op_lat_mean <- d$timers_cass_op_latency_mean
-    d$op_lat_median <- d$timers_cass_op_latency_p50
+  d$op_rate <- d$timers_cass_op_latency_mean_rate
+  d$op_lat_mean <- d$timers_cass_op_latency_mean
+  d$op_lat_median <- d$timers_cass_op_latency_p50
+  
+  d$mean_lat_add      <- d$timers_add_latency_mean
+  d$mean_lat_contains <- d$timers_contains_latency_mean
+  d$mean_lat_size     <- d$timers_size_latency_mean
+  
+  d$rate_add      <- d$timers_add_latency_mean_rate
+  d$rate_contains <- d$timers_contains_latency_mean_rate
+  d$rate_size     <- d$timers_size_latency_mean_rate
+  
+  d$overall_latency_mean <- 
+      d$timers_read_latency_mean * num(d$ipa_rawmix_counter_mix_read) + 
+      d$timers_incr_latency_mean * num(d$ipa_rawmix_counter_mix_incr)
+  
+  # aliases
+  aliases <- c(
+    read_lat_mean='timers_read_latency_mean',
+    read_lat_median='timers_read_latency_p50',
+    read_lat_p95='timers_read_latency_p95',
+    read_lat_p99='timers_read_latency_p99',
+    read_count='timers_read_latency_count',
+    read_rate='timers_read_latency_mean_rate',
+    incr_lat_mean='timers_incr_latency_mean',
+    incr_lat_median='timers_incr_latency_p50',
+    incr_lat_p95='timers_incr_latency_p95',
+    incr_lat_p99='timers_incr_latency_p99',
+    incr_count='timers_incr_latency_count',
+    incr_rate='timers_incr_latency_mean_rate',
+    read_strong='counters_read_strong_count',
+    read_weak='counters_read_weak_count',
+    lease='ipa_lease_period'
+  )
+  for (n in names(aliases)) d[[n]] <- d[[aliases[n]]]
+  
+  d$read_strong_fraction <- with(d, read_strong / (read_strong + read_weak))
+
+  for (f in c('refreshes','out_of_bounds','immediates','incrs','reads', 'cached_reads')) {
+    d[["res_"+f+"_total"]] <- rowSums(cgrep(d,'res_counters_'+f+'_count_'))
+  }
+  
+  for (f in c('cass_op', 'weak_read', 'strong_read', 'weak_write', 'strong_write')) {
+    d[['res_'+f+'_lat_mean']] <- rowMeans(cgrep(d,'res_timers_'+f+'_latency_mean_'))
+  }
+  
+  d$res_cass_op_count <- rowMeans(cgrep(d,'res_timers_cass_op_latency_count_'))
     
-    d$mean_lat_add      <- d$timers_add_latency_mean
-    d$mean_lat_contains <- d$timers_contains_latency_mean
-    d$mean_lat_size     <- d$timers_size_latency_mean
+  d$condition <- factor.remap(x(d$honeycomb_mode,d$load), conds)
+  
+  d$bound <- factor.remap(d$ipa_bound, bounds)
     
-    d$rate_add      <- d$timers_add_latency_mean_rate
-    d$rate_contains <- d$timers_contains_latency_mean_rate
-    d$rate_size     <- d$timers_size_latency_mean_rate
-    
-    for (f in c('refreshes','out_of_bounds','immediates','incrs','reads', 'cached_reads')) {
-      d[["res_"+f+"_total"]] <- rowSums(cgrep(d,'res_counters_'+f+'_count_'))
-    }
-    
-    for (f in c('cass_op', 'weak_read', 'strong_read', 'weak_write', 'strong_write')) {
-      d[['res_'+f+'_lat_mean']] <- rowMeans(cgrep(d,'res_timers_'+f+'_latency_mean_'))
-    }
-    
-    d$res_cass_op_count <- rowMeans(cgrep(d,'res_timers_cass_op_latency_count_'))
-    
-    low <- 512
-    high <- 4096
-    
-    conds <- c()
-    conds[[x('flat5', 2048)]] <- 'Fast (5ms)'
-    conds[[x('normal',low)]] <- 'Normal'
-    conds[[x('normal',high)]] <- 'Normal (high load)'
-    conds[[x('slowpoke_flat',low)]] <- 'Slow replica'
-    conds[[x('world',low)]] <- 'Geo-distributed'
-    # conds[[x('google',low)]] <- 'Google (low)'
-    conds[[x('google',2048)]] <- 'Google'
-    # conds[[x('google',high)]] <- 'Google (high)'
-    # conds[[x('amazon',low)]] <- 'Amazon (low)'
-    conds[[x('amazon',2048)]] <- 'Amazon'
-    # conds[[x('amazon',high)]] <- 'Amazon (high)'
-    
-    d$condition <- factor.remap(x(d$honeycomb_mode,d$load), conds)
-    
-    d$bound <- factor.remap(d$ipa_bound, bounds)
-    
-    return(d)
-})
+  return(d)
+}
 
 data.owl <- function(where="meters_retwis_op_count is not null") {
   d <- db("select * from ipa_owl where meters_retwis_op_count is not null and " + where)
