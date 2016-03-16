@@ -66,13 +66,19 @@ vals <- function(lst) unlist(lst, use.names=F)
 
 db.cstv <- function(file) {
   d <- read.csv(file = file)
-  d$cc_ph <- factor(d$cc_ph, levels=c(COMB+PH,COMM+PH,RW+PH,COMB,COMM,RW+BASE,NOTXN))
+  d$bound <- factor(d$bound, levels=vals(bounds))
+  d$condition <- factor.remap(x(d$honeycomb_mode,d$load), conds)
   d
 }
 
 data.or.csv <- function(csv, gen) {
   d <- tryCatch(
     {
+      print(Sys.getenv('R_LOCAL_CSV_ONLY'))
+      if (Sys.getenv('R_LOCAL_CSV_ONLY') == '1') {
+        print("LOCAL CSV")
+        stop("local mode")
+      }
       d <- gen()
       write.csv(d, file = csv)
       d
@@ -209,6 +215,8 @@ theme_mine <- function() list(
   theme_light(),
   font_helvetica(),
   theme(
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
     strip.background = element_blank()
   )
 )
@@ -228,7 +236,23 @@ theme.bar <-function() theme(
   legend.position="none"
 )
 
-bounds <- c(
+low <- 512
+high <- 4096
+
+conds <- c()
+conds[[x('flat5', 2048)]] <- 'Normal\n(5ms)'
+conds[[x('normal',low)]] <- 'Normal'
+conds[[x('normal',high)]] <- 'Normal (high load)'
+conds[[x('slowpoke_flat',low)]] <- 'Slow replica'
+conds[[x('world',low)]] <- 'Geo-distributed'
+# conds[[x('google',low)]] <- 'Google (low)'
+conds[[x('google',2048)]] <- 'Google'
+# conds[[x('google',high)]] <- 'Google (high)'
+# conds[[x('amazon',low)]] <- 'Amazon (low)'
+conds[[x('amazon',2048)]] <- 'Amazon'
+# conds[[x('amazon',high)]] <- 'Amazon (high)'
+
+bounds <- list(
   'consistency:strong' = 'strong',
   'consistency:strongwrite' = 'strong (write)',
   'tolerance:0' = 'error: 0%',
@@ -236,15 +260,17 @@ bounds <- c(
   'tolerance:0.05' = 'error: 5%',
   'tolerance:0.1' = 'error: 10%',
   'latency:50ms' = 'latency: 50ms',
+  'latency:20ms' = 'latency: 20ms',
   'latency:10ms' = 'latency: 10ms',
   'consistency:weak' = 'weak',
-  'consistency:weakwrite' = 'weak (write)'
+  'consistency:weakwrite' = 'weak'
 )
 
 b.cst <- "consistency:strong"
 b.csw <- "consistency:strongwrite"
 b.cwk <- "consistency:weak"
 b.l10 <- "latency:10ms"
+b.l20 <- "latency:20ms"
 b.l50 <- "latency:50ms"
 b.t10 <- "tolerance:0.1"
 b.t05 <- "tolerance:0.05"
@@ -259,6 +285,7 @@ ipa.scales <- function(name = 'Bounds', guide = guide_legend(nrow=8), ...) {
   colors[[ bounds[[b.cwk]] ]] <- c.red
   colors[[ bounds[['consistency:weakwrite']] ]] <- c.red
   colors[[ bounds[[b.l10]] ]] <- c.blue
+  colors[[ bounds[[b.l20]] ]] <- c.blue
   colors[[ bounds[[b.l50]] ]] <- c.blue
   colors[[ bounds[[b.t10]] ]] <- c.green
   colors[[ bounds[[b.t05]] ]] <- c.green
@@ -274,7 +301,8 @@ ipa.scales <- function(name = 'Bounds', guide = guide_legend(nrow=8), ...) {
   lines[[ bounds[[b.cst]] ]] <- solid
   lines[[ bounds[[b.cwk]] ]] <- dotted
   lines[[ bounds[[b.l10]] ]] <- solid
-  lines[[ bounds[[b.l50]] ]] <- dashed
+  lines[[ bounds[[b.l20]] ]] <- dashed
+  lines[[ bounds[[b.l50]] ]] <- dotted
   lines[[ bounds[[b.t01]] ]] <- solid
   lines[[ bounds[[b.t05]] ]] <- dashed
   lines[[ bounds[[b.t10]] ]] <- dotted
@@ -288,44 +316,26 @@ ipa.scales <- function(name = 'Bounds', guide = guide_legend(nrow=8), ...) {
   )
 }
 
-data.ipa.common <- function(table="ipa_rawmix", where="honeycomb_mode is not null and out_actual_time_length is not null") data.or.csv (
-  csv = COMMON_DIR+'/data/ipa_'+table+'.csv',
-  gen = function(){
-    d <- db("select * from "+table+" where out_actual_time_length is not null and " + where)
-    fields <- names(d)[grepl(".*(_count|_rate|_p\\d+|_max|_min|_mean|_ms)(_\\d)?$", names(d))]
-    for (f in fields) d[[f]] <- num(d[[f]])
-    
-    d$duration <- d$ipa_duration
-    d$load <- num(d$ipa_concurrent_requests)
+data.ipa.common <- function(table="ipa_rawmix", where="honeycomb_mode is not null and out_actual_time_length is not null") {
+  d <- db("select * from "+table+" where out_actual_time_length is not null and " + where)
+  fields <- names(d)[grepl(".*(_count|_rate|_p\\d+|_max|_min|_mean|_ms)(_\\d)?$", names(d))]
+  for (f in fields) d[[f]] <- num(d[[f]])
+  
+  d$duration <- d$ipa_duration
+  d$load <- num(d$ipa_concurrent_requests)
 
-    d$op_rate <- d$timers_cass_op_latency_mean_rate
-    d$op_lat_mean <- d$timers_cass_op_latency_mean
-    d$op_lat_median <- d$timers_cass_op_latency_p50
-    
-    d$res_cass_op_count <- rowMeans(cgrep(d,'res_timers_cass_op_latency_count_'))
-    
-    low <- 512
-    high <- 4096
-    
-    conds <- c()
-    conds[[x('flat5', 2048)]] <- 'Fast (5ms)'
-    conds[[x('normal',low)]] <- 'Normal'
-    conds[[x('normal',high)]] <- 'Normal (high load)'
-    conds[[x('slowpoke_flat',low)]] <- 'Slow replica'
-    conds[[x('world',low)]] <- 'Geo-distributed'
-    # conds[[x('google',low)]] <- 'Google (low)'
-    conds[[x('google',2048)]] <- 'Google'
-    # conds[[x('google',high)]] <- 'Google (high)'
-    # conds[[x('amazon',low)]] <- 'Amazon (low)'
-    conds[[x('amazon',2048)]] <- 'Amazon'
-    # conds[[x('amazon',high)]] <- 'Amazon (high)'
-    
-    d$condition <- factor.remap(x(d$honeycomb_mode,d$load), conds)
-    
-    d$bound <- factor.remap(d$ipa_bound, bounds)
-    
-    return(d)
-})
+  d$op_rate <- d$timers_cass_op_latency_mean_rate
+  d$op_lat_mean <- d$timers_cass_op_latency_mean
+  d$op_lat_median <- d$timers_cass_op_latency_p50
+  
+  d$res_cass_op_count <- rowMeans(cgrep(d,'res_timers_cass_op_latency_count_'))
+  
+  d$condition <- factor.remap(x(d$honeycomb_mode,d$load), conds)
+  
+  d$bound <- factor.remap(d$ipa_bound, bounds)
+  
+  return(d)
+}
 
 data.ipa.tickets <- function(where="out_actual_time_length is not null") {
   d <- data.ipa.common(table="ipa_tickets", where=where)
@@ -336,21 +346,32 @@ data.ipa.tickets <- function(where="out_actual_time_length is not null") {
   for (f in counters) d[["res_"+f+"_total"]] <- rowSums(cgrep(d,'res_counters_'+f+'_count_'))
   
   # compute means for other reservation metrics
-  timers <- c('consume')
+  timers <- c('consume', 'transfer')
   for (f in timers) d[['res_'+f+'_lat_mean']] <- rowMeans(cgrep(d,'res_timers_'+f+'_latency_mean_'))
   
   # aliases
   aliases <- c(
-    read_lat_mean='timers_read_latency_mean',
-    read_lat_median='timers_read_latency_p50',
-    read_lat_p95='timers_read_latency_p95',
-    read_lat_p99='timers_read_latency_p99',
-    read_count='timers_read_latency_count',
-    take_lat_mean='timers_take_latency_mean',
-    take_lat_median='timers_take_latency_p50',
-    take_lat_p95='timers_take_latency_p95',
-    take_lat_p99='timers_take_latency_p99',
-    take_count='timers_take_latency_count'
+    lease='ipa_lease_period',
+    purchase_lat_mean='timers_op_purchase_mean',
+    purchase_lat_median='timers_op_purchase_p50',
+    purchase_lat_p95='timers_op_purchase_p95',
+    purchase_lat_p99='timers_op_purchase_p99',
+    purchase_count='timers_op_purchase_count',
+    view_lat_mean='timers_op_view_mean',
+    view_lat_median='timers_op_view_p50',
+    view_lat_p95='timers_op_view_p95',
+    view_lat_p99='timers_op_view_p99',
+    view_count='timers_op_view_count',
+    create_lat_mean='timers_op_create_mean',
+    create_lat_median='timers_op_create_p50',
+    create_lat_p95='timers_op_create_p95',
+    create_lat_p99='timers_op_create_p99',
+    create_count='timers_op_create_count',
+    browse_lat_mean='timers_op_browse_mean',
+    browse_lat_median='timers_op_browse_p50',
+    browse_lat_p95='timers_op_browse_p95',
+    browse_lat_p99='timers_op_browse_p99',
+    browse_count='timers_op_browse_count'
   )
   for (n in names(aliases)) d[[n]] <- d[[aliases[n]]]
   
