@@ -18,6 +18,15 @@
 [todo: demonstrate loading cart with a latency bound, but not allowing users to check out without doing a strong read]
 
 ### TicketSleuth
+~~ Notes
+- Modeled after FusionTicket (benchmark in [@Xie:14:Salt;@Xie:15:ACIDAlt])
+- Demonstrates
+~~
+
+~ Fig { #plot-tickets caption="Ticket-sales app: mean latency of `purchase` action under various conditions. The `BoundedCounter` underlying ticket sales is safe even when weakly consistent, but latency bounds allow users to see strong consistency [todo:??]% of the time, while reservations bound error to less than 5% with similar performance." }
+![Raw mix throughput versus latency](plots/tickets.pdf){ .onecol }
+~
+
 [todo: ticket sales app demonstrating hard lower bounds on counters]
 
 ### Twitter clone
