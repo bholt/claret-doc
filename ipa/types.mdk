@@ -36,7 +36,7 @@ Second, the IPA type system provides *performance*, because consistency annotati
 The base of the IPA type system is a set of abstract data types
 for common distributed data structures. [todo: copy some stuff from Claret here?]
 
-## Policy Annotations
+## Policy Annotations { #policies }
 
 The IPA type system provides
 a set of annotations that can be placed on ADT instances
@@ -91,13 +91,34 @@ The other IPA types follow a subtyping relation $\prec$, defined by:
 \inferrule{\tau \text{ is weaker than } \tau'}{\tau'[T] \prec \tau[T]}
 ~
 
-There is also an explicit *endorsement* upcast to the top element `T`:
+The IPA type system is very similar to the probability type system of DECAF [@TODO], which uses types to track the quality of results computed on approximate hardware. Their non-interference property is also similar: a result of low quality cannot flow into a result of higher quality without explicit endorsement.
+We elide a thorough formal development of the IPA type system due to its close similarity with DECAF.
+
+### Weak IPA types
+
+The IPA types encapsulate information about the consistency policy used to perform a read operation.
+Strong read operations return values of type `T`,
+and so appear to developers as any other instance of type `T`.
+Intuitively, this equivalence is because the results of strong reads are known to be consistent.
+
+Weaker read operations return values of some type lower in the lattice (*weak IPA types*), reflecting their possible inconsistency.
+At the bottom of the lattice, the weak IPA type `Inconsistent[T]` encapsulate a value with unknown consistency.
+The only possible operation on `Inconsistent[T]` is to *endorse* it.
+Endorsement is an upcast, invoked by `Consistent(x)`, to the top element `T` from other types in the lattice:
 
 ~ Math
-\inferrule{\gamma \vdash e_1 : \tau[T]}{\gamma \vdash \operatorname{Consistent}(e_1) : T}
+\inferrule{\gamma \vdash e_1 : \tau[T] \\ T \prec \tau[T]}{\gamma \vdash \operatorname{Consistent}(e_1) : T}
 ~
 
+While `Inconsistent[T]` has value as a reminder to developers about consistency,
+the key productivity benefit of the IPA type system is in the other weak IPA types.
+Each of the consistency policies in Section [#policies] has a corresponding weak IPA type for operations performed under that policy.
 
+#### Rushed types
+
+The weak IPA type `Rushed[T]` is the result of read operations performed on an ADT with consistency policy `LatencyBound(x ms)`.
+`Rushed[T]` is a *sum type*, with one variant per consistency level available to the implementation of `LatencyBound`.
+A result of type `Rushed[T]` therefore requires the developer to consider all possible consistency levels.
 
 ~~ Notes
 - High-level goals
