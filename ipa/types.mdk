@@ -146,6 +146,9 @@ A result of type `Rushed[T]` therefore requires the developer to consider all po
 	- Consistent ($\top$)
 - Rushed
 	- Consistency level achieved
+	- Consistency levels are themselves ordered (lattice something something), so one could imagine writing an application with fewer type bounds than are supported by the underlying system, and it would simply fall back to the strongest lower bound or whatever.
+		- Example: write an app only handling "Strong" and "Weak": if the system supports intermediate levels that's fine, but the program will see all of them as "weak"
+		- Not 100% sure how to describe this
 - Interval
 	- min, max, contains?, etc
 	- linearizable within the error bound -- as long as we stay within the bound, everything is strongly consistent
