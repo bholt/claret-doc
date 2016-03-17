@@ -241,6 +241,7 @@ low <- 512
 high <- 4096
 
 conds <- c()
+conds[[x('fast', 4096)]] <- 'Local'
 conds[[x('flat5', 128)]] <- 'Uniform\n(5ms)'
 conds[[x('flat5', 4096)]] <- 'High load'
 conds[[x('normal',low)]] <- 'Normal'

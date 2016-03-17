@@ -19,9 +19,21 @@ Latency bounds specified by the application allow the system to *dynamically* ad
 
 Cassandra's client interface unfortunately does not allow us to implement latency bounds exactly as described above: operations must specify a consistency level beforehand. We implement a less optimal approach by issuing read requests at different levels in parallel. The Scala client driver we use is based on *futures*, allowing us to compose the parallel operations and respond either when the strong operation returns, with the strongest available at the specified time limit, or exceeding the time limit waiting for the first response. Pseudocode for this is shown in [#fig-latency-bound].
 
+### Monitors
+
 The main problem with this approach is that it wastes a lot of work, even if we didn't need to duplicate some messages due to Cassandra's interface. Furthermore, if the system is responding slower due to a sudden surge in traffic, then it is essential that our efforts not cause additional burden on the system.
 In cases where it is clear that strong consistency is unlikely to succeed, it should back off and attempt weaker consistency.
-To do this, the system must *monitor* current traffic and *predict* the latency of different consistency levels. We base our approach on Pileus's consistency-based SLA monitors [@Terry:13:SLAs]. [todo: finish explaining the monitor]
+To do this, the system must *monitor* current traffic and *predict* the latency of different consistency levels. 
+
+Each client in the system has its own Monitor (though multi-threaded clients share one). The monitor records the observed latencies of read operations, grouping them by operation and consistency level. All of the IPA ADTs are implemented in terms of Cassandra *prepared statements*, so we can easily categorize operations by their prepared identifier. The monitor uses an exponentially decaying reservoir to compute running percentiles weighted toward recent measurements, ensuring that its predictions continually adjust to current conditions. 
+
+Whenever a latency-bound operation is issued, it queries the monitor to determine the strongest consistency likely to be achieved within the time bound. It then issues 1 request at that consistency level and a backup at the weakest level (or possibly just the one weakest if that is the prediction).
+
+### Adjusting write level
+
+Remember that the achieved consistency level is determined by the combination of the write level and read level. By default, we assume a balanced mix of operations on an ADT, so writes are done at `QUORUM` level and strong reads can be achieved with the matching `QUORUM` level. However, sometimes this is not the case: if a datatype is heavily biased toward writes, then it is better to do the weakest writes, and adjust reads to compensate. This would also be helpful in cases where even the weakest reads fail to meet latency requirements because quorum writes are overloading the servers.
+
+Adjusting the write level must be done with care because it changes the semantics of downstream reads. One could imagine a more complex system allowing dynamic changes to an ADT's metadata (in the backing store), with clients checking for changes periodically, but this reconfiguration would have to happen at longer time scales. We force ADT implementations to choose their desired write level statically so that we know the strength of a read without checking. Applications wishing to get more dynamic behavior could implement alternate versions of ADTs with different static write levels and mediate the transition themselves.
 
 
 ## Reservations
