@@ -11,21 +11,93 @@ and testing against every possible relaxation is difficult. -->
 
 We propose a programming model for distributed data 
 that uses types to control the consistency--performance trade-off.
-Rather than changing the consistency of individual operations,
-our model builds on *abstract data types* (ADTs)
-annotated with consistency policies.
-These *inconsistent, performance-bound, approximate types* (IPA types)
-help developers trade consistency for performance in a disciplined manner.
-The type system provides two important benefits:
-
-* **Safety**: the type system tracks the consistency level of each result, and prevents inconsistent data from flowing into consistent data without explicit endorsement, in the style of EnerJ ([@TODO]).
-* **Performance**: Consistency annotations on the ADT itself allow dynamic selection of consistency policies at run time
-
+The *inconsistent, performance-bound, approximate* (IPA) type system
+helps developers to trade consistency for performance in a disciplined manner.
 This section presents the IPA type system, 
 including the available consistency policies
-and the semantics of operations made under those policies.
+and the semantics of operations performed under those policies.
 Section [#Implementation] presents the implementation
 of the IPA type system.
+
+## Overview
+
+The IPA type system consists of three parts:
+
+* Abstract data types (ADTs) implement common distributed data structures (such as `Set[T]`).
+* Policy annotations on ADTs specify the desired consistency level for an object in application-specific terms (such as latency or accuracy bounds).
+* IPA types track the consistency of operation results and enforce consistency safety by requiring developers to consider weak outcomes.
+
+Together, these three components provide two key benefits for developers.
+First, the IPA type system enforces *consistency safety*, tracking the consistency level of each result and preventing inconsistent data from flowing into consistent data without explicit endorsement, in the style of EnerJ ([@TODO]).
+Second, the IPA type system provides *performance*, because consistency annotations at the ADT level allow the runtime to dynamically select the consistency for each individual operation that maximizes performance.
+
+## Abstract Data Types
+
+The base of the IPA type system is a set of abstract data types
+for common distributed data structures. [todo: copy some stuff from Claret here?]
+
+## Policy Annotations
+
+The IPA type system provides
+a set of annotations that can be placed on ADT instances
+to specify consistency policies.
+Previous systems [@TODO] require annotating each read and write operation with a desired consistency level.
+This per-operation approach complicates reasoning about the safety of code using weak consistency,
+and hinders global optimizations that can be applied if the system knows the consistency level required for future operations.
+
+IPA type annotations come in two flavors.
+*Static* annotations declare an explicit consistency policy for an ADT.
+For example, a `Set` ADT with elements of type `T` can be declared as `Set[T] with Consistency(Strong)`,
+which states that all operations on that object are performed with strong consistency.
+Static annotations provide the same direct control as existing approaches, 
+but simplify reasoning about correctness.
+*Dynamic* annotations specify a consistency policy in terms of application-level requirements.
+For example, a `Set` ADT can be declared as `Set[T] with LatencyBound(50 ms)`,
+which states that operations on that object are performed with a target latency bound in mind. The runtime is free to dynamically choose, on a per-operation basis, whichever consistency level is necessary to meet this bound.
+
+The IPA type system features two dynamic consistency policies:
+
+* A latency policy `LatencyBound(x ms)` specifies a target latency for each operation performed on the ADT. The runtime can then determine the consistency level for each individual operation issued, optimizing for the cheapest level that will likely satisfy the latency bound.
+* An accuracy policy `ErrorTolerance(x%)` specifies the desired accuracy for read operations performed on the ADT. For example, the `size` of a `Set` ADT may only need to be accurate within 5% tolerance. The runtime can optimize the consistency of write operations so that reads are guaranteed to meet this bound.
+
+Policy annotations are central to the flexibility and usability of the IPA type system.
+Dynamic policy annotations allow the runtime 
+to extract the maximum performance possible from an application 
+by relaxing the consistency of its operations, 
+safe in the knowledge that the IPA type system has enforced safety
+by requiring the developer to consider the effects of weak operations.
+Moreover, policy annotations are expressed in terms of application-level requirements, such as latency or accuracy.
+This higher-level semantics absolves developers of manipulating the consistency of individual operations to maximize performance while maintaining safety.
+
+As an extension, ADTs can also have different consistency policies for each method.
+For example, a `Set` ADT might have a relaxed consistency policy for its `size`,
+but a strong consistency policy for its `contains?` predicate method.
+The runtime is then responsible for managing the interaction between these consistency policies.
+
+## IPA Types
+
+The keys to the IPA type system are the IPA types themselves.
+Read operations performed on ADTs annotated with consistency policies return instances of an *IPA type*.
+These IPA types track the consistency of the results,
+and enforce a fundamental non-interference property: 
+results from weakly consistent operations cannot flow into computations with stronger consistency without explicit endorsement.
+
+Formally, the IPA types form a lattice parameterized by a primitive type `T`. 
+The bottom element `Inconsistent[T]` specifies an object with the weakest possible consistency. 
+The top element is `T` itself, an object with the strongest possible consistency.
+The other IPA types follow a subtyping relation $\prec$, defined by:
+
+~ Math
+\inferrule{\tau \text{ is weaker than } \tau'}{\tau'[T] \prec \tau[T]}
+~
+
+There is also an explicit *endorsement* upcast to the top element `T`:
+
+~ Math
+\inferrule{\gamma \vdash e_1 : \tau[T]}{\gamma \vdash \operatorname{Consistent}(e_1) : T}
+~
+
+
 
 ~~ Notes
 - High-level goals

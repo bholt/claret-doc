@@ -1,3 +1,4 @@
+
 title: Disciplined Inconsistency
 
 author: Brandon Holt, James Bornholt, Irene Zhang, Dan Ports, Mark Oskin, Luis Ceze
@@ -22,6 +23,8 @@ Package: fontspec
 Package: tabulary
 Package: caption
 Package: [all]hypcap
+Package: style/mathpartir
+Package: mathptmx
 
 #todo: color=red font-size=small font-family=Lato-Light before='[' after=']'
 
