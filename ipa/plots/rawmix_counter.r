@@ -5,7 +5,8 @@ d <- data.or.csv(
   csv = 'data/rawmix-counter.csv',
   gen = function() subset(
     data.ipa.rawmix(where = "datatype='counter' and ipa_duration=60 and ipa_version = 'v3.1'"),
-    select = c('load', 'honeycomb_mode', 'ipa_bound', 'bound', 'ipa_consistency', 'lease', 'condition', 
+    select = c('load', 'honeycomb_mode', 'ipa_bound', 'bound', 
+      'ipa_consistency', 'lease', 'condition', 'mix',
       'read_lat_mean', 'read_lat_median', 'read_lat_p95', 'read_lat_p99', 'read_rate',
       'incr_lat_mean', 'incr_lat_median', 'incr_rate',
       'overall_latency_mean', 'read_strong_fraction'
@@ -15,7 +16,13 @@ d <- data.or.csv(
 
 d$grp <- d$bound
 
-s <- subset(d, ipa_bound != 'consistency:weak' & honeycomb_mode != 'normal')
+s <- subset(d, 
+  ipa_bound != 'consistency:weak'
+  & mix == 'default'
+  & honeycomb_mode != 'normal'
+  & grepl('Uniform|Slow|Google|High', condition)
+  & grepl('tol.*#0ms|cons|lat', x(ipa_bound,lease))
+)
 
 
 save(

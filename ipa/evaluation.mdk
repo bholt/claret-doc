@@ -42,6 +42,23 @@ We start by measuring the performance of a very simple application that randomly
 
 Latency bounds aim to provide predictable performance for clients while attempting to maximize consistency. Under favorable conditions, when latencies and load are low, it is often possible to achieve strong consistency. Figure [#plot-counter] shows the average latency of 
 
+### Error bounds
+We use the reservation system described in [#reservations] to enforce error bounds. Though error bounds represent a relaxation from a strict strongly consistent read, they still have 
+Our goal is to explore how expensive it is in practice to enforce these error bounds, and in particular to determine if reasonable error bounds that programs could rely on are achievable with performance comparable to weak consistency.
+
+The general intuition behind reservations is to move synchronization off the critical path: by distributing write permissions among replicas, clients can get strong guarantees while only communicating with a single replica. This shifts the majority of the synchronization burden off of reads, which are typically more common. However, this balance must be carefully considered when evaluating the performance of reservations, more so than the other techniques.
+
+[#plot-counter] contains results for error bounds ranging from 0% to 10%, showing the average latency of both reads and increments for a mix with 20% increments. We can see that how narrow the bounds are does affect performance, but in most cases, the latency of 5-10% error bounds have roughly the same performance as weak consistency.
+
+~ Tab { #tab-intervals caption="Reservations adapt to varying write loads, resulting in narrower intervals (tighter error bounds) than clients requested. [todo: add more mixes, gen line plot with %reads on x axis]" }
+| Error Bound | 80% read | 99% read |
+|:-----------:|:--------:|:--------:|
+|  0% | 0    | 0    |
+|  1% | 5.4  | 0.03 |
+|  5% | 45.7 | 1.36 |
+| 10% | 98.2 | 3.5  |
+|-----|------|------|
+~
 
 ## Applications
 ### Shopping Cart

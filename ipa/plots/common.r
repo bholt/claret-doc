@@ -68,6 +68,7 @@ db.cstv <- function(file) {
   d <- read.csv(file = file)
   d$bound <- factor(d$bound, levels=vals(bounds))
   d$condition <- factor.remap(x(d$honeycomb_mode,d$load), conds)
+  d$mix <- factor(d$mix, levels=vals(mixes.counter))
   d
 }
 
@@ -123,7 +124,7 @@ melt.by <- function(data, label, regex) {
     m
 }
 
-factor.remap <- function(col, map) factor(revalue(col, map), levels=vals(map))
+factor.remap <- function(col, map) factor(revalue(col, map), levels=unique(vals(map)))
 
 replace_txn_codes <- function(orig,codes) Reduce(function(o,k){ gsub("(['\"(,])"+codes[[k]]+"(?=['\",)])", "\\1"+k+"\\2", o, perl=T) }, names(codes), init=jsfix(orig))
 
@@ -230,8 +231,8 @@ group.legend <- function(title='Bounds') list(
 cgrep <- function(d, regex) d[grep(regex,names(d))]
 
 
-theme.bar <-function() theme(
-  axis.text.x = element_text(angle = 45, hjust = 1, size=8),
+theme.bar <-function(angle=45, hjust=1, size=8) theme(
+  axis.text.x = element_text(angle=angle, hjust=hjust, size=size),
   axis.title.x = element_blank(),
   legend.position="none"
 )
@@ -278,6 +279,11 @@ b.t05 <- "tolerance:0.05"
 b.t01 <- "tolerance:0.01"
 b.t00 <- "tolerance:0"
 
+mixes.counter <- list(
+  'default' = 'default',
+  'no_size'    = 'default',
+  'read_heavy' = 'read_heavy'
+)
 
 ipa.scales <- function(name = 'Bounds', guide = guide_legend(nrow=8), ...) {
   colors <- c()
@@ -292,6 +298,20 @@ ipa.scales <- function(name = 'Bounds', guide = guide_legend(nrow=8), ...) {
   colors[[ bounds[[b.t05]] ]] <- c.green
   colors[[ bounds[[b.t01]] ]] <- c.green
   colors[[ bounds[[b.t00]] ]] <- c.green
+
+  colors[[ bounds[[b.cst]]+'#0ms' ]] <- c.gray
+  colors[[ bounds[[b.cst]]+'#200ms' ]] <- c.gray
+  colors[[ bounds[['consistency:weakwrite']]+'#200ms' ]] <- c.red
+
+  colors[[ bounds[[b.t10]]+'#200ms' ]] <- c.green
+  colors[[ bounds[[b.t05]]+'#200ms' ]] <- c.green
+  colors[[ bounds[[b.t01]]+'#200ms' ]] <- c.green
+  colors[[ bounds[[b.t00]]+'#200ms' ]] <- c.green
+  colors[[ bounds[[b.t10]]+'#0ms' ]] <- c.yellow
+  colors[[ bounds[[b.t05]]+'#0ms' ]] <- c.yellow
+  colors[[ bounds[[b.t01]]+'#0ms' ]] <- c.yellow
+  colors[[ bounds[[b.t00]]+'#0ms' ]] <- c.yellow
+
   
   solid  <- 1
   dashed <- 2
@@ -419,7 +439,8 @@ data.ipa.rawmix <- function(where="honeycomb_mode is not null and out_actual_tim
     incr_rate='timers_incr_latency_mean_rate',
     read_strong='counters_read_strong_count',
     read_weak='counters_read_weak_count',
-    lease='ipa_lease_period'
+    lease='ipa_lease_period',
+    interval_mean='histograms_interval_width_mean'
   )
   for (n in names(aliases)) d[[n]] <- d[[aliases[n]]]
   
@@ -438,7 +459,9 @@ data.ipa.rawmix <- function(where="honeycomb_mode is not null and out_actual_tim
   d$condition <- factor.remap(x(d$honeycomb_mode,d$load), conds)
   
   d$bound <- factor.remap(d$ipa_bound, bounds)
-    
+  
+  d$mix <- factor.remap(d$mix, mixes.counter)
+  
   return(d)
 }
 
