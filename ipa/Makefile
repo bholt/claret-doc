@@ -2,6 +2,8 @@ NAME := ipa
 SRCS := $(wildcard *.mdk)
 DEPS := refs.bib out/style Makefile
 
+GRAFFLE := ../tools/graffle.sh
+
 # RSCRIPT := $(shell git rev-parse --show-toplevel)/docker/Rscript
 RSCRIPT := Rscript
 
@@ -12,12 +14,11 @@ all: web-view
 refs.bib: $(SRCS)
 	../tools/findrefs.rb
 
-FIGS_OUT := $(FIGS:%=fig/%.pdf)
-
 plots/%.pdf: plots/%.r plots/common.r
 	cd plots; $(RSCRIPT) $*.r
 
-FIGS := 
+FIGS := \
+	reservations
 
 SVG_SRCS := $(SRCS:%.mdk=out/%.mdk)
 FIGS_OUT := $(addsuffix .pdf, $(addprefix fig/, $(FIGS)))
