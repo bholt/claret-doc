@@ -41,29 +41,96 @@ One could imagine a more complex system allowing dynamic changes to an ADT's met
 We implement error bounds by building on the concepts of *escrow* and *reservations* [@ONeil:86;@Gawlick:85;@Reuter:82;@Preguica:03]. These techniques have been used in storage systems to enforce hard limits, such as an account balance never going negative, while permitting concurrency. 
 The idea is to set aside a pool of permissions to perform certain update operations (we'll call them *reservations* or *tokens*), essentially treating operations as a manageable resource. If we have a counter that should never go below zero, there could be a number of *decrement* tokens equal to the current value of the counter. When a client wishes to decrement, it must first acquire sufficient tokens before performing the update operation. Correspondingly, in this scheme, increments produce new tokens. The insight is that the coordination needed to ensure that there are never too many tokens can be done *off the critical path*: they can be produced lazily if there are enough around already, and most importantly for this work, they can be *distributed* among replicas. This means that replicas can perform some update operations *safely* without coordinating with any other replicas.
 
-Reservations have been used in the past to enforce hard global invariants in the form of upper or lower bounds on values or integrity constraints [@Balegas:15:Indigo], or logical assertions [@Liu:14:Warranties]. However, enforcing our error tolerance bounds presents a new design challenge because the bounds are constantly shifting.
+To implement reservations, we must be able to mediate requests to the datastore to prevent updates from exceeding the available reservations. Furthermore, we must be able to track how many reservations each server has locally without synchronization. Because Cassandra does not allow custom mediation of requests, nor does it support replica-local state, we must implement a custom middleware layer to handle reservation requests. Any client requests requiring reservations are routed to one of a number of *reservation servers*. These servers then forward operations when permitted along to the underlying datastore. All persistent data is kept in Cassandra still; these reservation servers keep only transient state tracking available reservations. Our design is similar to the middleware for implementing bounded counters on top of Riak [@Balegas:15:BoundedCounter].
+
+Reservations have been used previously to enforce hard global invariants in the form of upper or lower bounds on values or integrity constraints [@Balegas:15:Indigo;@Balegas:15:BoundedCounter], or logical assertions [@Liu:14:Warranties]. However, enforcing error tolerance bounds presents a new design challenge because the bounds are constantly shifting.
 
 ~ Fig { #fig-reservations caption="Reservations enforcing error bounds." }
 ![](fig/reservations.pdf)
 ~
 
-Consider a `Counter` with a 10% error bound, shown in [#fig-reservations]. If the current value is 100, then 10 increments can be done before anyone has to be told about it. However, this counter is replicated 3 times, so these 10 increments may have to be distributed among the replicas. So then each replica can perform 3 increments without synchronizing, and reads from any one of the replicas will not violate the 10% error bound. In order to perform more increments, however, our replica will need to coordinate with the others, sharing its latest increments and receiving any changes of theirs. Once that synchronization has completed, those 3 tokens become available again because the replicas all agree that the value is now at least 103.
+Consider a `Counter` with a 10% error bound, shown in [#fig-reservations]. If the current value is 100, then 10 increments can be done before anyone must be told about it. However, we have 3 reservation servers, so these 10 reservations are distributed among them, allowing each to do some increments without synchronizing. Because only 10 outstanding increments are allowed, reads will maintain the 10% error bound. 
+
+In order to perform more increments after a server has exhausted its reservations, it must synchronize with the others, sharing its latest increments and receiving any changes of theirs. This is accomplished by doing a strong write (`ALL`) to the datastore followed by a read. Once that synchronization has completed, those 3 tokens become available again because the reservation servers all agree that the value is now, in this case, at least 102.
+
+Read operations for these types go through reservation servers as well: the server does a weak read from any replica, then determines the interval based on how many reservations there are. For the read in [#fig-reservations], there are 10 reservations total, but Server B knows that it has not used its local reservations, so it knows that there are as many as 6 outstanding increments, so it returns the interval $[100,106]$.
+
+The maximum number of reservations that can be allocated for an ADT instance is determined by the statically defined error bound on the ADT. However, as with latency bounds, when conditions are good, or few writes are occurring, reads should reflect this. In the previous example, Server B only knew how many of its own reservations were used; it had to be conservative about the other servers. To allow error bounds to dynamically shrink, we have each server *allocate* reservations when needed and keep track of the allocated reservations in the shared datastore. Allocating must be done with strong consistency to ensure all servers agree, which can be expensive. However, we can use long leases (on the order of seconds) to allow servers to cache their allocations. When a server receives some writes, it allocates some reservations for itself. If it consistently needs more, it can request more, and if it is still using those reservations when the lease is about to expire, it preemptively refreshes its lease in the background so that writes do not block.
+
+For each type of update operation there may be a different pool of reservations. Similarly, there could be multiple error bounds on read operations. It is up to the designer of the ADT to ensure that all error bounds are met with the right set of reservations. For instance, the full implementation of a Counter includes decrement operations. These require a different pool of reservations to ensure that there are never more decrements than the error bound permits. 
+
+In some cases, multiple operations may consume or produce reservations in the same pool. Consider a `Set` with an error bound on the size. This requires separate reservation pools for `add` and `remove` to prevent the overall size from deviating by more than the desired error bound. In this case, we calculate the interval for `size` to be:
+ 
+~~~scala
+Interval(min = v - removePool.delta()
+         max = v + addPool.delta())
+~~~
+
+Where `v` is the size of the set read from the datastore, and `delta()` is the number of possible outstanding operations from the pool or:
+
+~~~scala
+def delta(): pool.total - (pool.local - pool.used)
+~~~
+
+It is tempting to try to combine reservations for inverse operations into the same pool. For instance, it would seem that decrements would cancel out increments, allowing a single reservation server receiving matching numbers of each to continue indefinitely. In some situations, such as if sticky sessions can guarantee ordering from one reservation server to one replica, this is sound. However, in the general case of eventual consistency, this would not be valid, as the increments and decrements could go to different replicas, or propagate at different rates. Therefore it is crucial that ADT designers think carefully about the guarantees of their underlying datastore. Luckily, the abstraction of ADTs hides this complexity from the user — as long as the ADT is implemented correctly, they need only worry about the stated error bounds of the type they are using.
+
+## Provided by IPA
+
+~ Fig { #fig-interfaces caption="Example facilities provided by IPA." }
+~~~scala
+trait Rushable {
+	def rush[T](bound: Duration, 
+							readOp: ConsistencyLevel => T): Rushed[T]
+}
+
+/* Generic reservaton pool, conceptually one per ADT instance.
+ * `max` recomputed as needed (e.g. for percent error) */
+abstract class ReservationPool(max: () => Int) {
+	def take(n: Int): Boolean // try to take some tokens
+	def sync(): Unit          // sync to regain used tokens
+	def delta(): Int          // possible ops outstanding
+}
+
+/* Counter with ErrorBound (simplified) */
+class Counter(key: UUID) with ErrorBound {
+	def error: Float // error bound
+	
+	def calculateMax(): Int = (cass.read(key) * error).toInt
+	
+	val incrPool = ReservationPool(computeMax)
+	val decrPool = ReservationPool(computeMax)
+
+	def value(): Interval[Int] = {
+		val v = cass.read(key)
+		Interval(v - decrPool.delta, v + incrPool.delta)
+	}
+	
+	def incr(n: Int): Unit = {
+		waitFor(incrPool.take(n)) {
+			cass.incr(key, n)
+		}
+	}
+}
+~~~
+~
+
+The IPA System implementation provides a number of primitives for building ADTs as well as some reference implementations of simple datatypes. We show some in [#fig-interfaces]. To support latency bounds, there is a generic `Rushable` trait that provides facilities for executing a specified read operation at multiple consistency levels within the specified time limit. For implementing error bounds, IPA provides a generic reservation pool which ADT implementations can use. 
+
+The IPA system currently has a small number of datatypes implemented:
+
+- `Counter` based on Cassandra's counter datatype, supporting increment and decrement, with latency and error bounds
+- `Set` with `add`, `remove`, `contains` and `size`, supporting latency bounds, and error bounds on `size`.
+- `BoundedCounter` CRDT from [@Balegas:15:BoundedCounter] that enforces a hard lower bound even with weak consistency. Our implementation adds the ability to bound error on the value of the counter, and set latency bounds.
+- `UUIDPool` that generates unique identifiers, but has a hard limit on the number of ids that can be taken from it, built on top of `BoundedCounter` and supporting the same bounds.
+- `List`: thin abstraction around a Cassandra table with a time-based clustering order, with latency bounds. Used to implement Twitter timelines and Ticket listings.
+
+[#fig-intefaces] shows conceptual-level Scala code using reservation pools to implement a Counter with error bounds. The actual implementation splits this functionality between the client and the reservation server. The Reservation Server is implemented as a Finagle service.
 
 
 
-Reservations represent operations that can be applied *without coordinating with other replicas*. In the case of 
+<!-- *this isn't true for eventual consistency because we don't know that they will be done in order* In some cases special cases, the ADT designer can apply additional semantic knowledge to improve these error bounds. For instance, if the same item is added and removed to a set (or for all increments and decrements of a counter), the operations can cancel each other out, provided that the  -->
 
-Rather than representing the absolute number of allowable operations, reservations for error bounds represent operations that can be applied 
+<!-- Error tolerance bounds are intended to capture natural correctness criteria: when values are small any error is noticeable, but larger values (e.g. retweets of popular tweets) can tolerate much more uncertainty. This means that as the value changes, so too do the number of available tokens.
 
-Reservations on our bounded counter from before were consumed once and for all. 
-
-Where decrement tokens were consumed once, these tokens represent 
-
-
-Error tolerance bounds are intended to capture natural correctness criteria: when values are small any error is noticeable, but larger values (e.g. retweets of popular tweets) can tolerate much more uncertainty. This means that as the value changes, so to do the number of available tokens.
-
-The intent of allowing users to express error tolerance in their applications is to capture the 
-gracefully handle 
-
-
-We implement reservations as a middleware layer: a reservation server runs alongside each Cassandra server. Any operations with error tolerance bounds are routed to a reservation server, using the Cassandra client's knowledge of which replicas are up.
+gracefully handle both big and small cases with a single type.
+ -->
