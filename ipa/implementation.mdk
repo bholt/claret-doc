@@ -60,58 +60,55 @@ The maximum number of reservations that can be allocated for an ADT instance is 
 For each type of update operation there may be a different pool of reservations. Similarly, there could be multiple error bounds on read operations. It is up to the designer of the ADT to ensure that all error bounds are met with the right set of reservations. For instance, the full implementation of a Counter includes decrement operations. These require a different pool of reservations to ensure that there are never more decrements than the error bound permits. 
 
 In some cases, multiple operations may consume or produce reservations in the same pool. Consider a `Set` with an error bound on the size. This requires separate reservation pools for `add` and `remove` to prevent the overall size from deviating by more than the desired error bound. In this case, we calculate the interval for `size` to be:
- 
-~~~scala
-Interval(min = v - removePool.delta()
-         max = v + addPool.delta())
-~~~
 
-Where `v` is the size of the set read from the datastore, and `delta()` is the number of possible outstanding operations from the pool or:
+	Interval(min = v - removePool.delta()
+	         max = v + addPool.delta())
 
-~~~scala
-def delta(): pool.total - (pool.local - pool.used)
-~~~
+Where `v` is the size of the set read from the datastore, and `delta` is the number of possible outstanding operations from the pool, or:
+
+	delta(): pool.total - (pool.local - pool.used)
 
 It is tempting to try to combine reservations for inverse operations into the same pool. For instance, it would seem that decrements would cancel out increments, allowing a single reservation server receiving matching numbers of each to continue indefinitely. In some situations, such as if sticky sessions can guarantee ordering from one reservation server to one replica, this is sound. However, in the general case of eventual consistency, this would not be valid, as the increments and decrements could go to different replicas, or propagate at different rates. Therefore it is crucial that ADT designers think carefully about the guarantees of their underlying datastore. Luckily, the abstraction of ADTs hides this complexity from the user — as long as the ADT is implemented correctly, they need only worry about the stated error bounds of the type they are using.
 
 ## Provided by IPA
 
 ~ Fig { #fig-interfaces caption="Example facilities provided by IPA." }
-~~~scala
+```scala
 trait Rushable {
-	def rush[T](bound: Duration, 
-							readOp: ConsistencyLevel => T): Rushed[T]
+  def rush[T](bound: Duration, 
+              readOp: ConsistencyLevel => T): Rushed[T]
 }
 
 /* Generic reservaton pool, conceptually one per ADT instance.
  * `max` recomputed as needed (e.g. for percent error) */
 abstract class ReservationPool(max: () => Int) {
-	def take(n: Int): Boolean // try to take some tokens
-	def sync(): Unit          // sync to regain used tokens
-	def delta(): Int          // possible ops outstanding
+  def take(n: Int): Boolean // try to take some tokens
+  def sync(): Unit        // sync to regain used tokens
+  def delta(): Int        // possible ops outstanding
 }
 
 /* Counter with ErrorBound (simplified) */
 class Counter(key: UUID) with ErrorBound {
-	def error: Float // error bound
+  def error: Float // error bound
 	
-	def calculateMax(): Int = (cass.read(key) * error).toInt
+  def calculateMax(): Int = (cass.read(key) * error).toInt
 	
-	val incrPool = ReservationPool(computeMax)
-	val decrPool = ReservationPool(computeMax)
+  val incrPool = ReservationPool(computeMax)
+  val decrPool = ReservationPool(computeMax)
 
-	def value(): Interval[Int] = {
-		val v = cass.read(key)
-		Interval(v - decrPool.delta, v + incrPool.delta)
-	}
-	
-	def incr(n: Int): Unit = {
-		waitFor(incrPool.take(n)) {
-			cass.incr(key, n)
-		}
-	}
+  def value(): Interval[Int] = {
+    val v = cass.read(key)
+    Interval(v - decrPool.delta,
+             v + incrPool.delta)
+  }
+
+  def incr(n: Int): Unit = {
+    waitFor(incrPool.take(n)) {
+      cass.incr(key, n)
+    }
+  }
 }
-~~~
+```
 ~
 
 The IPA System implementation provides a number of primitives for building ADTs as well as some reference implementations of simple datatypes. We show some in [#fig-interfaces]. To support latency bounds, there is a generic `Rushable` trait that provides facilities for executing a specified read operation at multiple consistency levels within the specified time limit. For implementing error bounds, IPA provides a generic reservation pool which ADT implementations can use. 

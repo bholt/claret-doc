@@ -2,14 +2,14 @@
 [todo: explain how we simulate network conditions using `tc netem` and `docker` 🐳]
 
 ~ Tab { #tab-conditions caption="Simulated network conditions" }
-| Condition label   | Latencies (ms)        |||
-|:------------------|:-----:|:-----:|:--------|
-| Local             | <1    | <1    | <1      |
-| Uniform/High load | 5     | 5     | 5       |
-| Slow replica      | 10    | 10    | 100     |
-| Google            | 1±0.3 | 110±5 | 160±5   |
-| Amazon            | 1±0.3 | 80±10 | 200±50  |
-|-------------------|-------|-------|---------|
+| Condition label   | Latencies (ms)              |||
+|:------------------|:-------:|:-------:|:----------|
+| Local             | <1      | <1      | <1        |
+| Uniform/High load | 5       | 5       | 5         |
+| Slow replica      | 10      | 10      | 100       |
+| Google            | 1 ± 0.3 | 110 ± 5 | 160 ± 5   |
+| Amazon            | 1 ± 0.3 | 80 ± 10 | 200 ± 50  |
+|-------------------|---------|---------|-----------|
 ~
 
 ## Counter microbenchmark

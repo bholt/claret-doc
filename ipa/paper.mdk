@@ -1,4 +1,3 @@
-
 title: Disciplined Inconsistency
 
 author: Brandon Holt, James Bornholt, Irene Zhang, Dan Ports, Mark Oskin, Luis Ceze
@@ -56,6 +55,7 @@ p,ul,ol,li { replace="/\[(?:TODO|todo):\s*(.*?)\]/[\1]{#todo}/g" }
 .caption-text  : tex-cmd=
 .figure-label  : tex-cmd=
 
+~Pre: font-size=small
 
 ~Img: max-width=100%
 .zoom: max-width=80% tex-text-align=center
