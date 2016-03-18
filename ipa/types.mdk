@@ -84,7 +84,7 @@ results from weakly consistent operations cannot flow into computations with str
 
 Formally, the IPA types form a lattice parameterized by a primitive type `T`. 
 The bottom element `Inconsistent[T]` specifies an object with the weakest possible consistency. 
-The top element is `T` itself, an object with the strongest possible consistency.
+The top element is `Consistent[T]`, an object with the strongest possible consistency, which has an implicit cast to type `T` available.
 The other IPA types follow a subtyping relation $\prec$, defined by:
 
 ~ Math
@@ -97,14 +97,14 @@ We elide a thorough formal development of the IPA type system due to its close s
 ### Weak IPA types
 
 The IPA types encapsulate information about the consistency policy used to perform a read operation.
-Strong read operations return values of type `T`,
-and so appear to developers as any other instance of type `T`.
+Strong read operations return values of type `Consistent[T]`,
+and so (by implicit casting) appear to developers as any other instance of type `T`.
 Intuitively, this equivalence is because the results of strong reads are known to be consistent.
 
 Weaker read operations return values of some type lower in the lattice (*weak IPA types*), reflecting their possible inconsistency.
 At the bottom of the lattice, the weak IPA type `Inconsistent[T]` encapsulate a value with unknown consistency.
 The only possible operation on `Inconsistent[T]` is to *endorse* it.
-Endorsement is an upcast, invoked by `Consistent(x)`, to the top element `T` from other types in the lattice:
+Endorsement is an upcast, invoked by `Consistent(x)`, to the top element `Consistent[T]` from other types in the lattice:
 
 ~ Math
 \inferrule{\gamma \vdash e_1 : \tau[T] \\ T \prec \tau[T]}{\gamma \vdash \operatorname{Consistent}(e_1) : T}
@@ -118,7 +118,42 @@ Each of the consistency policies in Section [#policies] has a corresponding weak
 
 The weak IPA type `Rushed[T]` is the result of read operations performed on an ADT with consistency policy `LatencyBound(x ms)`.
 `Rushed[T]` is a *sum type*, with one variant per consistency level available to the implementation of `LatencyBound`.
-A result of type `Rushed[T]` therefore requires the developer to consider all possible consistency levels.
+Each variant is itself an IPA type (though the variants obviously cannot be `Rushed[T]` itself).
+The effect is that values returned by a latency-bound object carry with them their actual consistency level.
+A result of type `Rushed[T]` therefore requires the developer to consider the possible consistency levels of the value.
+
+For example, a system with geo-distributed replicas may only be able to satisfy a read latency bound of 50 ms using a local quorum.
+In this system, the `Rushed[T]` type would be the sum of three types `Consistent[T]`, `LocalQuorum[T]`, and `Inconsistent[T]`.
+A match statement destructures the result of a latency-bound read operation:
+
+```
+set.size() match {
+  case Consistent(x) => print(x)
+  case LocalQuorum(x) => print(x + ", locally")
+  case Inconsistent(_) => print("unknown")
+}
+```
+
+The application may want to react differently to a local quorum as opposed to a strongly or weakly consistent value.
+Note that because of the subtyping relation on IPA types,
+any omitted case will be matched by `Inconsistent(_)`,
+so other cases need only be added if the application should respond differently to them.
+
+#### Interval types
+
+The weak IPA type `Interval[T]` is the result of operations performed on an ADT with consistency policy `ErrorTolerance(x%)`.
+`Interval[T]` represents an interval of numbers within with the true (strongly consistent) result lies.
+The interval reflects uncertainty in the true value created by relaxed consistency, in the same style as work on approximate computing [@Bornholt:14:UncertainT].
+
+The key invariant of the `Interval[T]` type is that operations within the interval are linearizable.
+In other words, [todo: Brandon has a nice example of this]
+
+#### Lower bounds
+
+Weak IPA types enforce consistency safety by ensuring developers address the worst case results of weak consistency.
+However, the weak IPA types are *lower bounds* on weakness:
+one valid implementation of a system using IPA types is to always return strongly consistency values.
+Moreover, the runtime guarantees that if every value returned has strong consistency, then the execution is linearizable, as if the system were strongly consistent from the outset.
 
 ~~ Notes
 - High-level goals
