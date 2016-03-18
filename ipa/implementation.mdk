@@ -23,7 +23,7 @@ Cassandra's client interface unfortunately does not allow us to implement latenc
 
 The main problem with this approach is that it wastes a lot of work, even if we didn't need to duplicate some messages due to Cassandra's interface. Furthermore, if the system is responding slower due to a sudden surge in traffic, then it is essential that our efforts not cause additional burden on the system.
 In cases where it is clear that strong consistency is unlikely to succeed, it should back off and attempt weaker consistency.
-To do this, the system must *monitor* current traffic and *predict* the latency of different consistency levels. 
+To do this, the system must monitor current traffic and predict the latency of different consistency levels.
 
 Each client in the system has its own Monitor (though multi-threaded clients share one). The monitor records the observed latencies of read operations, grouping them by operation and consistency level. All of the IPA ADTs are implemented in terms of Cassandra *prepared statements*, so we can easily categorize operations by their prepared identifier. The monitor uses an exponentially decaying reservoir to compute running percentiles weighted toward recent measurements, ensuring that its predictions continually adjust to current conditions. 
 
@@ -33,14 +33,37 @@ Whenever a latency-bound operation is issued, it queries the monitor to determin
 
 Remember that the achieved consistency level is determined by the combination of the write level and read level. By default, we assume a balanced mix of operations on an ADT, so writes are done at `QUORUM` level and strong reads can be achieved with the matching `QUORUM` level. However, sometimes this is not the case: if a datatype is heavily biased toward writes, then it is better to do the weakest writes, and adjust reads to compensate. This would also be helpful in cases where even the weakest reads fail to meet latency requirements because quorum writes are overloading the servers.
 
-Adjusting the write level must be done with care because it changes the semantics of downstream reads. One could imagine a more complex system allowing dynamic changes to an ADT's metadata (in the backing store), with clients checking for changes periodically, but this reconfiguration would have to happen at longer time scales. We force ADT implementations to choose their desired write level statically so that we know the strength of a read without checking. Applications wishing to get more dynamic behavior could implement alternate versions of ADTs with different static write levels and mediate the transition themselves.
+Changing the write level must be done with care because it changes the semantics of downstream reads. We have ADT implementations choose their desired write level statically so that we know the strength of a read without checking.
+One could imagine a more complex system allowing dynamic changes to an ADT's metadata (in the backing store), with clients checking for changes periodically, but we do not implement this. Applications wishing to get more dynamic behavior in our implementation could create alternate versions of ADTs with different static write levels and mediate the transition themselves.
 
 
-## Reservations
-In order to implement the `Interval` bounds, we build on the concept of *escrow* and *reservations* [@ONeil:86;@Gawlick:85;@Reuter:82;@Preguica:03].
+## Error bounds
+We implement error bounds by building on the concepts of *escrow* and *reservations* [@ONeil:86;@Gawlick:85;@Reuter:82;@Preguica:03]. These techniques have been used in storage systems to enforce hard limits, such as an account balance never going negative, while permitting concurrency. 
+The idea is to set aside a pool of permissions to perform certain update operations (we'll call them *reservations* or *tokens*), essentially treating operations as a manageable resource. If we have a counter that should never go below zero, there could be a number of *decrement* tokens equal to the current value of the counter. When a client wishes to decrement, it must first acquire sufficient tokens before performing the update operation. Correspondingly, in this scheme, increments produce new tokens. The insight is that the coordination needed to ensure that there are never too many tokens can be done *off the critical path*: they can be produced lazily if there are enough around already, and most importantly for this work, they can be *distributed* among replicas. This means that replicas can perform some update operations *safely* without coordinating with any other replicas.
+
+Reservations have been used in the past to enforce hard global invariants in the form of upper or lower bounds on values or integrity constraints [@Balegas:15:Indigo], or logical assertions [@Liu:14:Warranties]. However, enforcing our error tolerance bounds presents a new design challenge because the bounds are constantly shifting.
+
+~ Fig { #fig-reservations caption="Reservations enforcing error bounds." }
+![](fig/reservations.pdf)
+~
+
+Consider a `Counter` with a 10% error bound, shown in [#fig-reservations]. If the current value is 100, then 10 increments can be done before anyone has to be told about it. However, this counter is replicated 3 times, so these 10 increments may have to be distributed among the replicas. So then each replica can perform 3 increments without synchronizing, and reads from any one of the replicas will not violate the 10% error bound. In order to perform more increments, however, our replica will need to coordinate with the others, sharing its latest increments and receiving any changes of theirs. Once that synchronization has completed, those 3 tokens become available again because the replicas all agree that the value is now at least 103.
+
+
+
+Reservations represent operations that can be applied *without coordinating with other replicas*. In the case of 
+
+Rather than representing the absolute number of allowable operations, reservations for error bounds represent operations that can be applied 
+
+Reservations on our bounded counter from before were consumed once and for all. 
+
+Where decrement tokens were consumed once, these tokens represent 
+
+
+Error tolerance bounds are intended to capture natural correctness criteria: when values are small any error is noticeable, but larger values (e.g. retweets of popular tweets) can tolerate much more uncertainty. This means that as the value changes, so to do the number of available tokens.
+
+The intent of allowing users to express error tolerance in their applications is to capture the 
+gracefully handle 
+
 
 We implement reservations as a middleware layer: a reservation server runs alongside each Cassandra server. Any operations with error tolerance bounds are routed to a reservation server, using the Cassandra client's knowledge of which replicas are up.
-
-
-## Leases
-[todo: ???]
