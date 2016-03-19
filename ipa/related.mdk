@@ -23,6 +23,8 @@ Most eventually consistent models provides no guarantees about how long it will 
 
 [todo: Probabilistically bounded staleness? (@Bailis:12:PBS)]
 
+[todo: @Sivaramakrishnan:15:Quelea has some good related work organization]
+
 ## Types for distributed systems
 *Convergent* (or *conflict-free*) *replicated data types* (CRDTs) [@Shapiro:SSS11:CRDT] are data types designed for eventual consistency. Similar to how IPA types express weakened semantics which allow for implementation on weak consistency, CRDTs guarantee that they will converge on eventual consistency by forcing all update operations to commute. For example, Set `add` and `remove` typically do not commute, but a CRDT called an OR-Set re-defines them so that `add` wins over `remove`, making them commute again. CRDTs can be enormously useful because they allow concurrent updates with sane semantics, but they are still only eventually (or causally) consistent, so users must still deal with temporary divergence and out-of-date reads, and they do not incorporate performance bounds or variable accuracy.
 

@@ -12,12 +12,11 @@ and testing against every possible relaxation is difficult. -->
 We propose a programming model for distributed data 
 that uses types to control the consistency--performance trade-off.
 The *inconsistent, performance-bound, approximate* (IPA) type system
-helps developers to trade consistency for performance in a disciplined manner.
+helps developers trade consistency for performance in a disciplined manner.
 This section presents the IPA type system, 
 including the available consistency policies
 and the semantics of operations performed under those policies.
-Section [#Implementation] presents the implementation
-of the IPA type system.
+[#sec-implementation] will explain how the type system's guarantees are enforced for a distributed datastore.
 
 ## Overview
 
@@ -29,19 +28,21 @@ The IPA type system consists of three parts:
 
 Together, these three components provide two key benefits for developers.
 First, the IPA type system enforces *consistency safety*, tracking the consistency level of each result and preventing inconsistent data from flowing into consistent data without explicit endorsement, in the style of EnerJ ([@TODO]).
-Second, the IPA type system provides *performance*, because consistency annotations at the ADT level allow the runtime to dynamically select the consistency for each individual operation that maximizes performance.
+Second, the IPA type system provides *performance*, because consistency annotations at the ADT level allow the runtime to dynamically select the consistency for each individual operation that maximizes performance in a constantly changing environment.
 
 ## Abstract Data Types
 
-The base of the IPA type system is a set of abstract data types
-for common distributed data structures. [todo: copy some stuff from Claret here?]
+The base of the IPA type system is a set of abstract data types (ADTs) for common distributed data structures. Though the simplest key/value stores only support primitive types like strings for values, many popular datastores now have built-in support for more complex data structures such as sets, lists, maps, and other specialized types. However, each datastore has its own interface to these types: Redis's [@redis] types are implicit in the command used to operate on them, Cassandra [@Lakshman:10:Cassandra] uses a more relational-style model with tables and columns and composite keys, while Riak [@riak] and Hyperdex [@hyperdex-web;@hyperdex] support more direct data structure access. Our library of ADTs allows us to decouple our type system from any particular datastore, though our reference implementation is on top of Cassandra, similar to [@Sivaramakrishnan:15:Quelea].
+
+Besides abstracting over various storage systems, ADTs are an ideal place from which to begin reasoning about consistency and system-level optimizations. ADTs present a clear abstract model through a set of operations which query and update the state, allowing users and systems alike to reason about their logical, algebraic properties rather than the low-level operations used to implement them. Moreover, as we will see in the coming sections, annotating datatypes, rather than individual operations, is crucial because ADTs are where writes and reads meet and affect one another.
+
 
 ## Policy Annotations { #policies }
 
 The IPA type system provides
 a set of annotations that can be placed on ADT instances
 to specify consistency policies.
-Previous systems [@TODO] require annotating each read and write operation with a desired consistency level.
+Previous systems [@cassandra;@riak;@Terry:13:SLAs;@Li:12:RedBlue;@Sovran:11:Walter] require annotating each read and write operation with a desired consistency level.
 This per-operation approach complicates reasoning about the safety of code using weak consistency,
 and hinders global optimizations that can be applied if the system knows the consistency level required for future operations.
 
@@ -72,12 +73,12 @@ This higher-level semantics absolves developers of manipulating the consistency 
 As an extension, ADTs can also have different consistency policies for each method.
 For example, a `Set` ADT might have a relaxed consistency policy for its `size`,
 but a strong consistency policy for its `contains?` predicate method.
-The runtime is then responsible for managing the interaction between these consistency policies.
+The runtime is then responsible for managing the interaction between these consistency policies. In the case of a conflict between two bounds, the system can be conservative and choose stronger policies than specified without affecting correctness.
 
 ## IPA Types
 
 The keys to the IPA type system are the IPA types themselves.
-Read operations performed on ADTs annotated with consistency policies return instances of an *IPA type*.
+Read operations of ADTs annotated with consistency policies return instances of an *IPA type*.
 These IPA types track the consistency of the results,
 and enforce a fundamental non-interference property: 
 results from weakly consistent operations cannot flow into computations with stronger consistency without explicit endorsement.
@@ -99,7 +100,7 @@ We elide a thorough formal development of the IPA type system due to its close s
 The IPA types encapsulate information about the consistency policy used to perform a read operation.
 Strong read operations return values of type `Consistent[T]`,
 and so (by implicit casting) appear to developers as any other instance of type `T`.
-Intuitively, this equivalence is because the results of strong reads are known to be consistent.
+Intuitively, this equivalence is because the results of strong reads are known to be consistent, which corresponds to the control flow in conventional (non-distributed) applications.
 
 Weaker read operations return values of some type lower in the lattice (*weak IPA types*), reflecting their possible inconsistency.
 At the bottom of the lattice, the weak IPA type `Inconsistent[T]` encapsulate a value with unknown consistency.
@@ -112,7 +113,7 @@ Endorsement is an upcast, invoked by `Consistent(x)`, to the top element `Consis
 
 While `Inconsistent[T]` has value as a reminder to developers about consistency,
 the key productivity benefit of the IPA type system is in the other weak IPA types.
-Each of the consistency policies in Section [#policies] has a corresponding weak IPA type for operations performed under that policy.
+Each of the consistency policies in [#policies] has a corresponding weak IPA type for operations performed under that policy.
 
 #### Rushed types
 
@@ -135,14 +136,13 @@ set.size() match {
 ```
 
 The application may want to react differently to a local quorum as opposed to a strongly or weakly consistent value.
-Note that because of the subtyping relation on IPA types,
-any omitted case will be matched by `Inconsistent(_)`,
-so other cases need only be added if the application should respond differently to them.
+Note that because of the subtyping relation on IPA types, omitted cases can be matched by any type lower in the lattice [todo: James double-check this], ultimately falling back to `Inconsistent(_)`, 
+so other cases need only be added if the application should respond differently to them. This allows applications to be portable between systems supporting different forms of consistency (of which there are many).
 
 #### Interval types
 
 The weak IPA type `Interval[T]` is the result of operations performed on an ADT with consistency policy `ErrorTolerance(x%)`.
-`Interval[T]` represents an interval of numbers within with the true (strongly consistent) result lies.
+`Interval[T]` represents an interval of numbers within which the true (strongly consistent) result lies.
 The interval reflects uncertainty in the true value created by relaxed consistency, in the same style as work on approximate computing [@Bornholt:14:UncertainT].
 
 The key invariant of the `Interval[T]` type is that operations within the interval are linearizable.
@@ -166,7 +166,7 @@ Moreover, the runtime guarantees that if every value returned has strong consist
 	- Other benefits of annotating ADTs:
 		- portable / reusable
 		- modular
-	- Similar to Indigo's ([@Indigo]) invariants, but expressing performance and approximation bounds
+	- Similar to Indigo's ([@Balegas:15:Indigo]) invariants, but expressing performance and approximation bounds
 - Types of annotation
 	- "static" bounds like `Consistency(Strong)` that fix a policy upfront
 	- "dynamic" bounds like `LatencyBound(50 ms)` that choose a policy at invocation time
