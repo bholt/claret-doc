@@ -21,6 +21,6 @@ if [ $(docker ps | grep $container | wc -l) -eq '0' ]; then
 
 else # if container exists, then just pull latest and re-run
   
-  dexec 'cd claret-doc && git pull && make deploy'
+  dexec 'cd claret-doc && git clean -fd && git pull && make deploy'
   
 fi
