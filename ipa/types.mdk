@@ -142,11 +142,12 @@ so other cases need only be added if the application should respond differently 
 #### Interval types
 
 The weak IPA type `Interval[T]` is the result of operations performed on an ADT with consistency policy `ErrorTolerance(x%)`.
-`Interval[T]` represents an interval of numbers within which the true (strongly consistent) result lies.
+`Interval[T]` represents an interval of values within which the true (strongly consistent) result lies.
 The interval reflects uncertainty in the true value created by relaxed consistency, in the same style as work on approximate computing [@Bornholt:14:UncertainT].
 
-The key invariant of the `Interval[T]` type is that operations within the interval are linearizable.
-In other words, [todo: Brandon has a nice example of this]
+The key invariant of the `Interval[T]` type is that uses of the interval are *indistinguishable* from a linearizable order. For example, consider a `Set` with 100 elements, with its `size` operation annotated with error tolerance of 5%. With linearizability, if we `add` a new element, then read the `size` (or if there is any way to know that the one precedes the other), we must get back 101 (provided no other updates are occurring). However, 5% error tolerance means that `size` could return $[95,105]$, or $[100,107]$, among many others. In which case the client is unable to tell if the `add` was incorporated or not. This frees the underlying system up to apply a number of optimizations, including delaying synchronization, that can significantly improve performance.
+
+In theory, any type with a partial order over values could be represented as an interval (e.g. a Set with some items that may or may not be in the set). However, in this work we limit them to numeric types.
 
 #### Lower bounds
 
