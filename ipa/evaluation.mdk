@@ -1,14 +1,61 @@
 # Evaluation
 [todo: explain how we simulate network conditions using `tc netem` and `docker` 🐳]
 
-~ Tab { #tab-conditions caption="Simulated network conditions" }
+~~ Notes
+- applications in datacenters, geo-replicated, exposed to the Internet, have to be able to handle a wide range of conditions
+- plan for worst-case conditions
+- provide structure/discipline to ensure programmers have handled all the things that can go wrong
+- provide system with hints about what it should prioritize, and release valves to allow it to still be useful when times are tough
+- robust to changes in the environment
+- in our evaluation, we need to establish
+	- these bounds actually can be enforced without being detrimental to performance
+	- that they reliably 
+~~
+
+Distributed applications must be able to run in a constantly changing environment. IPA's types provide structure that helps programmers ensure their application handles all potential edge cases. The bounds specified by programmers give them control over how the application will adjust to changing conditions, but they also provide the system with hints about what it should prioritize, and release valves that allow it to still be useful even performance has degraded.
+
+To evaluate these bounding techniques, it is crucial to subject them to a variety of conditions. One typically has two two extreme choices when evaluating this kind of system: perform experiments in a controlled environment where latencies are typically very low and performance variability is negligible, or to throw them into a complex, real-world system, subject to the whims of unpredictable network conditions and resource sharing and try to piece together how they performed. A third option is to *simulate* a variety of environments, chosen to stress the system or mimic reality, within a more controlled environment. 
+
+In our experiments, we employ all three to best understand how these techniques behave. On our own test cluster, with standard ethernet linking nodes within the same rack, we run controlled experiments, simulating adverse network conditions. We use Linux's Network Emulation facility [@netem] (`tc netem`) to introduce packet delay and loss at the operation system level. We use Docker containers [@docker] to enable fine-grained control of the network conditions between processes on the same physical node (`netem` is one of the properties isolated within the container).
+
+[#tab-conditions] shows the set of conditions we use in our experiments to explore the behavior of the system. To simulate latencies within a well-provisioned datacenter, we have a *uniform 5ms* condition which is predictable and reliable but slower than our raw latency which is typically less than 1ms. Another condition demonstrates what happens when one replica is significantly slower to respond than the others either due to imbalanced load or hardware problems. Finally, we have two conditions mimicking globally geo-replicated setups with latency distributions based on measurements of latencies between virtual machines in the U.S., Europe, and Asia on Google Compute Engine [@GoogleCompute] and Amazon EC2 [@AmazonEC2].
+
+In the remainder of this section, we evaluate the latency and error bounding techniques of IPA, with two main objectives:
+
+1. Validate that they meet their stated bounds.
+2. Determine if the performance of enforcing these bounds is acceptable and understand how performance is affected by different bounds.
+
+We start with microbenchmarks to understand the performance of individual data types and explore each bound in isolation. Then we move on to some miniature applications built using these data types, employing bounds tailored to their use cases.
+
+<!--
+The environment in which these experiments are normally carried out, on isolated systems with predictable, low latencies,
+
+In our evaluation, we wish to determine how these performance and correctness bounds 
+
+that must handle unpredictable traffic coming in from the world, and run in a multi-datacenter environment with 
+
+The IPA type system provides structure that helps programmers ensure their application handles all the 
+
+The goals of IPA's abstractions are twofold: first, to give structure to help programmers ensure that their application can handle the variety of 
+
+IPA's abstractions aim to give programmers better ways of controlling how their applications behave in order to make them robust to changes in the environment. 
+
+The most important factor in evaluating a system like IPA is how it handles different adverse conditions. 
+We wish to know how an application written using these techniques 
+-->
+
+~ Tab { #tab-conditions caption="Network conditions for experiments." }
 | Condition label   | Latencies (ms)              |||
 |:------------------|:-------:|:-------:|:----------|
-| Local             | <1      | <1      | <1        |
+| **Simulated**                                  ||||
 | Uniform/High load | 5       | 5       | 5         |
 | Slow replica      | 10      | 10      | 100       |
 | Google            | 1 ± 0.3 | 110 ± 5 | 160 ± 5   |
 | Amazon            | 1 ± 0.3 | 80 ± 10 | 200 ± 50  |
+|-------------------|---------|---------|-----------|
+| **Actual**                                     ||||
+| Local             | <1      | <1      | <1        |
+| Google            | 1 ± 0.3 | 110 ± 5 | 160 ± 5   |
 |-------------------|---------|---------|-----------|
 ~
 
