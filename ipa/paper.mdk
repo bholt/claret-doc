@@ -19,6 +19,7 @@ Math Mode: mathjax
 
 Package: etoolbox
 Package: fontspec
+Package: microtype
 Package: tabulary
 Package: caption
 Package: [all]hypcap
