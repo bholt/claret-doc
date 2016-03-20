@@ -281,9 +281,10 @@ b.t01 <- "tolerance:0.01"
 b.t00 <- "tolerance:0"
 
 mixes.counter <- list(
-  'default' = 'default',
+  'default'    = 'default',
   'no_size'    = 'default',
-  'read_heavy' = 'read_heavy'
+  'read_heavy' = 'read_heavy',
+  'custom'     = 'custom'
 )
 
 ipa.scales <- function(name = 'Bounds', guide = guide_legend(nrow=8), ...) {
@@ -424,6 +425,16 @@ data.ipa.rawmix <- function(where="honeycomb_mode is not null and out_actual_tim
       d$timers_read_latency_mean * num(d$ipa_rawmix_counter_mix_read) + 
       d$timers_incr_latency_mean * num(d$ipa_rawmix_counter_mix_incr)
   
+  d$inconsistent <- d$counters_inconsistent_count
+  d$consistent <- d$counters_consistent_count
+  d$inconsistent_fraction <- d$inconsistent / (d$inconsistent + d$consistent)
+
+  # d$fraction_immediate <- d$res_immediates_total / d$res_incrs_total
+
+  d$overall_rate_mean <- d$timers_read_latency_mean_rate + d$timers_incr_latency_mean_rate
+  
+  d$interval_percent_mean <- d$histograms_interval_percent_mean / 100
+  
   # aliases
   aliases <- c(
     read_lat_mean='timers_read_latency_mean',
@@ -440,8 +451,15 @@ data.ipa.rawmix <- function(where="honeycomb_mode is not null and out_actual_tim
     incr_rate='timers_incr_latency_mean_rate',
     read_strong='counters_read_strong_count',
     read_weak='counters_read_weak_count',
-    lease='ipa_lease_period',
-    interval_mean='histograms_interval_width_mean'
+    correct='counters_correct_count',
+    incorrect='counters_incorrect_count',
+    contains='counters_contains_count',
+    contains_not='counters_contains_not_count',
+    interval_mean='histograms_interval_width_mean',
+    error_mean='histograms_error_mean',
+    mix_read='ipa_rawmix_counter_mix_read',
+    mix_incr='ipa_rawmix_counter_mix_incr',
+    lease='ipa_lease_period'
   )
   for (n in names(aliases)) d[[n]] <- d[[aliases[n]]]
   
