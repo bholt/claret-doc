@@ -30,7 +30,7 @@ Together, these three components provide two key benefits for developers.
 First, the IPA type system enforces *consistency safety*, tracking the consistency level of each result and preventing inconsistent data from flowing into consistent data without explicit endorsement, in the style of EnerJ ([@TODO]).
 Second, the IPA type system provides *performance*, because consistency annotations at the ADT level allow the runtime to dynamically select the consistency for each individual operation that maximizes performance in a constantly changing environment.
 
-## Abstract Data Types
+## Abstract Data Types {#sec-adt}
 
 The base of the IPA type system is a set of abstract data types (ADTs) for common distributed data structures. Though the simplest key/value stores only support primitive types like strings for values, many popular datastores now have built-in support for more complex data structures such as sets, lists, maps, and other specialized types. However, each datastore has its own interface to these types: Redis's [@redis] types are implicit in the command used to operate on them, Cassandra [@Lakshman:10:Cassandra] uses a more relational-style model with tables and columns and composite keys, while Riak [@riak] and Hyperdex [@hyperdex-web;@hyperdex] support more direct data structure access. Our library of ADTs allows us to decouple our type system from any particular datastore, though our reference implementation is on top of Cassandra, similar to [@Sivaramakrishnan:15:Quelea].
 
@@ -75,7 +75,7 @@ For example, a `Set` ADT might have a relaxed consistency policy for its `size`,
 but a strong consistency policy for its `contains?` predicate method.
 The runtime is then responsible for managing the interaction between these consistency policies. In the case of a conflict between two bounds, the system can be conservative and choose stronger policies than specified without affecting correctness.
 
-## IPA Types
+## IPA Types {#sec-ipa-types}
 
 The keys to the IPA type system are the IPA types themselves.
 Read operations of ADTs annotated with consistency policies return instances of an *IPA type*.

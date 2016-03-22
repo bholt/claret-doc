@@ -18,6 +18,7 @@ plots/%.pdf: plots/%.r plots/common.r
 	cd plots; $(RSCRIPT) $*.r
 
 FIGS := \
+	tickets \
 	reservations
 
 SVG_SRCS := $(SRCS:%.mdk=out/%.mdk)
