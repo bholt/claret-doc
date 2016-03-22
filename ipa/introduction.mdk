@@ -1,5 +1,11 @@
 # Introduction
 ~~ Notes
+- conditions for distributed applications running in datacenters are constantly changing
+	- applications in datacenters, geo-replicated, exposed to the Internet, have to be able to handle a wide range of conditions
+	- plan for worst-case conditions
+	- provide structure/discipline to ensure programmers have handled all the things that can go wrong
+	- provide system with hints about what it should prioritize, and release valves to allow it to still be useful when times are tough
+	- robust to changes in the environment
 - Applications have performance requirements
 	- Sometimes explicit in the form of SLAs, promising a certain latency or availability
 	- Sometimes more implicit (i.e. every additional ms of latency reduces revenue)
@@ -25,5 +31,7 @@
 	- Concise and modular: re-use data types, no annotations on individual operations
 	- Safe: inconsistency expressed as return types
 ~~
+
+Modern datacenter applications must run in an ever-changing environment. 
 
 Applications often wish to guarantee a certain response time to keep users engaged or meet a contractual SLA. However at the same time, they wish to present the most consistent view possible to users. The time it takes to achieve a particular level of consistency is highly variable and depends on many parameters: individual nodes can be slower, they could temporarily be exceptionally slower to respond due to a garbage collection or operating system pause, or be overloaded with exceptionally high traffic. Furthermore, the same application may typically operate mostly within a single datacenter, but occasionally have clients from other parts of the world interact, causing geo-distributed replicas with high-latency or unreliable networks to coordinate.

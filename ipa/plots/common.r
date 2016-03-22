@@ -289,8 +289,8 @@ mixes.counter <- list(
 
 ipa.scales <- function(name = 'Bounds', guide = guide_legend(nrow=8), ...) {
   colors <- c()
-  colors[[ bounds[[b.csw]] ]] <- c.gray
-  colors[[ bounds[[b.cst]] ]] <- c.gray
+  colors[[ bounds[[b.csw]] ]] <- c.yellow
+  colors[[ bounds[[b.cst]] ]] <- c.yellow
   colors[[ bounds[[b.cwk]] ]] <- c.red
   colors[[ bounds[['consistency:weakwrite']] ]] <- c.red
   colors[[ bounds[[b.l10]] ]] <- c.blue
