@@ -27,7 +27,7 @@ The IPA type system consists of three parts:
 * IPA types track the consistency of operation results and enforce consistency safety by requiring developers to consider weak outcomes.
 
 Together, these three components provide two key benefits for developers.
-First, the IPA type system enforces *consistency safety*, tracking the consistency level of each result and preventing inconsistent data from flowing into consistent data without explicit endorsement, in the style of EnerJ ([@TODO]).
+First, the IPA type system enforces *consistency safety*, tracking the consistency level of each result and preventing inconsistent data from flowing into consistent data without explicit endorsement, in the style of EnerJ [@Sampson:11:EnerJ].
 Second, the IPA type system provides *performance*, because consistency annotations at the ADT level allow the runtime to dynamically select the consistency for each individual operation that maximizes performance in a constantly changing environment.
 
 ## Abstract Data Types {#sec-adt}
@@ -92,7 +92,7 @@ The other IPA types follow a subtyping relation $\prec$, defined by:
 \inferrule{\tau \text{ is weaker than } \tau'}{\tau'[T] \prec \tau[T]}
 ~
 
-The IPA type system is very similar to the probability type system of DECAF [@TODO], which uses types to track the quality of results computed on approximate hardware. Their non-interference property is also similar: a result of low quality cannot flow into a result of higher quality without explicit endorsement.
+The IPA type system is very similar to the probability type system of DECAF [@Boston:15:DECAF], which uses types to track the quality of results computed on approximate hardware. Their non-interference property is also similar: a result of low quality cannot flow into a result of higher quality without explicit endorsement.
 We elide a thorough formal development of the IPA type system due to its close similarity with DECAF.
 
 ### Weak IPA types
@@ -108,7 +108,7 @@ The only possible operation on `Inconsistent[T]` is to *endorse* it.
 Endorsement is an upcast, invoked by `Consistent(x)`, to the top element `Consistent[T]` from other types in the lattice:
 
 ~ Math
-\inferrule{\gamma \vdash e_1 : \tau[T] \\ T \prec \tau[T]}{\gamma \vdash \operatorname{Consistent}(e_1) : T}
+\inferrule{\Gamma \vdash e_1 : \tau[T] \\ T \prec \tau[T]}{\Gamma \vdash \operatorname{Consistent}(e_1) : T}
 ~
 
 While `Inconsistent[T]` has value as a reminder to developers about consistency,
@@ -136,8 +136,8 @@ set.size() match {
 ```
 
 The application may want to react differently to a local quorum as opposed to a strongly or weakly consistent value.
-Note that because of the subtyping relation on IPA types, omitted cases can be matched by any type lower in the lattice [todo: James double-check this], ultimately falling back to `Inconsistent(_)`, 
-so other cases need only be added if the application should respond differently to them. This allows applications to be portable between systems supporting different forms of consistency (of which there are many).
+Note that because of the subtyping relation on IPA types, omitted cases can be matched by any type lower in the lattice, including the bottom element `Inconsistent(_)`;
+other cases therefore need only be added if the application should respond differently to them. This subtyping behavior allows applications to be portable between systems supporting different forms of consistency (of which there are many).
 
 #### Interval types
 
