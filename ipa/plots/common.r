@@ -320,11 +320,12 @@ ipa.scales <- function(name = 'Bounds', guide = guide_legend(nrow=8), ...) {
   dotted <- 3
   lines <- c()
   lines[[ bounds[['consistency:weakwrite']] ]] <- dotted
-  lines[[ bounds[[b.csw]] ]] <- dashed
+  lines[[ bounds[[b.csw]] ]] <- solid
   lines[[ bounds[[b.cst]] ]] <- solid
-  lines[[ bounds[[b.cwk]] ]] <- dotted
+  lines[[ bounds[[b.cwk]] ]] <- solid
+  lines[[ bounds[['consistency:weakwrite']] ]] <- solid
   lines[[ bounds[[b.l10]] ]] <- solid
-  lines[[ bounds[[b.l20]] ]] <- dashed
+  lines[[ bounds[[b.l20]] ]] <- solid
   lines[[ bounds[[b.l50]] ]] <- dotted
   lines[[ bounds[[b.t01]] ]] <- solid
   lines[[ bounds[[b.t05]] ]] <- dashed
@@ -375,21 +376,25 @@ data.ipa.tickets <- function(where="out_actual_time_length is not null") {
   # aliases
   aliases <- c(
     lease='ipa_lease_period',
+    purchase_rate='timers_op_purchase_mean_rate',
     purchase_lat_mean='timers_op_purchase_mean',
     purchase_lat_median='timers_op_purchase_p50',
     purchase_lat_p95='timers_op_purchase_p95',
     purchase_lat_p99='timers_op_purchase_p99',
     purchase_count='timers_op_purchase_count',
+    view_rate='timers_op_view_mean_rate',
     view_lat_mean='timers_op_view_mean',
     view_lat_median='timers_op_view_p50',
     view_lat_p95='timers_op_view_p95',
     view_lat_p99='timers_op_view_p99',
     view_count='timers_op_view_count',
+    create_rate='timers_op_create_mean_rate',
     create_lat_mean='timers_op_create_mean',
     create_lat_median='timers_op_create_p50',
     create_lat_p95='timers_op_create_p95',
     create_lat_p99='timers_op_create_p99',
     create_count='timers_op_create_count',
+    browse_rate='timers_op_browse_mean_rate',
     browse_lat_mean='timers_op_browse_mean',
     browse_lat_median='timers_op_browse_p50',
     browse_lat_p95='timers_op_browse_p95',
@@ -397,6 +402,18 @@ data.ipa.tickets <- function(where="out_actual_time_length is not null") {
     browse_count='timers_op_browse_count'
   )
   for (n in names(aliases)) d[[n]] <- d[[aliases[n]]]
+  
+  d$overall_lat_mean <- with(d,
+    (purchase_lat_mean * purchase_count +
+      view_lat_mean * view_count +
+      create_lat_mean * create_count +
+      browse_lat_mean * browse_count) /
+    (purchase_count+view_count+create_count+browse_count)
+  )
+  
+  d$overall_rate <- with(d,
+    purchase_rate + view_rate + create_rate + browse_rate
+  )
   
   return(d)
 }
