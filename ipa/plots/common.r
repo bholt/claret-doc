@@ -193,8 +193,8 @@ color_scales <- function(title, palette)
 legend.bottom <- function() list(
   theme(
     legend.position = 'bottom',
-    legend.key.size = unit(14,'pt'),
-    legend.margin = unit(0,'pt'),
+    legend.text = element_text(size=10, margin=margin(0, unit='pt')),
+    legend.margin = unit(0, 'pt'),
     legend.box = 'horizontal',
     legend.title.align = 1
   )
@@ -341,7 +341,7 @@ ipa.scales <- function(name = 'Bounds', guide = guide_legend(nrow=8), ...) {
 
 data.ipa.common <- function(table="ipa_rawmix", where="honeycomb_mode is not null and out_actual_time_length is not null") {
   d <- db("select * from "+table+" where out_actual_time_length is not null and " + where)
-  fields <- names(d)[grepl(".*(_count|_rate|_p\\d+|_max|_min|_mean|_ms)(_\\d)?$", names(d))]
+  fields <- names(d)[grepl(".*(_count|_rate|_p\\d+|_max|_min|_mean|_ms|_stddev)(_\\d)?$", names(d))]
   for (f in fields) d[[f]] <- num(d[[f]])
   
   d$duration <- d$ipa_duration
@@ -401,17 +401,10 @@ data.ipa.tickets <- function(where="out_actual_time_length is not null") {
   return(d)
 }
 
-data.ipa.rawmix <- function(where="honeycomb_mode is not null and out_actual_time_length is not null") {
-  d <- db("select * from ipa_rawmix where out_actual_time_length is not null and " + where)
-  fields <- names(d)[grepl(".*(_count|_rate|_p\\d+|_max|_min|_mean|_ms)(_\\d)?$", names(d))]
-  for (f in fields) d[[f]] <- num(d[[f]])
-  
-  d$duration <- d$ipa_duration
-  d$load <- num(d$ipa_concurrent_requests)
+log <- function(obj) write(obj, stdout())
 
-  d$op_rate <- d$timers_cass_op_latency_mean_rate
-  d$op_lat_mean <- d$timers_cass_op_latency_mean
-  d$op_lat_median <- d$timers_cass_op_latency_p50
+data.ipa.rawmix <- function(where="honeycomb_mode is not null and out_actual_time_length is not null") {
+  d <- data.ipa.common(table="ipa_rawmix", where=where)
   
   d$mean_lat_add      <- d$timers_add_latency_mean
   d$mean_lat_contains <- d$timers_contains_latency_mean
@@ -434,6 +427,13 @@ data.ipa.rawmix <- function(where="honeycomb_mode is not null and out_actual_tim
   d$overall_rate_mean <- d$timers_read_latency_mean_rate + d$timers_incr_latency_mean_rate
   
   d$interval_percent_mean <- d$histograms_interval_percent_mean / 100
+  d$interval_percent_p99 <- d$histograms_interval_percent_p99 / 100
+  d$interval_percent_max <- d$histograms_interval_percent_max / 100
+  
+  log("!! warning: correcting for interval percent (these experiments were done with + and - delta, which is actually incorrect)")
+  d[grepl('error',d$bound),]$interval_percent_mean <- d[grepl('error',d$bound),]$interval_percent_mean / 2
+  d[grepl('error',d$bound),]$interval_percent_p99 <- d[grepl('error',d$bound),]$interval_percent_p99 / 2
+  d[grepl('error',d$bound),]$interval_percent_max <- d[grepl('error',d$bound),]$interval_percent_max / 2
   
   # aliases
   aliases <- c(
@@ -457,6 +457,8 @@ data.ipa.rawmix <- function(where="honeycomb_mode is not null and out_actual_tim
     contains_not='counters_contains_not_count',
     interval_mean='histograms_interval_width_mean',
     error_mean='histograms_error_mean',
+    error_max='histograms_error_max',
+    error_stddev='histograms_error_stddev',
     mix_read='ipa_rawmix_counter_mix_read',
     mix_incr='ipa_rawmix_counter_mix_incr',
     lease='ipa_lease_period'
@@ -473,14 +475,9 @@ data.ipa.rawmix <- function(where="honeycomb_mode is not null and out_actual_tim
     d[['res_'+f+'_lat_mean']] <- rowMeans(cgrep(d,'res_timers_'+f+'_latency_mean_'))
   }
   
-  d$res_cass_op_count <- rowMeans(cgrep(d,'res_timers_cass_op_latency_count_'))
-    
-  d$condition <- factor.remap(x(d$honeycomb_mode,d$load), conds)
-  
-  d$bound <- factor.remap(d$ipa_bound, bounds)
-  
   d$mix <- factor.remap(d$mix, mixes.counter)
   
+    
   return(d)
 }
 

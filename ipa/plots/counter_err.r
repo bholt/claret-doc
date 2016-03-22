@@ -1,21 +1,22 @@
 #!/usr/bin/env Rscript
 source('common.r')
 
-d <-
-# d <- data.or.csv(
-  # csv = 'data/counter_err.csv',
-  # gen = function() 
+d <- data.or.csv(
+  csv = 'data/counter_err.csv',
+  gen = function()
   subset(
-    data.ipa.rawmix(where = "datatype='counter' and ipa_duration=60 and ipa_version = 'v3.1'"),
-    select = c('load', 'honeycomb_mode', 'ipa_bound', 'bound', 'mix',
+    data.ipa.rawmix(where = "datatype='counter' and ipa_duration=60 and ipa_version = 'v6.1'"),
+    select = c('load', 'honeycomb_mode', 'ipa_bound', 'bound', 
+      'mix', 'mix_incr', 'mix_read',
       'ipa_consistency', 'lease', 'condition', 
       'read_lat_mean', 'read_lat_median', 'read_lat_p95', 
       'read_lat_p99', 'read_rate',
       'incr_lat_mean', 'incr_lat_median', 'incr_rate',
-      'overall_latency_mean', 'read_strong_fraction', 'interval_mean'
+      'overall_latency_mean', 'read_strong_fraction', 'interval_mean',
+      'interval_percent_mean', 'interval_percent_p99', 'interval_percent_max'
     )
   )
-# )
+)
 
 d$grp <- d$bound
 
@@ -41,7 +42,7 @@ print("after tol")
 # ))
 
 s <- subset(d,
-  !is.na(condition) 
+  !is.na(condition)
   & honeycomb_mode != 'normal'
   & ipa_bound != 'consistency:weak'
   & grepl('cons|tol', ipa_bound)
@@ -52,31 +53,42 @@ s.c <- subset(s, mix=='default')
 s.c$grp <- with(s.c, x(bound,lease))
 
 # Effect of caching
-save(
-  ggplot(s.c, aes(
-      y = read_lat_mean,
-      x=tol, color='black', fill=grp, group=grp 
-  ))+
-  geom_meanbar(position=position_dodge(width = 0.7))+
-  ylab('Mean latency (ms)')+
-  theme_mine()+
-  theme.bar(angle=0, hjust=0.5)+
-  facet_wrap(~condition, scales="free", ncol=6)+
-  # coord_cartesian(ylim=c(0,500))+
-  ipa.scales()
-, w=5, h=3.5)
+# save(
+#   ggplot(s.c, aes(
+#       y = read_lat_mean,
+#       x=tol, color='black', fill=grp, group=grp
+#   ))+
+#   geom_meanbar(position=position_dodge(width = 0.7))+
+#   ylab('Mean latency (ms)')+
+#   theme_mine()+
+#   theme.bar(angle=0, hjust=0.5)+
+#   facet_wrap(~condition, scales="free", ncol=6)+
+#   # coord_cartesian(ylim=c(0,500))+
+#   ipa.scales()
+# , w=5, h=3.5)
 
-# Interval width
-save(
-  ggplot(subset(s, grepl('tol', ipa_bound) ), aes(
-      y = interval_mean,
-      x=tol, color='black', fill=grp, group=x(grp,lease) 
-  ))+
-  geom_meanbar(position=position_dodge(width = 0.7))+
-  ylab('Mean latency (ms)')+
+##########################
+# Interval & error width
+##########################
+
+d$mode <- factor.remap(d$honeycomb_mode, list(fast='Local', flat5='Uniform\n(5ms)', slowpoke_flat='Slow replica', google='Google', amazon='Amazon'))
+
+s <- subset(d, ipa_bound != 'tolerance:0.1' & interval_percent_max < 101)
+m <- melt.by(s, 'measure', '^interval_percent_(mean|max)')
+m$measure <- factor.remap(m$measure, list(mean='mean % error', max='max % error'))
+
+save(ggplot(
+  m, aes(
+  x=num(mix_incr), color=grp, fill=grp, group=grp,
+  y = value
+))+
+  xlab('fraction increment ops')+
+  stat_summary(geom='line', fun.y=mean)+
+  facet_grid(measure~mode, scales="free", switch="y")+
+  scale_x_continuous(breaks=c(0,0.5,1), labels=c('0','0.5','1'))+
   theme_mine()+
-  theme.bar(angle=0, hjust=0.5)+
-  facet_grid(condition~mix, scales="free")+
-  # coord_cartesian(ylim=c(0,500))+
-  ipa.scales()
-, 'counter_err_width', w=5, h=3.5)
+  expand_limits(y=1)+
+  theme(axis.title.y=element_blank())+
+  ipa.scales(guide=guide_legend())+
+  legend.bottom()
+, 'counter_err', w=6, h=3.5)
