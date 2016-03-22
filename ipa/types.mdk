@@ -156,6 +156,7 @@ However, the weak IPA types are *lower bounds* on weakness:
 one valid implementation of a system using IPA types is to always return strongly consistency values.
 Moreover, the runtime guarantees that if every value returned has strong consistency, then the execution is linearizable, as if the system were strongly consistent from the outset.
 
+<!--
 ~~ Notes
 - High-level goals
 	- Explicit performance bounds (latency)
@@ -196,3 +197,4 @@ Moreover, the runtime guarantees that if every value returned has strong consist
 - All writes are statically at a certain consistency level
 	- Why? So we don't have to reason about interactions with reads (would need flow analysis)
 ~~
+-->
