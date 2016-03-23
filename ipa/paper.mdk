@@ -93,5 +93,6 @@ p,ul,ol,li { replace="/\[(?:TODO|todo):\s*(.*?)\]/[\1]{#todo}/g" }
 [INCLUDE="implementation"]
 [INCLUDE="evaluation"]
 [INCLUDE="related"]
+[INCLUDE="conclusion"]
 
 [BIB]
