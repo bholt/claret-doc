@@ -79,42 +79,7 @@ It is tempting to try to combine reservations for inverse operations into the sa
 ## Provided by IPA
 
 ~ Fig {#fig-interfaces caption="Example facilities provided by IPA." }
-```
-trait Rushable {
-  def rush[T](bound: Duration, 
-              readOp: ConsistencyLevel => T): Rushed[T]
-}
-
-/* Generic reservaton pool, conceptually one per ADT instance.
- * `max` recomputed as needed (e.g. for percent error) */
-abstract class ReservationPool(max: () => Int) {
-  def take(n: Int): Boolean // try to take some tokens
-  def sync(): Unit        // sync to regain used tokens
-  def delta(): Int        // possible ops outstanding
-}
-
-/* Counter with ErrorBound (simplified) */
-class Counter(key: UUID) with ErrorBound {
-  def error: Float // error bound
-	
-  def calculateMax(): Int = (cass.read(key) * error).toInt
-	
-  val incrPool = ReservationPool(computeMax)
-  val decrPool = ReservationPool(computeMax)
-
-  def value(): Interval[Int] = {
-    val v = cass.read(key)
-    Interval(v - decrPool.delta,
-             v + incrPool.delta)
-  }
-
-  def incr(n: Int): Unit = {
-    waitFor(incrPool.take(n)) {
-      cass.incr(key, n)
-    }
-  }
-}
-```
+![](fig/interfaces.pdf)
 ~
 
 The IPA System implementation provides a number of primitives for building ADTs as well as some reference implementations of simple datatypes. We show some in [#fig-interfaces]. To support latency bounds, there is a generic `Rushable` trait that provides facilities for executing a specified read operation at multiple consistency levels within the specified time limit. For implementing error bounds, IPA provides a generic reservation pool which ADT implementations can use. 

@@ -18,6 +18,7 @@ plots/%.pdf: plots/%.r plots/common.r
 	cd plots; $(RSCRIPT) $*.r
 
 FIGS := \
+	interfaces \
 	twitter \
 	tickets \
 	reservations
