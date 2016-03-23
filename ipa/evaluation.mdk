@@ -122,7 +122,7 @@ On this workload, we observe that the reservations used for the 5% error bound p
 ![](fig/twitter.pdf)
 ~
 
-~ Fig { #plot-twitter caption="*Twitter clone: mean latency (all actions).* [todo: fixed experiments in progress]" }
+~ Fig { #plot-twitter caption="*Twitter clone: mean latency (all actions).* The implementation with IPA bounds is on-par with weak consistency in all but one of the conditions, while strong consistency is 2-10$\times$ slower." }
 ![](plots/twitter.pdf)
 ~
 
