@@ -35,15 +35,15 @@ The most important factor in evaluating a system like IPA is how it handles diff
 We wish to know how an application written using these techniques 
 -->
 
-~ Tab { #tab-conditions caption="Network conditions for experiments. [todo: column titles missing.]" }
-| Condition label       | Latencies (ms)               |||
-|:----------------------|:--------:|:-------:|:----------|
-| **Simulated**                                       ||||
+~ Tab { #tab-conditions caption="Network conditions for experiments: latency from client to each of the replicas, with standard deviation if significant." }
+| Network Condition     | Latencies (ms)               |||
+|:----------------------|:---------|:--------|:----------|
+| **Simulated**         | *Replica 1* |*Replica 2*| *Replica 3* |
 | Uniform / High load   | 5        | 5       | 5         |
 | Slow replica          | 10       | 10      | 100       |
 | Geo-replicated (EC2)  | 1 ± 0.3  | 80 ± 10 | 200 ± 50  |
 |-----------------------|----------|---------|-----------|
-| **Actual**                                          ||||
+| **Actual**            | *Replica 1* |*Replica 2*| *Replica 3* |
 | Local (same rack)     | <1       | <1      | <1        |
 | Google Compute Engine | 30 ± 0.3 | 100 ± 5 | 160 ± 5   |
 |-----------------------|----------|---------|-----------|
