@@ -54,7 +54,7 @@ We start by measuring the performance of a very simple application that randomly
 
 ### Latency bounds
 
-~ Fig { #plot-counter-lbound caption="*Counter microbenchmark: latency-bound operations.* Strong consistency is rarely possible within 10ms bound, but for the 50ms bound, in low-latency conditions, it achieves strong consistency, and with high-latency conditions, weak. [todo: find Local results]" }
+~ Fig { #plot-counter-lbound caption="*Counter microbenchmark: latency bounds.* Strong consistency is rarely possible within 10ms bound, but for the 50ms bound, in low-latency conditions, it achieves strong consistency, and with high-latency conditions, weak. [todo: find Local results]" }
 ![](plots/counter_lbound.pdf){ .onecol }
 ~
 
