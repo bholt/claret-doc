@@ -500,6 +500,83 @@ data.ipa.rawmix <- function(where="honeycomb_mode is not null and out_actual_tim
   return(d)
 }
 
+data.ipa.twitter <- function(where="out_actual_time_length is not null") {
+  d <- data.ipa.common(table="ipa_owl", where=where)
+  
+  # compute totals for reservation counters
+  counters <- c('allocs', 'immediates', 'out_of_bounds', 'refreshes', 'size_cached', 'size_ops')
+  
+  for (f in counters) d[["res_"+f+"_total"]] <- rowSums(cgrep(d,'res_counters_'+f+'_count_'))
+  
+  # compute means for other reservation metrics
+  # timers <- c('consume', 'transfer')
+  # for (f in timers) d[['res_'+f+'_lat_mean']] <- rowMeans(cgrep(d,'res_timers_'+f+'_latency_mean_'))
+  
+  # aliases
+  aliases <- c(
+    lease='ipa_lease_period',
+        
+    follow_lat_mean='timers_follow_mean',
+    follow_lat_median='timers_follow_p50',
+    follow_lat_p95='timers_follow_p95',
+    follow_lat_p99='timers_follow_p99',
+    follow_rate='timers_follow_mean_rate',
+    follow_count='timers_follow_count',
+    
+    retweet_lat_mean='timers_retweet_mean',
+    retweet_lat_median='timers_retweet_p50',
+    retweet_lat_p95='timers_retweet_p95',
+    retweet_lat_p99='timers_retweet_p99',
+    retweet_rate='timers_retweet_mean_rate',
+    retweet_count='timers_retweet_count',
+    
+    tweet_lat_mean='timers_tweet_mean',
+    tweet_lat_median='timers_tweet_p50',
+    tweet_lat_p95='timers_tweet_p95',
+    tweet_lat_p99='timers_tweet_p99',
+    tweet_rate='timers_tweet_mean_rate',
+    tweet_count='timers_tweet_count',
+    
+    tweet_load_lat_mean='timers_tweet_load_mean',
+    tweet_load_lat_median='timers_tweet_load_p50',
+    tweet_load_lat_p95='timers_tweet_load_p95',
+    tweet_load_lat_p99='timers_tweet_load_p99',
+    tweet_load_rate='timers_tweet_load_mean_rate',
+    tweet_load_count='timers_tweet_load_count',
+    
+    timeline_lat_mean='timers_timeline_mean',
+    timeline_lat_median='timers_timeline_p50',
+    timeline_lat_p95='timers_timeline_p95',
+    timeline_lat_p99='timers_timeline_p99',
+    timeline_rate='timers_timeline_mean_rate',
+    timeline_count='timers_timeline_count',
+    
+    user_lat_mean='timers_user_mean',
+    user_lat_median='timers_user_p50',
+    user_lat_p95='timers_user_p95',
+    user_lat_p99='timers_user_p99',
+    user_rate='timers_user_mean_rate',
+    user_count='timers_user_count'
+    
+  )
+  for (n in names(aliases)) d[[n]] <- d[[aliases[n]]]
+  
+  d$overall_lat_mean <- with(d,
+    (follow_lat_mean * follow_count +
+    retweet_lat_mean * retweet_count +
+    tweet_lat_mean * tweet_count +
+    timeline_lat_mean * timeline_count +
+    user_lat_mean * user_count) /
+    (follow_count+retweet_count+tweet_count+timeline_count+user_count)
+  )
+  
+  d$overall_rate <- with(d,
+    follow_rate + retweet_rate + tweet_rate + timeline_rate + user_rate
+  )
+  
+  return(d)
+}
+
 data.owl <- function(where="meters_retwis_op_count is not null") {
   d <- db("select * from ipa_owl where meters_retwis_op_count is not null and " + where)
   
