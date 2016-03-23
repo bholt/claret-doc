@@ -573,6 +573,16 @@ data.ipa.twitter <- function(where="out_actual_time_length is not null") {
   d$overall_rate <- with(d,
     follow_rate + retweet_rate + tweet_rate + timeline_rate + user_rate
   )
+
+  d$total_count <- with(d,
+    follow_count + retweet_count + tweet_count + timeline_count + user_count
+  )
+  
+  d$follow_percent <- d$follow_count / d$total_count * 100
+  d$retweet_percent <- d$retweet_count / d$total_count * 100
+  d$tweet_percent <- d$tweet_count / d$total_count * 100
+  d$timeline_percent <- d$timeline_count / d$total_count * 100
+  d$user_percent <- d$user_count / d$total_count * 100
   
   return(d)
 }

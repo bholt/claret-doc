@@ -99,9 +99,10 @@ Our Ticket sales web service, introduced in [#sec-background], is modelled after
 
 Event listings by venue are modelled using a `List` ADT. Tickets are modelled using a `Pool` type that generates unique identifiers as proof of purchase, using a `BoundedCounter` at its base to ensure that, even with weak consistency, it never gives out more than the maximum number of tickets.
 
-Our workload attempts to model typical use of a small-scale deployment: we start with 50 venues and 200 events, with an average of 2000 tickets each (gaussian distribution centered at 2000, stddev 500). We chose the ticket to event ratio so that during the course of a run, we should have some events run out of tickets. This is important because the behavior of the `Pool` changes as it runs out of tokens (this is true for all bounds because the `BoundedCounter` has its own reservations for ensuring the lower bound, it is doubly true for the `Pool` with error bounds, which also has less margin for error at the end).
+Our workload attempts to model typical use of a small-scale deployment: we start with 50 venues and 200 events, with an average of 2000 tickets each (gaussian distribution centered at 2000, stddev 500). We chose the ticket to event ratio so that during the course of a run, we should have some events run out of tickets. This is important because the behavior of the `Pool` changes as it runs out of tokens (this is true for all bounds because the `BoundedCounter` has its own reservations for ensuring the lower bound, it is doubly true for the `Pool` with error bounds, which also has less margin for error at the end). 
+Real-world workloads exhibit power law distributions [@YCSB], where a small number of keys are much more popular than the majority. We model event popularity using a Zipf (power law) distribution with a coefficient of 0.6, which is moderately skewed.
 
-~ Fig { #plot-tickets caption="Ticket-sales app: mean latency (all actions) under various conditions. The ticket `Pool` is safe even when weakly consistent, but latency bounds and error bounds achieve similar latency." }
+~ Fig { #plot-tickets caption="*Ticket-sales app: mean latency (all actions).* The ticket `Pool` is safe even when weakly consistent, but latency bounds and error bounds achieve similar latency." }
 ![](plots/tickets.pdf){ .onecol }
 ~
 
@@ -112,4 +113,13 @@ This plot also shows results on Google Compute Engine *(GCE)*. We see that the r
 On this workload, we observe that the reservations used for the 5% error bound perform well even with high latency, which is different than our findings for the counter. This is because, in this case, the `Pool`s start out *full*, with sufficient reservations to be distributed among the replicas so that they can usually complete locally. Contrast this with the `Counter` experiments, where they start at typically smaller numbers (average initial value less than 500).
 
 ### Twitter clone
-[todo: demonstrating error tolerance for Counter (number of retweets), and latency bound for loading the timeline]
+
+~ Fig { #fig-twitter-model caption="Twitter application's (simplified) data model." }
+![](fig/twitter.pdf)
+~
+
+~ Fig { #plot-twitter caption="*Twitter clone: mean latency (all actions).* [todo: fixed experiments in progress]" }
+![](plots/twitter.pdf)
+~
+
+Our second application benchmark is a Twitter-like service based on the Redis data modelling example, Retwis [@retwis]. The data model is simple: each user has a `Set` of followers, a `Set` they users they follow, and a `List` of their tweets. Each user's timeline is kept materialized as a `List` of tweet IDs — when a user tweets, the new tweet ID is eagerly appended to all of their followers' timelines. Retwis doesn't specify a workload, so we simulate a realistic workload by generating a synthetic power-law graph, using a Zipf distribution to determine the number of followers per user. Our workload is a random mix with 50% `timeline` reads, 14% `tweet`, 30% `retweet`, 5% `follow`, and 1% `newUser`.

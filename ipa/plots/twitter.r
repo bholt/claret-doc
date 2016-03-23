@@ -14,7 +14,8 @@ d <- data.or.csv(
       'retweet_lat_mean', 'retweet_lat_median', 'retweet_lat_p99',
       'tweet_load_lat_mean', 'tweet_load_lat_median', 'tweet_load_lat_p99',
       'timeline_lat_mean', 'timeline_lat_median', 'timeline_lat_p99',
-      'overall_lat_mean', 'overall_rate', 
+      'overall_lat_mean', 'overall_rate',
+      'tweet_percent', 'follow_percent', 'retweet_percent', 'timeline_percent', 'user_percent',
       'containers'
     ))
   }
@@ -61,5 +62,10 @@ save(
 , w=6.5, h=4.0)
 
 
-# ddply(d, .(bound, condition), summarize,
-#   percent_strong=mean(read_strong/(read_strong+read_weak)*100), strong=mean(read_strong), weak=mean(read_weak))
+ddply(d, .(bound, condition), summarize,
+  follow = mean(follow_percent),
+  retweet = mean(retweet_percent),
+  tweet = mean(tweet_percent),
+  timeline = mean(timeline_percent),
+  user = mean(user_percent)
+)
