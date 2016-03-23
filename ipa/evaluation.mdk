@@ -62,11 +62,6 @@ We start by measuring the performance of a very simple application that randomly
 ![](plots/counter_lbound_tail.pdf){ .onecol }
 ~
 
-Latency bounds aim to provide predictable performance for clients while attempting to maximize consistency. Under favorable conditions — when latencies and load are low — it is often possible to achieve strong consistency. [#plot-counter-lbound] shows the average latency of a counter with strong, weak, and 2 latency-bounds under various conditions. We can see that there is a significant difference in latency between strong and weak. In these conditions, it is almost never possible to get strong consistency within 10ms, so the 10ms-bound counter predicts it will not get strong consistency uses weak consistency. In the case of the 50ms bound, in the cases with low latency it gets strongly consistent results. With one slow replica (out of 3), there is a chance that the `QUORUM` read needed for strong consistency will go to the slow replica, so it attempts both; in this case, 30% returned weak after the strong read timed out. Finally, with our simulated geo-replicated environment, there are no 2 replicas within 50ms of each other, so strong consistency is never possible in 50ms, so the monitor adapts only attempt weak reads in both cases.
-
-Figure [#plot-counter-lbound-tail] shows the 95th percentile latencies of the same workload. We see that the tail latency of the 10ms bound is comparable to weak, though the 50ms bound guesses incorrectly occasionally for the case of the slow replica. We see a latency gap between the latency-bound and weak in the geo-distributed case. This is because the `weak` condition uses weak reads *and* writes, while our rushed types, in order to have the option of getting strong reads without requiring a read of `ALL`, must do `QUORUM` writes.
-
-### Error bounds
 ~ Fig { #fig-counter-err .wide caption="*Counter benchmark: error tolerance.* In (a), we see that wider error bounds reduce mean latency because fewer synchronizations are required, matching *weak* around 5-10%. In (b), we see that error increases with heavier write workloads. The average error for *weak* is less than 1%, but the *maximum* error can be extremely high (up to 60%)." }
 ~~ SubFigureRow
 ~~~ SubFigure {#fig-counter-error-perf caption="Mean latency (increment *and* read)."}
@@ -77,6 +72,13 @@ Figure [#plot-counter-lbound-tail] shows the 95th percentile latencies of the sa
 ~~~
 ~~
 ~
+
+
+Latency bounds aim to provide predictable performance for clients while attempting to maximize consistency. Under favorable conditions — when latencies and load are low — it is often possible to achieve strong consistency. [#plot-counter-lbound] shows the average latency of a counter with strong, weak, and 2 latency-bounds under various conditions. We can see that there is a significant difference in latency between strong and weak. In these conditions, it is almost never possible to get strong consistency within 10ms, so the 10ms-bound counter predicts it will not get strong consistency uses weak consistency. In the case of the 50ms bound, in the cases with low latency it gets strongly consistent results. With one slow replica (out of 3), there is a chance that the `QUORUM` read needed for strong consistency will go to the slow replica, so it attempts both; in this case, 30% returned weak after the strong read timed out. Finally, with our simulated geo-replicated environment, there are no 2 replicas within 50ms of each other, so strong consistency is never possible in 50ms, so the monitor adapts only attempt weak reads in both cases.
+
+Figure [#plot-counter-lbound-tail] shows the 95th percentile latencies of the same workload. We see that the tail latency of the 10ms bound is comparable to weak, though the 50ms bound guesses incorrectly occasionally for the case of the slow replica. We see a latency gap between the latency-bound and weak in the geo-distributed case. This is because the `weak` condition uses weak reads *and* writes, while our rushed types, in order to have the option of getting strong reads without requiring a read of `ALL`, must do `QUORUM` writes.
+
+### Error bounds
 
 We use the reservation system described in [#sec-error-bounds] to enforce error bounds. 
 Error bounds represent an intermediate level between strict strongly consistent reads and inconsistent reads that could, in theory, return anything.
