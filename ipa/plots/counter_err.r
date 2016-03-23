@@ -127,7 +127,7 @@ s.c$grp <- with(s.c, x(bound,lease))
 # Interval & error width
 ##########################
 
-d$mode <- factor.remap(d$honeycomb_mode, list(fast='Local', flat5='High load', slowpoke_flat='Slow replica', amazon='Geo-\nreplicated'))
+d$mode <- factor.remap(d$honeycomb_mode, list(fast='Local', flat5='High load', slowpoke_flat='Slow replica', amazon='Geo-\ndistributed'))
 
 s <- subset(d, ipa_bound != 'tolerance:0.1' & !is.na(mode) & interval_percent_max < 101)
 m <- melt.by(s, 'measure', '^interval_percent_(mean|max)')
@@ -147,4 +147,4 @@ save(ggplot(
   theme(axis.title.y=element_blank())+
   ipa.scales(guide=guide_legend())+
   legend.bottom()
-, 'counter_err', w=5, h=3.5)
+, 'counter_err', w=6, h=3.5)

@@ -194,7 +194,7 @@ legend.bottom <- function() list(
   theme(
     legend.position = 'bottom',
     legend.text = element_text(size=10, margin=margin(0, unit='pt')),
-    # legend.margin = unit(0, 'pt'),
+    legend.margin = unit(0, 'pt'),
     legend.box = 'horizontal',
     legend.title.align = 1
   )
