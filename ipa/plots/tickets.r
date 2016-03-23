@@ -7,7 +7,7 @@ sim <- data.or.csv(
     data.ipa.tickets(where = "ipa_duration=60 and ipa_version = 'v5.0'"),
     select = c('load', 'honeycomb_mode', 'ipa_bound', 'bound', 'ipa_consistency', 'lease', 'condition',
       'purchase_lat_mean', 'purchase_lat_median', 'purchase_lat_p99',
-      'view_lat_mean', 'view_lat_median', 'view_lat_p99', 'overall_lat_mean', 'overall_rate'
+      'view_lat_mean', 'view_lat_median', 'view_lat_p99', 'overall_lat_mean', 'overall_rate', 'read_weak', 'read_strong'
     )
   )
 )
@@ -24,7 +24,7 @@ google <- data.or.csv(
     data.ipa.tickets(where = "ipa_duration=60 and ipa_version = 'v6.1google' and honeycomb_mode = 'fast'"),
     select = c('load', 'honeycomb_mode', 'ipa_bound', 'bound', 'ipa_consistency', 'lease', 'condition', 
       'purchase_lat_mean', 'purchase_lat_median', 'purchase_lat_p99',
-      'view_lat_mean', 'view_lat_median', 'view_lat_p99', 'overall_lat_mean', 'overall_rate'
+      'view_lat_mean', 'view_lat_median', 'view_lat_p99', 'overall_lat_mean', 'overall_rate', 'read_weak', 'read_strong'
     )
   )
 )
@@ -59,3 +59,7 @@ save(
   # coord_cartesian(ylim=c(0,500))+
   ipa.scales()
 , w=6.5, h=4.0)
+
+
+ddply(d, .(bound, condition), summarize, 
+  percent_strong=mean(read_strong/(read_strong+read_weak)*100), strong=mean(read_strong), weak=mean(read_weak))

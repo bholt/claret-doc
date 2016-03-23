@@ -376,6 +376,8 @@ data.ipa.tickets <- function(where="out_actual_time_length is not null") {
   # aliases
   aliases <- c(
     lease='ipa_lease_period',
+    read_strong='counters_read_strong_count',
+    read_weak='counters_read_weak_count',
     purchase_rate='timers_op_purchase_mean_rate',
     purchase_lat_mean='timers_op_purchase_mean',
     purchase_lat_median='timers_op_purchase_p50',
