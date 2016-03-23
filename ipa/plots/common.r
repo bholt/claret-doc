@@ -372,7 +372,7 @@ data.ipa.tickets <- function(where="out_actual_time_length is not null") {
   # compute means for other reservation metrics
   timers <- c('consume', 'transfer')
   for (f in timers) d[['res_'+f+'_lat_mean']] <- rowMeans(cgrep(d,'res_timers_'+f+'_latency_mean_'))
-  
+    
   # aliases
   aliases <- c(
     lease='ipa_lease_period',

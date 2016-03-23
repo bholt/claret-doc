@@ -41,53 +41,55 @@ save(
 
 s <- subset(d) #, ipa_bound != 'tolerance:0.01')
 
-save(
-  ggplot(s, aes(
-      y = overall_lat_mean,
-      x = load,
-      color=grp, fill=grp, group=grp
-  ))+
-  stat_summary(geom='line', fun.y=mean)+
-  ylab('Mean latency (ms)')+
-  theme_mine()+
-  scale_y_continuous(breaks=c(0, 100, 500, 1000, 2000))+
-  theme(axis.title.x = element_blank())+
-  # theme.bar()+
-  # coord_cartesian(ylim=c(0,1000))+
-  ipa.scales()
-, 'tickets_google_lat', w=4.5, h=4.0)
+# save(
+#   ggplot(s, aes(
+#       y = overall_lat_mean,
+#       x = load,
+#       color=grp, fill=grp, group=grp
+#   ))+
+#   stat_summary(geom='line', fun.y=mean)+
+#   ylab('Mean latency (ms)')+
+#   theme_mine()+
+#   scale_y_continuous(breaks=c(0, 100, 500, 1000, 2000))+
+#   theme(axis.title.x = element_blank())+
+#   # theme.bar()+
+#   # coord_cartesian(ylim=c(0,1000))+
+#   ipa.scales()
+# , 'tickets_google_lat', w=4.5, h=4.0)
 
 save(
-  ggplot(s, aes(
+  ggplot(subset(s, grepl('tolerance:0.05|cons|lat', ipa_bound)), aes(
       y = overall_rate,
       x = load,
-      color=grp, fill=grp, group=grp, linetype=grp
-  ))+
-  stat_summary(geom='line', fun.y=mean)+
-  ylab('Mean latency (ms)')+
-  theme_mine()+
-  scale_y_continuous(breaks=c(0, 100, 500, 1000, 2000))+
-  theme(axis.title.x = element_blank())+
-  # theme.bar()+
-  # coord_cartesian(ylim=c(0,1000))+
-  ipa.scales()
-, 'tickets_google_rate', w=4.5, h=4.0)
-
-
-save(
-  ggplot(s, aes(
-      y = overall_lat_mean,
-      x = overall_rate,
       color=grp, fill=grp, group=grp
   ))+
-  geom_point()+
-  geom_mean_path(s, overall_rate, overall_lat_mean, .(load, grp))+
-  ylab('Mean latency (ms)')+
-  #facet_wrap(~condition, ncol=6, scale="free")+
+  stat_summary(geom='line', fun.y=mean)+
+  xlab('# concurrent clients')+
+  ylab('Throughput (actions/s)')+
   theme_mine()+
-  scale_y_continuous(breaks=c(0, 100, 500, 1000, 2000))+
-  theme(axis.title.x = element_blank())+
-  theme.bar()+
-  coord_cartesian(ylim=c(0,1000))+
-  ipa.scales()
-, 'tickets_google_tput_v_lat', w=4.5, h=4.0)
+  scale_y_continuous(labels=k.labels)+
+  # scale_y_continuous(breaks=c(0, 100, 500, 1000, 2000))+
+  # theme(axis.title.x = element_blank())+
+  # theme.bar()+
+  # coord_cartesian(ylim=c(0,1000))+
+  ipa.scales(guide = guide_legend(nrow=4))
+, 'tickets_google_rate', w=4.5, h=2.5)
+
+
+# save(
+#   ggplot(s, aes(
+#       y = overall_lat_mean,
+#       x = overall_rate,
+#       color=grp, fill=grp, group=grp
+#   ))+
+#   geom_point()+
+#   geom_mean_path(s, overall_rate, overall_lat_mean, .(load, grp))+
+#   ylab('Mean latency (ms)')+
+#   #facet_wrap(~condition, ncol=6, scale="free")+
+#   theme_mine()+
+#   scale_y_continuous(breaks=c(0, 100, 500, 1000, 2000))+
+#   theme(axis.title.x = element_blank())+
+#   theme.bar()+
+#   coord_cartesian(ylim=c(0,1000))+
+#   ipa.scales()
+# , 'tickets_google_tput_v_lat', w=4.5, h=4.0)
