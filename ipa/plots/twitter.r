@@ -4,8 +4,8 @@ source('common.r')
 d <- data.or.csv(
   csv = 'data/twitter.csv',
   gen = function() {
-    s <- data.ipa.twitter(where = "ipa_duration=60 and ipa_version = 'v7.0'")
-    g <- data.ipa.twitter(where = "ipa_duration=60 and ipa_version = 'v7.0google'")
+    s <- data.ipa.twitter(where = "ipa_duration=60 and ipa_version = 'v7.1'")
+    g <- data.ipa.twitter(where = "ipa_duration=60 and ipa_version = 'v7.1google'")
     g$condition <- 'GCE\n(actual)'
     d <- rbind(s, g)
     subset(d, select = c(
@@ -26,25 +26,27 @@ unique(d$containers)
 d$grp <- d$bound
 
 # adjustments to filter out bad experiments where I hadn't fixed the throttled cluster problem
-d <- subset(d,
-    (condition == 'Local' & overall_lat_mean < 300)
-  | (condition == 'Uniform' & overall_lat_mean < 95)
-  | (grepl('High', condition) & overall_lat_mean < 500)
-  | (grepl('Slow', condition) & overall_lat_mean < 600)
-  | (grepl('Slow', condition) & overall_lat_mean < 600)  
-  | (grepl('Geo', condition) & overall_lat_mean < 4500)
-  | (grepl('GCE', condition) & load == 2048)
-)
-
+# d <- subset(d,
+#     (condition == 'Local' & overall_lat_mean < 300)
+#   | (condition == 'Uniform' & overall_lat_mean < 95)
+#   | (grepl('High', condition) & overall_lat_mean < 500)
+#   | (grepl('Slow', condition) & overall_lat_mean < 600)
+#   | (grepl('Slow', condition) & overall_lat_mean < 600)
+#   | (grepl('Geo', condition) & overall_lat_mean < 4500)
+#   | (grepl('GCE', condition) & load == 2048)
+# )
+#
 # s <- subset(d, !is.na(condition) & grepl('cons|tolerance:0.05', ipa_bound))
 # s$bound <- factor.remap(strong='strong', 'error: 5%'='IPA', )
 
-save(
-  ggplot(subset(d,
-    !is.na(condition)
+s <- subset(d,
+  !is.na(condition)
+  & grepl('cons|tolerance:0.05',ipa_bound)
+)
+levels(s$condition)[levels(s$condition)=="Slow replica"] <- 'Slow\nreplica'
     
-    & grepl('cons|tolerance:0.05',ipa_bound)
-        ), aes(
+save(
+  ggplot(s, aes(
       #y = view_lat_mean,
       # y = purchase_lat_mean,
       y = overall_lat_mean,
@@ -63,7 +65,7 @@ save(
   theme.bar()+
   # coord_cartesian(ylim=c(0,500))+
   ipa.scales()
-, w=6.5, h=4.0)
+, w=7, h=4.0)
 
 
 ddply(d, .(bound, condition), summarize,
