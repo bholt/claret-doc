@@ -115,7 +115,7 @@ On this workload, we observe that the reservations used for the 5% error bound p
 
 ### Twitter clone
 
-~ Fig { #fig-twitter-model caption="Twitter application's (simplified) data model." }
+~ Fig { #fig-twitter-model caption="Twitter application's (simplified) data model, with latency bounds for followers and timelines, and error tolerance for the number of retweets (the `size` of the retweets set)." }
 ![](fig/twitter.pdf)
 ~
 
@@ -123,4 +123,11 @@ On this workload, we observe that the reservations used for the 5% error bound p
 ![](plots/twitter.pdf)
 ~
 
-Our second application benchmark is a Twitter-like service based on the Redis data modelling example, Retwis [@retwis]. The data model is simple: each user has a `Set` of followers, a `Set` they users they follow, and a `List` of their tweets. Each user's timeline is kept materialized as a `List` of tweet IDs — when a user tweets, the new tweet ID is eagerly appended to all of their followers' timelines. Retwis doesn't specify a workload, so we simulate a realistic workload by generating a synthetic power-law graph, using a Zipf distribution to determine the number of followers per user. Our workload is a random mix with 50% `timeline` reads, 14% `tweet`, 30% `retweet`, 5% `follow`, and 1% `newUser`.
+Our second application benchmark is a Twitter-like service based on the Redis data modelling example, Retwis [@retwis]. The data model is simple: each user has a `Set` of followers, a `Set` they users they follow, and a `List` of their tweets. Each user's timeline is kept materialized as a `List` of tweet IDs — when a user tweets, the new tweet ID is eagerly appended to all of their followers' timelines. Retweets are tracked with a `Set` of users who have retweeted each tweet. The retweet count, loaded for each tweet when a timeline is loaded, is represented in this ADT model by the size of the set.
+
+Retweets are another good example of a place where error tolerance bounds faithfully represent an application-level correctness constraint. Most tweets by an average user on Twitter will have few retweets; in these situations, even a small error can be glaringly obvious: a user may get a notification, then look at the tweet and get frustrated when they cannot see the retweet. However, for a highly popular tweet that has been retweeted millions of times already, one more tweet does not need to be reflected immediately in the count. In fact, most views of Twitter will truncate large values to something like "3.4M", which is a perfect way to use an `Interval` result. Moreover, situations with massive numbers of retweets can be a performance bottleneck if not handled correctly, as Twitter learned when Ellen Degeneres's celebrity selfie brought it to a standstill at the 2014 Oscar's [@ellenselfie].
+For the user's timeline, on the other hand, we do not need to know the size, but we do want it to load quickly to keep users engaged, so we use a latency bound. Finally, the follower list, which is changed infrequently, could be left as strongly consistent to ensure that new followers get all the latest tweets, but we want to keep performance as a priority, so use another latency bound, which gives us the option to warn the user if they may need to refresh to get more tweets.
+
+Retwis doesn't specify a workload, so we simulate a realistic workload by generating a synthetic power-law graph, using a Zipf distribution to determine the number of followers per user. Our workload is a random mix with 50% `timeline` reads, 14% `tweet`, 30% `retweet`, 5% `follow`, and 1% `newUser`.
+
+We can see in [#plot-twitter] that for all but the local (same rack) case, strong consistency is over 4$\times$ slower, but our implementation combining latency and error-bounds performs comparably with weak consistency, but with stronger guarantees for the programmer.

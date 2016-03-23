@@ -36,17 +36,21 @@ d <- subset(d,
   | (grepl('GCE', condition) & load == 2048)
 )
 
+# s <- subset(d, !is.na(condition) & grepl('cons|tolerance:0.05', ipa_bound))
+# s$bound <- factor.remap(strong='strong', 'error: 5%'='IPA', )
+
 save(
   ggplot(subset(d,
     !is.na(condition)
     
-    & grepl('cons|lat|tolerance:0.05',ipa_bound)
+    & grepl('cons|tolerance:0.05',ipa_bound)
         ), aes(
       #y = view_lat_mean,
       # y = purchase_lat_mean,
       y = overall_lat_mean,
       x=grp, color=grp, fill=grp, group=grp
   ))+
+  scale_x_discrete(labels=c('strong', 'IPA', 'weak'))+
   #stat_summary(geom='bar', fun.y=mean, size=0.5, width=0.7)+
   geom_meanbar(position=position_dodge(width = 0.7))+
   # geom_point(position=position_dodge(width = 0.7), color='black')+
