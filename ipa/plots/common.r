@@ -194,7 +194,7 @@ legend.bottom <- function() list(
   theme(
     legend.position = 'bottom',
     legend.text = element_text(size=10, margin=margin(0, unit='pt')),
-    legend.margin = unit(0, 'pt'),
+    # legend.margin = unit(0, 'pt'),
     legend.box = 'horizontal',
     legend.title.align = 1
   )
@@ -247,12 +247,12 @@ conds[[x('flat5', 4096)]] <- 'High load'
 conds[[x('normal',low)]] <- 'Normal'
 conds[[x('normal',high)]] <- 'Normal (high load)'
 conds[[x('slowpoke_flat',low)]] <- 'Slow replica'
-conds[[x('world',low)]] <- 'Geo-distributed'
+# conds[[x('world',low)]] <- 'Geo-distributed'
 # conds[[x('google',low)]] <- 'Google (low)'
-conds[[x('google',2048)]] <- 'Google'
+# conds[[x('google',2048)]] <- 'Google'
 # conds[[x('google',high)]] <- 'Google (high)'
 # conds[[x('amazon',low)]] <- 'Amazon (low)'
-conds[[x('amazon',2048)]] <- 'Amazon'
+conds[[x('amazon',2048)]] <- 'Geo-\ndistributed'
 # conds[[x('amazon',high)]] <- 'Amazon (high)'
 
 bounds <- list(

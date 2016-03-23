@@ -1,6 +1,56 @@
 #!/usr/bin/env Rscript
 source('common.r')
 
+#########################
+# Measure performance
+
+d <- data.or.csv(
+  csv = 'data/counter_err_zipf.csv',
+  gen = function() subset(
+    data.ipa.rawmix(where = "datatype='counter' and ipa_duration=60 and ipa_version = 'v3.1'"),
+    select = c('load', 'honeycomb_mode', 'ipa_bound', 'bound', 
+      'ipa_consistency', 'lease', 'condition', 'mix',
+      'read_lat_mean', 'read_lat_median', 'read_lat_p95', 'read_lat_p99', 'read_rate',
+      'incr_lat_mean', 'incr_lat_median', 'incr_rate',
+      'overall_latency_mean', 'read_strong_fraction'
+    )
+  )
+)
+
+d$grp <- d$bound
+
+s <- subset(d, 
+  ipa_bound != 'consistency:weak'
+  & mix == 'default'
+  & honeycomb_mode != 'normal'
+  & grepl('Local|Uniform|Slow|Geo|High', condition)
+  & grepl('tol.*#0ms|cons', x(ipa_bound,lease))
+)
+
+
+save(
+  ggplot(subset(s, !is.na(condition)
+    #& grepl('(weakwrite)', x(ipa_bound,lease))
+         # & grepl('((error: 5%|weak|lat).*#200ms)|(strong.*#0ms)', x(bound,lease))
+         # & grepl('strong#strong|weak', x(bound,ipa_consistency))
+        ), aes(
+      y = overall_latency_mean,
+      x=grp, color='black', fill=grp, group=grp
+  ))+
+  geom_meanbar(position=position_dodge(width = 0.7))+
+  ylab('Overall mean latency (ms)')+
+  theme_mine()+
+  # theme(axis.title.x = element_blank())+
+  theme.bar()+
+  facet_wrap(~condition, scales="free", ncol=6)+
+  # coord_cartesian(ylim=c(0,500))+
+  ipa.scales()
+, 'counter_err_perf', w=6, h=3.5)
+
+
+#########################
+# Measure error
+
 d <- data.or.csv(
   csv = 'data/counter_err.csv',
   gen = function()
@@ -71,9 +121,9 @@ s.c$grp <- with(s.c, x(bound,lease))
 # Interval & error width
 ##########################
 
-d$mode <- factor.remap(d$honeycomb_mode, list(fast='Local', flat5='Uniform\n(5ms)', slowpoke_flat='Slow replica', google='Google', amazon='Amazon'))
+d$mode <- factor.remap(d$honeycomb_mode, list(fast='Local', flat5='High load', slowpoke_flat='Slow replica', amazon='Geo-\nreplicated'))
 
-s <- subset(d, ipa_bound != 'tolerance:0.1' & interval_percent_max < 101)
+s <- subset(d, ipa_bound != 'tolerance:0.1' & !is.na(mode) & interval_percent_max < 101)
 m <- melt.by(s, 'measure', '^interval_percent_(mean|max)')
 m$measure <- factor.remap(m$measure, list(mean='mean % error', max='max % error'))
 
@@ -91,4 +141,4 @@ save(ggplot(
   theme(axis.title.y=element_blank())+
   ipa.scales(guide=guide_legend())+
   legend.bottom()
-, 'counter_err', w=6, h=3.5)
+, 'counter_err', w=5, h=3.5)

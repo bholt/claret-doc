@@ -37,7 +37,7 @@ Changing the write level must be done with care because it changes the semantics
 One could imagine a more complex system allowing dynamic changes to an ADT's metadata (in the backing store), with clients checking for changes periodically, but we do not implement this. Applications wishing to get more dynamic behavior in our implementation could create alternate versions of ADTs with different static write levels and mediate the transition themselves.
 
 
-## Error bounds
+## Error bounds {#sec-error-bounds}
 We implement error bounds by building on the concepts of *escrow* and *reservations* [@ONeil:86;@Gawlick:85;@Reuter:82;@Preguica:03]. These techniques have been used in storage systems to enforce hard limits, such as an account balance never going negative, while permitting concurrency. 
 The idea is to set aside a pool of permissions to perform certain update operations (we'll call them *reservations* or *tokens*), essentially treating operations as a manageable resource. If we have a counter that should never go below zero, there could be a number of *decrement* tokens equal to the current value of the counter. When a client wishes to decrement, it must first acquire sufficient tokens before performing the update operation. Correspondingly, in this scheme, increments produce new tokens. The insight is that the coordination needed to ensure that there are never too many tokens can be done *off the critical path*: they can be produced lazily if there are enough around already, and most importantly for this work, they can be *distributed* among replicas. This means that replicas can perform some update operations *safely* without coordinating with any other replicas.
 

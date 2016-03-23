@@ -2,6 +2,8 @@
 
 Distributed applications must be able to run in a constantly changing environment. IPA's types provide structure that helps programmers ensure their application handles all potential edge cases. The bounds specified by programmers give them control over how the application will adjust to changing conditions, but they also provide the system with hints about what it should prioritize, and release valves that allow it to still be useful even performance has degraded.
 
+## Simulating adverse conditions
+
 To evaluate these bounding techniques, it is crucial to subject them to a variety of conditions. One typically has two two extreme choices when evaluating this kind of system: perform experiments in a controlled environment where latencies are typically very low and performance variability is negligible, or to throw them into a complex, real-world system, subject to the whims of unpredictable network conditions and resource sharing and try to piece together how they performed. A third option is to *simulate* a variety of environments, chosen to stress the system or mimic reality, within a more controlled environment. 
 
 In our experiments, we employ all three to best understand how these techniques behave. On our own test cluster, with standard ethernet linking nodes within the same rack, we run controlled experiments, simulating adverse network conditions. We use Linux's Network Emulation facility [@netem] (`tc netem`) to introduce packet delay and loss at the operation system level. We use Docker containers [@docker] to enable fine-grained control of the network conditions between processes on the same physical node (`netem` is one of the properties isolated within the container).
@@ -33,79 +35,81 @@ We wish to know how an application written using these techniques
 -->
 
 ~ Tab { #tab-conditions caption="Network conditions for experiments." }
-| Condition label   | Latencies (ms)              |||
-|:------------------|:-------:|:-------:|:----------|
-| **Simulated**                                  ||||
-| Uniform/High load | 5       | 5       | 5         |
-| Slow replica      | 10      | 10      | 100       |
-| Google            | 1 ± 0.3 | 110 ± 5 | 160 ± 5   |
-| Amazon            | 1 ± 0.3 | 80 ± 10 | 200 ± 50  |
-|-------------------|---------|---------|-----------|
-| **Actual**                                     ||||
-| Local             | <1      | <1      | <1        |
-| Google            | 1 ± 0.3 | 110 ± 5 | 160 ± 5   |
-|-------------------|---------|---------|-----------|
+| Condition label       | Latencies (ms)               |||
+|:----------------------|:--------:|:-------:|:----------|
+| **Simulated**                                       ||||
+| Uniform / High load   | 5        | 5       | 5         |
+| Slow replica          | 10       | 10      | 100       |
+| Geo-replicated (EC2)  | 1 ± 0.3  | 80 ± 10 | 200 ± 50  |
+|-----------------------|----------|---------|-----------|
+| **Actual**                                          ||||
+| Local (same rack)     | <1       | <1      | <1        |
+| Google Compute Engine | 30 ± 0.3 | 100 ± 5 | 160 ± 5   |
+|-----------------------|----------|---------|-----------|
 ~
 
-## Counter microbenchmark
-~~ Notes
-- Latency bound
-	- show how it can meet various latency bounds, compared with Strong and Weak
-	- show that 95th percentile still meets latency bound!
-	- show how many achieved stronger consistency, and how that correlates with actual consistency violations
-- Reservations
-	- show link between tighter bounds and lower performance
-	- tie performance to the number of strong reads/reservation refreshes we had to do
-	- show how interval width gets smaller with fewer writes
-~~
-
-~ Fig { #plot-counter caption="Counter benchmark: mean latency for a random mix of counter ops (20% increment, 80% read), with various IPA bounds, under various conditions." }
-![](plots/rawmix_counter.pdf){ .onecol }
-~
-
-We start by measuring the performance of a very simple application that randomly increments and reads from a number of counters with different IPA bounds. [#plot-counter] shows the average latency of a 20% increment, 80% read workload over 200 counters randomly selected using a zipfian distribution.
+## Microbenchmark: Counter
+We start by measuring the performance of a very simple application that randomly increments and reads from a number of counters with different IPA policies. Random operations (`incr(1)` and `read`) are uniformly distributed over 100 counters from a single multithreaded client (using Scala futures to allow up to 4000 concurrent operations).
 
 ### Latency bounds
 
-~ Fig { #plot-counter-lbound caption="Consistency of latency-bound operations. Strong consistency is rarely possible within 10ms. With one slow replica, most reads can still achieve strong consistency, but with high network latencies or heavy load, it degrades to use weak consistency." }
+~ Fig { #plot-counter-lbound caption="*Counter microbenchmark: latency-bound operations.* Strong consistency is rarely possible within 10ms bound, but for the 50ms bound, in low-latency conditions, it achieves strong consistency, and with high-latency conditions, weak. [todo: find Local results]" }
 ![](plots/counter_lbound.pdf){ .onecol }
 ~
 
-~ Fig { #plot-counter-lbound-tail caption="Latency bounds reduce unpredictable tail latency." }
+~ Fig { #plot-counter-lbound-tail caption="*Counter: 95th percentile latency.* Latency bounds help keep tail latency down by backing off to weak consistency when necessary." }
 ![](plots/counter_lbound_tail.pdf){ .onecol }
 ~
 
-Latency bounds aim to provide predictable performance for clients while attempting to maximize consistency. Under favorable conditions, when latencies and load are low, it is often possible to achieve strong consistency. Figure [#plot-counter] shows the average latency of 
+Latency bounds aim to provide predictable performance for clients while attempting to maximize consistency. Under favorable conditions — when latencies and load are low — it is often possible to achieve strong consistency. Figure [#plot-counter-lbound] shows the average latency of a counter with strong, weak, and 2 latency-bounds under various conditions. We can see that there is a significant difference in latency between strong and weak. In these conditions, it is almost never possible to get strong consistency within 10ms, so the 10ms-bound counter predicts it will not get strong consistency uses weak consistency. In the case of the 50ms bound, in the cases with low latency it gets strongly consistent results. With one slow replica (out of 3), there is a chance that the `QUORUM` read needed for strong consistency will go to the slow replica, so it attempts both; in this case, 30% returned weak after the strong read timed out. Finally, with our simulated geo-replicated environment, there are no 2 replicas within 50ms of each other, so strong consistency is never possible in 50ms, so the monitor adapts only attempt weak reads in both cases.
+
+Figure [#plot-counter-lbound-tail] shows the 95th percentile latencies of the same workload. We see that the tail latency of the 10ms bound is comparable to weak, though the 50ms bound guesses incorrectly occasionally for the case of the slow replica. We see a latency gap between the latency-bound and weak in the geo-distributed case. This is because the `weak` condition uses weak reads *and* writes, while our rushed types, in order to have the option of getting strong reads without requiring a read of `ALL`, must do `QUORUM` writes.
 
 ### Error bounds
-We use the reservation system described in [#reservations] to enforce error bounds. Though error bounds represent a relaxation from a strict strongly consistent read, they still have 
-Our goal is to explore how expensive it is in practice to enforce these error bounds, and in particular to determine if reasonable error bounds that programs could rely on are achievable with performance comparable to weak consistency.
+~ Fig { #fig-counter-err-perf caption="*Microbenchmark: Error bound performance.* This plot shows the mean latency overall (increment *and* read). As we widen error bounds, mean latency decreases because fewer synchronizations are required. At 5-10%, performance is typically on-par with weak."}
+![](plots/counter_err_perf)
+~
 
-The general intuition behind reservations is to move synchronization off the critical path: by distributing write permissions among replicas, clients can get strong guarantees while only communicating with a single replica. This shifts the majority of the synchronization burden off of reads, which are typically more common. However, this balance must be carefully considered when evaluating the performance of reservations, more so than the other techniques.
+We use the reservation system described in [#sec-error-bounds] to enforce error bounds. 
+Error bounds represent an intermediate level between strict strongly consistent reads and inconsistent reads that could, in theory, return anything.
+Our goal is to explore how expensive it is in practice to enforce these error bounds, and in particular to determine what error bounds are achievable with performance comparable to weak consistency.
 
-[#plot-counter] contains results for error bounds ranging from 0% to 10%, showing the average latency of both reads and increments for a mix with 20% increments. We can see that how narrow the bounds are does affect performance, but in most cases, the latency of 5-10% error bounds have roughly the same performance as weak consistency.
+The general intuition behind reservations is to move synchronization off the critical path: by distributing write permissions among replicas, clients can get strong guarantees while only communicating with a single replica. This shifts the majority of the synchronization burden off of reads, which are typically more common. However, this balance must be carefully considered when evaluating the performance of reservations, more so than the other techniques. When evaluating the latency bounds, we only considered the read latency because we didn't change the writes. However, reservations actually slow down writes, so we must consider that effect. Read latency for error-bounds is equivalent to *weak*, so instead, [#fig-counter-err-perf] plots the overall average latency of both operations.
 
-[todo: write about [#fig-counter-error]]
+[#fig-counter-err-perf] shows latencies for error bounds ranging from 0% to 10%, The *read* latency for error bounds is always equivalent to *weak*, so we plot the average of reads *and* increment operations combined to understand the overall performance. We can see that tighter bounds increase latency because it forces more synchronization operations, which must use consistency of `ALL`. Under high load we see higher variance in performance: if too many increments arrive together, some end up waiting for reservations. In most conditions, we see that 5-10% error bounds have comparable latency with weak, with the exception of the geo-distributed condition, where it seems that at least this implementation of reservations is not a good solution.
 
 ~ Fig { #fig-counter-error caption="Observed counter error for weak consistency, compared with a 1% error tolerance; error increases with heavier write workload. Average error may be quite small, but the maximum error (averaged over several runs), can be extremely high." }
 ![](plots/counter_err.pdf)
 ~
 
-## Applications
-### Shopping Cart
-[todo: demonstrate loading cart with a latency bound, but not allowing users to check out without doing a strong read]
+We also wish to know how much error actually happens in practice, and how this compares with our error bounds. We modified our benchmark to be able to observe the error resulting from weak consistency: using a single multi-threaded client, we keep track locally of how many increments to each counter we have done; then when we have completed a random, predetermined number of increments, we stop and read the count. The resulting error measurements are shown in [#fig-counter-error]. We plot the percent error of weak and strong against the actual observed interval width for a 1% error bound, going from a read-heavy (1% increments) to a write-heavy (all increments, except to check the value).
 
-### TicketSleuth
-~~ Notes
-- Modeled after FusionTicket (benchmark in [@Xie:14:Salt;@Xie:15:ACIDAlt])
-- Demonstrates
-~~
+First of all, the *mean* error of weak is significantly less than 1%. This verifies that inconsistency really is pretty rare; it is probably higher in practice when operations come from more than one client, but then we would not have been able to observe the error in the way we did. However, even with this experiment, we see that there are outliers with significant error when writing is heavy: up to as high as 60% error in the geo-replicated case. These maximum errors averaged over several experiments. Finally, it is worth noting that the average interval width is less than the maximum of 1% and is lower for more read-heavy workloads that do not need as many reservations.
+
+## Applications
+Next, we explore how the IPA system performs on two miniature application benchmarks. In addition to running with our simulated network conditions, for these applications we also ran some experiments on a real globally-distributed network. In Google Compute Engine [@GoogleCompute], we ran virtual machines in 4 different datacenters: the client in `us-east`, and the datastore replicas in `us-central`, `europe-west`, and `asia-east`.
+
+### Tickets
+Our Ticket sales web service, introduced in [#sec-background], is modelled after FusionTicket [@FusionTicket], which has been used as a benchmark in recent distributed systems research [@Xie:14:Salt;@Xie:15:ACIDAlt]. We support the following actions:
+
+- `browse`: List events by venue
+- `viewEvent`: View the full description of an event including number of remaining tickets
+- `purchase`: Purchase a ticket (or multiple)
+- `addEvent`: Add an event at a venue.
+
+Event listings by venue are modelled using a `List` ADT. Tickets are modelled using a `Pool` type that generates unique identifiers as proof of purchase, using a `BoundedCounter` at its base to ensure that, even with weak consistency, it never gives out more than the maximum number of tickets.
+
+Our workload attempts to model typical use of a small-scale deployment: we start with 50 venues and 200 events, with an average of 2000 tickets each (gaussian distribution centered at 2000, stddev 500). We chose the ticket to event ratio so that during the course of a run, we should have some events run out of tickets. This is important because the behavior of the `Pool` changes as it runs out of tokens (this is true for all bounds because the `BoundedCounter` has its own reservations for ensuring the lower bound, it is doubly true for the `Pool` with error bounds, which also has less margin for error at the end).
 
 ~ Fig { #plot-tickets caption="Ticket-sales app: mean latency of `purchase` action under various conditions. The `BoundedCounter` underlying ticket sales is safe even when weakly consistent, but latency bounds allow users to see strong consistency [todo:??]% of the time, while reservations bound error to less than 5% with similar performance." }
 ![](plots/tickets.pdf){ .onecol }
 ~
 
-[todo: ticket sales app demonstrating hard lower bounds on counters]
+[#plot-tickets] shows the average latency of a workload consisting of 70% `viewEvent`, 19% `browse`, 10% `purchase`, and 1% `addEvent`. We plot it with a log scale because strong consistency is consistently over 5x higher latency. The `purchase` event, though only 10% of the workload, drives most of the latency increase in this workload because of the additional work required in the `BoundedCounter` to prevent over-selling tickets. We explore two different implementations: one with a 20ms latency bound on all ADTs, aiming to ensure that both `viewEvent` and `browse` complete quickly, and one where the ticket pool size ("tickets remaining") has a 5% error bound. We see that both perform with nearly the same latency as weak consistency.
+
+This plot also includes our experiments on Google Compute Engine. We see that the results of real geo-replication confirm the findings of our simulated geo-distribution results based on measured Amazon EC2's networks. 
+
+On this workload, we observe that the reservations used for the 5% error bound perform well even with high latency, which is different than our findings for the counter. This is because, in this case, the `Pool`s start out *full*, with sufficient reservations to be distributed among the replicas so that they can usually complete locally. Contrast this with the `Counter` experiments, where they start at typically smaller numbers (average initial value less than 500).
 
 ### Twitter clone
 [todo: demonstrating error tolerance for Counter (number of retweets), and latency bound for loading the timeline]

@@ -20,7 +20,7 @@ s <- subset(d,
   ipa_bound != 'consistency:weak'
   & mix == 'default'
   & honeycomb_mode != 'normal'
-  & grepl('Uniform|Slow|Google|High', condition)
+  & grepl('Local|Uniform|Slow|Geo|High', condition)
   & grepl('tol.*#0ms|cons|lat', x(ipa_bound,lease))
 )
 
@@ -53,12 +53,13 @@ s.l <- subset(s,
   !is.na(condition) 
   # & ipa_bound != 'consistency:weak'
   & grepl('cons|lat', ipa_bound)
-  & grepl('Uniform|Slow|Google|High', condition)
+  & grepl('Local|Uniform|Slow|Geo|High', condition)
 )
 
 save(
   ggplot(s.l, aes(
-      y = overall_latency_mean,
+      # y = overall_latency_mean,
+      y = read_lat_mean,
       x=grp, color='black', fill=grp, group=grp
   ))+
   geom_meanbar(position=position_dodge(width = 0.7))+
@@ -87,6 +88,10 @@ save(
   ipa.scales()
 , 'counter_lbound_consistency', w=5, h=3)
 
+print(subset(
+  ddply(s.l, .(condition, bound), summarize, percent_weak=mean((1-read_strong_fraction)*100)),
+))
+
 save(
   ggplot(s.l, aes(
       y = read_lat_p95,
@@ -102,4 +107,6 @@ save(
   # coord_cartesian(ylim=c(0,500))+
   ipa.scales()
 , 'counter_lbound_tail', w=5, h=3)
+
+
 

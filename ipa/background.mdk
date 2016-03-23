@@ -1,4 +1,4 @@
-# Background
+# Background {#sec-background}
 
 There are many popular news stories about different services like BuzzFeed [@buzzfeed-dress] and Instagram [@bieber-instagram] and their struggles with unpredictable Internet traffic.
 Before launching into the programming model and implementation, we will motivate 
