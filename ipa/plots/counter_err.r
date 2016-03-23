@@ -6,15 +6,20 @@ source('common.r')
 
 d <- data.or.csv(
   csv = 'data/counter_err_zipf.csv',
-  gen = function() subset(
-    data.ipa.rawmix(where = "datatype='counter' and ipa_duration=60 and ipa_version = 'v3.1'"),
-    select = c('load', 'honeycomb_mode', 'ipa_bound', 'bound', 
+  gen = function() {
+    dv3 <- subset(data.ipa.rawmix(where = "datatype='counter' and ipa_duration=60 and ipa_version = 'v3.1'"), honeycomb_mode != 'amazon')
+
+    dv7 <- subset(data.ipa.rawmix(where = "datatype='counter' and ipa_duration=60 and ipa_version = 'v7.1'"), honeycomb_mode == 'amazon')
+  
+    d <- rbind(dv3, dv7)
+    
+    subset(d, select = c('load', 'honeycomb_mode', 'ipa_bound', 'bound', 
       'ipa_consistency', 'lease', 'condition', 'mix',
       'read_lat_mean', 'read_lat_median', 'read_lat_p95', 'read_lat_p99', 'read_rate',
       'incr_lat_mean', 'incr_lat_median', 'incr_rate',
       'overall_latency_mean', 'read_strong_fraction'
-    )
-  )
+    ))
+  }
 )
 
 d$grp <- d$bound
@@ -25,6 +30,7 @@ s <- subset(d,
   & honeycomb_mode != 'normal'
   & grepl('Local|Uniform|Slow|Geo|High', condition)
   & grepl('tol.*#0ms|cons', x(ipa_bound,lease))
+  & ipa_bound != 'tolerance:0'
 )
 
 

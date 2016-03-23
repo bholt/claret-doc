@@ -32,7 +32,8 @@ Package: mathptmx
 
 ~a: .tex-tooltip
 
-p,ul,ol,li { replace="/\[(?:TODO|todo):\s*(.*?)\]/[\1]{#todo}/g" }
+
+p,ul,ol,li { replace="/\[(?:TODO|todo):\s*(.*?)\]//g" }
 
 ~H1: tex-cmd=\section
 ~H2: tex-cmd=\subsection
