@@ -6,7 +6,7 @@ Distributed applications must be able to run in a constantly changing environmen
 2. Can IPA enforce these bounds with reasonable overhead for a range of network conditions?
 3. How do different bounds affect performance under different network conditions?
 
-We answer these questions across varying network conditions by using a real-world testbed (Google Compute Engine) and simulating changing network conditions in a more controlled manner.  We begin using microbenchmarks on our simulated network to understand the performance of individual data types and explore each bound in isolation. Then, we move on to application benchmarks, modified to use IPA data types, on both our real-world and simulated test beds. 
+We answer these questions across varying network conditions by using a real-world testbed (Google Compute Engine [@GoogleCompute]) and simulating changing network conditions in a more controlled manner.  We begin using microbenchmarks on our simulated network to understand the performance of individual data types and explore each bound in isolation. Then, we move on to application benchmarks, modified to use IPA data types, on both our real-world and simulated test beds. 
 <!-- IPA's types provide structure that helps programmers ensure their application handles all potential edge cases. The bounds specified by programmers give them control over how the application will adjust to changing conditions, but they also provide the system with hints about what it should prioritize, and release valves that allow it to still be useful even performance has degraded. [todo: make this text about what questions you want to answer with the evaluation. ] -->
 
 ## Simulating adverse conditions
@@ -92,7 +92,7 @@ While we know that the error remains within our defined bounds, we may also wish
 First, we find that the *mean* error of weak is significantly less than 1%. This shows that inconsistency is quite rare; it is probably higher in practice when operations come from more than one client, but then we would not have been able to observe the error in the way we did. However, even with this experiment, we see outliers with significant error when writing is heavy: up to 60% error in the geo-replicated case. Finally, it is worth noting that the average interval width is less than the maximum of 1% and is lower for more read-heavy workloads that do not need as many reservations.
 
 ## Applications
-Next, we explore how the IPA system performs on two miniature application benchmarks. In addition to running with our simulated network conditions, for these applications we also ran some experiments on a real globally-distributed network. In Google Compute Engine [@GoogleCompute], we ran virtual machines in 4 different datacenters: the client in `us-east`, and the datastore replicas in `us-central`, `europe-west`, and `asia-east`.
+Next, we explore how the IPA system performs on two application benchmarks in our simulated network testbed and on the geo-distributed, Google Compute Engine [@GoogleCompute]. We ran virtual machines on Google Compute Engine in 4 different datacenters: the client in `us-east`, and the datastore replicas in `us-central`, `europe-west`, and `asia-east`.
 
 ### Ticket service
 Our Ticket sales web service, introduced in [#sec-background], is modelled after FusionTicket [@FusionTicket], which has been used as a benchmark in recent distributed systems research [@Xie:14:Salt;@Xie:15:ACIDAlt]. We support the following actions:
