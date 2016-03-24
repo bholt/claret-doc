@@ -35,9 +35,9 @@ Changing the write level must be done with care because it changes the semantics
 A more complex system might allow dynamic changes to an ADT's annotations (in the backing store) with clients checking for changes periodically. Applications wishing to get more dynamic behavior in our implementation could create alternate versions of ADTs with different static write levels and mediate the transition themselves.
 
 
-## Error bounds {#sec-error-bounds}
+## Error bounds { #sec-reservations }
 We implement error bounds by building on the concepts of *escrow* and *reservations* [@ONeil:86;@Gawlick:85;@Reuter:82;@Preguica:03]. These techniques have been used in storage systems to enforce hard limits, such as an account balance never going negative, while permitting concurrency. 
-The idea is to set aside a pool of permissions to perform certain update operations (we'll call them *reservations* or *tokens*), essentially treating operations as a manageable resource. If we have a counter that should never go below zero, there could be a number of *decrement* tokens equal to the current value of the counter. When a client wishes to decrement, it must first acquire sufficient tokens before performing the update operation. Correspondingly, in this scheme, increments produce new tokens. The insight is that the coordination needed to ensure that there are never too many tokens can be done *off the critical path*: they can be produced lazily if there are enough around already, and most importantly for this work, they can be *distributed* among replicas. This means that replicas can perform some update operations *safely* without coordinating with any other replicas.
+The idea is to set aside a pool of permissions to perform certain update operations (we'll call them *reservations* or *tokens*), essentially treating operations as a manageable resource. If we have a counter that should never go below zero, there could be a number of *decrement* tokens equal to the current value of the counter. When a client wishes to decrement, it must first acquire sufficient tokens before performing the update operation. Correspondingly, in this scheme, increments produce new tokens. The insight is that the coordination needed to ensure that there are never too many tokens can be done *off the critical path*: they can be produced lazily if there are enough around already, and most importantly for this work, they can be *distributed* among replicas. This means that replicas can perform some update operations safely without coordinating with any other replicas.
 
 ### Reservation Server
 To implement reservations, we must mediate requests to the datastore to prevent updates from exceeding the available reservations. Furthermore, we must be able to track how many reservations each server has locally without synchronization. Because Cassandra does not allow custom mediation of requests, nor replica-local state, we must implement a custom middleware layer to handle reservation requests. 
@@ -45,7 +45,7 @@ To implement reservations, we must mediate requests to the datastore to prevent 
 Any client requests requiring reservations are routed to one of a number of *reservation servers*. These servers then forward operations when permitted along to the underlying datastore. All persistent data is kept in Cassandra; these reservation servers keep only transient state tracking available reservations. Our design is similar to the middleware for implementing bounded counters on top of Riak [@Balegas:15:BoundedCounter]. The number of reservation servers can theoretically be decoupled from the number of datastore replicas; however, our design simply co-locates a reservation server with each Cassandra server and uses Cassandra's discovery mechanisms to route requests to reservation servers on the same host.
 
 ### Enforcing error bounds
-Reservations have been used previously to enforce hard global invariants in the form of upper or lower bounds on values or integrity constraints [@Balegas:15:Indigo;@Balegas:15:BoundedCounter], or logical assertions [@Liu:14:Warranties]. However, enforcing error tolerance bounds presents a new design challenge because the bounds are constantly shifting.
+Reservations have been used previously to enforce hard global invariants in the form of upper or lower bounds on values [@Balegas:15:BoundedCounter], integrity constraints [@Balegas:15:Indigo], or logical assertions [@Liu:14:Warranties]. However, enforcing error tolerance bounds presents a new design challenge because the bounds are constantly shifting.
 
 ~ Fig { #fig-reservations caption="Reservations enforcing error bounds." }
 ![](fig/reservations.pdf)
@@ -73,13 +73,13 @@ Where `v` is the size of the set read from the datastore, and `delta` is the num
 
 It is tempting to try to combine reservations for inverse operations into the same pool. For instance, it would seem that decrements would cancel out increments, allowing a single reservation server receiving matching numbers of each to continue indefinitely. In some situations, such as if sticky sessions can guarantee ordering from one reservation server to one replica, this could be sound. However, in the general case of eventual consistency, this is not valid, as the increments and decrements could go to different replicas, or propagate at different rates. Therefore it is crucial that ADT designers think carefully about the guarantees of their underlying datastore. Luckily, the abstraction of ADTs hides this complexity from the user — as long as the ADT is implemented correctly, they need only worry about the stated error bounds of the type they are using.
 
-## Provided by IPA
+## Provided by IPA {#sec-provided}
 
 ~ Fig {#fig-interfaces caption="Example facilities provided by IPA." }
 ![](fig/interfaces.pdf)
 ~
 
-The IPA system provides a number of primitives for building ADTs as well as some reference implementations of simple datatypes. We show some in [#fig-interfaces]. To support latency bounds, there is a generic `Rushable` trait that provides facilities for executing a specified read operation at multiple consistency levels within the specified time limit. For implementing error bounds, IPA provides a generic reservation pool which ADT implementations can use. 
+The IPA system provides a number of primitives for building ADTs as well as some reference implementations of simple datatypes. We show some in [#fig-interfaces]. To support latency bounds, there is a generic `LatencyBound` trait that provides facilities for executing a specified read operation at multiple consistency levels within the specified time limit. For implementing error bounds, IPA provides a generic reservation pool which ADT implementations can use. 
 
 The IPA system implements several ADTs:
 
