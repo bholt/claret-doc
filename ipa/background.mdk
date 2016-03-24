@@ -29,5 +29,3 @@ Alternatively, a convergent replicated data type (CRDT) [@Shapiro:SSS11:CRDT] ca
 
 Ensuring low-latency browsing is also difficult. If we blindly use weak consistency, then users could occasionally miss new events (especially relevant to anyone refreshing waiting for Star Wars tickets), or see events that should have been deleted. If we support weak consistency, we must now handle new cases resulting from inconsistencies, such as late actions on deleted events.
 During low-traffic times, allowing inconsistencies may be unnecessary. If we know the load is low, we should try to use stronger consistency to retrieve the results, and in times of heavy load, we could indicate to the user that the results may be inaccurate.
-
-In the next section, we show how we can express these requirements to the system and use types to ensure that we have handled all the possibilities resulting from inconsistency.
