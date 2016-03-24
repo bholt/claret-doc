@@ -6,7 +6,7 @@ Distributed applications must be able to run in a constantly changing environmen
 2. Can IPA enforce these bounds with reasonable overhead for a range of network conditions?
 3. How do different bounds affect performance under different network conditions?
 
-We answer these questions across varying network conditions by using a real-world testbed (Google Compute Engine [@GoogleCompute]) and simulating changing network conditions in a more controlled manner.  We begin using microbenchmarks on our simulated network to understand the performance of individual data types and explore each bound in isolation. Then, we move on to application benchmarks, modified to use IPA data types, on both our real-world and simulated test beds. 
+We answer these questions across varying network conditions using both a real-world testbed (Google Compute Engine [@GoogleCompute]) and simulated changing network conditions.  We begin using microbenchmarks on our simulated network to understand the performance of individual data types and explore each bound in isolation. Then, we move on to application benchmarks, modified to use IPA data types, on both our real-world and simulated test beds. 
 <!-- IPA's types provide structure that helps programmers ensure their application handles all potential edge cases. The bounds specified by programmers give them control over how the application will adjust to changing conditions, but they also provide the system with hints about what it should prioritize, and release valves that allow it to still be useful even performance has degraded. [todo: make this text about what questions you want to answer with the evaluation. ] -->
 
 ## Simulating adverse conditions
@@ -34,7 +34,7 @@ The most important factor in evaluating a system like IPA is how it handles diff
 We wish to know how an application written using these techniques 
 -->
 
-~ Tab { #tab-conditions caption="Network conditions for experiments: latency from client to each of the replicas, with standard deviation if significant." }
+~ Tab { #tab-conditions caption="Network conditions for experiments: latency from client to each replicas, with standard deviation if high." }
 | Network Condition     | Latencies (ms)               |||
 |:----------------------|:---------|:--------|:----------|
 | **Simulated**         | *Replica 1* |*Replica 2*| *Replica 3* |

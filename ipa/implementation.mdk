@@ -4,10 +4,10 @@ The IPA type system provides users with controls to specify performance and corr
 
 ## Backing datastore
 
-At the core, we need a scalable, distributed storage system with the ability to adjust consistency at a fine granularity, which many popular Dynamo-style commercial datastores such as Cassandra [@cassandra] and Riak [@riak] do. Our implementation of the IPA model in this work is built on top of Cassandra, so we will use Cassandra's terminology here, but most of the techniques employed in our implementation would port easily to Riak or others.
+The core of the implementation is a a scalable, distributed storage system with fine-grained consistency control, as many popular Dynamo-style commercial datastores offer (Cassandra [@cassandra], Riak [@riak], etc.). Our implementation of the IPA model builds on top of Cassandra, so we will use Cassandra's terminology here, but most of the techniques employed in our implementation would port easily to Riak or others.
 
-We introduced Dynamo-style replication and eventual consistency back in [#sec-background].
-In order to be sure of seeing a particular write, strong reads must coordinate with a majority (*quorum*) of replicas and compare their responses. In order for a write and a read operation to be *strongly consistent* (in the CAP sense [@Brewer:CAP]), the replicas acknowledging the write plus the replicas contacted for the read must be greater than the total number of replicas ($W + R > N$). This can be achieved in a couple ways: write to a quorum ($(N+1)/2$), and read from a quorum (`QUORUM` in Cassandra), or write to $N$ (`ALL`), and read from 1 (`ONE`) [@CassandraConsistency]. Cassandra additionally supports limited linearizable conditional updates and multiple degrees of weaker consistency, particularly to handle different locality domains (e.g. `LOCAL_QUORUM`). 
+We introduced Dynamo-style replication and eventual consistency in [#sec-background].
+To be sure of seeing a particular write, strong reads must coordinate with a majority (*quorum*) of replicas and compare their responses. For a write and read pair to be *strongly consistent* (in the CAP sense [@Brewer:CAP]), the replicas acknowledging the write plus the replicas contacted for the read must be greater than the total number of replicas ($W + R > N$). This can be achieved in two ways: write to a quorum ($(N+1)/2$) and read from a quorum (`QUORUM` in Cassandra), or write to $N$ (`ALL`) and read from 1 (`ONE`) [@CassandraConsistency]. Cassandra also supports limited linearizable conditional updates and degrees of weaker consistency, particularly to handle different locality domains (e.g. `LOCAL_QUORUM`). 
 
 
 ## Latency bounds {#sec-latency-bounds}
@@ -15,7 +15,7 @@ The time it takes to achieve a particular level of consistency depends on the cu
 
 It is conceptually quite simple to implement a dynamically tunable consistency level: send read requests to as many replicas as necessary for strong consistency (depending on the strength of corresponding writes it could be to a quorum or all), but then when the latency time limit is up, take however many responses have been received and compute the most consistent response possible from them.
 
-Unfortunately, Cassandra's client interface does not allow us to implement latency bounds exactly as described above: operations must specify a consistency level in advance. We implement a suboptimal approach by issuing read requests at different levels in parallel. The Scala client driver we use is based on *futures*, allowing us to compose the parallel operations and respond either when the strong operation returns, with the strongest available at the specified time limit. If no responses are available at the time limit, we wait for the first to return.
+Unfortunately, Cassandra's client interface does not allow us to implement latency bounds exactly as described above: operations must specify a consistency level in advance. Instead, we issue read requests at different levels in parallel. <!--The Scala client driver we use is based on *futures*, allowing us to compose the parallel operations--> We compose the parallel operations and respond either when the strong operation returns or with the strongest available result at the specified time limit. If no responses are available at the time limit, we wait for the first to return.
 
 ### Monitors
 
@@ -23,7 +23,7 @@ The main problem with this approach is that it wastes a lot of work, even if we 
 In these cases, we should back off and only attempt weaker consistency.
 To do this, the system monitors current traffic and predicts the latency of different consistency levels.
 
-Each client in the system has its own Monitor (though multi-threaded clients share one). The monitor records the observed latencies of read operations, grouped by operation and consistency level. All of the IPA ADTs are implemented in terms of Cassandra *prepared statements*, so we can easily categorize operations by their prepared identifier. The monitor uses an exponentially decaying reservoir to compute running percentiles weighted toward recent measurements, ensuring that its predictions continually adjust to current conditions. 
+Each client in the system has its own Monitor (though multi-threaded clients share one). The monitor records the observed latencies of read operations, grouped by operation and consistency level. The IPA ADTs are implemented in terms of Cassandra *prepared statements*, so we can easily categorize operations by their prepared identifier. The monitor uses an exponentially decaying reservoir to compute running percentiles weighted toward recent measurements, ensuring that its predictions continually adjust to current conditions. 
 
 Whenever a latency-bound operation is issued, it queries the monitor to determine the strongest consistency likely to be achieved within the time bound. It then issues 1 request at that consistency level and a backup at the weakest level, or possibly only the weakest if that is the prediction.
 
@@ -89,7 +89,7 @@ The IPA system implements several ADTs:
 - `UUIDPool` generates unique identifiers, with a hard limit on the number of IDs that can be taken from it; builds on top of `BoundedCounter` and supports the same bounds.
 - `List`: thin abstraction around a Cassandra table with a time-based clustering order, supports latency bounds. Used to implement Twitter timelines and Ticket listings.
 
-[#fig-interfaces] shows conceptual-level Scala code using reservation pools to implement a Counter with error bounds. The actual implementation splits this functionality between the client and the reservation server. It is also all implemented using an asynchronous futures-based interface to allow for sufficient concurrency, based on the Phantom Scala client for Cassandra [@Phantom]. The Reservation Server is similarly built around futures using Twitter's Finagle framework [@finagle]. Communication is done between clients and Cassandra via prepared statements to avoid excessive parsing, and Thrift remote-procedure-calls between clients and the Reservation Servers.
+[#fig-interfaces] shows Scala code using reservation pools to implement a Counter with error bounds. The actual implementation splits this functionality between the client and the reservation server. It is also all implemented using an asynchronous futures-based interface to allow for sufficient concurrency, based on the Phantom Scala client for Cassandra [@Phantom]. The Reservation Server is similarly built around futures using Twitter's Finagle framework [@finagle]. Communication is done between clients and Cassandra via prepared statements to avoid excessive parsing, and Thrift remote-procedure-calls between clients and the Reservation Servers.
 
 
 
