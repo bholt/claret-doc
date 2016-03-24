@@ -77,7 +77,7 @@ For example, a `Set` ADT might have a relaxed consistency policy for its `size`,
 but a strong consistency policy for its `contains?` predicate method.
 The runtime is then responsible for managing the interaction between these consistency policies. In the case of a conflict between two bounds, the system can be conservative and choose stronger policies than specified without affecting correctness.
 
-In the ticket sales application, the counter ADT for each event's tickets has an accuracy policy `ErrorTolerance(10%)`. This relaxed accuracy policy allows the system to quickly read the count of tickets remaining. An accuracy policy is appropriate here because it expresses a domain requirement---users want to see accurate ticket counts. As long as the system meets this requirement, it is free to relax consistency and maximize performance without sacrificing application quality.
+In the ticket sales application, the counter ADT for each event's tickets has an accuracy policy `ErrorTolerance(5%)`. This relaxed accuracy policy allows the system to quickly read the count of tickets remaining. An accuracy policy is appropriate here because it expresses a domain requirement---users want to see accurate ticket counts. As long as the system meets this requirement, it is free to relax consistency and maximize performance without sacrificing application quality.
 The list ADT for events has a latency policy, which also expresses a domain requirement---that pages on the website load in reasonable time.
 
 ## IPA Types {#sec-ipa-types}
