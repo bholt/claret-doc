@@ -32,7 +32,7 @@ PLOTS := $(filter-out plots/common.r, $(wildcard plots/*.r))
 PLOT_PDFS := $(PLOTS:%.r=%.pdf)
 
 $(FIGS_OUT): fig/%.pdf: ipa.graffle
-	$(GRAFFLE) ipa.graffle $* $@
+	$(GRAFFLE) ipa.graffle $* $@ && touch $@
 
 $(FIGS_SVG): fig/%.svg: fig/%.pdf
 	pdf2svg $< $@
