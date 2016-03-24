@@ -66,7 +66,9 @@ p,ul,ol,li { replace="/\[(?:TODO|todo):\s*(.*?)\]/[\1]{#todo}/g" }
 
 ~ TexRaw
 % redefines the caption setup of the figures environment in the beamer class.
-\captionsetup[figure]{labelformat=empty}
+\captionsetup[figure]{labelformat=empty,aboveskip=4pt,belowskip=4pt}
+\setlength{\floatsep}{10pt plus 4pt minus 2pt}
+\setlength{\textfloatsep}{10pt plus 4pt minus 3pt}
 
 \setcounter{secnumdepth}{0}
 
