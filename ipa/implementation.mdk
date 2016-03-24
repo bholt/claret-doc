@@ -4,7 +4,7 @@ The IPA type system provides users with controls to specify performance and corr
 
 ## Backing datastore
 
-At the core, we need a scalable, distributed storage system with the ability to adjust consistency at a fine granularity. Many popular Dynamo-style commercial datastores such as Cassandra [@cassandra] and Riak [@riak] support configuring consistency levels in this way. Our implementation of the IPA model in this work is built on top of Cassandra, so we will use Cassandra's terminology here, but most of the techniques employed in our implementation would port easily to Riak or others.
+At the core, we need a scalable, distributed storage system with the ability to adjust consistency at a fine granularity. Many popular Dynamo-style commercial datastores such as Cassandra [@cassandra] and Riak [@riak] support configuring consistency levels in this way. Our implementation of the IPA model is built on top of Cassandra, so we will use Cassandra's terminology here, but most of the techniques employed in our implementation would port easily to Riak or others.
 
 We introduced *eventual consistency* back in [#sec-background].
 In order to be sure of seeing a particular write, strong reads must coordinate with a majority (*quorum*) of replicas and compare their responses. In order for a write and a read operation to be *strongly consistent* (in the CAP sense [@Brewer:CAP]), the replicas acknowledging the write plus the replicas contacted for the read must be greater than the total number of replicas ($W + R > N$). This can be achieved in a couple ways: write to a quorum ($(N+1)/2$), and read from a quorum (`QUORUM` in Cassandra), or write to $N$ (`ALL`), and read from 1 (`ONE`) [@CassandraConsistency]. Cassandra additionally supports limited linearizable ([@Lamport:79:SC;@Herlihy:90:Linear]) conditional updates, and varying degrees of weaker consistency, particularly to handle different locality domains (same datacenter or across geo-distributed datacenters). In this work, we keep our discussion in terms of this simple model of consistency.
@@ -24,7 +24,7 @@ The main problem with this approach is that it wastes a lot of work, even if we 
 In cases where it is clear that strong consistency is unlikely to succeed, it should back off and attempt weaker consistency.
 To do this, the system must monitor current traffic and predict the latency of different consistency levels.
 
-Each client in the system has its own Monitor (though multi-threaded clients share one). The monitor records the observed latencies of read operations, grouping them by operation and consistency level. All of the IPA ADTs are implemented in terms of Cassandra *prepared statements*, so we can easily categorize operations by their prepared identifier. The monitor uses an exponentially decaying reservoir to compute running percentiles weighted toward recent measurements, ensuring that its predictions continually adjust to current conditions. 
+Each client in the system has its own Monitor (though multi-threaded clients share one). The monitor records observed latencies of read operations, grouped by operation and consistency level. All of the IPA ADTs are implemented in terms of Cassandra *prepared statements*, so we can easily categorize operations by their prepared identifier. The monitor uses an exponentially decaying reservoir to compute running percentiles weighted toward recent measurements, ensuring that its predictions continually adjust to current conditions. 
 
 Whenever a latency-bound operation is issued, it queries the monitor to determine the strongest consistency likely to be achieved within the time bound. It then issues 1 request at that consistency level and a backup at the weakest level (or possibly just the one weakest if that is the prediction).
 
@@ -32,8 +32,8 @@ Whenever a latency-bound operation is issued, it queries the monitor to determin
 
 Remember that the achieved consistency level is determined by the combination of the write level and read level. By default, we assume a balanced mix of operations on an ADT, so writes are done at `QUORUM` level and strong reads can be achieved with the matching `QUORUM` level. However, sometimes this is not the case: if a datatype is heavily biased toward writes, then it is better to do the weakest writes, and adjust reads to compensate. This would also be helpful in cases where even the weakest reads fail to meet latency requirements because quorum writes are overloading the servers.
 
-Changing the write level must be done with care because it changes the semantics of downstream reads. We have ADT implementations choose their desired write level statically so that we know the strength of a read without checking.
-One could imagine a more complex system allowing dynamic changes to an ADT's metadata (in the backing store), with clients checking for changes periodically, but we do not implement this. Applications wishing to get more dynamic behavior in our implementation could create alternate versions of ADTs with different static write levels and mediate the transition themselves.
+Changing the write level must be done with care because it changes the semantics of downstream reads. Our implementation has ADTs choose their desired write level statically so that we know the strength of a read without checking.
+A more complex system might allow dynamic changes to an ADT's annotations (in the backing store) with clients checking for changes periodically. Applications wishing to get more dynamic behavior in our implementation could create alternate versions of ADTs with different static write levels and mediate the transition themselves.
 
 
 ## Error bounds {#sec-error-bounds}
@@ -41,7 +41,7 @@ We implement error bounds by building on the concepts of *escrow* and *reservati
 The idea is to set aside a pool of permissions to perform certain update operations (we'll call them *reservations* or *tokens*), essentially treating operations as a manageable resource. If we have a counter that should never go below zero, there could be a number of *decrement* tokens equal to the current value of the counter. When a client wishes to decrement, it must first acquire sufficient tokens before performing the update operation. Correspondingly, in this scheme, increments produce new tokens. The insight is that the coordination needed to ensure that there are never too many tokens can be done *off the critical path*: they can be produced lazily if there are enough around already, and most importantly for this work, they can be *distributed* among replicas. This means that replicas can perform some update operations *safely* without coordinating with any other replicas.
 
 ### Reservation Server
-To implement reservations, we must be able to mediate requests to the datastore to prevent updates from exceeding the available reservations. Furthermore, we must be able to track how many reservations each server has locally without synchronization. Because Cassandra does not allow custom mediation of requests, nor does it support replica-local state, we must implement a custom middleware layer to handle reservation requests. 
+To implement reservations, we must mediate requests to the datastore to prevent updates from exceeding the available reservations. Furthermore, we must be able to track how many reservations each server has locally without synchronization. Because Cassandra does not allow custom mediation of requests, nor replica-local state, we must implement a custom middleware layer to handle reservation requests. 
 
 Any client requests requiring reservations are routed to one of a number of *reservation servers*. These servers then forward operations when permitted along to the underlying datastore. All persistent data is kept in Cassandra; these reservation servers keep only transient state tracking available reservations. Our design is similar to the middleware for implementing bounded counters on top of Riak [@Balegas:15:BoundedCounter]. The number of reservation servers can theoretically be decoupled from the number of datastore replicas; however, our design simply co-locates a reservation server with each Cassandra server and uses Cassandra's discovery mechanisms to route requests to reservation servers on the same host.
 
@@ -80,14 +80,14 @@ It is tempting to try to combine reservations for inverse operations into the sa
 ![](fig/interfaces.pdf)
 ~
 
-The IPA System implementation provides a number of primitives for building ADTs as well as some reference implementations of simple datatypes. We show some in [#fig-interfaces]. To support latency bounds, there is a generic `Rushable` trait that provides facilities for executing a specified read operation at multiple consistency levels within the specified time limit. For implementing error bounds, IPA provides a generic reservation pool which ADT implementations can use. 
+The IPA system implementation provides a number of primitives for building ADTs as well as some reference implementations of simple datatypes. We show some in [#fig-interfaces]. To support latency bounds, there is a generic `Rushable` trait that provides facilities for executing a specified read operation at multiple consistency levels within the specified time limit. For implementing error bounds, IPA provides a generic reservation pool which ADT implementations can use. 
 
-The IPA system currently has a small number of datatypes implemented:
+The IPA system implements several ADTs:
 
-- `Counter` based on Cassandra's counter datatype, supporting increment and decrement, with latency and error bounds
+- `Counter` based on Cassandra's counter type, supporting increment and decrement, with latency and error bounds
 - `Set` with `add`, `remove`, `contains` and `size`, supporting latency bounds, and error bounds on `size`.
 - `BoundedCounter` CRDT from [@Balegas:15:BoundedCounter] that enforces a hard lower bound even with weak consistency. Our implementation adds the ability to bound error on the value of the counter, and set latency bounds.
-- `UUIDPool` that generates unique identifiers, but has a hard limit on the number of ids that can be taken from it, built on top of `BoundedCounter` and supporting the same bounds.
+- `UUIDPool` generates unique identifiers, with a hard limit on the number of IDs that can be taken from it; builds on top of `BoundedCounter` and supports the same bounds.
 - `List`: thin abstraction around a Cassandra table with a time-based clustering order, with latency bounds. Used to implement Twitter timelines and Ticket listings.
 
 [#fig-interfaces] shows conceptual-level Scala code using reservation pools to implement a Counter with error bounds. The actual implementation splits this functionality between the client and the reservation server. It is also all implemented using an asynchronous futures-based interface to allow for sufficient concurrency, based on the Phantom Scala client for Cassandra [@Phantom]. The Reservation Server is similarly built around futures using Twitter's Finagle framework. Communication is done between clients and Cassandra via prepared statements to avoid excessive parsing, and Thrift remote-procedure-calls between clients and the Reservation Servers.

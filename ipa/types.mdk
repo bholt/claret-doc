@@ -22,21 +22,21 @@ and the semantics of operations performed under those policies.
 
 The IPA type system consists of three parts:
 
-* Abstract data types (ADTs) implement common distributed data structures (such as `Set[T]`).
+* Abstract data types (ADTs) implement common data structures (such as `Set[T]`) on distributed storage.
 * Policy annotations on ADTs specify the desired consistency level for an object in application-specific terms (such as latency or accuracy bounds).
 * IPA types track the consistency of operation results and enforce consistency safety by requiring developers to consider weak outcomes.
 
 Together, these three components provide two key benefits for developers.
-First, the IPA type system enforces *consistency safety*, tracking the consistency level of each result and preventing inconsistent data from flowing into consistent data without explicit endorsement, in the style of EnerJ [@Sampson:11:EnerJ].
-Second, the IPA type system provides *performance*, because consistency annotations at the ADT level allow the runtime to dynamically select the consistency for each individual operation that maximizes performance in a constantly changing environment.
+First, the IPA type system enforces *consistency safety*, tracking the consistency level of each result and preventing inconsistent values from flowing into consistent values without explicit endorsement, similar to EnerJ [@Sampson:11:EnerJ].
+Second, the IPA type system provides *performance*, because consistency annotations at the ADT level allow the runtime to select a consistency for each individual operation that maximizes performance in a constantly changing environment.
 
 ## Abstract Data Types { #adts }
 
 The base of the IPA type system is a set of abstract data types (ADTs) for common distributed data structures. Though the simplest key/value stores only support primitive types like strings for values, many popular datastores now have built-in support for more complex data structures such as sets, lists, maps, and other specialized types. However, each datastore has its own interface to these types: Redis's [@redis] types are implicit in the command used to operate on them, Cassandra [@Lakshman:10:Cassandra] uses a more relational-style model with tables and columns and composite keys, while Riak [@riak] and Hyperdex [@hyperdex-web;@hyperdex] support more direct data structure access. Our library of ADTs allows us to decouple our type system from any particular datastore, though our reference implementation is on top of Cassandra, similar to [@Sivaramakrishnan:15:Quelea].
 
-Besides abstracting over various storage systems, ADTs are an ideal place from which to begin reasoning about consistency and system-level optimizations. ADTs present a clear abstract model through a set of operations which query and update the state, allowing users and systems alike to reason about their logical, algebraic properties rather than the low-level operations used to implement them. Moreover, as we will see in the coming sections, annotating datatypes, rather than individual operations, is crucial because ADTs are where writes and reads meet and affect one another.
+Besides abstracting over various storage systems, ADTs are an ideal place from which to begin reasoning about consistency and system-level optimizations. ADTs present a clear abstract model through a set of operations that query and update the state, allowing users and systems alike to reason about their logical, algebraic properties rather than the low-level operations used to implement them. Moreover, as we will see in the coming sections, annotating datatypes, rather than individual operations, is crucial because ADTs are where writes and reads meet and affect one another.
 
-In the ticket sales application, each event (i.e., movie screening) has an instance of the `Counter` ADT to track the number of tickets available. The counter provides a read method to get its current value, and increment and decrement operations to update its value. Describing the ticket sales behavior as an ADT allows the system to reason more strongly about the values by, for example, ruling out arbitrary state updates.
+In the ticket sales application, each movie showing has a `Counter` ADT to track the available tickets. The counter has a read method to get its current value, as well as increment and decrement operations. Describing tickets as an ADT allows the system to reason more strongly about values by, for example, ruling out arbitrary state updates.
 
 
 ## Policy Annotations { #policies }
@@ -56,11 +56,11 @@ Static annotations provide the same direct control as existing approaches,
 but simplify reasoning about correctness.
 *Dynamic* annotations specify a consistency policy in terms of application-level requirements.
 For example, a `Set` ADT can be declared as `Set[T] with LatencyBound(50 ms)`,
-which states that operations on that object are performed with a target latency bound in mind. The runtime is free to dynamically choose, on a per-operation basis, whichever consistency level is necessary to meet this bound.
+which states that operations on that object are performed with a target latency in mind. The runtime is free to dynamically choose, on a per-operation basis, whichever consistency level can meet this bound.
 
-The IPA type system features two dynamic consistency policies:
+IPA offers two dynamic consistency policies:
 
-* A latency policy `LatencyBound(x ms)` specifies a target latency for each operation performed on the ADT. The runtime can then determine the consistency level for each individual operation issued, optimizing for the cheapest level that will likely satisfy the latency bound.
+* A latency policy `LatencyBound(x)` specifies a target latency for operations on the ADT (e.g., 20 ms). The runtime can choose the consistency level for each individual operation issued, optimizing for the cheapest level that will likely satisfy the latency bound.
 * An accuracy policy `ErrorTolerance(x%)` specifies the desired accuracy for read operations performed on the ADT. For example, the `size` of a `Set` ADT may only need to be accurate within 5% tolerance. The runtime can optimize the consistency of write operations so that reads are guaranteed to meet this bound.
 
 Policy annotations are central to the flexibility and usability of the IPA type system.
@@ -72,23 +72,27 @@ by requiring the developer to consider the effects of weak operations.
 Moreover, policy annotations are expressed in terms of application-level requirements, such as latency or accuracy.
 This higher-level semantics absolves developers of manipulating the consistency of individual operations to maximize performance while maintaining safety.
 
-As an extension, ADTs can also have different consistency policies for each method.
-For example, a `Set` ADT might have a relaxed consistency policy for its `size`,
-but a strong consistency policy for its `contains?` predicate method.
-The runtime is then responsible for managing the interaction between these consistency policies. In the case of a conflict between two bounds, the system can be conservative and choose stronger policies than specified without affecting correctness.
+As an extension, ADTs can have different consistency policies for each method.
+For example, a `Set` ADT might have relaxed consistency for its `size`,
+but strong consistency for its `contains` predicate.
+The runtime is responsible for managing the interaction between these consistency policies. In the case of a conflict between two bounds, the system can be conservative and choose stronger policies than specified without affecting correctness.
 
-In the ticket sales application, the counter ADT for each event's tickets has an accuracy policy `ErrorTolerance(10%)`. This relaxed accuracy policy allows the system to quickly read the count of tickets remaining. An accuracy policy is appropriate here because it expresses a domain requirement---users want to see accurate ticket counts. As long as the system meets this requirement, it is free to relax consistency and maximize performance without sacrificing application quality.
-The list ADT for events has a latency policy, which also expresses a domain requirement---that pages on the website load in reasonable time.
+In the ticket sales application, the counter ADT for each event's tickets has an accuracy policy `ErrorTolerance(5%)`. This relaxed accuracy policy allows the system to quickly read the count of tickets remaining. An accuracy policy is appropriate here because it expresses a domain requirement---users want to see accurate ticket counts. As long as the system meets this requirement, it is free to relax consistency and maximize performance without sacrificing application quality.
+The `List` ADT used for events has a latency policy that also expresses a domain requirement---that pages on the website load in reasonable time.
 
 ## IPA Types {#sec-ipa-types}
 
 The keys to the IPA type system are the IPA types themselves.
 Read operations of ADTs annotated with consistency policies return instances of an *IPA type*.
-These IPA types track the consistency of the results,
+These IPA types track the consistency of the results
 and enforce a fundamental non-interference property: 
 results from weakly consistent operations cannot flow into computations with stronger consistency without explicit endorsement.
 
-Formally, the IPA types form a lattice parameterized by a primitive type `T`. 
+~ Fig {#lattice caption="IPA Type Lattice parameterized by a type `T`."}
+![](fig/lattice.pdf)
+~
+
+Formally, the IPA types form a lattice parameterized by a primitive type `T`, shown in [#lattice].
 The bottom element `Inconsistent[T]` specifies an object with the weakest possible consistency. 
 The top element is `Consistent[T]`, an object with the strongest possible consistency, which has an implicit cast to type `T` available.
 The other IPA types follow a subtyping relation $\prec$, defined by:
@@ -97,14 +101,14 @@ The other IPA types follow a subtyping relation $\prec$, defined by:
 \inferrule{\tau \text{ is weaker than } \tau'}{\tau'[T] \prec \tau[T]}
 ~
 
-The IPA type system is very similar to the probability type system of DECAF [@Boston:15:DECAF], which uses types to track the quality of results computed on approximate hardware. Their non-interference property is also similar: a result of low quality cannot flow into a result of higher quality without explicit endorsement.
+The IPA type system is similar to the probability type system of DECAF [@Boston:15:DECAF], which uses types to track the quality of results computed on approximate hardware. Their non-interference property is also similar: a result of low quality cannot flow into a result of higher quality without explicit endorsement.
 We elide a thorough formal development of the IPA type system due to its close similarity with DECAF.
 
 ### Weak IPA types
 
-The IPA types encapsulate information about the consistency policy used to perform a read operation.
+The IPA types encapsulate information about the consistency achieved when reading a value.
 Strong read operations return values of type `Consistent[T]`,
-and so (by implicit casting) appear to developers as any other instance of type `T`.
+and so (by implicit cast) behave as any other instance of type `T`.
 Intuitively, this equivalence is because the results of strong reads are known to be consistent, which corresponds to the control flow in conventional (non-distributed) applications.
 
 Weaker read operations return values of some type lower in the lattice (*weak IPA types*), reflecting their possible inconsistency.
@@ -133,7 +137,7 @@ In this system, the `Rushed[T]` type would be the sum of three types `Consistent
 A match statement destructures the result of a latency-bound read operation:
 
 ```
-set.size() match {
+set.contains() match {
   case Consistent(x) => print(x)
   case LocalQuorum(x) => print(x + ", locally")
   case Inconsistent(_) => print("unknown")
@@ -150,9 +154,7 @@ The weak IPA type `Interval[T]` is the result of operations performed on an ADT 
 `Interval[T]` represents an interval of values within which the true (strongly consistent) result lies.
 The interval reflects uncertainty in the true value created by relaxed consistency, in the same style as work on approximate computing [@Bornholt:14:UncertainT].
 
-The key invariant of the `Interval[T]` type is that uses of the interval are *indistinguishable* from a linearizable order. For example, consider a `Set` with 100 elements, with its `size` operation annotated with error tolerance of 5%. With linearizability, if we `add` a new element, then read the `size` (or if there is any way to know that the one precedes the other), we must get back 101 (provided no other updates are occurring). However, 5% error tolerance means that `size` could return $[95,105]$, or $[100,107]$, among many others. In which case the client is unable to tell if the `add` was incorporated or not. This frees the underlying system to apply a number of optimizations, including delaying synchronization, that can significantly improve performance.
-
-In theory, any type with a partial order over values could be represented as an interval (e.g. a Set with some items that may or may not be in the set). However, in this work we limit them to numeric types.
+The key invariant of the `Interval[T]` type is that uses of the interval are *indistinguishable* from a linearizable order. For example, consider a `Set` with 100 elements, with its `size` operation annotated with error tolerance of 5%. With linearizability, if we `add` a new element, then read the `size` (or if there is any way to know that the one precedes the other), we must get back 101 (provided no other updates are occurring). However, 5% error tolerance means that `size` could return $[95,105]$, or $[100,107]$, among many others. In which case the client is unable to tell if the `add` was incorporated or not. This frees the underlying system to apply a number of optimizations, including delaying synchronization, that can significantly improve performance. While any partially-ordered domain could be represented as an interval (e.g., a Set with partial knowledge of its members), in this work we consider only numeric types.
 
 In the ticket sales example, the counter ADT's accuracy policy means that reads of the number of tickets return an `Interval[Int]`. If this interval does not contain zero, then it is safe (in the absence of intervening events) to sell a ticket. Because the interval is indistinguishable from a linearizable order, the write event to sell the ticket will succeed. The relaxed consistency of the interval type allowed the system to optimize performance in the common case where there are many tickets available, and dynamically adapt to contention when the ticket count diminishes.
 
