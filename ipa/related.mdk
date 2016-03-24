@@ -14,7 +14,7 @@ In Indigo [@Balegas:15:Indigo], programmers write *invariants* over abstract sta
 
 
 ## Explicit performance bounds
-IPA's latency-bound policies were inspired by Pileus's *consistency-based SLAs* [@Terry:13:SLAs]. Consistency SLAs specify a target latency and consistency level (e.g. 100 ms with read-my-writes), associated with a *utility*. Each operation specifies a set of SLAs, and the system predicts which is most likely to be met, attempting to maximize utility, and returns both the value and the achieved consistency level. 
+IPA's latency-bound policies were inspired by the *consistency-based SLAs* of Pileus [@Terry:13:SLAs]. Consistency SLAs specify a target latency and consistency level (e.g. 100 ms with read-my-writes), associated with a *utility*. Each operation specifies a set of SLAs, and the system predicts which is most likely to be met, attempting to maximize utility, and returns both the value and the achieved consistency level. 
 
 Consistency SLAs are more expressive than IPA's latency bounds, allowing multiple acceptable targets to be indicated and weighted. On the other hand, the IPA type system provides more assistance in working with the results: `Rushed[T]` values can statically ensure that all possible cases are handled and protect programmers from inadvertently using weak values where they should not. Additionally, Pileus's SLAs are specified on individual read operations, introducing greater annotation burden and preventing the potential write optimizations that come from annotating at the ADT level.
 
