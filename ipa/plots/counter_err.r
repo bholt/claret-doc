@@ -7,11 +7,11 @@ source('common.r')
 d <- data.or.csv(
   csv = 'data/counter_err_zipf.csv',
   gen = function() {
-    dv3 <- subset(data.ipa.rawmix(where = "datatype='counter' and ipa_duration=60 and ipa_version = 'v3.1'"), honeycomb_mode != 'amazon')
+    # dv3 <- subset(data.ipa.rawmix(where = "datatype='counter' and ipa_duration=60 and ipa_version = 'v3.1'"), honeycomb_mode != 'amazon')
 
-    dv7 <- subset(data.ipa.rawmix(where = "datatype='counter' and ipa_duration=60 and ipa_version = 'v7.1'"), honeycomb_mode == 'amazon')
+    # dv7 <- subset(data.ipa.rawmix(where = "datatype='counter' and ipa_duration=60 and ipa_version = 'v7.1'"), honeycomb_mode == 'amazon')
   
-    d <- rbind(dv3, dv7)
+    d <- data.ipa.rawmix(where = "datatype='counter' and ipa_duration=60 and ipa_version = 'v7.2'")
     
     subset(d, select = c('load', 'honeycomb_mode', 'ipa_bound', 'bound', 
       'ipa_consistency', 'lease', 'condition', 'mix',
@@ -28,7 +28,7 @@ s <- subset(d,
   ipa_bound != 'consistency:weak'
   & mix == 'default'
   & honeycomb_mode != 'normal'
-  & grepl('Local|Uniform|Slow|Geo|High', condition)
+  & grepl('Uniform|Slow|Geo|High', condition)
   & grepl('tol.*#0ms|cons', x(ipa_bound,lease))
   & ipa_bound != 'tolerance:0'
 )

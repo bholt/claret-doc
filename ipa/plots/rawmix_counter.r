@@ -4,18 +4,18 @@ source('common.r')
 d <- data.or.csv(
   csv = 'data/rawmix-counter.csv',
   gen = function() {
-    dv3 <- subset(data.ipa.rawmix(where = "datatype='counter' and ipa_duration=60 and ipa_version = 'v3.1'"), honeycomb_mode != 'amazon')
+    # dv3 <- subset(data.ipa.rawmix(where = "datatype='counter' and ipa_duration=60 and ipa_version = 'v3.1'"), honeycomb_mode != 'amazon')
   
-    dv7 <- subset(data.ipa.rawmix(where = "datatype='counter' and ipa_duration=60 and ipa_version = 'v7.1'"), honeycomb_mode == 'amazon')
+    d <- data.ipa.rawmix(where = "datatype='counter' and ipa_duration=60 and (ipa_version LIKE 'v7.%' or ipa_version = 'v3.1')")
     
-    d <- rbind(dv3, dv7)
+    # d <- rbind(dv3, dv7)
   
     subset(d,
       select = c('load', 'honeycomb_mode', 'ipa_bound', 'bound', 
         'ipa_consistency', 'lease', 'condition', 'mix',
         'read_lat_mean', 'read_lat_median', 'read_lat_p95', 'read_lat_p99', 'read_rate',
         'incr_lat_mean', 'incr_lat_median', 'incr_rate',
-        'overall_latency_mean', 'read_strong_fraction'
+        'overall_latency_mean', 'read_strong_fraction', 'ipa_version'
       )
     )
   }
@@ -34,7 +34,7 @@ s <- subset(d,
 
 
 save(
-  ggplot(subset(s, !is.na(condition)
+  ggplot(subset(s, !is.na(condition) & ipa_version == 'v7.2'
     #& grepl('(weakwrite)', x(ipa_bound,lease))
          # & grepl('((error: 5%|weak|lat).*#200ms)|(strong.*#0ms)', x(bound,lease))
          # & grepl('strong#strong|weak', x(bound,ipa_consistency))
@@ -62,18 +62,22 @@ s.l <- subset(s,
   !is.na(condition) 
   # & ipa_bound != 'consistency:weak'
   & grepl('cons|lat', ipa_bound)
-  & grepl('Local|Uniform|Slow|Geo|High', condition)
+  & grepl('Uniform|Slow|Geo|High', condition)
+  & ipa_bound != 'latency:20ms'
 )
+
+s.tail <- subset(s.l, (ipa_version == 'v7.1' & honeycomb_mode == 'amazon') | (ipa_version == 'v3.1' & honeycomb_mode != 'amazon'))
+s.l <- subset(s.l, ipa_version == 'v7.2')
 
 v.strong <- round(mean(subset(s.l, honeycomb_mode == 'amazon' & bound == 'strong')$read_lat_mean), 0)
 ann.strong <- data.frame(
     condition = factor('Geo-\ndistributed', levels=vals(conds)),
     grp='strong',
-    read_lat_mean = 102.5,
+    read_lat_mean = 82,
     label = '(' + v.strong + ' ms)'
 )
 
-s.l.l <- ddply(s.l, .(bound, condition, grp), summarize, y=round(mean(percent_strong),0), read_lat_mean=mean(read_lat_mean))
+s.l.l <- ddply(subset(s.l), .(bound, condition, grp), summarize, y=round(mean(percent_strong),0), read_lat_mean=mean(read_lat_mean))
 
 s.l$label <- s.l$percent_weak
 
@@ -84,7 +88,7 @@ save(
       x=grp, color='black', fill=grp, group=grp
   ))+
   geom_meanbar(position=position_dodge(width = 0.7))+
-  # geom_text(aes(label=y+'%', y = -5), data = s.l.l, color='black', size=2, family='Helvetica')+
+  geom_text(aes(label=y+'%', y = -5), data = s.l.l, color='black', size=2.3, family='Helvetica')+
   geom_text(aes(label=label), data = ann.strong, color='black', size=2.5, family='Helvetica', hjust=-0.2)+
   
   scale_y_continuous(breaks=c(0, 10, 25, 50, 75, 100))+
@@ -94,8 +98,8 @@ save(
   # theme(axis.title.x = element_blank())+
   theme.bar()+
   facet_wrap(~condition, scales="free_x", ncol=6)+
-  # coord_cartesian(ylim=c(-5,100))+
-  coord_cartesian(ylim=c(0,100))+
+  coord_cartesian(ylim=c(-5,80))+
+  # coord_cartesian(ylim=c(0,100))+
   ipa.scales()
 , 'counter_lbound', w=5, h=3.5)
 #
@@ -120,6 +124,8 @@ print(subset(
 ))
 
 
+s.l <- s.tail
+
 v.strong <- round(mean(subset(s.l, honeycomb_mode == 'amazon' & bound == 'strong')$read_lat_p95), 0)
 ann.strong <- data.frame(
     condition = factor('Geo-\ndistributed', levels=vals(conds)),
@@ -135,7 +141,7 @@ save(
   ))+
   # stat_summary(geom='bar', fun.y='mean')+
   geom_meanbar(position=position_dodge(width = 0.7))+
-  
+  # geom_text(aes(label=ipa_version), color='black', size=1)+
   geom_text(aes(label=label), data = ann.strong, color='black', size=2.5, family='Helvetica', hjust=-0.2)+
   
   ylab('95th percentile latency')+
