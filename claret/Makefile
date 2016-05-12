@@ -9,7 +9,7 @@ SRCS := $(wildcard *.mdk)
 
 DEPS := refs.bib out/style Makefile
 
-NAME := claret-usenix16
+NAME := claret
 
 FIGS := \
 	system-diagram \

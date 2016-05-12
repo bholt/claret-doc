@@ -1,10 +1,11 @@
-title:       Claret: Avoiding Contention in Transactions with Abstract Data Types
+title:       Claret: Contention-Avoiding Distributed Transactions with Abstract Data Types
 author:      Brandon Holt, Irene Zhang, Dan Ports, Mark Oskin, Luis Ceze
-affiliation: University of Washington
-_email:       {bholt,iyzhang,dkrp,oskin,luisceze}\@cs.uw.edu
+affiliation: [*University of Washington*]{font-size:small}
+email:       [Submission Type: Research]{font-size:small}
 
-latex: ../tools/lualatexdvi
-pdf latex: xelatex
+Latex: ../tools/lualatexdvi
+Pdf Latex: xelatex
+Math Mode: mathjax
 
 Heading Base: 2
 Bib style:    plainnat
@@ -57,6 +58,7 @@ Tex Header:
 
 \setmainfont{Times}
 \setmonofont[Scale=0.85]{Anonymous Pro}
+
 ~
 
 ~ HtmlRaw
