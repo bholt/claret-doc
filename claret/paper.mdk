@@ -10,7 +10,6 @@ Heading Base: 2
 Bib style:    plainnat
 Bibliography: refs.bib
 doc class:    [twocolumn,10pt]article
-package: usenix
 
 css:          style/style.css
 Logo: False
@@ -37,6 +36,16 @@ Package: microtype
 
 .LinedFloat : after='&nl;*********{.figureline}&nl;[[**&label;.** ]{.caption-before}[&caption;]{.caption-text}]{.figure-caption html-elem=fig-caption}&nl;{notag}&nl;'
 .UnlinedFloat : after='&nl;[[**&label;.** ]{.caption-before}[&caption;]{.caption-text}]{.figure-caption html-elem=fig-caption}&nl;{notag}&nl;'
+
+Tex Header:
+	% do not change these values
+	\baselineskip 12pt
+	\textheight 9in
+	\textwidth 6.5in
+	\oddsidemargin 0in
+	\topmargin 0in
+	\headheight 0in
+	\headsep 0in	
 
 
 
