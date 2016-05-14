@@ -28,6 +28,7 @@ COMM_PH <- "boosting\n+\nphasing"
 BASE <- "\n(baseline)"
 NOTXN <- "without\ntransactions"
 BETT <- "better "
+REDIS <- "redis"
 
 parse.args <- function() {
   options <- commandArgs(trailingOnly=TRUE)
@@ -74,19 +75,24 @@ vals <- function(lst) unlist(lst, use.names=F)
 
 db.csv <- function(file) {
   d <- read.csv(file = file)
-  d$cc_ph <- factor(d$cc_ph, levels=c(COMB+PH,COMM+PH,RW+PH,COMB,COMM,RW+BASE,NOTXN))
+  d$cc_ph <- factor(d$cc_ph, levels=c(COMB+PH, COMM+PH, RW+PH, COMB, COMM, RW+BASE, NOTXN))
   d
 }
 
 data.or.csv <- function(csv, gen) {
   d <- tryCatch(
     {
+      print(Sys.getenv('R_LOCAL_CSV_ONLY'))
+      if (Sys.getenv('R_LOCAL_CSV_ONLY') == '1') {
+        print("LOCAL CSV")
+        stop("local mode")
+      }
       d <- gen()
       write.csv(d, file = csv)
       d
     }, error = function(e) {
       error.database_unreachable(e)
-      d <- db.csv(file = csv)
+      d <- db.cstv(file = csv)
     }
   )
 }
@@ -95,6 +101,10 @@ db <- function(query, factors=c(), numeric=c()) {
   d <- sqldf(query)
   d[factors] <- lapply(d[factors], factor)
   d[numeric] <- lapply(d[numeric], as.numeric)
+  
+  # fields intended to be totals rather than averages should be mult. by nclients
+  fields <- names(d)[grepl(".*(_count|_retries|_failed)$|server_ops_.*$", names(d))]
+  for (f in fields) d[[f]] <- num(d$nclients) * d[[f]]
   
   if ('phasing' %in% colnames(d)) {
     d$phasing <- factor(revalue(factor(d$phasing), c('0'='off','1'='on')))
@@ -125,7 +135,7 @@ db <- function(query, factors=c(), numeric=c()) {
       d$disable_txns[is.na(d$disable_txns)] <- 0
       d$ccmode[d$disable_txns == 1] <- 'rw'
       
-      d$cc_ph <- factor(revalue(x(d$ccmode,d$combining,d$phasing,d$disable_txns), c(
+      d$cc_ph <- factor(revalue(x(d$ccmode, d$combining, d$phasing, d$disable_txns), c(
         'rw#0#off#0'=RW+BASE,
         'simple#0#off#0'=COMM,
         'simple#1#off#0'=COMB,
@@ -136,8 +146,9 @@ db <- function(query, factors=c(), numeric=c()) {
         'simple#1#on#0'=COMB+PH,
         'better#0#on#0'=BETT+COMM+PH,
         'better#1#on#0'=BETT+COMB+PH,
-        'rw#0#off#1'=NOTXN
-      )), levels=c(NOTXN,BETT+COMB+PH,BETT+COMM+PH,COMB+PH,COMM+PH,RW+PH,COMB,COMM,BETT+COMB,BETT+COMM,RW+BASE))
+        'rw#0#off#1'=NOTXN,
+        'redis#0#off#0'=REDIS
+      )), levels=c(REDIS, NOTXN, BETT+COMB+PH, BETT+COMM+PH, COMB+PH, COMM+PH, RW+PH, COMB, COMM, BETT+COMB, BETT+COMM, RW+BASE))
       
     } else if ('phasing' %in% colnames(d)) {
       d$cc_ph <- factor(revalue(x(d$ccmode,d$combining,d$phasing), c(
@@ -149,7 +160,7 @@ db <- function(query, factors=c(), numeric=c()) {
         'simple#1#on'=COMB+PH,
         'better#0#on'=BETT+COMM+PH,
         'better#1#on'=BETT+COMB+PH
-      )), levels=c(BETT+COMB+PH,BETT+COMM+PH,COMB+PH,COMM+PH,RW+PH,COMB,COMM,RW+BASE))
+      )), levels=c(BETT+COMB+PH, BETT+COMM+PH, COMB+PH, COMM+PH, RW+PH, COMB, COMM, RW+BASE))
     }
     
   } else if ( 'ccmode' %in% colnames(d) ) {
@@ -169,6 +180,58 @@ db <- function(query, factors=c(), numeric=c()) {
   return(d)
 }
 
+db.socc <- function(query, factors=c(), numeric=c()) {
+  d <- sqldf(query)
+  d[factors] <- lapply(d[factors], factor)
+  d[numeric] <- lapply(d[numeric], as.numeric)
+  
+  # fields intended to be totals rather than averages should be mult. by nclients
+  fields <- names(d)[grepl(".*(_count|_retries|_failed)$|server_ops_.*$", names(d))]
+  for (f in fields) d[[f]] <- num(d$nclients) * d[[f]]
+  
+  d$phasing <- factor(revalue(factor(d$phasing), c('0'='off','1'='on')))
+  
+  d$combining[is.na(d$combining)] <- 0
+    
+  d$cc <- factor(revalue(x(d$ccmode,d$combining), c(
+    'rw#0'=RW,
+    'simple#0'=COMM,
+    'simple#1'=COMB,
+    'better#0'=BETT+COMM,
+    'better#1'=BETT+COMB
+  )), levels=c(RW,COMM,COMB,BETT+COMM,BETT+COMB))
+    
+  d$cca <- factor(revalue(x(d$ccmode,d$combining), c(
+    'rw#0'='rw',
+    'simple#0'='bo',
+    'simple#1'='cb',
+    'better#0'='b+b',
+    'better#1'='b+c'
+  )), levels=c('rw','bo','cb','b+b','b+c'))
+    
+  d$disable_txns[is.na(d$disable_txns)] <- 0
+  d$ccmode[d$disable_txns == 1] <- 'rw'
+  
+  d$cc_ph <- factor(revalue(x(d$ccmode, d$combining, d$phasing, d$disable_txns), c(
+    'rw#0#off#0'=RW+BASE,
+    'simple#0#off#0'=COMM,
+    'simple#1#off#0'=COMB,
+    'better#0#off#0'=BETT+COMM,
+    'better#1#off#0'=BETT+COMB,
+    'rw#0#on#0'=RW+PH,
+    'simple#0#on#0'=COMM+PH,
+    'simple#1#on#0'=COMB+PH,
+    'better#0#on#0'=BETT+COMM+PH,
+    'better#1#on#0'=BETT+COMB+PH,
+    'rw#0#off#1'=NOTXN,
+    'redis#0#off#0'=REDIS,
+    'redis#0#NA#0'=REDIS
+  )), levels=c(REDIS, NOTXN, BETT+COMB+PH, BETT+COMM+PH, COMB+PH, COMM+PH, RW+PH, COMB, COMM, BETT+COMB, BETT+COMM, RW+BASE))
+    
+  return(d)
+}
+
+
 df.histogram <- function(json, version="none") {
   d <- fromJSON(json)
   dd <- data.frame(x=num(names(d)), y=num(unlist(d)), version=version)
@@ -182,6 +245,26 @@ to.hist <- function(j) {
   df1 <- data.frame(x=num(names(l1)), y=vals(l1))
   df1 <- df1[order(df1$x),]
 }
+
+# Melt fields matching a given regex; parse out identifiers from the regex group, 
+# into a new field given by `label`. Values available in the `value` field.
+#
+# Example:
+#   ggplot(melt.by(d, 'op', 'mean_latency_(contains|size)'), 
+#          aes(x=x, y=value, color=op))...
+melt.by <- function(data, label, regex) {
+    fields <- names(data)[grep(regex, names(data))]
+    m <- melt(data, measure=fields)
+    m[label] <- capply(m$variable, function(s) gsub(regex, '\\1', s))
+    m
+}
+
+# Remap a factor based on an R `list` (map) and order the levels according 
+# to the order of the list.
+#
+# Example:
+#  d.workload <- factor.remap(d.mixes, c('post_heavy'='10% post'))
+factor.remap <- function(col, map) factor(revalue(col, map), levels=unique(vals(map)))
 
 replace_txn_codes <- function(orig,codes) Reduce(function(o,k){ gsub("(['\"(,])"+codes[[k]]+"(?=['\",)])", "\\1"+k+"\\2", o, perl=T) }, names(codes), init=jsfix(orig))
 
@@ -275,6 +358,7 @@ my_palette[[COMB]] <- c.green
 my_palette[[PH]]   <- c.pink
 my_palette[[ALL]]  <- c.yellow
 my_palette[[NOTXN]] <- c.pink
+my_palette[[REDIS]] <- c.red
 
 # The palette with grey:
 cbPalette <- c("#0072B2", "#E69F00", "#009E73", "#D55E00", "#CC79A7", "#56B4E9", "#F0E442", "#999999")
@@ -334,6 +418,7 @@ cc_ph_scales <- function(name = 'Mode', guide = guide_legend(nrow = 7), ...) {
   colors[[BETT+COMB]] <- c.yellow
   colors[[BETT+COMB+PH]] <- c.yellow
   colors[[NOTXN]] <- c.pink
+  colors[[REDIS]] <- c.red
   
   dashed <- 2
   dotted <- 3
@@ -349,6 +434,8 @@ cc_ph_scales <- function(name = 'Mode', guide = guide_legend(nrow = 7), ...) {
   lines[[BETT+COMB]] <- 1
   lines[[BETT+COMB+PH]] <- dashed
   lines[[NOTXN]] <- dotted
+  lines[[REDIS]] <- 1
+  
 
   shapes <- c()
   shapes[[RW+BASE]] <- 1
@@ -362,6 +449,7 @@ cc_ph_scales <- function(name = 'Mode', guide = guide_legend(nrow = 7), ...) {
   shapes[[BETT+COMB]] <- 3
   shapes[[BETT+COMB+PH]] <- 3
   shapes[[NOTXN]] <- 4
+  shapes[[REDIS]] <- 4
   
   list(
     scale_fill_manual(values=colors, name = name, guide = guide, ...),
@@ -395,13 +483,29 @@ my_theme <- function() theme(
   legend.title = element_text(size=10)
 )
 
+font_helvetica <- function() theme(
+  text = element_text(size=12, family="Helvetica"),
+  strip.text.x = element_text(color="black", face="bold"),
+  strip.text.y = element_text(color="black", face="bold")
+)
+
+theme.mine <- function() list(
+  theme_light(),
+  font_helvetica(),
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    strip.background = element_blank()
+  )
+)
+
 theme_mine <- list(
   scale_fill_manual(values=my_palette),
   # To use for line and point colors, add
   scale_color_manual(values=my_palette),
   # To use for fills, add
   # basic black and white theme
-  my_theme()
+  theme.mine()
 )
 
 
@@ -475,6 +579,78 @@ data.rubis <- function(select="*", where="client = 'rubis'") {
     
   d$zmix <- sprintf('%s/%s', d$mix, d$alpha)
   
+  # cat("# computing total for fields: "); cat(fields); cat("\n")
+  d$prepare_total <- d$prepare_retries + d$txn_count
+  d$prepare_retry_rate <- d$prepare_retries / d$prepare_total
+  
+  # compute avg latencies for each txn type
+  txns <- gsub('rubis_(.*)_count', '\\1', names(d[,grepl('rubis_(.*)_count',names(d))]))
+  for (t in txns) d[["rubis_"+t+"_avg_latency_ms"]] <- d[["rubis_"+t+"_latency"]] / d[["rubis_"+t+"_count"]]
+  
+  d$throughput <- d$txn_count / d$total_time
+  d$avg_latency_ms <- d$txn_time / d$txn_count * 1000
+  
+  d$rubis_txn_count <- with(d, rubis_AddUser_count + rubis_BrowseItems_count + rubis_CloseAuction_count + rubis_NewBid_count + rubis_NewComment_count + rubis_OpenAuction_count + rubis_UserSummary_count + rubis_ViewAuction_count)
+  
+  return(d)
+}
+
+retwis.mixes <- c(
+  '2read2heavy'='read-heavy (98% read)',
+  'geom_repost'='post-heavy (90% read)'
+)
+
+data.retwis.socc <- function(select="*", where="duration = 60") {
+  d <- db.socc(sprintf("select * from socc_retwis where total_time is not null and %s", where),
+        factors=c('shards', 'nclients'),
+        numeric=c('total_time', 'txn_count', 'threads'))
+
+  # d$scale <- gsub('.*/(\\d+)', '\\1', d$loaddir)
+  
+  d$throughput <- d$txn_count / d$total_time
+  # d$throughput <- d$retwis_txn_count / d$total_time;
+  
+  # d$throughput <- d$ntxns * num(d$nclients) / d$total_time
+  d$avg_latency_ms <- d$txn_time / d$txn_count * 1000
+  
+  d$prepare_total <- d$prepare_retries + d$txn_count
+  d$prepare_retry_rate <- d$prepare_retries / d$prepare_total
+      
+  d$variant <- factor(revalue(sprintf('%s:%s', d$ccmode, d$approx), c(
+    # 'rw:1'='reader/writer',
+    'rw:0'='Locking / OCC',
+    'simple:0'='Claret',
+    'simple:1'='Claret-Approx'
+  )), levels=c('Locking / OCC', 'Claret', 'Claret-Approx'))
+  
+  
+  # d$graph <- mapply(function(g,d){ if(g == 'none') gsub('^.*/kronecker/([0-9]+)','kronecker:\\1',d) else g }, d$gen, d$loaddir)
+    
+  d$workload <- factor.remap(d$mix, retwis.mixes)
+  
+  d$zmix <- sprintf('%s/%s', d$mix, d$alpha)
+
+  # d$facet <- sprintf('%s\n%s', d$zmix, d$graph)
+  
+  return(d)
+}
+
+data.rubis <- function(select="*", where="client = 'rubis'") {
+  d <- 
+    if(exists("DATA.MODE") && DATA.MODE == 'local') {
+      d.tmp <- do.call("rbind", fromJSON("freeze/rubis.csv"))
+      sql(sprintf("select * from `d.tmp` where total_time is not null and %s",where))
+    } else {
+      suppressWarnings(db(sprintf("select * from rubis where total_time is not null and %s", where),
+        factors=c('nshards', 'nclients'),
+        numeric=c('total_time', 'txn_count', 'nthreads')
+      ))
+    }
+
+  d$state <- gsub('.*/(.*)', '\\1', d$loaddir)
+    
+  d$zmix <- sprintf('%s/%s', d$mix, d$alpha)
+  
   # fields intended to be totals rather than averages should be mult. by nclients
   fields <- names(d)[grepl(".*(_count|_retries|_failed|_latency)$", names(d))]
   for (f in fields) d[[f]] <- num(d$nclients) * d[[f]]
@@ -493,6 +669,7 @@ data.rubis <- function(select="*", where="client = 'rubis'") {
   
   return(d)
 }
+
 
 data.papoc <- function(where) {
   d <- db(

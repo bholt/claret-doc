@@ -124,6 +124,11 @@ melt.by <- function(data, label, regex) {
     m
 }
 
+# Remap a factor based on an R `list` (map) and order the levels according 
+# to the order of the list.
+#
+# Example:
+#  
 factor.remap <- function(col, map) factor(revalue(col, map), levels=unique(vals(map)))
 
 replace_txn_codes <- function(orig,codes) Reduce(function(o,k){ gsub("(['\"(,])"+codes[[k]]+"(?=['\",)])", "\\1"+k+"\\2", o, perl=T) }, names(codes), init=jsfix(orig))
