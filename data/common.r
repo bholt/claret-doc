@@ -600,6 +600,8 @@ retwis.mixes <- c(
   'geom_repost'='post-heavy (90% read)'
 )
 
+retwis.txns <- c('newuser', 'follow', 'post', 'repost', 'timeline')
+
 data.retwis.socc <- function(select="*", where="duration = 60") {
   d <- db.socc(sprintf("select * from socc_retwis where total_time is not null and %s", where),
         factors=c('shards', 'nclients'),
@@ -609,6 +611,7 @@ data.retwis.socc <- function(select="*", where="duration = 60") {
   
   d$throughput <- d$txn_count / d$total_time
   # d$throughput <- d$retwis_txn_count / d$total_time;
+  d$retwis_txn_count <- d$retwis
   
   # d$throughput <- d$ntxns * num(d$nclients) / d$total_time
   d$avg_latency_ms <- d$txn_time / d$txn_count * 1000
@@ -623,6 +626,18 @@ data.retwis.socc <- function(select="*", where="duration = 60") {
     'simple:1'='Claret-Approx'
   )), levels=c('Locking / OCC', 'Claret', 'Claret-Approx'))
   
+  d$retwis_total <- 
+    d$retwis_newuser_count + 
+    d$retwis_follow_count + 
+    d$retwis_post_count + 
+    d$retwis_repost_count + 
+    d$retwis_timeline_count
+  
+  d$retwis_newuser_fraction <- d$retwis_newuser_count / d$retwis_total
+  d$retwis_follow_fraction <- d$retwis_follow_count / d$retwis_total
+  d$retwis_post_fraction <- d$retwis_post_count / d$retwis_total
+  d$retwis_repost_fraction <- d$retwis_repost_count / d$retwis_total
+  d$retwis_timeline_fraction <- d$retwis_timeline_count / d$retwis_total
   
   # d$graph <- mapply(function(g,d){ if(g == 'none') gsub('^.*/kronecker/([0-9]+)','kronecker:\\1',d) else g }, d$gen, d$loaddir)
     
