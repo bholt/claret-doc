@@ -618,7 +618,7 @@ data.retwis.socc <- function(select="*", where="duration = 60") {
   
   d$prepare_total <- d$prepare_retries + d$txn_count
   d$prepare_retry_rate <- d$prepare_retries / d$prepare_total
-      
+  
   d$variant <- factor(revalue(sprintf('%s:%s', d$ccmode, d$approx), c(
     # 'rw:1'='reader/writer',
     'rw:0'='Locking / OCC',
