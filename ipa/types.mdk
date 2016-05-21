@@ -104,8 +104,6 @@ The other IPA types follow a subtyping relation $\prec$, defined by:
 The IPA type system is similar to the probability type system of DECAF [@Boston:15:DECAF], which uses types to track the quality of results computed on approximate hardware. Their non-interference property is also similar: a result of low quality cannot flow into a result of higher quality without explicit endorsement.
 We elide a thorough formal development of the IPA type system due to its close similarity with DECAF.
 
-### Weak IPA types
-
 The IPA types encapsulate information about the consistency achieved when reading a value.
 Strong read operations return values of type `Consistent[T]`,
 and so (by implicit cast) behave as any other instance of type `T`.
@@ -124,7 +122,7 @@ While `Inconsistent[T]` has value as a reminder to developers about consistency,
 the key productivity benefit of the IPA type system is in the other weak IPA types.
 Each of the consistency policies in [#policies] has a corresponding weak IPA type for operations performed under that policy.
 
-#### Rushed types
+### Rushed types
 
 The weak IPA type `Rushed[T]` is the result of read operations performed on an ADT with consistency policy `LatencyBound(x)`.
 `Rushed[T]` is a *sum type*, with one variant per consistency level available to the implementation of `LatencyBound`.
@@ -148,7 +146,7 @@ The application may want to react differently to a local quorum as opposed to a 
 Note that because of the subtyping relation on IPA types, omitted cases can be matched by any type lower in the lattice, including the bottom element `Inconsistent(_)`;
 other cases therefore need only be added if the application should respond differently to them. This subtyping behavior allows applications to be portable between systems supporting different forms of consistency (of which there are many).
 
-#### Interval types
+### Interval types
 
 The weak IPA type `Interval[T]` is the result of operations performed on an ADT with consistency policy `ErrorTolerance(x%)`.
 `Interval[T]` represents an interval of values within which the true (strongly consistent) result lies.
@@ -161,7 +159,7 @@ In fact, because the interval is indistinguishable from a linearizable order, in
 On the other hand, if the interval overlaps with zero, then there is a chance that tickets could already be sold out, so users should be warned. Note that ensuring that tickets are not over-sold is a separate concern requiring a different form of enforcement, which we describe in [#sec-provided].
 The relaxed consistency of the interval type allows the system to optimize performance in the common case where there are many tickets available, and dynamically adapt to contention when the ticket count diminishes.
 
-#### Lower bounds
+### Lower bounds
 
 Weak IPA types enforce consistency safety by ensuring developers address the worst case results of weak consistency.
 However, the weak IPA types are *lower bounds* on weakness:

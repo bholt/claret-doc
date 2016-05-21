@@ -17,12 +17,15 @@ Math Mode: mathjax
 
 Package: etoolbox
 Package: fontspec
-Package: microtype
+Package: [protrusion=true,expansion,spacing=true]microtype
 Package: tabulary
-Package: caption
+Package: subcaption
 Package: [all]hypcap
 Package: style/mathpartir
 Package: mathptmx
+Package: enumitem
+Package: [font={small}]caption
+Package: [compact]titlesec
 
 #todo: color=red font-size=small font-family=Lato-Light before='[' after=']'
 
@@ -41,7 +44,7 @@ p,ul,ol,li { replace="/\[(?:TODO|todo):\s*(.*?)\]/[\1]{#todo}/g" }
 ~H2: label='[§@h1.@h1-h2]{.heading-label}' replace="/§//"
 ~H3: label='[§@h1.@h1-h2.@h1-h2-h3]{.heading-label}' replace="/§//"
 
-~Fig : label='[Figure\ @fig]{.figure-label}' toc=tof .Float .LinedFloat float-env=figure float-name=Figure
+~Fig : label='[Figure\ @fig]{.figure-label}' toc=tof .Float .UnlinedFloat float-env=figure float-name=Figure
 ~Tab : label='[Table\ @tab]{.figure-label}' toc=tof .Float .UnlinedFloat float-env=table float-name=Table
 ~Listing : label='[Listing\ @listing]{.figure-label}' toc=tof .Float .LinedFloat float-env=listing float-name=Listing
 
@@ -71,6 +74,9 @@ Tex Header:
 	\topmargin 0in
 	\headheight 0in
 	\headsep 0in
+	\captionsetup{belowskip=0pt,aboveskip=0pt}
+	\setlist{noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt}
+
 
 
 ~ TexRaw
