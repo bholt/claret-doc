@@ -1,14 +1,12 @@
 title: Disciplined Inconsistency
-
 author: Brandon Holt, James Bornholt, Irene Zhang, Dan Ports, Mark Oskin, Luis Ceze
-affiliation: University of Washington
-email: {bholt,bornholt,iyzhang,dkrp,oskin,luisceze}@cs.uw.edu
+affiliation: [*University of Washington*]{font-size:small}
+email:       [Submission Type: Research]{font-size:small}
 
 Heading Base: 2
 Bib style:    plainnat
 Bibliography: refs.bib
-doc class:    [10pt,numbers]style/sigplanconf
-Package:      [1stsubmission]style/oopsla2016
+doc class:    [twocolumn,10pt]article
 
 css:          style/style.css
 Logo: False
@@ -63,6 +61,17 @@ p,ul,ol,li { replace="/\[(?:TODO|todo):\s*(.*?)\]/[\1]{#todo}/g" }
 .zoom: max-width=80% tex-text-align=center
 
 @tex .zoom50: width=80%
+
+Tex Header:
+	% do not change these values
+	\baselineskip 12pt
+	\textheight 9in
+	\textwidth 6.5in
+	\oddsidemargin 0in
+	\topmargin 0in
+	\headheight 0in
+	\headsep 0in
+
 
 ~ TexRaw
 % redefines the caption setup of the figures environment in the beamer class.
