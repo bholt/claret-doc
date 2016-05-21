@@ -59,9 +59,9 @@ final: pdf
 pdf-view: pdf
 	open -a Skim out/paper.pdf
 
-out/$(NAME).html: $(SVG_SRCS) $(DEPS) $(PLOT_PDFS) $(FIGS_OUT)
+out/$(NAME).html: $(SVG_SRCS) $(DEPS) $(PLOT_PDFS) $(FIGS_SVG)
 	./pdf2svg.sh
-	mv out/paper.mdk paper-web.mdk
+	cp out/paper.mdk paper-web.mdk
 	madoko -v --odir=out paper-web.mdk
 	rm paper-web.mdk
 	mv out/paper-web.html out/$(NAME).html

@@ -16,7 +16,10 @@ if [ $(docker ps | grep $container | wc -l) -eq '0' ]; then
   dexec 'git config --global user.email "<>"'
   dexec 'git config --global push.default matching'
   dexec 'git clone git@github.com:bholt/gen.git'
-
+  
+  # because for some reason madoko thinks it needs this file to exist
+  dexec 'touch /usr/local/bin/madoko.mdk'
+  
   dexec 'cd claret-doc; make deploy'
 
 else # if container exists, then just pull latest and re-run
