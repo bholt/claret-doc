@@ -76,7 +76,7 @@ p,ul,ol,li { replace="/\[(?:TODO|todo):\s*(.*?)\]/[\1]{#todo}/g" }
 
 \apptocmd{\sloppy}{\hbadness 10000\relax}{}{}
 
-\setmainfont{Times New Roman}
+\setmainfont{Times}
 \setmonofont[Scale=0.9]{Anonymous Pro}
 
 ~
