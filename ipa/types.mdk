@@ -15,8 +15,8 @@ The *inconsistent, performance-bound, approximate* (IPA) type system
 helps developers trade consistency for performance in a disciplined manner.
 This section presents the IPA type system, 
 including the available consistency policies
-and the semantics of operations performed under those policies.
-[#sec-implementation] will explain how the type system's guarantees are enforced for a distributed datastore.
+and the semantics of operations performed under the policies.
+[#sec-implementation] will explain how the type system's guarantees are enforced.
 
 ## Overview
 
@@ -40,7 +40,7 @@ Though the simplest key/value stores only support primitive types like strings f
 Besides abstracting over storage systems, ADTs are an ideal place from which to  reason about consistency and system-level optimizations. The consistency of a read depends on the write that produced the value. Expressing consistency properties on  ADTs ensures the necessary guarantees for all operations are enforced, which we will expand on in the next section.
 
 Custom ADTs can express application-level correctness constraints.
-IPA's `Counter` datatype allows reading the current value as well as increment and decrement operations. In our ticket sales example, we must ensure that the ticket count does not go below zero. Rather than forcing all operations on the datatype to be linearizable, this application-level invariant can be expressed with a more specialized ADT, such as a `BoundedCounter`, giving the implementation more latitude to choose how to enforce it. IPA's library is *extensible*, allowing applications to leverage common features to implement their own custom ADTs; see [#sec-provided].
+IPA's `Counter` ADT allows reading the current value as well as increment and decrement operations. In our ticket sales example, we must ensure that the ticket count does not go below zero. Rather than forcing all operations on the datatype to be linearizable, this application-level invariant can be expressed with a more specialized ADT, such as a `BoundedCounter`, giving the implementation more latitude to choose how to enforce it. IPA's library is *extensible*, allowing applications to leverage common features to implement custom ADTs; see [#sec-provided].
 
 ## Policy Annotations { #policies }
 
@@ -64,16 +64,15 @@ IPA offers two dynamic consistency policies:
 
 <!-- Policy annotations are central to the flexibility and usability of the IPA type system. -->
 Dynamic policy annotations allow the runtime 
-to extract the maximum performance possible from an application 
-by relaxing the consistency of its operations, 
+to extract more performance from an application 
+by relaxing the consistency of individual operations, 
 safe in the knowledge that the IPA type system will enforce safety
 by requiring the developer to consider the effects of weak operations.
 
-Static and dynamic annotations can be declared globally for all operations or for specific methods of the ADT.
-For example, `Set[T] with Consistency(Strong)` or `List[T] with LatencyBound(50 ms)`, both declare that all operations on the object are performed with the specified bound. On the other hand, an instance of a `Set` may have relaxed consistency for its `size` but strong consistency for its `contains` predicate.
-The runtime is responsible for managing the interaction between these consistency policies. In the case of a conflict between two bounds, the system can be conservative and choose stronger policies than specified without affecting correctness.
+Static and dynamic annotations can apply to an entire ADT instance or on individual methods. For example, one could declare a `List[Int] with LatencyBound(50 ms)`, in which case all read operations on the list are subject to the bound. Alternatively, one may wish to declare a`Set` with relaxed consistency for its `size` but strong consistency for its `contains` predicate.
+The runtime is responsible for managing the interaction between these policies. In the case of a conflict between two bounds, the system can be conservative and choose stronger policies than specified without affecting correctness.
 
-In the ticket sales application, the counter ADT for each event's tickets has an accuracy policy `ErrorTolerance(5%)`. This relaxed accuracy policy allows the system to quickly read the count of tickets remaining. An accuracy policy is appropriate here because it expresses a domain requirement---users want to see accurate ticket counts. As long as the system meets this requirement, it is free to relax consistency and maximize performance without sacrificing application quality.
+In the ticket sales application, the `Counter` for each event's tickets has a relaxed accuracy policy: `ErrorTolerance(5%)`, allowing the system to quickly read the count of tickets remaining. An accuracy policy is appropriate here because it expresses a domain requirement---users want to see accurate ticket counts. As long as the system meets this requirement, it is free to relax consistency and maximize performance without violating correctness.
 The `List` ADT used for events has a latency policy that also expresses a domain requirement---that pages on the website load in reasonable time.
 
 ## IPA Types {#sec-ipa-types}

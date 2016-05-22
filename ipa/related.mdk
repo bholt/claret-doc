@@ -1,10 +1,10 @@
 # Related Work
 
 ## Consistency Models
-A vast number of consistency models have been proposed over the years: from Lamport's *sequential consistency* [@Lamport:79:SC] and Herlihy's *linearizability* [@Herlihy:90:Linear] on the strong side, to *eventual consistency* [@Vogels:EC] at the other extreme. A variety of intermediate models fit elsewhere in the spectrum, each making different trade-offs balancing high performance and availability against ease of programming. Session guarantees, including *read-your-writes*, strengthen ordering for individual clients but reduce availability [@Terry:94:Session].
+A vast number of consistency models have been proposed: from Lamport's *sequential consistency* [@Lamport:79:SC] and Herlihy's *linearizability* [@Herlihy:90:Linear] on the strong side, to *eventual consistency* [@Vogels:EC] at the other extreme. A variety of intermediate models fit elsewhere in the spectrum, each making different trade-offs balancing high performance and availability against ease of programming. Session guarantees, including *read-your-writes*, strengthen ordering for individual clients but reduce availability [@Terry:94:Session].
 Many datastores support configuring consistency at a fine granularity: Cassandra [@cassandra] per operation, Riak [@riak] on an object or namespace granularity, as well as others [@Li:12:RedBlue;@Sovran:11:Walter].
 
-The Conit consistency model [@Yu:02:Conit] explores the spectrum between weak and strong consistency, breaking consistency down along three axes: numerical error, order error, and staleness, with algorithms to bound each of them. The programming model, however, requires annotating each operation and making dependencies explicit in order to track these metrics, rather than annotating ADTs as in IPA.
+The Conit consistency model [@Yu:02:Conit] explores the spectrum between weak and strong consistency, breaking it down into numerical error, order error, and staleness, introducing algorithms to bound each. The programming model requires annotating each operation and making dependencies explicit in order to track these metrics, rather than annotating ADTs as in IPA.
 
 ## Explicit correctness requirements
 Some programming models have gone beyond plain consistency models and allowed programmers to express correctness criteria directly.

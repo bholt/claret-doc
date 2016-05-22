@@ -17,6 +17,7 @@ In order to make our service scalable, highly available, and fault-tolerant, we 
 The most important invariant is that tickets are not over-sold: each available ticket must only go to one user, and the count of remaining tickets should never be below zero. However, there are also soft constraints:
 
 - *Latency target:* Users browsing many events will become frustrated if pages take too long to load.
+
 - *Accuracy bounds:* Users wish to know how many tickets are remaining to determine how quickly they need to purchase them.
 
 If the latency target is not met, users may take their business to other sites. Similarly, if the remaining ticket count is off, such as if the count is stale and there are in fact fewer remaining tickets, then users may not get the tickets they wanted. 

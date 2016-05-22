@@ -86,15 +86,13 @@ It is tempting to try to combine reservations for inverse operations into the sa
 ![](fig/interfaces.pdf)
 ~
 
-The IPA system provides a number of primitives for building ADTs as well as some reference implementations of simple datatypes; some are shown in [#fig-interfaces]. To support latency bounds, there is a generic `LatencyBound` trait that provides facilities for executing a specified read operation at multiple consistency levels within a time limit. For implementing error bounds, IPA provides a generic reservation pool which ADTs can use. 
+The IPA system provides a number of primitives for building ADTs; some are shown in [#fig-interfaces]. To support latency bounds, there is a generic `LatencyBound` trait that provides facilities for executing a specified read operation at multiple consistency levels within a time limit. For implementing error bounds, IPA provides a generic reservation pool which ADTs can use. IPA also provides several reference ADT implementations:
 
-The IPA system implements several ADTs:
-
-- `Counter` based on Cassandra's counter type, supporting increment and decrement, with latency and error bounds
-- `Set` with `add`, `remove`, `contains` and `size`, supporting latency bounds, and error bounds on `size`.
+- `Counter` based on Cassandra's counter, supporting increment and decrement, with latency and error bounds
 - `BoundedCounter` CRDT from [@Balegas:15:BoundedCounter] that enforces a hard lower bound even with weak consistency. Our implementation adds the ability to bound error on the value of the counter and set latency bounds.
-- `UUIDPool` generates unique identifiers, with a hard limit on the number of IDs that can be taken from it; builds on top of `BoundedCounter` and supports the same bounds.
-- `List`: thin abstraction around a Cassandra table with a time-based clustering order, supports latency bounds. Used to implement Twitter timelines and Ticket listings.
+- `Set` with `add`, `remove`, `contains` and `size`, supporting latency bounds, and error bounds on `size`.
+- `UUIDPool` generates unique identifiers, with a hard limit on the number of IDs that can be taken from it; built on top of `BoundedCounter` and supports the same bounds.
+- `List`: thin abstraction around a Cassandra table with a time-based clustering order, supports latency bounds.
 
 [#fig-interfaces] shows Scala code using reservation pools to implement a Counter with error bounds. The actual implementation splits this functionality between the client and the reservation server. It is also all implemented using an asynchronous futures-based interface to allow for sufficient concurrency, based on the Phantom Scala client for Cassandra [@Phantom]. The Reservation Server is similarly built around futures using Twitter's Finagle framework [@finagle]. Communication is done between clients and Cassandra via prepared statements to avoid excessive parsing, and Thrift remote-procedure-calls between clients and the Reservation Servers.
 

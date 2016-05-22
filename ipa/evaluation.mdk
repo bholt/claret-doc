@@ -63,7 +63,7 @@ We start by measuring the performance of a very simple application that randomly
 ![](plots/counter_lbound_tail.pdf){ .onecol }
 ~
 
-~ Fig { #fig-counter-err .wide caption="*Counter benchmark: error tolerance.* In (a), we see that wider error bounds reduce mean latency because fewer synchronizations are required, matching *weak* around 5-10%. In (b), we see that error increases with heavier write workloads. For *weak*, the average error is less than 1%, but the *maximum* error can be extremely high (up to 60%), whereas error bounds never exceed their limit." }
+~ Fig { #fig-counter-err .wide caption="*Counter benchmark: error tolerance.* In (a), we see that wider error bounds reduce mean latency because fewer synchronizations are required, matching *weak* around 5-10%. In (b), we see actual error of *weak* compared with the actual interval for a 1% error bound with varying fraction of writes; average error is less than 1% but *maximum* error can be extremely high: up to 60%. [\vspace{-.2in}]{input:texraw}" }
 ~~ SubFigureRow
 ~~~ SubFigure {#fig-counter-error-perf caption="Mean latency (increment *and* read)."}
 ![](plots/counter_err_perf.pdf)
@@ -72,15 +72,16 @@ We start by measuring the performance of a very simple application that randomly
 ![](plots/counter_err.pdf)
 ~~~
 ~~
+[\vspace{-10pt}]{input:texraw}
 ~
 
 
-Latency bounds aim to provide predictable performance for clients while attempting to maximize consistency. Under favorable conditions — when latencies and load are low — it is often possible to achieve strong consistency. [#plot-counter-lbound] shows the average latency of a counter with strong, weak, and 2 latency-bounds under various conditions. We can see that there is a significant difference in latency between strong and weak. In these conditions, it is almost never possible to get strong consistency within 10ms, so the 10ms-bound counter predicts it will not get strong consistency and falls back to weak consistency. With a 50ms bound, the counter is able to get strongly consistent results if network latency is low. However, with one slow replica (out of 3), there is a chance that the `QUORUM` read needed for strong consistency will hit the slow replica, so IPA attempts both; in this case, 82% got strong consistency, and 18% timed out and went with weak. Finally, with our simulated geo-distributed environment, there are no 2 replicas within 50ms of our client, so strong consistency is never possible within our bounds; as a result, IPA adapts and only attempt weak reads in both cases.
+Latency bounds aim to provide predictable performance for clients while attempting to maximize consistency. Under favorable conditions — when latencies and load are low — it is often possible to achieve strong consistency. [#plot-counter-lbound] shows the average latency of a counter with strong, weak, and 2 latency-bounds under various conditions. We can see that there is a significant difference in latency between strong and weak. In these conditions, it is almost never possible to get strong consistency within 10ms, so the 10ms-bound counter predicts it will not get strong consistency and falls back to weak consistency. With a 50ms bound, the counter is able to get strongly consistent results if network latency is low. However, with one slow replica (out of 3), there is a chance that the `QUORUM` read needed for strong consistency will hit the slow replica, so IPA attempts both; in this case, 82% got strong consistency, and 18% timed out and went with weak. Finally, with our simulated geo-distributed environment, there are no 2 replicas within 50ms of our client, so strong consistency is never possible within our bounds; as a result, IPA adapts to only attempt weak in both cases.
 
 [#plot-counter-lbound-tail] shows the 95th percentile latencies of the same workload. We see that the tail latency of the 10ms bound is comparable to weak, though the 50ms bound guesses incorrectly occasionally for the case of the slow replica. We see a latency gap between the latency-bound and weak in the geo-distributed case. This is because the `weak` condition uses weak reads *and* writes, while our rushed types, in order to have the option of getting strong reads without requiring a read of `ALL`, must do `QUORUM` writes.
 
 ### Error bounds
-The goal of this experiment is to explore the empirical cost of enforcing error bounds using the reservation system described in [#sec-reservations], and to determine how tight error bounds can be while providing similar performance to weak consistency.
+This experiment determines the cost of enforcing error bounds using the reservation system described in [#sec-reservations], and to determine how tight error bounds can be while providing performance comparable to weak consistency.
 
 The intuition behind reservations is to move synchronization off the critical path: by distributing write permissions among replicas, clients can get strong guarantees while communicating only with a single replica. This shifts the majority of the synchronization burden off of reads, which are typically more common. However, this balance must be carefully considered when evaluating the performance of reservations, more so than the other techniques. When evaluating the latency bounds, we considered only read latency because we didn't change the writes. However, reservations actually slow down writes, so we must consider that effect.
 
@@ -122,11 +123,11 @@ On this workload, we observe that the reservations used for the 5% error bound p
 
 ### Twitter clone
 
-~ Fig { #fig-twitter-model caption="Twitter application's (simplified) data model, with latency bounds for followers and timelines, and error tolerance for number of retweets (`size` of the retweets set)." }
+~ Fig { #fig-twitter-model caption="Twitter application's (simplified) data model, with latency bounds for followers and timelines, and error tolerance for number of retweets (`size` of the retweets set). [\vspace{-10pt}]{input:texraw}" }
 ![](fig/twitter.pdf)
 ~
 
-~ Fig { #plot-twitter caption="*Twitter clone: mean latency (all actions).* The implementation with IPA bounds is on-par with weak consistency in all but one of the conditions, while strong consistency is 2-10$\times$ slower." }
+~ Fig { #plot-twitter caption="*Twitter clone: mean latency (all actions).* The IPA version is on-par with weak consistency in all but one of the conditions, while strong consistency is 2-10$\times$ slower. [\vspace{-10pt}]{input:texraw}" }
 ![](plots/twitter.pdf)
 ~
 
