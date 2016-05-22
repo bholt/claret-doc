@@ -18,6 +18,8 @@ IPA's latency-bound policies were inspired by the *consistency-based SLAs* of Pi
 
 Consistency SLAs are more expressive than IPA's latency bounds, allowing multiple acceptable targets to be indicated and weighted. On the other hand, the IPA type system provides more assistance in working with the results: `Rushed[T]` values can statically ensure that all possible cases are handled and protect programmers from inadvertently using weak values where they should not. Additionally, Pileus's SLAs are specified on individual read operations, introducing greater annotation burden and preventing optimizations based on guarantees provided by other operations, which only ADT-level annotations provide.
 
+[todo: add WheelFS]... [@Stribling:09:WheelFS]
+
 <!--
 Probabilistically bounded staleness (PBS) [@Bailis:12:PBS] are a form of performance and correctness bound. Using a predictive model, PBS is able to quantify the degree of inconsistency that is likely for a given operation, but it has not been used to directly improve programming models. This kind of knowledge could be applied within IPA's runtime system to make better latency predictions or to provide a new IPA probabilistic IPA type similar to `Interval[T]`.
 -->

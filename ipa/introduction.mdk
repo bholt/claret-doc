@@ -38,45 +38,38 @@ change application performance in the blink of an eye.
 
 Recognizing this trade-off, many existing storage systems support
 configureable consistency levels; some allow programmers to set the
-consistency of the entire store or each operation, while other provide
-adaptable consistency SLAs.  Ideally, programmers would weaken
-consistency guarantees only when it is necessary to meet performance
-requirements (e.g., during a spike in traffic or datacenter failure),
-or when it does not impact the application's correctness guarantees
-(e.g., if returning a slightly stale or estimated result is
-acceptable).  Unfortunately, if programmers are *undisciplined* in
-their use of weakly consistent data (i.e., updating the storage system
-based on inconsistent reads), they can easily corrupt application
-data, lowering the consistency of the storage system to that of the
-weakest read or write operation.
+consistency of the entire store or each operation [@cassandra;@riak;@Li:12:RedBlue;@Sovran:11:Walter].
+Ideally, programs would only weaken consistency guarantees when necessary to meet availability requirements (e.g., during a spike in traffic or datacenter failure), or when it does not impact the application's correctness guarantees
+(e.g., returning a slightly stale or estimated result is acceptable); some have supported adaptable consistency in this way [@Terry:13:SLAs;@Stribling:09:WheelFS].
+Unfortunately, if programmers are *undisciplined* in their use of
+weakly consistent data – writing to other storage based on
+inconsistent reads, or using inconsistent data where they intended it to be strong, such as an irreversible purchase – they could easily corrupt application data,
+lowering the consistency of the storage system to that of the weakest
+read or write operation.
 
 In this paper, we propose a more disciplined approach to consistency:
 the *inconsistent, performance-bound, approximate (IPA)* programming
 model for distributed storage systems. The IPA model provides a type
-system for which type safety implies *consistency safety*: values from
+system for which type safety implies *consistency safety:* values from
 weakly consistent operations cannot flow into stronger consistency
 operations without explicit endorsement. More specifically, the IPA
 type system provides the following features:
 
-* *Abstract Data Types* (ADTs), supported by the storage system, that
-  programmers can annotate with performance targets, which allow the
+* *Abstract Data Types* (ADTs), backed by the storage system, that
+  programmers can annotate with *performance targets*, which allow the
   storage system to automatically adapt to meet when conditions
-  change, and consistency requirements, which allow programmers to
-  express where preciseness is not required (e.g., the application
+  change, and *consistency requirements*, which allow programmers to
+  express where precision is not required (e.g., the application
   plans to display an approximate count).
 
-* *IPA types*, returned from the storage system, that express the
-  consistency and correctness of potentially inconsistent values, and
-  subtyping to allow applications to make decisions based on the
-  actual consistency of data.
+* *IPA types*, returned from storage system reads, that express the
+  consistency and correctness of potentially inconsistent values, allowing applications to make decisions based on the actual consistency of data.
 
 * *Type checking* that enforces the disciplined use of IPA types by
-   requiring programmers to explicitly endorse the propagation of
-   inconsistent values to strongly consistent ADTs.
+   requiring programmers to handle all potential consistency cases, or explicitly endorse the propagation of inconsistent values where appropriate.
 
 We explore the IPA model by implementing two important distributed
-runtime mechanisms: latency-bound operations, and a novel *error
-tolerance* reservation system. We describe how these mechanisms can be
+runtime mechanisms: latency-bound operations, and a novel *error tolerance* reservation system. We describe how these mechanisms can be
 implemented in Scala for a distributed environment based on Cassandra,
 and explain how the IPA programming model allows the system to trade
 off performance and consistency, safe in the knowledge that the type
