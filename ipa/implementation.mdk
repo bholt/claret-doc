@@ -71,12 +71,16 @@ For each type of update operation there may be a different pool of reservations.
 
 In some cases, multiple operations may consume or produce reservations in the same pool. Consider a `Set` with an error bound on the size. This requires separate reservation pools for `add` and `remove` to prevent the overall size from deviating by more than the desired error bound. In this case, we calculate the interval for `size` to be:
 
-	Interval(min = v - removePool.delta()
-	         max = v + addPool.delta())
+```scala
+  Interval(min = v - removePool.delta,
+          max = v + addPool.delta)
+```
 
 Where `v` is the size of the set read from the datastore, and `delta` is the number of possible outstanding operations from the pool, or:
 
-	delta(): pool.total - (pool.local - pool.used)
+```scala
+  delta = pool.total - (pool.local - pool.used)
+```
 
 It is tempting to try to combine reservations for inverse operations into the same pool. For instance, it would seem that decrements would cancel out increments, allowing a single reservation server receiving matching numbers of each to continue indefinitely. In some situations, such as if sticky sessions can guarantee ordering from one reservation server to one replica, this could be sound. However, in the general case of eventual consistency, this is not valid, as the increments and decrements could go to different replicas, or propagate at different rates. Therefore it is crucial that ADT designers think carefully about the guarantees of their underlying datastore. Luckily, the abstraction of ADTs hides this complexity from the user — as long as the ADT is implemented correctly, they need only worry about the stated error bounds of the type they are using.
 
