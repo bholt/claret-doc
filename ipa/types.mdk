@@ -44,22 +44,21 @@ IPA's `Counter` ADT allows reading the current value as well as increment and de
 
 ## Policy Annotations { #policies }
 
-The IPA type system provides a set of annotations that can be placed on ADT instances to specify consistency policies.
-Annotations express application-level requirements, such as latency or accuracy, 
-
-This higher-level semantics absolves developers of manipulating the consistency of individual operations to maximize performance while maintaining safety.
-
 Previous systems [@cassandra;@riak;@Terry:13:SLAs;@Li:12:RedBlue;@Sovran:11:Walter] require annotating each read and write operation with a desired consistency level.
 This per-operation approach complicates reasoning about the safety of code using weak consistency, and hinders global optimizations that can be applied if the system knows the consistency level required for future operations.
+The IPA type system provides a set of annotations that can be placed on *ADT instances* to specify consistency policies for the lifetime of the object.
+<!-- In addition, the annotations express application-level requirements, such as latency or accuracy, allowing the system to fine-tune per-operation consistency to maximize performance and freeing the developer of this burden. -->
+IPA type annotations come in two flavors: static and dynamic.
 
-IPA type annotations come in two flavors.
-*Static* annotations declare a fixed consistency policy for an ADT, such as `Consistency(Strong)` which states that an operation must have strongly consistent behavior.
-Static annotations provide the same direct control as existing approaches
+*Static* annotations declare a fixed consistency policy, such as `Consistency(Strong)` which states that operations must have strongly consistent behavior.
+Static annotations provide the same direct control as previous approaches
 but simplify reasoning about correctness by applying them globally on the ADT.
+
 *Dynamic* annotations specify a consistency policy in terms of application-level requirements, allowing the system to decide at runtime how to meet the requirement for each executed operation.
 IPA offers two dynamic consistency policies:
 
 * A latency policy `LatencyBound(x)` specifies a target latency for operations on the ADT (e.g., 20 ms). The runtime can choose the consistency level for each issued operation, optimizing for the strongest level that is likely to satisfy the latency bound.
+
 * An accuracy policy `ErrorTolerance(x%)` specifies the desired accuracy for read operations on the ADT. For example, the `size` of a `Set` ADT may only need to be accurate within 5% tolerance. The runtime can optimize the consistency of write operations so that reads are guaranteed to meet this bound.
 
 <!-- Policy annotations are central to the flexibility and usability of the IPA type system. -->
@@ -92,11 +91,11 @@ Formally, the IPA types form a lattice parameterized by a primitive type `T`, sh
 Strong read operations return values of type `Consistent[T]` (the top element),
 and so (by implicit cast) behave as any other instance of type `T`. Intuitively, this equivalence is because the results of strong reads are known to be consistent, which corresponds to the control flow in conventional (non-distributed) applications.
 Weaker read operations return values of some type lower in the lattice (*weak IPA types*), reflecting their possible inconsistency.
-The bottom element `Inconsistent[T]` specifies an object with the weakest possible (or unknown) consistency. The other IPA types follow a subtyping relation $\prec$, defined by:
+The bottom element `Inconsistent[T]` specifies an object with the weakest possible (or unknown) consistency. The other IPA types follow a subtyping relation $\prec$ as illustrated in [#lattice].
 
-~ Math
+<!--~ Math
 \inferrule{\tau \text{ is weaker than } \tau'}{\tau'[T] \prec \tau[T]}
-~
+~-->
 
 The only possible operation on `Inconsistent[T]` is to *endorse* it.
 Endorsement is an upcast, invoked by `Consistent(x)`, to the top element `Consistent[T]` from other types in the lattice:
@@ -106,7 +105,7 @@ Endorsement is an upcast, invoked by `Consistent(x)`, to the top element `Consis
 ~
 
 The core type system statically enforces safety by preventing weaker values from flowing into stronger computations.
-Forcing developers to explicitly endorse `Inconsistent` values prevents them from accidentally using inconsistent data there they did not determine it was acceptable, essentially inverting the behavior of current systems where inconsistent data is always treated as if it was safe to use anywhere. However, endorsing values blindly in this way is not the intended use case; the key productivity benefit of the IPA type system comes from the other IPA types which correspond to the consistency policies in [#policies] which allow developers to handle dynamic variations in consistency, which we describe next.
+Forcing developers to explicitly endorse inconsistent values prevents them from accidentally using inconsistent data there they did not determine it was acceptable, essentially inverting the behavior of current systems where inconsistent data is always treated as if it was safe to use anywhere. However, endorsing values blindly in this way is not the intended use case; the key productivity benefit of the IPA type system comes from the other IPA types which correspond to the consistency policies in [#policies] which allow developers to handle dynamic variations in consistency, which we describe next.
 
 <!-- The IPA type system is similar to the probability type system of DECAF [@Boston:15:DECAF], which uses types to track the quality of results computed on approximate hardware, ensuring that a result of low quality cannot flow into a result of higher quality without explicit endorsement. -->
 <!-- We elide a thorough formal development of the core IPA type system due to its close similarity with DECAF, instead focusing on the additions introduced by IPA specifically to handle the dynamic annotations from the previous section. -->
