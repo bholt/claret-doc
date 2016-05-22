@@ -1,50 +1,90 @@
 # Introduction
 <!--
 ~~ Notes
-- conditions for distributed applications running in datacenters are constantly changing
-	- applications in datacenters, geo-replicated, exposed to the Internet, have to be able to handle a wide range of conditions
-	- plan for worst-case conditions
-	- provide structure/discipline to ensure programmers have handled all the things that can go wrong
-	- provide system with hints about what it should prioritize, and release valves to allow it to still be useful when times are tough
-	- robust to changes in the environment
-- Applications have performance requirements
-	- Sometimes explicit in the form of SLAs, promising a certain latency or availability
-	- Sometimes more implicit (i.e. every additional ms of latency reduces revenue)
-- Constantly balancing performance vs correctness / programmability
-	- If it isn't scaling well, or latencies are too high, then relax consistency in some places and hope...
-- This is error prone: every time you change consistency, there are new reorderings and conditions to consider
-	- new edge cases to handle, *implicit* in the consistency model
-	- accidentally leak into places that weren't intended to be weakened
-- Worse: conditions can change at any moment; node goes down, network unreliable, traffic surges
-	- In test environment, inconsistency is typically unlikely
-	- Adverse conditions in production can cause errors that never appeared in testing, or are very difficult to test for
-	- No way to know if you've caught them all
-- Furthermore, when conditions are good, there's no need to resort to weak consistency
-- It would be great if we had a way to:
-	- Express performance bounds
-		- Have the system help achieve them
-	- Make inconsistency explicit and restricted
-		- handle different cases in a disciplined way
-		- restrict possible values, and where they can be used
-- So the question is: *where to introduce this abstraction?*
-	- As part of the data type!
-	- Couples the effects of mutating operations with reads
-	- Concise and modular: re-use data types, no annotations on individual operations
-	- Safe: inconsistency expressed as return types
+- obviously applications would like to ensure correctness,
+
+- however they are often forced to relax correctness either for
+  availability or to handle unexpected spikes in performance
+
+- ideally applications would like to relax correctness in a way that
+  still maintains the correctness of the application (i.e., return a
+  value within 5%) or constrains the relaxation to when it is necessary
+  (when there is a spike).
+
+- further we would like to ensure that the relaxed correctness does
+  not propagate to corrupt other data
+
+- Unfortunately, with existing systems, applications approach
+  inconsistency in an undisiplined way. Left alone, the application
+  can corrupt all data in the system, making it useless to provide
+  stronger consistency at any time.
+
+* we introduce a more displined approach to inconsistency.
 ~~
 -->
 
-To provide good user experiences, modern datacenter applications and web services must balance many competing requirements. At a minimum, they must be scalable, highly available, and fault tolerant. 
-On top of that, they often wish to guarantee certain response times to meet contractual service level agreements (SLAs) or to keep user engagement high; for example, Microsoft, Amazon and Google have all noted that every additional millisecond of latency translates directly to a loss in traffic and revenue [@linden06:amazon;@forrest09:slow]. On the other hand, every application has correctness criteria: hard requirements, such as never double-charging a user for a purchase, or soft requirements, such as showing up-to-date results and accurate counts.
+To provide good user experiences, modern datacenter applications and
+web services must balance many competing requirements.  Programmers
+need to preserve application correctness (e.g., never double-charging
+for a purchase, or showing up-to-date results and accurate counts),
+while minimizing response times to meet contractual service level
+agreements (SLAs) or to keep user engagement high (e.g., Microsoft,
+Amazon and Google all note that every millisecond of latency
+translates to a loss in traffic and revenue
+[@linden06:amazon;@forrest09:slow]).  Worse, programmers must maintain
+this balance in an unpredictable environment where a black and blue
+dress [@buzzfeed-dress] or Justin Bieber [@bieber-instagram] can
+significantly change application performance in the blink of an eye.
 
-Developers of these applications typically balance these performance and correctness requirements by trading off consistency. Replicated datastores typically used to implement these services, such as Cassandra [@cassandra;@Lakshman:10:Cassandra] and Riak [@riak], often support multiple levels of consistency: from *linearizability* [@Herlihy:90:Linear] all the way down to *eventual consistency* [@Vogels:EC]. Whenever part of an application is not scaling well, or response times are unacceptably high, developers can choose to perform some operations with weaker consistency. However, they must understand and cope with all the new reorderings of operations that are possible. Failure to do so can lead to lost updates, duplications, stale data, and more. Relaxed consistency models are notoriously difficult to understand, especially when an application intertwines several models for different records. It is dangerously easy for inconsistencies to leak into operations that were intentionally kept as strongly consistent.
+Recognizing this trade-off, many existing storage systems support
+configureable consistency levels; some allow programmers to set the
+consistency of the entire store or each operation, while other provide
+adaptable consistency SLAs.  Ideally, programmers would weaken
+consistency guarantees only when it is necessary (e.g., a spike in
+traffic or datacenter failure) to meet availability requirements, or
+when it does not impact the application's correctness guarantees
+(e.g., returning a slightly stale or estimated result is acceptable).
+Unfortunately, if programmers are *undisciplined* in their use of
+weakly consistent data (i.e., writing back to storage based on
+inconsistent reads), they can easily corrupt application data,
+lowering the consistency of the storage system to that of the weakest
+read or write operation.
 
-Even once an application's consistency model is tuned and tested to meet performance targets for one execution environment, the conditions in which web services operate is in constant flux. Sharing resources with many other co-located services, each of which also undergoes occasional garbage collection or operating system pauses, leads to unpredictable performance. Moreover, traffic coming in – from the outside world or via other services – can be highly unpredictable: when a black and blue dress goes viral [@buzzfeed-dress], or Justin Bieber posts a selfie [@bieber-instagram], the web service is subject to highly irregular load that overloads some nodes. In unusual situations (such as natural disasters or global events like the World Cup), traffic usually restricted to a single datacenter may cross multiple geo-replicated datacenters, with significantly different performance and consistency characteristics.
+In this paper, we propose a more disciplined approach to consistency:
+the *inconsistent, performance-bound, approximate (IPA)* programming
+model for distributed storage systems. The IPA model provides a type
+system for which type safety implies *consistency safety*: values from
+weakly consistent operations cannot flow into stronger consistency
+operations without explicit endorsement. More specifically, the IPA
+type system provides the following features:
 
-Using today's datastore programming models, it is difficult and often impossible to handle this wide variety of conditions within a single application. Interfaces to datastores such as Cassandra offer consistency control at the level of individual operations, but provide no support for application-level reasoning about consistency. Failed by these abstractions, developers face a choice. They can opt for strong consistency, making the program easier to reason about but with overheads so high – 2-10$\times$ slower in our experiments – that the service falls over under even slightly adverse conditions. The other option is to choose a worst-case scenario to target and build the application to handle it, introducing significant productivity cost and the risk of inconsistency causing noticeable application errors even during normal, good, conditions.
+* *Abstract Data Types* (ADTs), supported by the storage system, that
+  programmers can annotate with performance targets, which allow the
+  storage system to automatically adapt to meet when conditions
+  change, and consistency requirements, which allow programmers to
+  express where preciseness is not required (e.g., the application
+  plans to display an approximate count).
 
-We need a better programming model to help developers build fast and correct distributed applications that adapt to changing conditions. Current abstractions for distributed datastores do not offer the level of safety and abstraction that developers expect from modern programming languages. Unfortunately, the CAP theorem [@Brewer:CAP;@Gilbert:CAP] tells us that developers will always need to balance correctness against performance. But the right programming language support can help developers to make these tradeoffs efficiently and, most importantly, safely. Moreover, programming language support for application-level reasoning about consistency offers semantic information that opens new runtime optimizations that are unavailable to applications where consistency levels are specified at the per-operation level.
+* *IPA types*, returned from the storage system, that express the
+  consistency and correctness of potentially inconsistent values, and
+  subtyping to allow applications to make decisions based on the
+  actual consistency of data.
 
-We propose the *inconsistent, performance-bound, approximate (IPA)* programming model for distributed datastores. The IPA model provides a type system for which type safety implies *consistency safety*: values from weakly consistent operations cannot flow into stronger consistency operations without explicit endorsement. Applications built with the IPA model allow developers to annotate *abstract data types* with performance targets, so the system can automatically adapt to meet them when conditions change. IPA annotations also express where incorrectness is acceptable, to give the system a release valve where it can relax consistency to meet those performance goals. Central to providing discipline for programmers are *IPA types*, which express the consistency and correctness of any potentially inconsistent values. Type checking ensures that programmers handle potential error cases, and subtyping allows applications to make decisions based on the actual consistency of data.
+* *Type checking* that enforces the disciplined use of IPA types by
+   requiring programmers to explicitly endorse the propagation of
+   inconsistent values to strongly consistent ADTs.
 
-We present the IPA model instantiated with types and annotations that implement two important distributed runtime mechanisms: latency-bound operations, and a novel *error tolerance* reservation system. We describe how these mechanisms can be implemented in Scala for a distributed environment based on Cassandra, and explain how the IPA programming model allows the system to trade off performance and consistency, safe in the knowledge that the type system has checked the program for consistency safety. We demonstrate experimentally that these mechanisms allow applications to dynamically adapt correctness and performance to changing conditions with a counter microbenchmark and two applications: a simple Twitter clone based on Retwis [@retwis] and a Ticket sales service modeled after FusionTicket [@FusionTicket]. Our results show that IPA applications adapt to changing execution environments while respecting application-level correctness requirements.
+We explore the IPA model by implementing two important distributed
+runtime mechanisms: latency-bound operations, and a novel *error
+tolerance* reservation system. We describe how these mechanisms can be
+implemented in Scala for a distributed environment based on Cassandra,
+and explain how the IPA programming model allows the system to trade
+off performance and consistency, safe in the knowledge that the type
+system has checked the program for consistency safety. We demonstrate
+experimentally that these mechanisms allow applications to dynamically
+adapt correctness and performance to changing conditions with a
+counter microbenchmark and two applications: a simple Twitter clone
+based on Retwis [@retwis] and a Ticket sales service modeled after
+FusionTicket [@FusionTicket]. Our results show that IPA applications
+adapt to changing execution environments while respecting
+application-level correctness requirements.
