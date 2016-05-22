@@ -1,6 +1,13 @@
 # Implementation {#sec-implementation}
 
-The IPA type system provides users with controls to specify performance and correctness criteria and abstractions for handling uncertainty. It is the job of the IPA implementation to enforce those bounds. 
+The IPA type system provides users with controls to specify performance and correctness criteria and abstractions for handling uncertainty. It is the job of the IPA implementation to enforce those bounds.
+
+## Type system
+
+The IPA type system is implemented as a Scala library, simply leveraging Scala's sophisticated type system. Due to its type safety features, abstraction capability, and compatibility with Java, Scala is becoming increasingly popular for web service development, including widely-used frameworks such as Akka and Spark, and at established companies such as Twitter [todo: cite some of that].
+<!-- Scala's sophisticated type system supports everything necessary to implement IPA's type system as a library. -->
+The IPA type lattice is implemented as a subclass hierarchy of parametric classes, leveraging Scala's support for higher-kinded types to allow them to be destructured in match statements, and implicit conversions for allowing `Consistent[T]` to be treated as type `T`. We use Scala traits ("mixins") to implement ADT annotations; when a `LatencyBound` trait is mixed into one of our ADT types, it wraps each of the ADT's methods, redefining it to have the new semantics and return the correct IPA type. [#fig-interfaces] shows an example trait.
+
 
 ## Backing datastore
 
