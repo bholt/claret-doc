@@ -110,8 +110,10 @@ While `Inconsistent[T]` has value as a reminder to developers about consistency,
 the key productivity benefit of the IPA type system is in the other weak IPA types.
 Each of the consistency policies in [#policies] has a corresponding weak IPA type for operations performed under that policy.
 
-The IPA type system is similar to the probability type system of DECAF [@Boston:15:DECAF], which uses types to track the quality of results computed on approximate hardware, ensuring that a result of low quality cannot flow into a result of higher quality without explicit endorsement.
-We elide a thorough formal development of the core IPA type system due to its close similarity with DECAF, instead focusing on the additions introduced by IPA specifically to handle the dynamic annotations from the previous section.
+The core type system statically enforces safety by preventing weaker values from flowing into stronger computations. We now build on that with two additional types corresponding to handle the results of the dynamic annotations from the previous section.
+
+<!-- The IPA type system is similar to the probability type system of DECAF [@Boston:15:DECAF], which uses types to track the quality of results computed on approximate hardware, ensuring that a result of low quality cannot flow into a result of higher quality without explicit endorsement. -->
+<!-- We elide a thorough formal development of the core IPA type system due to its close similarity with DECAF, instead focusing on the additions introduced by IPA specifically to handle the dynamic annotations from the previous section. -->
 
 ### Rushed types
 
