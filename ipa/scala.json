@@ -1,4 +1,4 @@
 { "name": "scala",
   "extend": "java",
-  "extraKeywords": ["match"]
+  "extraKeywords": ["match", "def"]
 }
