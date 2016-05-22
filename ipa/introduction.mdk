@@ -34,21 +34,21 @@ translates to a loss in traffic and revenue
 [@linden06:amazon;@forrest09:slow]).  Worse, programmers must maintain
 this balance in an unpredictable environment where a black and blue
 dress [@buzzfeed-dress] or Justin Bieber [@bieber-instagram] can
-significantly change application performance in the blink of an eye.
+change application performance in the blink of an eye.
 
 Recognizing this trade-off, many existing storage systems support
 configureable consistency levels; some allow programmers to set the
 consistency of the entire store or each operation, while other provide
 adaptable consistency SLAs.  Ideally, programmers would weaken
-consistency guarantees only when it is necessary (e.g., a spike in
-traffic or datacenter failure) to meet availability requirements, or
-when it does not impact the application's correctness guarantees
-(e.g., returning a slightly stale or estimated result is acceptable).
-Unfortunately, if programmers are *undisciplined* in their use of
-weakly consistent data (i.e., writing back to storage based on
-inconsistent reads), they can easily corrupt application data,
-lowering the consistency of the storage system to that of the weakest
-read or write operation.
+consistency guarantees only when it is necessary to meet performance
+requirements (e.g., during a spike in traffic or datacenter failure),
+or when it does not impact the application's correctness guarantees
+(e.g., if returning a slightly stale or estimated result is
+acceptable).  Unfortunately, if programmers are *undisciplined* in
+their use of weakly consistent data (i.e., updating the storage system
+based on inconsistent reads), they can easily corrupt application
+data, lowering the consistency of the storage system to that of the
+weakest read or write operation.
 
 In this paper, we propose a more disciplined approach to consistency:
 the *inconsistent, performance-bound, approximate (IPA)* programming
