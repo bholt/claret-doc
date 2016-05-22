@@ -17,7 +17,7 @@ Math Mode: mathjax
 
 Package: etoolbox
 Package: fontspec
-Package: [protrusion=true,expansion,spacing=true]microtype
+Package: microtype
 Package: tabulary
 Package: subcaption
 Package: [all]hypcap
