@@ -130,12 +130,12 @@ For example, a system with geo-distributed replicas may only be able to satisfy 
 In this system, the `Rushed[T]` type would be the sum of three types `Consistent[T]`, `LocalQuorum[T]`, and `Inconsistent[T]`.
 A match statement destructures the result of a latency-bound read operation:
 
-```
-set.contains() match {
-  case Consistent(x) => print(x)
-  case LocalQuorum(x) => print(x + ", locally")
-  case Inconsistent(_) => print("unknown")
-}
+```scala
+  set.contains() match {
+    case Consistent(x) => print(x)
+    case LocalQuorum(x) => print(x+", locally")
+    case Inconsistent(_) => print("unknown")
+  }
 ```
 
 The application may want to react differently to a local quorum as opposed to a strongly or weakly consistent value.

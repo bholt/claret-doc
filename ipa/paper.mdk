@@ -27,6 +27,12 @@ Package: enumitem
 Package: [font={small}]caption
 Package: [compact]titlesec
 
+Colorizer: java
+Colorizer: scala
+.token.keyword: color=#310166
+.token.type: color=#003776
+.token.string: color=#6d5000
+
 #todo: color=red font-size=small font-family=Lato-Light before='[' after=']'
 
 ~Notes: color=gray font-size=90% font-family=Lato-Light
