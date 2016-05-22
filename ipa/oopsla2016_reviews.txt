@@ -1,0 +1,134 @@
+===========================================================================
+                          OOPSLA 2016 Review #42A
+---------------------------------------------------------------------------
+                   Paper #42: Disciplined Inconsistency
+---------------------------------------------------------------------------
+
+                 Reviewer expertise: Y. I am knowledgeable in this area,
+                                        but not an expert
+                Reviewer confidence: 2. Medium
+                      Overall merit: 2. Some merit, significant objections
+
+                         ===== Paper summary =====
+
+The paper presents a library for programming with distributed data
+that gives the programmer the flexibility to customize, on a per
+data-structure basis, the tradeoff between consistency and
+performance.
+
+                      ===== Comments for author =====
+
+Evaluation.
+
+It is hard for me to understand the interesting novelty in this
+paper. I thought the use of the reservation servers and the tokens
+(discussed in 4.3.1 and elsewhere) was clever and useful, but it
+appears to be something that Riak already does. The type system seems
+important, but that is the same as DECAF. The validation and synthesis
+of these ideas in the context of a production sever is interesting,
+but the paper does not convince me that this implementation rises to
+that level (yet).
+
+Other issues.
+
+The performance evaluation does not compare to other systems, instead
+focusing on micro-benchmarks and small programs (apparently) written
+by the authors to evaluate IPA types. There is no evaluation of the
+programming model itself. That is, the paper does not contain an
+evaluation of how using IPA types might improve the quality of the
+code, or make it easier to modify the code, or things along those
+lines.
+
+The paper makes the claim that "the key to the IPA type system are the
+IPA types themselves" (section 3.4, first sentence) and yet never
+shows us the type system, saying only that it is essentially the same
+as citation 10. I am skeptical of the concept of explicit endorsement,
+at least in the way it seems to be presented here. In particular, it
+seems like it is simply a way to declare to ignore the type system's
+requirements at a given point. While I can agree that such "trapdoors"
+are important for practical programming, it seems like this needs some
+more care to be sure that they don't invalidate other reasoning the
+type system is doing, or that there is some tool support to somehow
+figure out that particular endorsements are benign in practice, or
+something.
+
+The discussion in section 4.2 (ending in 4.2.1) left me skeptical. It
+seems like this is saying that, unless the local node figures out that
+there is a lot of contention, the network traffic is doubled. I think
+that 5.2.1 in the evaluation section addresses this issue, but I would
+have appreciated a clearer connection between these extra messages and
+that part of the evaluation.
+
+In 4.3.3, I didn't understand why combining reservations with
+operations that cancel out is a bad idea. The rationale in the last
+paragraph didn't make sense to me, since it seems obvious that you
+could combine canceling operations only in a single replica. Perhaps
+the paper says that this just is not useful to do that? Some
+clarification here would be welcome.
+
+I appreciated the detailed understanding of the related work as
+demonstrated by the numerous citations sprinkled throughout the
+paper. Thank you for that.
+
+===========================================================================
+                          OOPSLA 2016 Review #42B
+---------------------------------------------------------------------------
+                   Paper #42: Disciplined Inconsistency
+---------------------------------------------------------------------------
+
+                 Reviewer expertise: X. I am an expert in this area
+                Reviewer confidence: 3. High
+                      Overall merit: 2. Some merit, significant objections
+
+                         ===== Paper summary =====
+
+This paper presents IPA — inconsistent, performance-bound, approximate (data)types. The motivation is to add explicit annotations about consistency constraints and response times  in programs so that programmers can specify and understand the guarantees that they are getting when manipulating data through a data-store. IPA is implemented as extension to Scala and demonstrated through a realization on top of Cassandra.
+
+                      ===== Comments for author =====
+
+Pros
+
+- relevant problem
+
+- real-life implementation
+
+Cons
+
+- novel contributions are very limited
+
+
+
+While this paper addresses a relevant problem — reflecting consistency guarantees to the programmer — its technical contributions are on the lower end. Implementation-wise there seems to have been some effort gone into realizing what is proposed, but when all is said and done this paper describes some syntactic sugar on top of a distributed data-store. The main potential novelties — the reasoning about consistency guarantees — is very shallow, or at least presented in a very shallow manner. The so-called type-system is trivial and is only presented via a straightforward sub-typing rule. Nothing interesting or novel is presented around it. Not even how the language prevents “flowing” of inconsistent data to more consistent data as laid out in the introduction is shown. Maybe there could be some interesting issues when programmers combine or compose data-structures to larger ones? While I don’t doubt that some language support could help programmers deal with all the possibilities that exist, this paper doesn’t demonstrate that. It comes across as an implementation combining a collection of known techniques and piggybacking on the (slowly declining) “eventual consistency” hype. In terms of evaluation, the paper essentially focuses on the data-store plus the library so it’s hard to tell where the “language” really comes in, and/or whether it’s worth introducing such a domain-specific language at all. In fact most of the properties verified are enforced by the data-store and not so much by the layer on top. In terms of the language, no information is given on how it is implemented in Scala.
+
+===========================================================================
+                          OOPSLA 2016 Review #42C
+---------------------------------------------------------------------------
+                   Paper #42: Disciplined Inconsistency
+---------------------------------------------------------------------------
+
+                 Reviewer expertise: Y. I am knowledgeable in this area,
+                                        but not an expert
+                Reviewer confidence: 2. Medium
+                      Overall merit: 3. Some merit, weak objections
+
+                         ===== Paper summary =====
+
+This paper proposes a data type abstraction, programming model, and datastore that provides relaxed consistency guarantees for data types in distributed applications.
+
+The paper specifically proposes a system that enables developers to specify that operations on a data type need to have either strong consistency, error bounded consistency, or latency bounded consistency. 
+
+The paper includes a performance evaluation of the system for two model applications.
+
+                      ===== Comments for author =====
+
+This paper itself is well-written and a quite enjoyable read. Overall, the consistency levels and the enforcement mechanisms feel intuitive and intuitively useful from the programming language design perspective.
+
+A basic concern I have with this paper is that the simplicity and intuitive nature of the result may hide some underlying complexity in navigating this space that is only uncovered by realistic applications -- versus the two model applications used in this evaluation.
+
+Specifically, the paper notes that prior consistency models/systems (e.g., Conit) required annotations at each read and write. As the paper states, this is more complicated than the per- type (or per-method) annotations proposed here. But, what is not made clear is what performance is left on the table and whether or not per-operation annotations are unnecessary for acceptable performance in practice.
+
+                 ===== Questions for Author Response =====
+
+Are there fundamental challenges to extending the system to support per-operation annotations? 
+
+How is the information flow type system used in these applications and, specifically, what benefit does it provide?
