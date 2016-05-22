@@ -84,7 +84,7 @@ Tex Header:
 	\headheight 0in
 	\headsep 0in
 	\captionsetup{belowskip=0pt,aboveskip=0pt}
-	\setlist{topsep=1pt,leftmargin=12pt}
+	\setlist{nosep,leftmargin=12pt}
 
 
 
