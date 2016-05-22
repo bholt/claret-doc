@@ -77,8 +77,9 @@ In some situations, operations may produce and consume tokens in the same pool â
 
 ## Provided by IPA {#sec-provided}
 
-~ Fig {#fig-interfaces caption="Example facilities provided by IPA. [\vspace{-12pt}]{input:texraw}" }
+~ Fig {#fig-interfaces caption="Some of the reusable components provided by IPA and an example implemention of a Counter. [\vspace{-8pt}]{input:texraw}" }
 ![](fig/interfaces.pdf)
+[\vspace{-18pt}]{input:texraw}
 ~
 
 The IPA system provides a number of primitives for building ADTs; some are shown in [#fig-interfaces]. To support latency bounds, there is a generic `LatencyBound` trait that provides facilities for executing a specified read operation at multiple consistency levels within a time limit. For implementing error bounds, IPA provides a generic reservation pool which ADTs can use. IPA also provides several reference ADT implementations:
