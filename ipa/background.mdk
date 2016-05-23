@@ -5,8 +5,9 @@ Before launching into the IPA programming model, we will explore an example appl
 
 In October 2015, movie ticket pre-sales became available for the much-anticipated new movie in the Star Wars franchise. The demand for these tickets was so high that many movie ticket sites, including big players such as AMC and Fandango, saw catastrophic performance drops; some smaller vendors even had crashes which resulted in loss of purchases and significant media backlash [@forbes:star-wars]. Missing the opening night of a movie may not be the most dire of circumstances, but it illustrates that web services must be prepared for all kinds of situations, even if they only happen in a minority of instances.
 
-~ Fig { #fig-tickets; caption="Ticket sales service. To meet latency target, `load_page` switches to a weak read, introducing a potential logical error when using this possibly-inconsistent value to determine if tickets can be purchased." }
+~ Fig { #fig-tickets; caption="Ticket sales service. To meet latency target, `load_page` switches to a weak read, introducing a potential logical error when using this possibly-inconsistent value to determine if tickets can be purchased. [\vspace{-10pt}]{input:texraw}" }
 ![](fig/tickets.pdf)
+[\vspace{-18pt}]{input:texraw}
 ~
 
 Let's look at how we would model this application using existing datastores.

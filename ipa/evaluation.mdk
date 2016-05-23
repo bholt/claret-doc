@@ -36,7 +36,7 @@ The most important factor in evaluating a system like IPA is how it handles diff
 We wish to know how an application written using these techniques 
 -->
 
-~ Tab { #tab-conditions caption="Network conditions for experiments: latency from client to each replicas, with standard deviation if high." }
+~ Tab { #tab-conditions caption="Network conditions for experiments: latency from client to each replicas, with standard deviation if high. [\vspace{-10pt}]{input:texraw}" }
 | Network Condition     | Latencies (ms)               |||
 |:----------------------|:---------|:--------|:----------|
 | **Simulated**         | *Replica 1* |*Replica 2*| *Replica 3* |
@@ -49,27 +49,28 @@ We wish to know how an application written using these techniques
 | Google Compute Engine | 30 ± <1  |100 ± <1 | 160 ± <1 |
 |-----------------------|----------|---------|-----------|
 {font-size: small}
+[\vspace{-6pt}]{input:texraw}
 ~
 
 ## Microbenchmark: Counter
 We start by measuring the performance of a very simple application that randomly increments and reads from a number of counters with different IPA policies. Random operations (`incr(1)` and `read`) are uniformly distributed over 100 counters from a single multithreaded client (allowing up to 4000 concurrent operations).
 
-### Latency bounds
+### Latency bounds {#eval-latency-bounds}
 
-~ Fig { #plot-counter-lbound caption="*Counter: latency bounds, mean latency.* Beneath each bar is the % of strong reads. Strong consistency is never possible for the 10ms bound, but 50ms bound gets mostly strong during good conditions and at high latency resorts to weak." }
+~ Fig { #plot-counter-lbound caption="*Counter: latency bounds, mean latency.* Beneath each bar is the % of strong reads. Strong consistency is never possible for the 10ms bound, but 50ms bound achieves mostly strong, only resorting to weak when latency is high." }
 ![](plots/counter_lbound.pdf){ .onecol }
 ~
 
-~ Fig { #plot-counter-lbound-tail caption="*Counter: 95th percentile latency.* Latency bounds help keep tail latency down by backing off to weak consistency when necessary." }
+~ Fig { #plot-counter-lbound-tail caption="*Counter: 95th percentile latency.* Latency bounds keep tail latency down, backing off to weak when necessary. [\vspace{-12pt}]{input:texraw}" }
 ![](plots/counter_lbound_tail.pdf){ .onecol }
 ~
 
 ~ Fig { #fig-counter-err .wide caption="*Counter benchmark: error tolerance.* In (a), we see that wider error bounds reduce mean latency because fewer synchronizations are required, matching *weak* around 5-10%. In (b), we see actual error of *weak* compared with the actual interval for a 1% error bound with varying fraction of writes; average error is less than 1% but *maximum* error can be extremely high: up to 60%. [\vspace{-.2in}]{input:texraw}" }
 ~~ SubFigureRow
-~~~ SubFigure {#fig-counter-error-perf caption="Mean latency (increment *and* read)."}
+~~~ SubFigure {#fig-counter-error-perf; font-size: small; caption="Mean latency (increment *and* read)."}
 ![](plots/counter_err_perf.pdf)
 ~~~
-~~~ SubFigure {#fig-counter-error caption="Observed % error for weak and strong, compared with the actual interval widths returned for 1% error tolerance."}
+~~~ SubFigure {#fig-counter-error; font-size: small; caption="Observed % error for weak and strong, compared with the actual interval widths returned for 1% error tolerance."}
 ![](plots/counter_err.pdf)
 ~~~
 ~~

@@ -82,7 +82,7 @@ These IPA types track the consistency of the results
 and enforce a fundamental non-interference property: 
 results from weakly consistent operations cannot flow into computations with stronger consistency without explicit endorsement.
 
-~ Fig {#lattice caption="IPA Type Lattice parameterized by a type `T`."}
+~ Fig {#lattice caption="IPA Type Lattice parameterized by a type `T`.[\vspace{-10pt}]{input:texraw}"}
 ![](fig/lattice.pdf)
 ~
 
