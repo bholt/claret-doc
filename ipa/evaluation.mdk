@@ -109,6 +109,10 @@ Event listings by venue are modeled using a `List` ADT. Tickets are modeled usin
 Our workload attempts to model typical use of a small-scale deployment: we start with 50 venues and 200 events, with an average of 2000 tickets each (gaussian distribution centered at 2000, stddev 500). We chose the ticket to event ratio so that during the course of a run, we should have some events run out of tickets. This is important because the behavior of the pool changes as it runs out of tokens (this is true for all cases because the `BoundedCounter` has its own form of reservations for ensuring the lower bound; it is doubly true for the pool with error bounds, which also has less margin for error at the end).
 Real-world workloads exhibit power law distributions [@YCSB], where a small number of keys are much more popular than the majority. We model event popularity using a Zipf (power law) distribution with a coefficient of 0.6, which is moderately skewed.
 
+~ Fig { #tickets-code caption="*Ticket service* code demonstrating use of IPA types." }
+![](fig/tickets-code.pdf)
+~
+
 ~ Fig { #plot-tickets caption="*Ticket service: mean latency*, ***log scale.*** Strong consistency is far too expensive (>10$\times$ slower) except when load and latencies are low, but 5% error tolerance allows latency to be comparable to weak consistency. The 20ms latency-bound variant is either slower or defaults to weak, providing little benefit. Note: the ticket `Pool` is safe even when weakly consistent."; page-align: top }
 ![](plots/tickets.pdf){ .onecol }
 ~

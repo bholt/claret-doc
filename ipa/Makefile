@@ -22,7 +22,8 @@ FIGS := \
 	interfaces \
 	twitter \
 	tickets \
-	reservations
+	reservations \
+	tickets-code
 
 SVG_SRCS := $(SRCS:%.mdk=out/%.mdk)
 FIGS_OUT := $(addsuffix .pdf, $(addprefix fig/, $(FIGS)))
