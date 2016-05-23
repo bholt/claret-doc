@@ -84,6 +84,7 @@ results from weakly consistent operations cannot flow into computations with str
 
 ~ Fig {#lattice caption="IPA Type Lattice parameterized by a type `T`.[\vspace{-10pt}]{input:texraw}"}
 ![](fig/lattice.pdf)
+[\vspace{-20pt}]{input:texraw}
 ~
 
 The IPA types encapsulate information about the consistency achieved when reading a value.
@@ -99,11 +100,12 @@ The bottom element `Inconsistent[T]` specifies an object with the weakest possib
 
 The only possible operation on `Inconsistent[T]` is to *endorse* it.
 Endorsement is an upcast, invoked by `Consistent(x)`, to the top element `Consistent[T]` from other types in the lattice:
-
+[\vspace{-8pt}]{input:texraw}
 ~ Math
 \inferrule{\Gamma \vdash e_1 : \tau[T] \\ T \prec \tau[T]}{\Gamma \vdash \operatorname{Consistent}(e_1) : T}
+\vspace{-6pt}
 ~
-
+<!-- [\vspace{-10pt}]{input:texraw} -->
 The core type system statically enforces safety by preventing weaker values from flowing into stronger computations.
 Forcing developers to explicitly endorse inconsistent values prevents them from accidentally using inconsistent data there they did not determine it was acceptable, essentially inverting the behavior of current systems where inconsistent data is always treated as if it was safe to use anywhere. However, endorsing values blindly in this way is not the intended use case; the key productivity benefit of the IPA type system comes from the other IPA types which correspond to the consistency policies in [#policies] which allow developers to handle dynamic variations in consistency, which we describe next.
 

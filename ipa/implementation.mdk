@@ -6,12 +6,12 @@ The IPA type system provides users with controls to specify performance and corr
 
 The IPA type system is implemented as a Scala library, simply leveraging Scala's sophisticated type system. Due to its type safety features, abstraction capability, and compatibility with Java, Scala is has become popular for web service development, including widely-used frameworks such as Akka [@scala-akka] and Spark [@spark], and at established companies such as Twitter and LinkedIn [@scala-jobs;@scala-enterprise].
 <!-- Scala's sophisticated type system supports everything necessary to implement IPA's type system as a library. -->
-The IPA type lattice is implemented as a subclass hierarchy of parametric classes, leveraging Scala's support for higher-kinded types to allow them to be destructured in match statements, and implicit conversions for allowing `Consistent[T]` to be treated as type `T`. We use Scala traits ("mixins") to implement ADT annotations; when a `LatencyBound` trait is mixed into one of our ADT types, it wraps each of the ADT's methods, redefining it to have the new semantics and return the correct IPA type. [#fig-interfaces] shows an example trait.
+The IPA type lattice is implemented as a subclass hierarchy of parametric classes, leveraging Scala's support for higher-kinded types to allow them to be destructured in match statements, and implicit conversions for allowing `Consistent[T]` to be treated as type `T`. We use Scala traits to implement ADT annotations; when the `LatencyBound` trait is mixed into an ADT, it wraps each of the methods, redefining them to have the new semantics and return the correct IPA type. [#fig-interfaces] shows an example trait.
 
 
 ## Backing datastore
 
-The core of the implementation is a scalable, distributed storage system with fine-grained consistency control, as many popular Dynamo-style commercial datastores are (Cassandra [@cassandra], Riak [@riak], etc.). Our implementation of the IPA model builds on top of Cassandra, so we will use Cassandra's terminology here, but most of the techniques employed in our implementation would port easily to Riak or others.
+The core of the implementation is a scalable, distributed storage system with fine-grained consistency control, which many commercial datastores do (Cassandra [@cassandra], Riak [@riak], etc.). Our implementation of the IPA model builds on top of Cassandra, so we will use their terminology here, but most of the techniques employed in our implementation would port easily to Riak or others.
 
 We introduced Dynamo-style replication and eventual consistency in [#sec-background].
 To be sure of seeing a particular write, strong reads must coordinate with a majority (*quorum*) of replicas and compare their responses. For a write and read pair to be *strongly consistent* (in the CAP sense [@Brewer:CAP]), the replicas acknowledging the write plus the replicas contacted for the read must be greater than the total number of replicas ($W + R > N$). This can be achieved in a few ways: write to a quorum ($(N+1)/2$) and read from a quorum (`QUORUM` in Cassandra), or write to $N$ (`ALL`) and read from 1 (`ONE`) [@CassandraConsistency]. Cassandra also supports limited linearizable conditional updates and varying degrees of weaker consistency, particularly to handle different locality domains (e.g. `LOCAL_QUORUM`). 
@@ -22,7 +22,7 @@ The time it takes to achieve a particular level of consistency depends on curren
 
 It is conceptually quite simple to implement a dynamically tunable consistency level: send read requests to as many replicas as necessary for strong consistency (depending on the strength of corresponding writes it could be to a quorum or all), but then when the latency time limit is up, take however many responses have been received and compute the most consistent response possible from them.
 
-Unfortunately, Cassandra's client interface does not allow us to implement latency bounds exactly as described above: operations must specify a consistency level in advance. Instead, we issue read requests at different levels in parallel. <!--The Scala client driver we use is based on *futures*, allowing us to compose the parallel operations--> We compose the parallel operations and respond either when the strong operation returns or with the strongest available result at the specified time limit. If no responses are available at the time limit, we wait for the first to return.
+Unfortunately, Cassandra's client interface does not allow latency bounds exactly as described above: operations must specify a consistency level in advance. Instead, we issue read requests at different levels in parallel. <!--The Scala client driver we use is based on *futures*, allowing us to compose the parallel operations--> We compose the parallel operations and respond either when the strong operation returns or with the strongest available result at the specified time limit. If no responses are available at the time limit, we wait for the first to return.
 
 ### Monitors
 
@@ -53,8 +53,9 @@ Any client requests requiring reservations are routed to one of a number of *res
 ### Enforcing error bounds
 Reservations have been used previously to enforce hard global invariants in the form of upper or lower bounds on values [@Balegas:15:BoundedCounter], integrity constraints [@Balegas:15:Indigo], or logical assertions [@Liu:14:Warranties]. However, enforcing error tolerance bounds presents a new design challenge because the bounds are constantly shifting.
 
-~ Fig { #fig-reservations caption="Reservations enforcing error bounds." }
+~ Fig { #fig-reservations caption="Reservations enforcing error bounds.[\vspace{-10pt}]{input:texraw}" }
 ![](fig/reservations.pdf)
+[\vspace{-16pt}]{input:texraw}
 ~
 
 Consider a `Counter` with a 10% error bound, shown in [#fig-reservations]. If the current value is 100, then 10 increments can be done before anyone must be told about it. However, we have 3 reservation servers, so these 10 reservations are distributed among them, allowing each to do some increments without synchronizing. If only 10 outstanding increments are allowed, reads are guaranteed to maintain the 10% error bound.

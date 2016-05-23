@@ -73,7 +73,7 @@ save(
   # theme.bar()+
   # coord_cartesian(ylim=c(0,1000))+
   ipa.scales(guide = guide_legend(nrow=4))
-, 'tickets_google_rate', w=4.5, h=2.5)
+, 'tickets_google_rate', w=4.5, h=2.2)
 
 
 # save(

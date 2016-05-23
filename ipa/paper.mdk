@@ -96,7 +96,7 @@ Tex Header:
 \setlength{\floatsep}{10pt plus 4pt minus 2pt}
 \setlength{\textfloatsep}{10pt plus 4pt minus 3pt}
 \setlength{\mdcompacttopsep}{0pt}
-	
+
 \setcounter{secnumdepth}{0}
 
 \renewcommand{\arraystretch}{1.2}

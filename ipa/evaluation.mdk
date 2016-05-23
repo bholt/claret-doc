@@ -29,7 +29,7 @@ The most important factor in evaluating a system like IPA is how it handles diff
 We wish to know how an application written using these techniques 
 -->
 
-~ Tab { #tab-conditions caption="Network conditions for experiments: latency from client to each replicas, with standard deviation if high. [\vspace{-10pt}]{input:texraw}" }
+~ Tab { #tab-conditions caption="Network conditions for experiments: latency from client to each replicas, with standard deviation if high. [\vspace{-14pt}]{input:texraw}" }
 | Network Condition     | Latencies (ms)               |||
 |:----------------------|:---------|:--------|:----------|
 | **Simulated**         | *Replica 1* |*Replica 2*| *Replica 3* |
@@ -50,8 +50,9 @@ We start by measuring the performance of a very simple application that randomly
 
 ### Latency bounds {#eval-latency-bounds}
 
-~ Fig { #plot-counter-lbound caption="*Counter: latency bounds, mean latency.* Beneath each bar is the % of strong reads. Strong consistency is never possible for the 10ms bound, but 50ms bound achieves mostly strong, only resorting to weak when latency is high." }
+~ Fig { #plot-counter-lbound caption="*Counter: latency bounds, mean latency.* Beneath each bar is the % of strong reads. Strong consistency is never possible for the 10ms bound, but 50ms bound achieves mostly strong, only resorting to weak when latency is high. [\vspace{-8pt}]{input:texraw}" }
 ![](plots/counter_lbound.pdf){ .onecol }
+[\vspace{-16pt}]{input:texraw}
 ~
 
 ~ Fig { #plot-counter-lbound-tail caption="*Counter: 95th percentile latency.* Latency bounds keep tail latency down, backing off to weak when necessary. [\vspace{-12pt}]{input:texraw}" }
@@ -106,14 +107,17 @@ Real-world workloads exhibit power law distributions [@YCSB], where a small numb
 
 ~ Fig { #tickets-code caption="*Ticket service* code demonstrating use of IPA types." }
 ![](fig/tickets-code.pdf)
+[\vspace{-18pt}]{input:texraw}
 ~
 
 ~ Fig { #plot-tickets caption="*Ticket service: mean latency*, ***log scale.*** Strong consistency is far too expensive (>10$\times$ slower) except when load and latencies are low, but 5% error tolerance allows latency to be comparable to weak consistency. The 20ms latency-bound variant is either slower or defaults to weak, providing little benefit. Note: the ticket `Pool` is safe even when weakly consistent."; page-align: top }
 ![](plots/tickets.pdf){ .onecol }
+[\vspace{-18pt}]{input:texraw}
 ~
 
-~ Fig { #plot-tickets-rate caption="*Ticket service:* throughput on Google Compute Engine globally-distributed testbed. Note that this counts *actions* such as `tweet`, which can consist of multiple storage operations. Because error tolerance does mostly weak reads and writes, its performance tracks *weak*. Latency bounds reduce throughput due to issuing the same operation in parallel."; page-align: top }
+~ Fig { #plot-tickets-rate caption="*Ticket service:* throughput on Google Compute Engine globally-distributed testbed. Note that this counts *actions* such as `tweet`, which can consist of multiple storage operations. Because error tolerance does mostly weak reads and writes, its performance tracks *weak*. Latency bounds reduce throughput due to issuing the same operation in parallel. [\vspace{-12pt}]{input:texraw}"; page-align: top }
 ![](plots/tickets_google_rate.pdf){ .onecol }
+[\vspace{-18pt}]{input:texraw}
 ~
 
 [#plot-tickets] shows the average latency of a workload consisting of 70% `viewEvent`, 19% `browse`, 10% `purchase`, and 1% `addEvent`. We plot with a log scale because strong consistency is consistently over 5$\times$ higher latency. The `purchase` event, though only 10% of the workload, drives most of the latency increase because of the additional work required by the `BoundedCounter` to prevent over-selling tickets. We explore two different implementations: one with a 20ms latency bound on all ADTs, aiming to ensure that both `viewEvent` and `browse` complete quickly, and one where the ticket pool size ("tickets remaining") has a 5% error bound. We see that both perform with nearly the same latency as weak consistency. With the low-latency condition (*uniform* and *high load*), 20ms bound does 92% strong reads, 4% for *slow replica*, and all weak on both *geo-distributed* conditions.
@@ -126,10 +130,12 @@ On this workload, we observe that the reservations used for the 5% error bound p
 
 ~ Fig { #fig-twitter-model caption="Twitter application's (simplified) data model, with latency bounds for followers and timelines, and error tolerance for number of retweets (`size` of the retweets set). [\vspace{-10pt}]{input:texraw}" }
 ![](fig/twitter.pdf)
+[\vspace{-18pt}]{input:texraw}
 ~
 
 ~ Fig { #plot-twitter caption="*Twitter clone: mean latency (all actions).* The IPA version is on-par with weak consistency in all but one of the conditions, while strong consistency is 2-10$\times$ slower. [\vspace{-10pt}]{input:texraw}" }
 ![](plots/twitter.pdf)
+[\vspace{-16pt}]{input:texraw}
 ~
 
 Our second application is a Twitter-like service based on the Redis data modeling example, Retwis [@retwis]. The data model is simple: each user has a `Set` of followers, a `Set` of users they follow, and a `List` of their tweets. Each user's timeline is kept materialized as a `List` of tweet IDs — when a user tweets, the new tweet ID is eagerly appended to all of their followers' timelines. Retweets are tracked with a `Set` of users who have retweeted each tweet. The retweet count, loaded for each tweet when a timeline is loaded, is represented in this ADT model by the size of the set.
