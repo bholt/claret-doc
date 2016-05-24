@@ -13,11 +13,9 @@ under high load, as several ticketing services did in October 2015,
 when tickets became available for the new Star Wars movie
 [@forbes:star-wars].
 
-~ Fig { #fig-tickets; caption="Ticket sales service. To meet latency
-target, `load_page` switches to a weak read, introducing a potential
-logical error when using this possibly-inconsistent value to determine
-if tickets can be purchased. [\vspace{-10pt}]{input:texraw}" }
-![](fig/tickets.pdf) [\vspace{-18pt}]{input:texraw}
+~ Fig { #fig-tickets; caption="Ticket sales service. To meet latency target, `load_page` switches to a weak read, introducing a potential logical error when using this possibly-inconsistent value to determine if tickets can be purchased. [\vspace{-10pt}]{input:texraw}" }
+![](fig/tickets.pdf)
+[\vspace{-18pt}]{input:texraw}
 ~
 
 To allow the application to scale more gracefully and handle traffic
@@ -35,7 +33,7 @@ spikes.
 While this solves the programmer's performance problem, it introduces
 data consistency problem.  Suppose that the ticket sales application
 wants to raise the price of the last 100 tickets for each showing to
-&dollar;, similar to Uber's surge pricing.  If the application uses a
+&dollar;15, similar to Uber's surge pricing.  If the application uses a
 strongly consistent read to fetch the remaining ticket count, then it
 can use that value to compute the price of the ticket on the last
 screen in [#fig-tickets]. However, if the programmer choses to
@@ -43,7 +41,7 @@ weaken the consistency of that read, then he must be careful when
 using it to calculate a purchase. Done in an undisciplined way, the
 application may over or under charge some users depending on the
 consistency of the returned value.  Worse, the theater would expect to
-make exactly &dollar;2000 on the last 100 tickets for each showing with the
+make exactly &dollar;1500 on the last 100 tickets for each showing with the
 new pricing model, which may not be true with the new weaker read
 operation.
 
