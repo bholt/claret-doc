@@ -74,7 +74,7 @@ The runtime is responsible for managing the interaction between these policies. 
 In the ticket sales application, the `Counter` for each event's tickets has a relaxed accuracy policy: `ErrorTolerance(5%)`, allowing the system to quickly read the count of tickets remaining. An accuracy policy is appropriate here because it expresses a domain requirement---users want to see accurate ticket counts. As long as the system meets this requirement, it is free to relax consistency and maximize performance without violating correctness.
 The `List` ADT used for events has a latency policy that also expresses a domain requirement---that pages on the website load in reasonable time.
 
-## IPA Types {#sec-ipa-types}
+## Consistency Types {#sec-ipa-types}
 
 The keys to the IPA type system are the IPA types themselves.
 Read operations of ADTs annotated with consistency policies return instances of an *IPA type*.
