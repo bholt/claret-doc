@@ -25,7 +25,8 @@ Package: style/mathpartir
 Package: mathptmx
 Package: enumitem
 Package: [font={small}]caption
-Package: [compact]titlesec
+Package: [small,compact]titlesec
+Package: [stretch=0,shrink=25]microtype
 
 Colorizer: java
 Colorizer: scala
