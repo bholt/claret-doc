@@ -9,7 +9,7 @@ An alternative approach is to *simulate* a variety of environments chosen to str
 
 On our own test cluster with nodes linked by standard ethernet, we use Linux's Network Emulation facility [@netem] (`tc netem`) to introduce packet delay and loss at the operation system level. We use Docker containers [@docker] to enable fine-grained control of the network conditions between processes on the same physical node.
 
-[#tab-conditions] shows the set of conditions we use in our experiments to explore the behavior of the system. To simulate latencies within a well-provisioned datacenter, we have a *uniform 5ms* condition which is predictable and reliable but slower than our raw latency which is typically less than 1ms. *Slow replica* simulates when one replica is significantly slower than others due to imbalanced load or hardware problems. Finally, we have a condition mimicking a geo-replicated setup with latency distributions based on measurements of latencies between virtual machines in the U.S., Europe, and Asia on Amazon EC2 [@AmazonEC2] and Google Compute Engine.
+[#tab-conditions] shows the set of conditions we use in our experiments to explore the behavior of the system. We have a *uniform 5ms* condition to simulate latencies within a well-provisioned datacenter, *slow replica* which models imbalanced load or hardware problems that can cause one replica to be significantly slower to respond, and a condition mimicking geo-replication, with latency distributions based on measurements of latencies between virtual machines in the U.S., Europe, and Asia on Amazon EC2 [@AmazonEC2]. These simulated conditions are validated by experiments with real networks in Google Compute Engine, running virtual machines in four datacenters: the client in *us-east*, and the datastore replicas in *us-central*, *europe-west*, and *asia-east*.
 We elide the results for *Local* (same rack in our own testbed) except in [#fig-twitter-model] because the differences between policies are negligible. In such situations, strong consistency ought to be the default.
 
 <!--
@@ -87,10 +87,12 @@ When evaluating the latency bounds, we considered only read latency because we d
 
 While we have verified that error-bounded reads remain within our defined bounds, we also wish to know what error occurs in practice without the bounds. We modified our benchmark to be able to observe the error from weak consistency by incrementing counters a predetermined amount and observing the value; results are shown in [#fig-counter-err]b. We plot the percent error of weak and strong against the actual observed interval width for a 1% error bound, going from a read-heavy (1% increments) to write-heavy (all increments, except to check the value).
 
-First, we find that the *mean* error is less than 1% – inconsistency is quite rare; it may be higher in practice when operations come from more than one client, but then we would not have been able to observe the error in the way we did. However, even with this experiment, we see outliers with significant error when writing is heavy: up to 60% error in the geo-replicated case. Finally, it is worth noting that for read-heavy workloads, the interval width (green line) is less than 1% because it dynamically adjusted as reservations were not needed.
+First, we find that the *mean* error is less than 1% – inconsistency is quite rare, though it may be higher in practice, when operations come from more than one client.
+<!-- , but then we would not have been able to observe the error in the way we did. -->
+However, even with this experiment, we see outliers with significant error when writing is heavy: up to 60% error in the geo-replicated case. Finally, it is worth noting that for read-heavy workloads, the interval width (green line) is less than 1% because it dynamically adjusted as reservations were not needed.
 
 ## Applications
-Next, we explore how the IPA system performs on two application benchmarks in our simulated network testbed and on Google Compute Engine. We ran virtual machines on Google Compute Engine across four datacenters: the client in *us-east*, and the datastore replicas in *us-central*, *europe-west*, and *asia-east*.
+Next, we explore the implementation of two applications in IPA and compare their performance with Cassandra using strictly strong or weak consistency on our simulated network testbed and Google Compute Engine. 
 
 ### Ticket service
 Our Ticket sales web service, introduced in [#sec-background], is modeled after FusionTicket [@FusionTicket], which has been used as a benchmark in recent distributed systems research [@Xie:14:Salt;@Xie:15:ACIDAlt]. We support the following actions:
@@ -100,10 +102,12 @@ Our Ticket sales web service, introduced in [#sec-background], is modeled after 
 - `purchase`: Purchase a ticket (or multiple)
 - `addEvent`: Add an event at a venue.
 
-Event listings by venue are modeled using a `List` ADT. Tickets are modeled using the `UUIDPool` type, which generates unique identifiers as proof of purchase and ensures that, even with weak consistency, it never gives out more than the maximum number of tickets.
+Event listings by venue are modeled using a `List` ADT. 
 
-Our workload attempts to model typical use of a small-scale deployment: we start with 50 venues and 200 events, with an average of 2000 tickets each (gaussian distribution centered at 2000, stddev 500). We chose the ticket to event ratio so that during the course of a run, we should have some events run out of tickets. This is important because the behavior of the pool changes as it runs out of tokens (this is true for all cases because the `BoundedCounter` has its own form of reservations for ensuring the lower bound; it is doubly true for the pool with error bounds, which also has less margin for error at the end).
-Real-world workloads exhibit power law distributions [@YCSB], where a small number of keys are much more popular than the majority. We model event popularity using a Zipf (power law) distribution with a coefficient of 0.6, which is moderately skewed.
+[#tickets-code] shows a snippet of code from the IPA implementation which can be compared with the non-IPA version from [#fig-tickets]. 
+Tickets are modeled using the `UUIDPool` type, which generates unique identifiers to reserve tickets for purchase. The ADT ensures that, even with weak consistency, it never gives out more than the maximum number of tickets, so it is safe to `endorse` the result of the `take` operation as long as one is okay with the possibility of a false negative. To compute the price of the reserved ticket, we now get back an `Interval` representing the range of possible remaining ticket counts, forcing our program to decide how to handle this range. We decide to use the `max` value from the interval to be conservative and fair to users; the 5% error bound ensures that we don't sacrifice too much profit this way.
+
+To evaluate the performance, we run a workload modelling a typical small-scale deployment: 50 venues and 200 events, with an average of 2000 tickets each (gaussian distribution centered at 2000, stddev 500), with a ticket to event ratio that leads to some events running out tickets. Because real-world workloads exhibit power law distributions [@YCSB], we use a moderately skewed Zipf distribution with coefficient of 0.6 to choose events.
 
 ~ Fig { #tickets-code caption="*Ticket service* code demonstrating use of IPA types." }
 ![](fig/tickets-code.pdf)
@@ -120,11 +124,12 @@ Real-world workloads exhibit power law distributions [@YCSB], where a small numb
 [\vspace{-18pt}]{input:texraw}
 ~
 
-[#plot-tickets] shows the average latency of a workload consisting of 70% `viewEvent`, 19% `browse`, 10% `purchase`, and 1% `addEvent`. We plot with a log scale because strong consistency is consistently over 5$\times$ higher latency. The `purchase` event, though only 10% of the workload, drives most of the latency increase because of the additional work required by the `BoundedCounter` to prevent over-selling tickets. We explore two different implementations: one with a 20ms latency bound on all ADTs, aiming to ensure that both `viewEvent` and `browse` complete quickly, and one where the ticket pool size ("tickets remaining") has a 5% error bound. We see that both perform with nearly the same latency as weak consistency. With the low-latency condition (*uniform* and *high load*), 20ms bound does 92% strong reads, 4% for *slow replica*, and all weak on both *geo-distributed* conditions.
+[#plot-tickets] shows the average latency of a workload consisting of 70% `viewEvent`, 19% `browse`, 10% `purchase`, and 1% `addEvent`. We plot with a log scale because strong consistency has over 5$\times$ higher latency. The `purchase` event, though only 10% of the workload, drives most of the latency increase because of the work required to prevent over-selling tickets. We explore two different IPA implementations: one with a 20ms latency bound on all ADTs aiming to ensure that both `viewEvent` and `browse` complete quickly, and one where the ticket pool size ("tickets remaining") has a 5% error bound. We see that both perform with nearly the same latency as weak consistency. With the low-latency condition (*uniform* and *high load*), 20ms bound does 92% strong reads, 4% for *slow replica*, and all weak on both *geo-distributed* conditions.
 
-This plot also shows results on Google Compute Engine *(GCE)*. We see that the results of real geo-replication confirm the findings of our simulated geo-distribution results (which were based on measurements of Amazon EC2's US/Europe/Asia latencies).
+[#plot-tickets] also shows results on Google Compute Engine *(GCE)*. We see that the results of real geo-replication validate the findings of our simulated geo-distribution results.
 
-On this workload, we observe that the reservations used for the 5% error bound perform well even with high latency, which is different than our findings for the counter. This is because, in this case, the `Pool`s start out *full*, with sufficient reservations to be distributed among the replicas so that they can usually complete locally. Contrast this with the `Counter` experiments, where they start at typically smaller numbers (average initial value less than 500).
+On this workload, we observe that the 5% error bound performs well even under adverse conditions, which differs from our findings in the microbenchmark.
+This is because ticket `UUIDPool`s begin *full*, with many tokens available, requiring less synchronization until they are close to running out. Contrast this with the microbenchmark, where counters started at small numbers (average of 500), where a 5% error tolerance means fewer tokens.
 
 ### Twitter clone
 
