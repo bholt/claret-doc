@@ -1,23 +1,23 @@
-# Implementation
+# Implementation {#sec-provided}
+<!-- ## Backing datastore -->
 
-## Type system
-The IPA type system is implemented as a Scala library, simply leveraging Scala's sophisticated type system. Due to its type safety features, abstraction capability, and compatibility with Java, Scala is has become popular for web service development, including widely-used frameworks such as Akka [@scala-akka] and Spark [@spark], and at established companies such as Twitter and LinkedIn [@scala-jobs;@scala-enterprise;@scala-twitter].
-<!-- Scala's sophisticated type system supports everything necessary to implement IPA's type system as a library. -->
-The IPA type lattice is implemented as a subclass hierarchy of parametric classes, leveraging Scala's support for higher-kinded types to allow them to be destructured in match statements, and implicit conversions for allowing `Consistent[T]` to be treated as type `T`. We use Scala traits to implement ADT annotations; when the `LatencyBound` trait is mixed into an ADT, it wraps each of the methods, redefining them to have the new semantics and return the correct IPA type. [#fig-interfaces] shows an example trait.
+IPA is implemented mostly as a client-side library to an off-the-shelf distributed storage system, though reservations are handled by a custom middleware layer which mediates accesses to any data with error tolerance policies. Our implementation is built on top of Cassandra, but IPA could work with any replicated storage system that supports fine-grained consistency control, which many commercial and research datastores do, including Riak [@riak]. 
 
-## Backing datastore
+IPA's client-side programming interface is written in Scala, using the asynchronous futures-based Phantom [@Phantom] library for type-safe access to Cassandra data. Reservation server middleware is also built in Scala using Twitter's Finagle framework [@finagle]. Communication is done between clients and Cassandra via prepared statements, and between clients and reservations servers via Thrift remote-procedure-calls [@thrift]. Due to its type safety features, abstraction capability, and compatibility with Java, Scala has become popular for web service development, including widely-used frameworks such as Akka [@scala-akka] and Spark [@spark], and at established companies such as Twitter and LinkedIn [@scala-jobs;@scala-enterprise;@scala-twitter].
 
-The core of the implementation is a scalable, distributed storage system with fine-grained consistency control, which many commercial datastores do (Cassandra [@cassandra], Riak [@riak], etc.). Our implementation of the IPA model builds on top of Cassandra, so we will use their terminology here, but most of the techniques employed in our implementation would port easily to Riak or others.
+<!-- ## Type system -->
+The IPA type system, responsible for consistency safety, is also simply part of our client library, simply leveraging Scala's sophisticated type system.
+The IPA type lattice is implemented as a subclass hierarchy of parametric classes, using Scala's support for higher-kinded types to allow them to be destructured in match statements, and implicit conversions to allow `Consistent[T]` to be treated as type `T`. We use traits to implement ADT annotations; e.g. when the `LatencyBound` trait is mixed into an ADT, it wraps each of the methods, redefining them to have the new semantics and return the correct IPA type. [#fig-interfaces] shows an example.
 
-
-## Provided by IPA {#sec-provided}
+<!-- ## Provided by IPA {} -->
 
 ~ Fig {#fig-interfaces caption="Some of the reusable components provided by IPA and an example implemention of a Counter. [\vspace{-8pt}]{input:texraw}" }
 ![](fig/interfaces.pdf)
 [\vspace{-18pt}]{input:texraw}
 ~
 
-The IPA system provides a number of primitives for building ADTs; some are shown in [#fig-interfaces]. To support latency bounds, there is a generic `LatencyBound` trait that provides facilities for executing a specified read operation at multiple consistency levels within a time limit. For implementing error bounds, IPA provides a generic reservation pool which ADTs can use. IPA also provides several reference ADT implementations:
+IPA comes with a library of reference ADT implementations used in our experiments, but it is intended to be extended with custom ADTs to fit more specific use cases.
+Our implementation provides a number of primitives for building ADTs, some of which are shown in [#fig-interfaces]. To support latency bounds, there is a generic `LatencyBound` trait that provides facilities for executing a specified read operation at multiple consistency levels within a time limit. For implementing error bounds, IPA provides a generic reservation pool which ADTs can use. The library of reference ADTs includes:
 
 - `Counter` based on Cassandra's counter, supporting increment and decrement, with latency and error bounds
 - `BoundedCounter` CRDT from [@Balegas:15:BoundedCounter] that enforces a hard lower bound even with weak consistency. Our implementation adds the ability to bound error on the value of the counter and set latency bounds.
@@ -25,7 +25,7 @@ The IPA system provides a number of primitives for building ADTs; some are shown
 - `UUIDPool` generates unique identifiers, with a hard limit on the number of IDs that can be taken from it; built on top of `BoundedCounter` and supports the same bounds.
 - `List`: thin abstraction around a Cassandra table with a time-based clustering order, supports latency bounds.
 
-[#fig-interfaces] shows Scala code using reservation pools to implement a Counter with error bounds. The actual implementation splits this functionality between the client and the reservation server. It is also all implemented using an asynchronous futures-based interface to allow for sufficient concurrency, based on the Phantom Scala client for Cassandra [@Phantom]. The Reservation Server is similarly built around futures using Twitter's Finagle framework [@finagle]. Communication is done between clients and Cassandra via prepared statements to avoid excessive parsing, and Thrift remote-procedure-calls between clients and the Reservation Servers.
+[#fig-interfaces] shows Scala code using reservation pools to implement a Counter with error bounds. The actual implementation splits this functionality between the client and the reservation server.
 
 
 
