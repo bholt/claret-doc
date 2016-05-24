@@ -15,11 +15,20 @@
   not propagate to corrupt other data
 
 - Unfortunately, with existing systems, applications approach
-  inconsistency in an undisiplined way. Left alone, the application
+  inconsistency in an undisciplined way. Left alone, the application
   can corrupt all data in the system, making it useless to provide
   stronger consistency at any time.
 
-* we introduce a more displined approach to inconsistency.
+- we introduce a more disciplined approach to inconsistency.
+
+- Contributions
+	- Consistency Safety
+		- this is novel
+		- motivate?
+	- ADT-based Consistency Model
+		- ADT provides semantics
+		- Can define Pileus-style SLAs
+		- Allows us to define value- or semantics-based metrics like Error Tolerance
 ~~
 -->
 
