@@ -33,31 +33,35 @@
 -->
 
 To provide good user experiences, modern datacenter applications and
-web services must balance many competing requirements.  Programmers
-need to preserve application correctness while minimizing response
-times; e.g., a web store must not double-charge for purchases and not
-keeping users waiting too long (e.g., Microsoft, Amazon and Google all
-note that every millisecond of latency translates to a loss in traffic
-and revenue [@linden06:amazon;@forrest09:slow]).  Worse, programmers
-must maintain this balance in an unpredictable environment where a
-black and blue dress [@buzzfeed-dress] or Justin Bieber
+web services must balance the competing requirements of application
+correctness and responsiveness. For example, a web store must not
+double-charge for purchases but also cannot keep users waiting too
+long (each additional millisecond of latency translates to a loss in
+traffic and revenue [@linden06:amazon;@forrest09:slow]). Worse,
+programmers must maintain this balance in an unpredictable environment
+where a black and blue dress [@buzzfeed-dress] or Justin Bieber
 [@bieber-instagram] can change application performance in the blink of
 an eye.
 
 Recognizing this trade-off, many existing storage systems support
-configureable consistency levels; some allow programmers to set the
-consistency of the entire store or each operation
-[@cassandra;@riak;@Li:12:RedBlue;@Sovran:11:Walter].  Ideally,
-programs would only weaken consistency guarantees when necessary to
-meet availability requirements (e.g., during a spike in traffic or
-datacenter failure), or when it does not impact the application's
-correctness guarantees (e.g., returning a slightly stale or estimated
-result is acceptable). Some storage systems support this type of
-adaptable consistency [@Terry:13:SLAs;@Stribling:09:WheelFS].
-Unfortunately, if programmers are *undisciplined* in their use of data
-from weakly consistent operations, they can corrupt strongly
-consistent stored data, lowering the consistency of the storage system
-to that of the weakest read or write operation.
+configurable consistency levels that allow programmers to set the
+consistency of individual operations
+[@cassandra;@riak;@Li:12:RedBlue;@Sovran:11:Walter]. These allow
+programmers to weaken consistency guarantees only for data that is not
+critical to application correctness, retaining strong consistency for
+vital data. Some systems further allow adaptable consistency levels at
+runtime, where guarantees are only weakened when necessary to meet
+availability or performance requirements (e.g., during a spike in
+traffic or datacenter failure) [@Terry:13:SLAs;@Stribling:09:WheelFS].
+<!--, or when it does not impact the application's correctness
+guarantees (e.g., returning a slightly stale or estimated result is
+acceptable). Some storage systems support this type of adaptable
+consistency [@Terry:13:SLAs;@Stribling:09:WheelFS].--> Unfortunately,
+using these systems correctly is challenging. If programmers are
+*undisciplined* in their use of data from weakly consistent
+operations, they can corrupt strongly consistent stored data,
+inadvertently lowering the consistency of the storage system to its
+weakest level.
 
 In this paper, we propose a more disciplined approach to inconsistency
 in the *inconsistent, performance-bound, approximate (IPA)* storage
