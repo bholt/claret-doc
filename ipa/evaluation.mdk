@@ -102,17 +102,15 @@ Our Ticket sales web service, introduced in [#sec-background], is modeled after 
 - `purchase`: Purchase a ticket (or multiple)
 - `addEvent`: Add an event at a venue.
 
-Event listings by venue are modeled using a `List` ADT. 
+~ Fig { #tickets-code caption="*Ticket service* code demonstrating use of IPA types. [\vspace{-10pt}]{input:texraw}" }
+![](fig/tickets-code.pdf)
+[\vspace{-18pt}]{input:texraw}
+~
 
 [#tickets-code] shows a snippet of code from the IPA implementation which can be compared with the non-IPA version from [#fig-tickets]. 
 Tickets are modeled using the `UUIDPool` type, which generates unique identifiers to reserve tickets for purchase. The ADT ensures that, even with weak consistency, it never gives out more than the maximum number of tickets, so it is safe to `endorse` the result of the `take` operation as long as one is okay with the possibility of a false negative. To compute the price of the reserved ticket, we now get back an `Interval` representing the range of possible remaining ticket counts, forcing our program to decide how to handle this range. We decide to use the `max` value from the interval to be conservative and fair to users; the 5% error bound ensures that we don't sacrifice too much profit this way.
 
 To evaluate the performance, we run a workload modelling a typical small-scale deployment: 50 venues and 200 events, with an average of 2000 tickets each (gaussian distribution centered at 2000, stddev 500), with a ticket to event ratio that leads to some events running out tickets. Because real-world workloads exhibit power law distributions [@YCSB], we use a moderately skewed Zipf distribution with coefficient of 0.6 to choose events.
-
-~ Fig { #tickets-code caption="*Ticket service* code demonstrating use of IPA types." }
-![](fig/tickets-code.pdf)
-[\vspace{-18pt}]{input:texraw}
-~
 
 ~ Fig { #plot-tickets caption="*Ticket service: mean latency*, ***log scale.*** Strong consistency is far too expensive (>10$\times$ slower) except when load and latencies are low, but 5% error tolerance allows latency to be comparable to weak consistency. The 20ms latency-bound variant is either slower or defaults to weak, providing little benefit. Note: the ticket `Pool` is safe even when weakly consistent."; page-align: top }
 ![](plots/tickets.pdf){ .onecol }
