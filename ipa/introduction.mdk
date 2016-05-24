@@ -56,7 +56,7 @@ result is acceptable). Some storage systems support this type of
 adaptable consistency [@Terry:13:SLAs;@Stribling:09:WheelFS].
 Unfortunately, if programmers are *undisciplined* in their use of data
 from weakly consistent operations, they can corrupt strongly
-consistent stored data, lowering the consistency of the storage system
+consistent, stored data, lowering the consistency of the storage system
 to that of the weakest read or write operation.
 
 In this paper, we propose a more disciplined approach to consistency:
@@ -66,23 +66,24 @@ safety implies *consistency safety:* values from weakly consistent
 operations cannot flow into stronger consistency operations without
 explicit endorsement. IPA provides the following:
 
-* *Error SLAs.* IPA is a data structure store, like Redis [@redis] or
-   Riak [@riak], allowing it to provide both traditional performance
-   bounds and novel error bounds (e.g., the programmer can bound the
-   returned value to within 5\% of the correct value). Within these
-   bounds, IPA automatically adapts to provide the strongest
-   consistency possible under the current system load.
-
 * *IPA consistency types.* IPA defines the consistency and correctness
    of every returned value using a new type system that allows
    programmers to reason about their use of data at different
    consistency levels and make decisions based on the actual
    consistency of returned values.
 
-* *Consistency safety.* IPA enforces the disciplined use of IPA
-   consistency types by requiring programmers to handle all potential
-   consistency cases, or explicitly endorse the propagation of
-   inconsistent values.
+* *IPA type checker.* IPA enforces the disciplined use of IPA
+   consistency types statically at compile time by requiring
+   programmers to handle all potential consistency cases, or
+   explicitly endorse the propagation of inconsistent values.
+
+* *Error bounds.* IPA is a data structure store, like Redis [@redis]
+   or Riak [@riak], allowing it to provide both traditional
+   performance bounds on storage operations, as well as error bounds
+   (e.g., the programmer can bound the returned value to within 5\% of
+   the correct value). Within these bounds, IPA automatically adapts
+   to return a value with the strongest IPA consistency type possible
+   under the current system load.
 
 We implement an IPA prototype based on Scala and Cassandra and show
 that IPA allows the programmer to trade off performance and
