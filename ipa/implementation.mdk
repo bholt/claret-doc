@@ -4,7 +4,7 @@ The IPA type system provides users with controls to specify performance and corr
 
 ## Type system
 
-The IPA type system is implemented as a Scala library, simply leveraging Scala's sophisticated type system. Due to its type safety features, abstraction capability, and compatibility with Java, Scala is has become popular for web service development, including widely-used frameworks such as Akka [@scala-akka] and Spark [@spark], and at established companies such as Twitter and LinkedIn [@scala-jobs;@scala-enterprise].
+The IPA type system is implemented as a Scala library, simply leveraging Scala's sophisticated type system. Due to its type safety features, abstraction capability, and compatibility with Java, Scala is has become popular for web service development, including widely-used frameworks such as Akka [@scala-akka] and Spark [@spark], and at established companies such as Twitter and LinkedIn [@scala-jobs;@scala-enterprise;@scala-twitter].
 <!-- Scala's sophisticated type system supports everything necessary to implement IPA's type system as a library. -->
 The IPA type lattice is implemented as a subclass hierarchy of parametric classes, leveraging Scala's support for higher-kinded types to allow them to be destructured in match statements, and implicit conversions for allowing `Consistent[T]` to be treated as type `T`. We use Scala traits to implement ADT annotations; when the `LatencyBound` trait is mixed into an ADT, it wraps each of the methods, redefining them to have the new semantics and return the correct IPA type. [#fig-interfaces] shows an example trait.
 
