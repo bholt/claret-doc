@@ -86,6 +86,7 @@ Tex Header:
 	\headsep 0in
 	\captionsetup{belowskip=0pt,aboveskip=0pt}
 	\setlist{nosep,leftmargin=12pt}
+        \frenchspacing
 
 
 
