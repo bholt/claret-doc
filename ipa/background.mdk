@@ -3,33 +3,55 @@
 Unpredictable Internet traffic and unexpected failures force modern
 datacenter applications to trade off consistency for performance. In
 this section, we demonstrate the pitfalls of doing so in an
-undisciplined way using a movie ticketing service, similar to AMC or
-Fandango. Because ticketing services process financial transactions,
-they must ensure correctness, which they can do using a strongly
-consistent storage system. Unfortunately, providing strong consistency
-for every operation can cause the storage system to collapse under
-high load, as several ticketing services did in October 2015, when
-tickets became available for the new Star Wars movie
+undisciplined way. As an example, we describe a movie ticketing
+service, similar to AMC or Fandango. Because ticketing services
+process financial transactions, they must ensure correctness, which
+they can do by storing their data in a strongly consistent storage
+system. Unfortunately, providing strong consistency for every storage
+operation can cause the storage system and application to collapse
+under high load, as several ticketing services did in October 2015,
+when tickets became available for the new Star Wars movie
 [@forbes:star-wars].
+
+~ Fig { #fig-tickets; caption="Ticket sales service. To meet latency
+target, `load_page` switches to a weak read, introducing a potential
+logical error when using this possibly-inconsistent value to determine
+if tickets can be purchased. [\vspace{-10pt}]{input:texraw}" }
+![](fig/tickets.pdf) [\vspace{-18pt}]{input:texraw} ~
 
 To allow the application to scale more gracefully and handle traffic
 spikes, the programmer may chose to weaken the consistency of some
-operations. For example, if users frequently reload the page before
-purchasing tickets, the programmer may weaken the consistency of the
-read operations when displaying the number of remaining tickets
-because giving users an estimate within 5\% is sufficient. Thus, under
-normal load, the application would display the precise number of
-tickets remaining, but under high load, the storage system can return
-something less precise within some bounds. 
+operations.  As shown in Figure [@fig-tickets], the ticket application
+displays each showing of the movie along with the number of tickets
+remaining.  For better performance, the programmer may want to weaken
+the consistency of the read operation that fetches the remaining
+ticket count to give users an estimate, instead of the most up-to-date
+value. This policy would allow the storage system to return the
+precise number under normal load and something less precise (e.g., a
+value within the 5\% of the actual value) under heavier traffic
+spikes.
 
-Suppose that the ticket sales application uses the number of remaining
-tickets to decide the price.  If the read of the remaining tickets
-returns the precise number, then the application can use that number
-to calculate the ticket price when making a sale. However, if the
-programmer chose to weaken the consistency of that read, then he must
-be careful when using it to calculate a purchase. Done in an
-undisciplined way, the application may over or under charge some users
-depending on the consistency of the returned value.
+While this solves the programmer's performance problem, it introduces
+data consistency problem.  Suppose that the ticket sales application
+wants to raise the price of the last 100 tickets for each showing to
+$20, similar to Uber's surge pricing.  If the application uses a
+strongly consistent read to fetch the remaining ticket count, then it
+can use that value to compute the price of the ticket on the last
+screen in Figure [@fig-tickets]. However, if the programmer choses to
+weaken the consistency of that read, then he must be careful when
+using it to calculate a purchase. Done in an undisciplined way, the
+application may over or under charge some users depending on the
+consistency of the returned value.  Worse, the theater would expect to
+make exactly $2000 on the last 100 tickets for each showing with the
+new pricing model, which may not be true with the new weaker read
+operation.
 
-However, using IPA, 
+This example demonstrates that programmers need to be careful in their
+use of values returned from storage operations with weak
+consistency. Simply weakening the consistency of an operation may lead
+to unexpected consequences for the programmer (e.g., the theater does
+not sell as many tickets at the higher surge price as expected). If
+the application uses a counter value without error bounds, it may sell
+all 100 tickets at the lower normal pricing.
+
 
