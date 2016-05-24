@@ -16,7 +16,7 @@ helps developers trade consistency for performance in a disciplined manner.
 This section presents the IPA type system, 
 including the available consistency policies
 and the semantics of operations performed under the policies.
-[#sec-implementation] will explain how the type system's guarantees are enforced.
+[#sec-enforcing] will explain how the type system's guarantees are enforced.
 
 ## Overview
 

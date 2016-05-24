@@ -120,6 +120,7 @@ Tex Header:
 [INCLUDE="introduction"]
 [INCLUDE="background"]
 [INCLUDE="types"]
+[INCLUDE="enforcing"]
 [INCLUDE="implementation"]
 [INCLUDE="evaluation"]
 [INCLUDE="related"]
