@@ -1,4 +1,4 @@
-# Background {#sec-background}
+# The Case for Consistency Safety {#sec-background}
 
 There are many popular news stories about how services like BuzzFeed [@buzzfeed-dress] and Instagram [@bieber-instagram] struggle with unpredictable Internet traffic.
 Before launching into the IPA programming model, we will explore an example application – a ticket sales service – to demonstrate the difficulties in trading off consistency to meet performance goals without breaking correctness.
