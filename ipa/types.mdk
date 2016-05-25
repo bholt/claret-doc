@@ -40,7 +40,7 @@ The IPA programming model consists of three parts:
 * Consistency policies on ADTs specify the desired consistency level for an object in application-specific terms (such as latency or accuracy bounds).
 * Consistency types track the consistency of operation results and enforce consistency safety by requiring developers to consider weak outcomes.
 
-Programmmers annotate ADTs with consistency policies to choose their desired level of consistency. The *cnsistency policy* on the *ADT operation* determines the *consistency type* of the result. Some examples are shown in [#adt-map]; the next few sections will introduce each of the policies and types in detail.
+Programmmers annotate ADTs with consistency policies to choose their desired level of consistency. The *consistency policy* on the *ADT operation* determines the *consistency type* of the result. Some examples are shown in [#adt-map]; the next few sections will introduce each of the policies and types in detail.
 Together, these three components provide two key benefits for developers.
 First, the IPA type system enforces *consistency safety*, tracking the consistency level of each result and preventing inconsistent values from flowing into consistent values.
 Second, the programming interface enables performance--correctness trade-offs, because consistency policies on ADTs allow the runtime to select a consistency level for each individual operation that maximizes performance in a constantly changing environment.
