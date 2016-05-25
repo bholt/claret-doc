@@ -11,7 +11,7 @@ and testing against every possible relaxation is difficult. -->
 
 We propose a programming model for distributed data 
 that uses types to control the consistency--performance trade-off.
-The *inconsistent, performance-bound, approximate* (IPA) type system
+The *Inconsistent, Performance-bound, Approximate* (IPA) type system
 helps developers trade consistency for performance in a disciplined manner.
 This section presents the IPA programming model, 
 including the available consistency policies
@@ -37,13 +37,13 @@ and the semantics of operations performed under the policies.
 The IPA programming model consists of three parts:
 
 * Abstract data types (ADTs) implement common data structures (such as `Set[T]`) on distributed storage.
-* Policy annotations on ADTs specify the desired consistency level for an object in application-specific terms (such as latency or accuracy bounds).
+* Consistency policies on ADTs specify the desired consistency level for an object in application-specific terms (such as latency or accuracy bounds).
 * Consistency types track the consistency of operation results and enforce consistency safety by requiring developers to consider weak outcomes.
 
-Programmmers apply policy annotations to ADTs to choose their consistency properties. The *policy annotation* applied to an *ADT operation* determines the *consistency type* of the result. Some examples are shown in [#adt-map]; the next few sections will introduce each of the policies and types in detail.
+Programmmers annotate ADTs with consistency policies to choose their desired level of consistency. The *cnsistency policy* on the *ADT operation* determines the *consistency type* of the result. Some examples are shown in [#adt-map]; the next few sections will introduce each of the policies and types in detail.
 Together, these three components provide two key benefits for developers.
 First, the IPA type system enforces *consistency safety*, tracking the consistency level of each result and preventing inconsistent values from flowing into consistent values.
-Second, the programming interface enables performance--correctness trade-offs, because consistency annotations at the ADT level allow the runtime to select a consistency for each individual operation that maximizes performance in a constantly changing environment.
+Second, the programming interface enables performance--correctness trade-offs, because consistency policies on ADTs allow the runtime to select a consistency level for each individual operation that maximizes performance in a constantly changing environment.
 Together, these systems allow applications to adapt to changing conditions with the assurance that the programmer has expressed how it should handle varying consistency.
 
 ## Abstract Data Types { #adts }
@@ -52,24 +52,33 @@ The base of the IPA type system is a set of abstract data types (ADTs) for  dist
 ADTs present a clear abstract model through a set of operations that query and update state, allowing users and systems alike to reason about their logical, algebraic properties rather than the low-level operations used to implement them. 
 Though the simplest key-value stores only support primitive types like strings for values, many popular datastores have built-in support for more complex data structures such as sets, lists, and maps. However, the interface to these datatypes differs: from explicit sets of operations for each type in Redis, Riak, and Hyperdex [@redis;@riak;@hyperdex-web;@hyperdex] to the pseudo-relational model of Cassandra [@Lakshman:10:Cassandra]. IPA's extensible library of ADTs allows it to decouple the semantics of the type system from any particular datastore, though our reference implementation is on top of Cassandra, similar to [@Sivaramakrishnan:15:Quelea].
 
-Besides abstracting over storage systems, ADTs are an ideal place from which to  reason about consistency and system-level optimizations. The consistency of a read depends on the write that produced the value. Expressing consistency properties on  ADTs ensures the necessary guarantees for all operations are enforced, which we will expand on in the next section.
+Besides abstracting over storage systems, ADTs are an ideal place from which to  reason about consistency and system-level optimizations. The consistency of a read depends on the write that produced the value. Annotating ADTs with consistency policies ensures the necessary guarantees for all operations are enforced, which we will expand on in the next section.
 
 Custom ADTs can express application-level correctness constraints.
 IPA's `Counter` ADT allows reading the current value as well as increment and decrement operations. In our ticket sales example, we must ensure that the ticket count does not go below zero. Rather than forcing all operations on the datatype to be linearizable, this application-level invariant can be expressed with a more specialized ADT, such as a `BoundedCounter`, giving the implementation more latitude for enforcing it. IPA's library is *extensible*, allowing custom ADTs to build on common features; see [#sec-provided].
 
-## Policy Annotations { #policies }
+## Consistency Policies { #policies }
 
-Previous systems [@cassandra;@riak;@Terry:13:SLAs;@Li:12:RedBlue;@Sovran:11:Walter] require annotating each read and write operation with a desired consistency level.
-This per-operation approach complicates reasoning about the safety of code using weak consistency, and hinders global optimizations that can be applied if the system knows the consistency level required for future operations.
-The IPA programming model provides a set of annotations that can be placed on *ADT instances* to specify consistency policies for the lifetime of the object.
-<!-- In addition, the annotations express application-level requirements, such as latency or accuracy, allowing the system to fine-tune per-operation consistency to maximize performance and freeing the developer of this burden. -->
-IPA type annotations come in two flavors: static and dynamic.
+Previous systems
+[@cassandra;@riak;@Terry:13:SLAs;@Li:12:RedBlue;@Sovran:11:Walter]
+require annotating each read and write operation with a desired
+consistency level.  This per-operation approach complicates reasoning
+about the safety of code using weak consistency, and hinders global
+optimizations that can be applied if the system knows the consistency
+level required for future operations.  The IPA programming model
+provides a set of consistency policies that can be placed on *ADT instances* to
+specify which consistency level to use for the lifetime of the object.  <!-- In
+addition, the annotations express application-level requirements, such
+as latency or accuracy, allowing the system to fine-tune per-operation
+consistency to maximize performance and freeing the developer of this
+burden. --> Consistency policies come in two flavors: static and
+dynamic.
 
-*Static* annotations declare a fixed consistency policy, such as `Consistency(Strong)` which states that operations must have strongly consistent behavior.
+*Static* policies are fixed, such as `Consistency(Strong)` which states that operations must have strongly consistent behavior.
 Static annotations provide the same direct control as previous approaches
 but simplify reasoning about correctness by applying them globally on the ADT.
 
-*Dynamic* annotations specify a consistency policy in terms of application-level requirements, allowing the system to decide at runtime how to meet the requirement for each executed operation.
+*Dynamic* policies specify a consistency level in terms of application requirements, allowing the system to decide at runtime how to meet the requirement for each executed operation.
 IPA offers two dynamic consistency policies:
 
 * A latency policy `LatencyBound(x)` specifies a target latency for operations on the ADT (e.g., 20 ms). The runtime can choose the consistency level for each issued operation, optimizing for the strongest level that is likely to satisfy the latency bound.
@@ -77,13 +86,13 @@ IPA offers two dynamic consistency policies:
 * An accuracy policy `ErrorTolerance(x%)` specifies the desired accuracy for read operations on the ADT. For example, the `size` of a `Set` ADT may only need to be accurate within 5% tolerance. The runtime can optimize the consistency of write operations so that reads are guaranteed to meet this bound.
 
 <!-- Policy annotations are central to the flexibility and usability of the IPA type system. -->
-Dynamic policy annotations allow the runtime 
+Dynamic policies allow the runtime 
 to extract more performance from an application 
 by relaxing the consistency of individual operations, 
 safe in the knowledge that the IPA type system will enforce safety
 by requiring the developer to consider the effects of weak operations.
 
-Static and dynamic annotations can apply to an entire ADT instance or on individual methods. For example, one could declare `List[Int] with LatencyBound(50 ms)`, in which case all read operations on the list are subject to the bound. Alternatively, one may wish to declare a`Set` with relaxed consistency for its `size` but strong consistency for its `contains` predicate.
+Static and dynamic policies can apply to an entire ADT instance or on individual methods. For example, one could declare `List[Int] with LatencyBound(50 ms)`, in which case all read operations on the list are subject to the bound. Alternatively, one may wish to declare a`Set` with relaxed consistency for its `size` but strong consistency for its `contains` predicate.
 The runtime is responsible for managing the interaction between these policies. In the case of a conflict between two bounds, the system can be conservative and choose stronger policies than specified without affecting correctness.
 
 In the ticket sales application, the `Counter` for each event's tickets has a relaxed accuracy policy: `ErrorTolerance(5%)`, allowing the system to quickly read the count of tickets remaining. An accuracy policy is appropriate here because it expresses a domain requirement---users want to see accurate ticket counts. As long as the system meets this requirement, it is free to relax consistency and maximize performance without violating correctness.
@@ -92,8 +101,8 @@ The `List` ADT used for events has a latency policy that also expresses a domain
 ## Consistency Types {#sec-ipa-types}
 
 The keys to the IPA type system are the consistency types themselves.
-Read operations of ADTs annotated with consistency policies return instances of an *IPA type*.
-These IPA types track the consistency of the results
+Read operations of ADTs annotated with consistency policies return instances of an *consistency type*.
+These consistency types track the consistency of the results
 and enforce a fundamental non-interference property: 
 results from weakly consistent operations cannot flow into computations with stronger consistency without explicit endorsement.
 This could be enforced dynamically, as in dynamic information flow control systems, but the static guarantees of a type system allow errors to be caught at compile time.
@@ -103,12 +112,12 @@ This could be enforced dynamically, as in dynamic information flow control syste
 [\vspace{-20pt}]{input:texraw}
 ~
 
-The IPA types encapsulate information about the consistency achieved when reading a value.
-Formally, the IPA types form a lattice parameterized by a primitive type `T`, shown in [#lattice].
+The consistency types encapsulate information about the consistency achieved when reading a value.
+Formally, the consistency types form a lattice parameterized by a primitive type `T`, shown in [#lattice].
 Strong read operations return values of type `Consistent[T]` (the top element),
 and so (by implicit cast) behave as any other instance of type `T`. Intuitively, this equivalence is because the results of strong reads are known to be consistent, which corresponds to the control flow in conventional (non-distributed) applications.
-Weaker read operations return values of some type lower in the lattice (*weak IPA types*), reflecting their possible inconsistency.
-The bottom element `Inconsistent[T]` specifies an object with the weakest possible (or unknown) consistency. The other IPA types follow a subtyping relation $\prec$ as illustrated in [#lattice].
+Weaker read operations return values of some type lower in the lattice (*weak consistency types*), reflecting their possible inconsistency.
+The bottom element `Inconsistent[T]` specifies an object with the weakest possible (or unknown) consistency. The other consistency types follow a subtyping relation $\prec$ as illustrated in [#lattice].
 
 <!--~ Math
 \inferrule{\tau \text{ is weaker than } \tau'}{\tau'[T] \prec \tau[T]}
@@ -123,16 +132,16 @@ Endorsement is an upcast, invoked by `Consistent(x)`, to the top element `Consis
 ~
 <!-- [\vspace{-10pt}]{input:texraw} -->
 The core type system statically enforces safety by preventing weaker values from flowing into stronger computations.
-Forcing developers to explicitly endorse inconsistent values prevents them from accidentally using inconsistent data there they did not determine it was acceptable, essentially inverting the behavior of current systems where inconsistent data is always treated as if it was safe to use anywhere. However, endorsing values blindly in this way is not the intended use case; the key productivity benefit of the IPA type system comes from the other IPA types which correspond to the consistency policies in [#policies] which allow developers to handle dynamic variations in consistency, which we describe next.
+Forcing developers to explicitly endorse inconsistent values prevents them from accidentally using inconsistent data there they did not determine it was acceptable, essentially inverting the behavior of current systems where inconsistent data is always treated as if it was safe to use anywhere. However, endorsing values blindly in this way is not the intended use case; the key productivity benefit of the IPA type system comes from the other consistency types which correspond to the consistency policies in [#policies] which allow developers to handle dynamic variations in consistency, which we describe next.
 
 <!-- The IPA type system is similar to the probability type system of DECAF [@Boston:15:DECAF], which uses types to track the quality of results computed on approximate hardware, ensuring that a result of low quality cannot flow into a result of higher quality without explicit endorsement. -->
 <!-- We elide a thorough formal development of the core IPA type system due to its close similarity with DECAF, instead focusing on the additions introduced by IPA specifically to handle the dynamic annotations from the previous section. -->
 
 ### Rushed types
 
-The weak IPA type `Rushed[T]` is the result of read operations performed on an ADT with consistency policy `LatencyBound(x)`.
+The weak consistency type `Rushed[T]` is the result of read operations performed on an ADT with consistency policy `LatencyBound(x)`.
 `Rushed[T]` is a *sum (or union) type*, with one variant per consistency level available to the implementation of `LatencyBound`.
-Each variant is itself an IPA type (though the variants obviously cannot be `Rushed[T]` itself).
+Each variant is itself a consistency type (though the variants obviously cannot be `Rushed[T]` itself).
 The effect is that values returned by a latency-bound object carry with them their actual consistency level.
 A result of type `Rushed[T]` therefore requires the developer to consider the possible consistency levels of the value.
 
@@ -149,7 +158,7 @@ A match statement destructures the result of a latency-bound read operation:
 ```
 
 The application may want to react differently to a local quorum as opposed to a strongly or weakly consistent value.
-Note that because of the subtyping relation on IPA types, omitted cases can be matched by any type lower in the lattice, including the bottom element `Inconsistent(x)`;
+Note that because of the subtyping relation on consistency types, omitted cases can be matched by any type lower in the lattice, including the bottom element `Inconsistent(x)`;
 other cases therefore need only be added if the application should respond differently to them. This subtyping behavior allows applications to be portable between systems supporting different forms of consistency (of which there are many).
 
 ### Interval types
@@ -161,7 +170,7 @@ However, because traditional consistency levels do not have any knowledge of the
 
 The difficulty is that weakly consistent values do not provide much information about the kind of
 
-The weak IPA type `Interval[T]` is the result of operations performed on an ADT with consistency policy `ErrorTolerance(x%)`.
+The weak consistency type `Interval[T]` is the result of operations performed on an ADT with consistency policy `ErrorTolerance(x%)`.
 `Interval[T]` represents an interval of values within which the true (strongly consistent) result lies.
 The interval reflects uncertainty in the true value created by relaxed consistency, in the same style as work on approximate computing [@Bornholt:14:UncertainT].
 
@@ -174,8 +183,8 @@ The relaxed consistency of the interval type allows the system to optimize perfo
 
 <!--
 ### Lower bounds
-Weak IPA types enforce consistency safety by ensuring developers address the worst case results of weak consistency.
-However, the weak IPA types are *lower bounds* on weakness:
+Weak consistency types enforce consistency safety by ensuring developers address the worst case results of weak consistency.
+However, the weak consistency types are *lower bounds* on weakness:
 one valid implementation of a system using IPA types is to always return strongly consistency values.
 Moreover, the runtime guarantees that if every value returned has strong consistency, then the execution is linearizable, as if the system were strongly consistent from the outset.
 -->
