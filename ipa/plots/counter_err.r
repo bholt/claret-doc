@@ -13,7 +13,7 @@ d <- data.or.csv(
   
     d <- data.ipa.rawmix(where = "datatype='counter' and ipa_duration=60 and ipa_version = 'v7.2'")
     
-    subset(d, select = c('load', 'honeycomb_mode', 'ipa_bound', 'bound', 
+    subset(d, select = c('load', 'honeycomb_mode', 'ipa_bound', 'ipa_zipf', 'bound', 
       'ipa_consistency', 'lease', 'condition', 'mix',
       'read_lat_mean', 'read_lat_median', 'read_lat_p95', 'read_lat_p99', 'read_rate',
       'incr_lat_mean', 'incr_lat_median', 'incr_rate',
@@ -31,8 +31,34 @@ s <- subset(d,
   & grepl('Uniform|Slow|Geo|High', condition)
   & grepl('tol.*#0ms|cons', x(ipa_bound,lease))
   & ipa_bound != 'tolerance:0'
+  & !is.na(condition)
 )
 
+sql("SELECT grp, condition, avg(overall_latency_mean) as latency FROM s GROUP BY grp, condition ORDER BY condition, latency DESC")
+#           grp         condition    latency
+# 1      strong Geo-\ndistributed 800.586792
+# 2   error: 1% Geo-\ndistributed 261.265924
+# 3   error: 5% Geo-\ndistributed  29.623710
+# 4  error: 10% Geo-\ndistributed  26.658662
+# 5        weak Geo-\ndistributed   6.969882
+
+# 6      strong         High load  21.685572
+# 7   error: 1%         High load   8.175303
+# 8  error: 10%         High load   6.309421
+# 9   error: 5%         High load   6.308831
+# 10       weak         High load   5.501254
+
+# 11     strong      Slow replica  68.465812
+# 12  error: 1%      Slow replica  58.952985
+# 13 error: 10%      Slow replica  19.285434
+# 14  error: 5%      Slow replica  18.752921
+# 15       weak      Slow replica  13.091920
+
+# 16     strong    Uniform\n(5ms)  22.706014
+# 17  error: 1%    Uniform\n(5ms)   7.825088
+# 18  error: 5%    Uniform\n(5ms)   6.744667
+# 19 error: 10%    Uniform\n(5ms)   6.549137
+# 20       weak    Uniform\n(5ms)   6.011232
 
 save(
   ggplot(subset(s, !is.na(condition)

@@ -25,10 +25,8 @@ displays each showing of the movie along with the number of tickets
 remaining.  For better performance, the programmer may want to weaken
 the consistency of the read operation that fetches the remaining
 ticket count to give users an estimate, instead of the most up-to-date
-value. This policy would allow the storage system to return the
-precise number under normal load and something less precise (e.g., a
-value within 5\% of the actual value) under heavier traffic
-spikes.
+value.
+Under normal load, even with weak consistency, this count would often still be correct because propagation is typically fast compared to updates. However, eventual consistency makes no guarantees, so under heavier traffic spikes, the values could be significantly incorrect and the application has no way of knowing by how much. 
 
 While this solves the programmer's performance problem, it introduces
 a data consistency problem.  Suppose that, like Uber's surge pricing,
@@ -36,10 +34,9 @@ the ticket sales application wants to raise the price of the last 100
 tickets for each showing to &dollar;15.  If the application uses a strongly
 consistent read to fetch the remaining ticket count, then it can use
 that value to compute the price of the ticket on the last screen in
-[#fig-tickets]. However, if the programmer chose to weaken the
-consistency of that read, then they must be careful when using it to
-calculate a purchase. If done incorrectly, the application
-may over- or under-charge some users depending on the consistency of
+[#fig-tickets]. However, if the programmer reuses `getTicketCount` which used a weak read to calculate the price, then this count could be arbitrarily wrong.
+The application
+could then over- or under-charge some users depending on the consistency of
 the returned value.  Worse, the theater expects to make &dollar;1500 for
 those tickets with the new pricing model, which may not happen with
 the new weaker read operation.  Thus, programmers need to be careful
@@ -48,4 +45,4 @@ consistency. Simply weakening the consistency of an operation may lead
 to unexpected consequences for the programmer (e.g., the theater not
 selling as many tickets at the higher surge price as expected).
 
-[todo: add a happy ending]
+In this work, we propose a programming model that can prevent using inconsistent values where they were not intended, as well as introduce mechanisms that allow the storage system to dynamically adapt consistency within predetermined performance and correctness bounds.

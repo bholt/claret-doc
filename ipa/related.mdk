@@ -21,16 +21,15 @@ ADTs.
 
 **Higher-level consistency requirements.**
 Rather than enforcing consistency safety, some programming models
-allow programmers to express application correctness criteria
-directly.  Quelea [@Sivaramakrishnan:15:Quelea] has programmers write
+allow users to express application correctness criteria
+directly.  In Quelea [@Sivaramakrishnan:15:Quelea], programmers write
 *contracts* to describe *visibility* and *ordering* constraints,
-independent of any particular consistency hierarchy, then the system
-automatically selects the consistency level necessary for each
+independent of any particular consistency hierarchy, then the system selects the consistency level necessary for each
 operation.  In Indigo [@Balegas:15:Indigo], programmers write
 *invariants* over abstract state and annotate post-conditions on
 actions in terms of the abstract state. The system analyzes annotated
 programs and adds coordination logic to prevent invariant violations,
-using a reservation system to enforce numer constraints. Neither
+using a reservation system to enforce numeric constraints. Neither
 Indigo nor Quelea, however, allow programmers to specify
 approximations or error tolerances, nor do they enforce any kind of
 performance bounds.
@@ -54,12 +53,12 @@ Probabilistically bounded staleness (PBS) [@Bailis:12:PBS] are a form of perform
 A long history of systems have been built around the principle that applications may be willing to tolerate slightly stale data in exchange for improved performance, including databases [@roehm02:_fas;@plattner04:_ganym;@bernstein06:_relax_curren_serial_for_middl;@pu91:_replic_contr_distr_system] and distributed caches [@ports10:_trans_consis_autom_manag_applic_data_cache;@olston99:_adapt_precis_settin_cached_approx_values]. These systems generally require developers to explicitly specify staleness bounds on each transaction in terms of absolute time (although Bernstein et al.'s model can generate these from error bounds when a value's maximum rate of change is known).
 
 The above techniques are relevant but largely orthogonal to our work:
-they provide many techniques which could be used in an IPA datastore
+they provide techniques which could be used in an IPA datastore
 to trade off correctness in new ways. This work builds on those
 insights, introducing a new error tolerance mechanism, proposing
-ADT-level annotations rather than per-operation, but most importantly,
+ADT annotations rather than per-operation, but most importantly,
 providing *consistency safety* via consistency types, which ensure
-that all possible edge cases are handled whenever the system adjusts
+that all possible cases are handled whenever the system adjusts
 consistency to meet performance targets. Previous systems gave some
 feedback to programs about achieved consistency, but did not provide
 facilities to ensure and help developers use the information
@@ -98,8 +97,8 @@ values to prevent them from interfering with precise
 computation. IPA's interval types are similar to Uncertain&lt;T&gt;'s
 probability distributions [@Bornholt:14:UncertainT] and to interval
 analysis [@Moore:66:IA]. One key difference for IPA is that
-inconsistent values can be strengthened by forcing additional
-synchronization if necessary.
+inconsistent values can be strengthened if desired with additional
+synchronization.
 
 **Types for distributed and secure systems.**
 *Convergent* (or *conflict-free*) *replicated data types* (CRDTs)

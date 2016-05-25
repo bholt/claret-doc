@@ -1,18 +1,35 @@
 # Enforcing dynamic policies {#sec-enforcing}
-The dynamic policies introduced in the previous section allow programmers to describe application-level correctness properties but they require new runtime mechanisms to enforce. But first, we briefly review consistency in Dynamo-style replicated systems.
+The dynamic policies introduced in the previous section allow programmers to describe application-level correctness properties but they require two new runtime mechanisms to enforce them: parallel operations with latency monitoring for latency bounds, and reusable reservations for error tolerance. But first, we briefly review consistency in Dynamo-style replicated systems.
 
 To be sure of seeing a particular write, *strong* reads must coordinate with a majority (*quorum*) of replicas and compare their responses. For a write and read pair to be *strongly consistent* (in the CAP sense [@Brewer:CAP]), the replicas acknowledging the write ($W$) plus the replicas contacted for the read ($R$) must be greater than the total number of replicas ($W + R > N$). This can be achieved, for example, by writing to a quorum ($(N+1)/2$) and reading from a quorum (`QUORUM` in Cassandra), or writing to $N$ (`ALL`) and reading from 1 (`ONE`) [@CassandraConsistency]. Cassandra also supports limited linearizable conditional updates and varying degrees of weaker consistency, particularly to handle different locality domains (e.g. `LOCAL_QUORUM`). 
 
 ## Latency bounds {#sec-latency-bounds}
 The time it takes to achieve a particular level of consistency depends on current conditions and can vary over large time scales (minutes or hours) but can also vary significantly for individual operations. During normal operation, strong consistency may have acceptable performance while at peak traffic times the application would fall over. Latency bounds specified by the application allow the system to *dynamically* adjust to maintain comparable performance under varying conditions.
 
+<!--
 It is conceptually quite simple to implement a dynamically tunable consistency level: send read requests to as many replicas as necessary for strong consistency (depending on the strength of corresponding writes it could be to a quorum or all), but then when the latency time limit is up, take however many responses have been received and compute the most consistent response possible from them.
+-->
 
-Unfortunately, Cassandra's client interface does not allow latency bounds exactly as described above: operations must specify a consistency level in advance. Instead, we issue read requests at different levels in parallel. <!--The Scala client driver we use is based on *futures*, allowing us to compose the parallel operations--> We compose the parallel operations and respond either when the strong operation returns or with the strongest available result at the specified time limit. If no responses are available at the time limit, we wait for the first to return.
+Our implementation of latency-bound types takes a generic approach: it
+issues read requests at different consistency levels in parallel. It
+composes the parallel operations and returns a result either when the
+strongest operation returns, or with the strongest available result at
+the specified time limit. If no responses are available at the time
+limit, it waits for the first to return.
+
+This approach makes no assumptions about the implementation of read
+operations, making it easily adaptable to different storage
+systems. Some designs may permit more efficient implementations: for
+example, in a Dynamo-style storage system we could send read requests
+to all replicas, then compute the most consistent result from all
+responses received within the latency limit. However, this requires
+deeper access to the storage system implementation than is
+traditionally available.
 
 ### Monitors
 
-The main problem with this approach is that it wastes a lot of work, even if we didn't need to duplicate some messages due to the client interface. Furthermore, if the system is responding slower due to a sudden surge in traffic, then it is essential that our efforts not cause additional burden on the system.
+The main problem with our approach is that it wastes work by issuing
+parallel requests. Furthermore, if the system is responding slower due to a sudden surge in traffic, then it is essential that our efforts not cause additional burden on the system.
 In these cases, we should back off and only attempt weaker consistency.
 To do this, the system monitors current traffic and predicts the latency of different consistency levels.
 

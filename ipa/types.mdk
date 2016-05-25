@@ -162,23 +162,17 @@ Note that because of the subtyping relation on consistency types, omitted cases 
 other cases therefore need only be added if the application should respond differently to them. This subtyping behavior allows applications to be portable between systems supporting different forms of consistency (of which there are many).
 
 ### Interval types
-
-Tagging values with a consistency level is useful because it helps programmers tell which operation reorderings are possible (e.g. strongly consistent operations will be observed to happen in program order). 
-Accuracy policies lift consistency to the domain of the ADT, allowing programmers to bound the range of values that 
-
-However, because traditional consistency levels do not have any knowledge of the operations or values, when a value is inconsistent, programmers are left not knowing which of many possible values it may hold.
-
-The difficulty is that weakly consistent values do not provide much information about the kind of
+Tagging values with a consistency level is useful because it helps programmers tell which operation reorderings are possible (e.g. strongly consistent operations will be observed to happen in program order). Accuracy policies provide a different way of dealing with inconsistency by expressing it in terms of value uncertainty. It requires knowing the semantics of the allowed operations (e.g., if a Counter allows only increments and decrements, then reads can only change so much in given amount of time). Interval types express the uncertainty of a value by representing a range of possible values.
 
 The weak consistency type `Interval[T]` is the result of operations performed on an ADT with consistency policy `ErrorTolerance(x%)`.
 `Interval[T]` represents an interval of values within which the true (strongly consistent) result lies.
 The interval reflects uncertainty in the true value created by relaxed consistency, in the same style as work on approximate computing [@Bornholt:14:UncertainT].
 
-The key invariant of the `Interval[T]` type is that the interval *includes* the result of a linearizable order. Consider a `Set` with 100 elements. With linearizability, if we `add` a new element and then read the `size` (or if this ordering is otherwise implied), we *must* get back 101 (provided no other updates are occurring). However, if `size` is annotated with `ErrorTolerance(5%)`, then `size` could return intervals [todo: interval should include 101] such as $[95,105]$ or $[100,107]$, so the client cannot tell if the `add` was incorporated. This frees the system to optimize to improve performance, such as by delaying synchronization. While any partially-ordered domain could be represented as an interval (e.g., a Set with partial knowledge of its members), in this work we consider only numeric types.
+The key invariant of the `Interval` type is that the interval must include the result of some linearizable execution. Consider a `Set` with 100 elements. With linearizability, if we `add` a new element and then read the `size` (or if this ordering is otherwise implied), we *must* get 101 (provided no other updates are occurring). However, if `size` is annotated with `ErrorTolerance(5%)`, then it could return any interval that includes 101, such as $[95,105]$ or $[100,107]$, so the client cannot tell if the recent `add` was included in the size. This frees the system to optimize to improve performance, such as by delaying synchronization. While any partially-ordered domain could be represented as an interval (e.g., a Set with partial knowledge of its members), in this work we consider only numeric types.
 
-In the ticket sales example, the counter ADT's accuracy policy means that reads of the number of tickets return an `Interval[Int]`. If the interval is well above zero, then users can be assured that there are sufficient tickets remaining.
-In fact, because the interval is indistinguishable from a linearizable order, in the absence of other user actions, a subsequent purchase must succeed.
-On the other hand, if the interval overlaps with zero, then there is a chance that tickets could already be sold out, so users should be warned. Note that ensuring that tickets are not over-sold is a separate concern requiring a different form of enforcement, which we describe in [#sec-provided].
+In the ticket sales example, the counter ADT's accuracy policy means that reads of the number of tickets return an `Interval[Int]`. If the entire interval is above zero, then users can be assured that there are sufficient tickets remaining.
+In fact, because the interval could represent many possible linearizable executions, in the absence of other user actions, a subsequent purchase must succeed.
+On the other hand, if the interval overlaps with zero, then there is a chance that tickets could already be sold out, so users could be warned. Note that ensuring that tickets are not over-sold is a separate concern requiring a different form of enforcement, which we describe in [#sec-provided].
 The relaxed consistency of the interval type allows the system to optimize performance in the common case where there are many tickets available, and dynamically adapt to contention when the ticket count diminishes.
 
 <!--
