@@ -145,7 +145,7 @@ Each variant is itself a consistency type (though the variants obviously cannot 
 The effect is that values returned by a latency-bound object carry with them their actual consistency level.
 A result of type `Rushed[T]` therefore requires the developer to consider the possible consistency levels of the value.
 
-For example, a system with geo-distributed replicas may only be able to satisfy a latency bound of 50 ms with a local quorum read.
+For example, a system with geo-distributed replicas may only be able to satisfy a latency bound of 50 ms with a local quorum read (that is, a quorum of replicas within a single datacenter).
 In this case, `Rushed[T]` would be the sum of three types `Consistent[T]`, `LocalQuorum[T]`, and `Inconsistent[T]`.
 A match statement destructures the result of a latency-bound read operation:
 

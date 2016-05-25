@@ -6,7 +6,8 @@ IPA is implemented mostly as a client-side library to an off-the-shelf distribut
 IPA's client-side programming interface is written in Scala, using the asynchronous futures-based Phantom [@Phantom] library for type-safe access to Cassandra data. Reservation server middleware is also built in Scala using Twitter's Finagle framework [@finagle]. Communication is done between clients and Cassandra via prepared statements, and between clients and reservations servers via Thrift remote-procedure-calls [@thrift]. Due to its type safety features, abstraction capability, and compatibility with Java, Scala has become popular for web service development, including widely-used frameworks such as Akka [@scala-akka] and Spark [@spark], and at established companies such as Twitter and LinkedIn [@scala-jobs;@scala-enterprise;@scala-twitter].
 
 <!-- ## Type system -->
-The IPA type system, responsible for consistency safety, is also simply part of our client library, simply leveraging Scala's sophisticated type system.
+
+The IPA type system, responsible for consistency safety, is also simply part of our client library, leveraging Scala's sophisticated type system.
 The IPA type lattice is implemented as a subclass hierarchy of parametric classes, using Scala's support for higher-kinded types to allow them to be destructured in match statements, and implicit conversions to allow `Consistent[T]` to be treated as type `T`. We use traits to implement ADT annotations; e.g. when the `LatencyBound` trait is mixed into an ADT, it wraps each of the methods, redefining them to have the new semantics and return the correct IPA type. [#fig-interfaces] shows an example.
 
 <!-- ## Provided by IPA {} -->
