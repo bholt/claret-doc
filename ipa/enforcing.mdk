@@ -12,7 +12,7 @@ It is conceptually quite simple to implement a dynamically tunable consistency l
 
 Our implementation of latency-bound types takes a generic approach: it
 issues read requests at different consistency levels in parallel. It
-composes the parallel operations and return sa result either when the
+composes the parallel operations and returns a result either when the
 strongest operation returns, or with the strongest available result at
 the specified time limit. If no responses are available at the time
 limit, it waits for the first to return.
