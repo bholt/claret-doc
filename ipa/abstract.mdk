@@ -6,10 +6,7 @@ high round-trip latencies, network partitions, server failures, and
 load spikes, applications use eventually consistent datastores that
 allow them to weaken the consistency of some data.  However, making
 this transition is highly error-prone because relaxed consistency
-models are notoriously difficult to understand and test.  <!--
-Introducing weak consistency to handle worst-case scenarios also
-creates an ever-present risk of inconsistency even for the common case
-when everything is running smoothly. -->
+models are notoriously difficult to understand and test.
 
 In this work, we propose a new programming model for distributed data
 that makes consistency properties explicit and uses a type system to
