@@ -1,16 +1,53 @@
 # Related Work
 
 **Consistency models.**
-There is a thriving ecosystem of consistency models: from *sequential consistency* [@Lamport:79:SC] and *linearizability* [@Herlihy:90:Linear] on the strong side, to *eventual consistency* [@Vogels:EC] at the other extreme. A variety of intermediate models fit elsewhere in the spectrum, each making different trade-offs balancing high performance and availability against ease of programming. Session guarantees, including *read-your-writes*, strengthen ordering for individual clients but reduce availability [@Terry:94:Session].
-Many datastores support configuring consistency at a fine granularity: Cassandra [@cassandra] per operation, Riak [@riak] on an object or namespace granularity, as well as others [@Li:12:RedBlue;@Sovran:11:Walter].
-The Conit consistency model [@Yu:02:Conit] breaks down the consistency spectrum into numerical error, order error, and staleness, but requires annotating each operation and explicit dependency tracking, rather than annotating ADTs.
+
+IPA's consistency types could be easily extended to encompass the
+thriving ecosystem of consistency models: from *sequential
+consistency* [@Lamport:79:SC] and *linearizability*
+[@Herlihy:90:Linear] on the strong side, to *eventual consistency*
+[@Vogels:EC] at the other extreme. A variety of intermediate models
+fit elsewhere in the spectrum, each making different trade-offs
+balancing high performance and availability against ease of
+programming. Session guarantees, including *read-your-writes*,
+strengthen ordering for individual clients but reduce availability
+[@Terry:94:Session].  Many datastores support configuring consistency
+at a fine granularity: Cassandra [@cassandra] per operation, Riak
+[@riak] on an object or namespace granularity, as well as others
+[@Li:12:RedBlue;@Sovran:11:Walter].  The Conit consistency model
+[@Yu:02:Conit] breaks down the consistency spectrum into numerical
+error, order error, and staleness, but requires annotating each
+operation and explicit dependency tracking, rather than annotating
+ADTs.
 
 **Higher-level consistency requirements.**
-Some programming models have gone beyond plain consistency models and allowed programmers to express correctness criteria directly.
-Quelea [@Sivaramakrishnan:15:Quelea] has programmers write *contracts* to describe  *visibility* and *ordering* constraints, independent of any particular consistency hierarchy, then the system automatically selects the consistency level necessary for each operation.
-In Indigo [@Balegas:15:Indigo], programmers write *invariants* over abstract state and annotate post-conditions on actions in terms of the abstract state. The system analyzes annotated programs and adds coordination logic to prevent invariant violations, using a reservation system to enforce numer constraints. Neither Indigo nor Quelea, however, allow programmers to specify approximations or error tolerances, nor do they enforce any kind of performance bounds.
 
-IPA's latency-bound policies were inspired by the *consistency-based SLAs* of Pileus [@Terry:13:SLAs]. Consistency SLAs specify a target latency and consistency level (e.g. 100 ms with read-my-writes), associated with a *utility*. Each operation specifies a set of SLAs, and the system predicts which is most likely to be met, attempting to maximize utility, and returns both the value and the achieved consistency level. Other systems, including PRACTI [@Belaramani:06:PRACTI], PADS [@Belaramani:09:PADS], and WheelFS [@Stribling:09:WheelFS], have given developers ways of expressing their desired performance and correctness requirements through *semantic cues* and policies.
+Rather than enforcing consistency safety, some programming models
+allow programmers to express application correctness criteria
+directly.  Quelea [@Sivaramakrishnan:15:Quelea] has programmers write
+*contracts* to describe *visibility* and *ordering* constraints,
+independent of any particular consistency hierarchy, then the system
+automatically selects the consistency level necessary for each
+operation.  In Indigo [@Balegas:15:Indigo], programmers write
+*invariants* over abstract state and annotate post-conditions on
+actions in terms of the abstract state. The system analyzes annotated
+programs and adds coordination logic to prevent invariant violations,
+using a reservation system to enforce numer constraints. Neither
+Indigo nor Quelea, however, allow programmers to specify
+approximations or error tolerances, nor do they enforce any kind of
+performance bounds.
+
+IPA's latency-bound policies were inspired by the *consistency-based
+SLAs* of Pileus [@Terry:13:SLAs]. Consistency SLAs specify a target
+latency and consistency level (e.g. 100 ms with read-my-writes),
+associated with a *utility*. Each operation specifies a set of SLAs,
+and the system predicts which is most likely to be met, attempting to
+maximize utility, and returns both the value and the achieved
+consistency level. Other systems, including PRACTI
+[@Belaramani:06:PRACTI], PADS [@Belaramani:09:PADS], and WheelFS
+[@Stribling:09:WheelFS], have given developers ways of expressing
+their desired performance and correctness requirements through
+*semantic cues* and policies.
 
 <!--
 Probabilistically bounded staleness (PBS) [@Bailis:12:PBS] are a form of performance and correctness bound. Using a predictive model, PBS is able to quantify the degree of inconsistency that is likely for a given operation, but it has not been used to directly improve programming models. This kind of knowledge could be applied within IPA's runtime system to make better latency predictions or to provide a new IPA probabilistic IPA type similar to `Interval[T]`.
@@ -18,25 +55,104 @@ Probabilistically bounded staleness (PBS) [@Bailis:12:PBS] are a form of perform
 
 A long history of systems have been built around the principle that applications may be willing to tolerate slightly stale data in exchange for improved performance, including databases [@roehm02:_fas;@plattner04:_ganym;@bernstein06:_relax_curren_serial_for_middl;@pu91:_replic_contr_distr_system] and distributed caches [@ports10:_trans_consis_autom_manag_applic_data_cache;@olston99:_adapt_precis_settin_cached_approx_values]. These systems generally require developers to explicitly specify staleness bounds on each transaction in terms of absolute time (although Bernstein et al.'s model can generate these from error bounds when a value's maximum rate of change is known).
 
-The above techniques are relevant but largely orthogonal to our work: they provide
-many techniques which could be used in an IPA datastore to trade off correctness in new ways. This work builds on those insights, introducing a new error tolerance mechanism, proposing ADT-level annotations rather than per-operation, but most importantly, providing *type safety* via IPA types, which ensure that all possible edge cases are handled whenever the system adjusts consistency to meet performance targets. Previous systems gave some feedback to programs about achieved consistency, but did not provide facilities to ensure and help developers use the information correctly.
+The above techniques are relevant but largely orthogonal to our work:
+they provide many techniques which could be used in an IPA datastore
+to trade off correctness in new ways. This work builds on those
+insights, introducing a new error tolerance mechanism, proposing
+ADT-level annotations rather than per-operation, but most importantly,
+providing *consistency safety* via consistency types, which ensure
+that all possible edge cases are handled whenever the system adjusts
+consistency to meet performance targets. Previous systems gave some
+feedback to programs about achieved consistency, but did not provide
+facilities to ensure and help developers use the information
+correctly.
 
 
 <!-- [todo: are there other systems with explicit performance bounds enforced by the system?] -->
 
 
-<!-- ## Controlling staleness -->
-<!-- Most eventually consistent models provides no guarantees about how long it will take for updates to propagate. However, there are several techniques to help bound the staleness of reads. -->
+<!-- ## Controlling staleness --> <!-- Most eventually consistent
+models provides no guarantees about how long it will take for updates
+to propagate. However, there are several techniques to help bound the
+staleness of reads. -->
 
-<!-- *Leases* are an old technique that essentially gives reads an *expiration date*: the datastore promises not to modify the value that was just read until the lease term is over. First proposed to avoid explicit invalidations in distributed file system caches [@Gray:89], leases have since been used in a multitude of ways: in Facebook's Memcache system [@Nishtala:13:Memcache] for invalidations, Google's Chubby [@Burrows:2006:Chubby] and Spanner [@Spanner] to adjust the frequency of heartbeat messages, and on mobile clients with exo-leases [@Shrira:08:ExoLeasing]. Warranties [@Liu:14:Warranties] are a generalization of leases, allowing arbitrary assertions over state or behavior. [todo: explain how our leases relate (if they get implemented)] -->
+<!-- *Leases* are an old technique that essentially gives reads an
+*expiration date*: the datastore promises not to modify the value that
+was just read until the lease term is over. First proposed to avoid
+explicit invalidations in distributed file system caches [@Gray:89],
+leases have since been used in a multitude of ways: in Facebook's
+Memcache system [@Nishtala:13:Memcache] for invalidations, Google's
+Chubby [@Burrows:2006:Chubby] and Spanner [@Spanner] to adjust the
+frequency of heartbeat messages, and on mobile clients with exo-leases
+[@Shrira:08:ExoLeasing]. Warranties [@Liu:14:Warranties] are a
+generalization of leases, allowing arbitrary assertions over state or
+behavior. [todo: explain how our leases relate (if they get
+implemented)] -->
 
-**Types for distributed systems.**
-*Convergent* (or *conflict-free*) *replicated data types* (CRDTs) [@Shapiro:SSS11:CRDT] are data types designed for eventual consistency. Similar to how IPA types express weakened semantics which allow for implementation on weak consistency, CRDTs guarantee that they will converge on eventual consistency by forcing all update operations to commute. CRDTs can be useful because they allow concurrent updates with sane semantics, but they are still only eventually (or causally) consistent, so users must still deal with temporary divergence and out-of-date reads, and they do not incorporate performance bounds or variable accuracy. Particularly relevant to IPA, the Bounded Counter CRDT [@Balegas:15:BoundedCounter] enforces hard limits on the global value of a counter in a way similar to reservations but less general; this design informed our own reservations system for error bounds.
-
-<!-- Bloom [@Alvaro:11:Bloom;@Conway:12:BloomL;@Alvaro:14:Blazes] is a language and runtime system for defining whole applications that are guaranteed to converge. Based around a conceptual monotonically growing set of facts, the language encourages coordination-free computation, but automatically creates synchronization points where necessary. -->
 
 **Types for approximation.**
-<!-- As discussed in [#sec-types], IPA's programming model bears similarities with the type systems developed for *approximate computing*, in which values are tagged with their accuracy. EnerJ [@Sampson:11:EnerJ] and Rely [@Carbin:13:Rely] track the flow of approximate values to prevent them from interfering with precise computation. Chisel [@Misailovic:14:Chisel] and DECAF [@Boston:15:DECAF] extend this information-flow tracking to automatically infer the necessary accuracy of a computation's inputs to achieve application-level quality guarantees. IPA's interval types are similar in motivation to Uncertain&lt;T&gt;'s probability distributions [@Bornholt:14:UncertainT] and to a long line of work on interval analysis [@Moore:66:IA]. IPA targets a different class of applications to these existing approaches. The key difference is the source of approximation: rather than lossy hardware that can lose the true value forever, inconsistent values can be strengthened if necessary by forcing additional synchronization. -->
-<!-- Approximate type systems, including IPA, are inspired by a long line of work on information flow tracking (e.g., [@myers99:_jflow;@sabelfeld03:_languag_based_infor_flow_secur;@denning77:_certif]). These systems use a combination of static type checking and dynamic analysis to enforce isolation between sensitive data and untrusted channels, guaranteeing a *non-interference* policy [@goguen82:_secur_polic_secur_model]: public information will never be influenced by confidential data. -->
-IPA's type system is inspired by work on *approximate computing*, in which computations can be selectively made inaccurate to improve energy efficiency and performance. EnerJ [@Sampson:11:EnerJ;@Boston:15:DECAF] and Rely [@Carbin:13:Rely;@Misailovic:14:Chisel] track the flow of approximate values to prevent them from interfering with precise computation. IPA's interval types are similar to Uncertain&lt;T&gt;'s probability distributions [@Bornholt:14:UncertainT] and to interval analysis [@Moore:66:IA]. One key difference for IPA is that inconsistent values can be strengthened by forcing additional synchronization if necessary. IPA also builds on information flow tracking systems [@myers99:_jflow;@sabelfeld03:_languag_based_infor_flow_secur;@denning77:_certif], which use static type checking and dynamic analysis to enforce *non-interference* between sensitive data and untrusted channels.
+
+<!-- As discussed in [#sec-types], IPA's programming model bears
+similarities with the type systems developed for *approximate
+computing*, in which values are tagged with their accuracy. EnerJ
+[@Sampson:11:EnerJ] and Rely [@Carbin:13:Rely] track the flow of
+approximate values to prevent them from interfering with precise
+computation. Chisel [@Misailovic:14:Chisel] and DECAF
+[@Boston:15:DECAF] extend this information-flow tracking to
+automatically infer the necessary accuracy of a computation's inputs
+to achieve application-level quality guarantees. IPA's interval types
+are similar in motivation to Uncertain&lt;T&gt;'s probability
+distributions [@Bornholt:14:UncertainT] and to a long line of work on
+interval analysis [@Moore:66:IA]. IPA targets a different class of
+applications to these existing approaches. The key difference is the
+source of approximation: rather than lossy hardware that can lose the
+true value forever, inconsistent values can be strengthened if
+necessary by forcing additional synchronization. --> <!-- Approximate
+type systems, including IPA, are inspired by a long line of work on
+information flow tracking (e.g.,
+[@myers99:_jflow;@sabelfeld03:_languag_based_infor_flow_secur;@denning77:_certif]). These
+systems use a combination of static type checking and dynamic analysis
+to enforce isolation between sensitive data and untrusted channels,
+guaranteeing a *non-interference* policy
+[@goguen82:_secur_polic_secur_model]: public information will never be
+influenced by confidential data. --> IPA's type system is inspired by
+work on *approximate computing*, in which computations can be
+selectively made inaccurate to improve energy efficiency and
+performance. EnerJ [@Sampson:11:EnerJ;@Boston:15:DECAF] and Rely
+[@Carbin:13:Rely;@Misailovic:14:Chisel] track the flow of approximate
+values to prevent them from interfering with precise
+computation. IPA's interval types are similar to Uncertain&lt;T&gt;'s
+probability distributions [@Bornholt:14:UncertainT] and to interval
+analysis [@Moore:66:IA]. One key difference for IPA is that
+inconsistent values can be strengthened by forcing additional
+synchronization if necessary.
+
+**Types for distributed and secure systems.**
+
+*Convergent* (or *conflict-free*) *replicated data types* (CRDTs)
+[@Shapiro:SSS11:CRDT] are data types designed for eventual
+consistency. Similar to how IPA types express weakened semantics which
+allow for implementation on weak consistency, CRDTs guarantee that
+they will converge on eventual consistency by forcing all update
+operations to commute. CRDTs can be useful because they allow
+concurrent updates with meaningful semantics, but they are still only
+eventually (or causally) consistent, so users must still deal with
+temporary divergence and out-of-date reads, and they do not
+incorporate performance bounds or variable accuracy. Particularly
+relevant to IPA, the Bounded Counter CRDT [@Balegas:15:BoundedCounter]
+enforces hard limits on the global value of a counter in a way similar
+to reservations but less general; this design informed our own
+reservations system for error bounds.  <!-- Bloom
+[@Alvaro:11:Bloom;@Conway:12:BloomL;@Alvaro:14:Blazes] is a language
+and runtime system for defining whole applications that are guaranteed
+to converge. Based around a conceptual monotonically growing set of
+facts, the language encourages coordination-free computation, but
+automatically creates synchronization points where necessary. -->
+Information flow tracking systems
+[@myers99:_jflow;@sabelfeld03:_languag_based_infor_flow_secur;@denning77:_certif],
+also use static type checking and dynamic analysis to enforce
+*non-interference* between sensitive data and untrusted channels, but,
+to the best of our knowledge, those techniques have not been applied
+to enforce consistency safety by separating weakly and strongly
+consistent data.
 

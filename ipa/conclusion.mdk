@@ -1,5 +1,14 @@
 # Conclusion
 
-The IPA programming model provides programmers with disciplined ways to trade consistency for performance in distributed applications.
-By specifying application-specific performance and accuracy targets in the form of latency and error tolerance bounds, they tell the system how to adapt when conditions change and provide it with release valves for optimization opportunities. Meanwhile, IPA types ensure consistency safety, ensuring that all potential weak outcomes are handled, and allowing applications to make choices based on the accuracy of the values the system returns.
-The policies, types and enforcement systems implemented in this work are only a sampling of the full range of possibilities within the framework of *inconsistent, performance-bound, and approximate* types.
+The IPA programming model provides programmers with disciplined ways
+to trade consistency for performance in distributed applications.  By
+specifying application-specific performance and accuracy targets in
+the form of latency and error tolerance bounds, they tell the system
+how to adapt when conditions change and provide it with release valves
+for optimization opportunities. Meanwhile, consistency types ensure
+consistency safety, ensuring that all potential weak outcomes are
+handled, and allowing applications to make choices based on the
+accuracy of the values the system returns.  The policies, types and
+enforcement systems implemented in this work are only a sampling of
+the full range of possibilities within the framework of *Inconsistent,
+Performance-bound, and Approximate* types.

@@ -102,7 +102,7 @@ Our Ticket sales web service, introduced in [#sec-background], is modeled after 
 - `purchase`: Purchase a ticket (or multiple)
 - `addEvent`: Add an event at a venue.
 
-~ Fig { #tickets-code caption="*Ticket service* code demonstrating use of IPA types. [\vspace{-10pt}]{input:texraw}" }
+~ Fig { #tickets-code caption="*Ticket service* code demonstrating use of consistency types. [\vspace{-10pt}]{input:texraw}" }
 ![](fig/tickets-code.pdf)
 [\vspace{-18pt}]{input:texraw}
 ~
