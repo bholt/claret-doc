@@ -1,18 +1,17 @@
 # Related Work
 
 **Consistency models.**
-IPA's consistency types could be easily extended to encompass the
-thriving ecosystem of consistency models: from *sequential
+IPA's consistency types could be extended to more of the
+thriving ecosystem of consistency models from *sequential
 consistency* [@Lamport:79:SC] and *linearizability*
-[@Herlihy:90:Linear] on the strong side, to *eventual consistency*
-[@Vogels:EC] at the other extreme. A variety of intermediate models
+[@Herlihy:90:Linear], to *eventual consistency*
+[@Vogels:EC]. A variety of intermediate models
 fit elsewhere in the spectrum, each making different trade-offs
-balancing high performance and availability against ease of
+balancing performance against ease of
 programming. Session guarantees, including *read-your-writes*,
 strengthen ordering for individual clients but reduce availability
-[@Terry:94:Session].  Many datastores support configuring consistency
-at a fine granularity: Cassandra [@cassandra] per operation, Riak
-[@riak] on an object or namespace granularity, as well as others
+[@Terry:94:Session].  Many datastores allow fine-grained consistency control: Cassandra [@cassandra] per operation, Riak
+[@riak] on an object granularity, and others
 [@Li:12:RedBlue;@Sovran:11:Walter].  The Conit consistency model
 [@Yu:02:Conit] breaks down the consistency spectrum into numerical
 error, order error, and staleness, but requires annotating each

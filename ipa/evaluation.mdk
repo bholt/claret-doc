@@ -88,7 +88,7 @@ Reservations move synchronization off the critical path: by distributing write p
 Note that reservations impact write performance, so we must consider both
 in our experiments.
 
-[#fig-counter-err]a shows latencies for error bounds of 1%, 5%, and 10%, plotting the average of reads *and* increment operations. As expected, tighter error bounds increase latency because it forces more frequent synchronization between replicas. The 1\% error bound provides most of the benefit, except in the slow replica and geo-distributed environments where it forces synchronization frequently enough that the added latency slows down the system.  5-10% error bounds provide low latency that is comparable to weak consistency. In the geo-distributed case, the coordination required for reservations makes even the 10\% error bound 4$\times$ slower than weak consistency, but 28$\times$ faster than strong consistency.
+[#fig-counter-err]a shows latencies for error bounds of 1%, 5%, and 10%, plotting the average of reads *and* increment operations. As expected, tighter error bounds increase latency because it forces more frequent synchronization between replicas. The 1\% error bound provides most of the benefit, except in the slow replica and geo-distributed environments where it forces synchronization frequently enough that the added latency slows down the system.  5-10% error bounds provide latency comparable to weak consistency. In the geo-distributed case, the coordination required for reservations makes even the 10\% error bound 4$\times$ slower than weak consistency, but 28$\times$ faster than strong consistency.
 
 While we have verified that error-bounded reads remain within our defined bounds, we also wish to know what error occurs in practice. We modified our benchmark to observe the actual error from weak consistency by incrementing counters a predetermined amount and reading the value; results are shown in [#fig-counter-err]b. We plot the percent error of weak and strong against the actual observed *interval width* for a 1% error bound, going from a read-heavy (1% increments) to write-heavy (all increments, except to check the value).
 
@@ -135,7 +135,7 @@ This is because ticket `UUIDPool`s begin *full*, with many tokens available, req
 
 ### Twitter clone
 
-~ Fig { #fig-twitter-model caption="Twitter application's data model with policy annotations, and code demonstrating how to use `Rushed[T]` to catch referential integrity violations and `Interval[T]` for approximate retweet counts. [\vspace{-10pt}]{input:texraw}" }
+~ Fig { #fig-twitter-model caption="Twitter data model with policy annotations, `Rushed[T]` helps catch referential integrity violations and `Interval[T]` represents  approximate retweet counts. [\vspace{-10pt}]{input:texraw}" }
 ![](fig/twitter.pdf)
 [\vspace{-18pt}]{input:texraw}
 ~
