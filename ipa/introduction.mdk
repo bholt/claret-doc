@@ -80,12 +80,11 @@ system. IPA introduces the following concepts:
   of IPA consistency types statically at compile time.
 
 * *Error-bounded Consistency.* IPA is a data structure store, like
-  Redis [@redis] or Riak [@riak], allowing it to provide both
-  traditional performance bounds on storage operations, as well as
-  error bounds (e.g., the programmer can bound the returned value to
-  within 5\% of the correct value). Within these bounds, IPA
-  automatically adapts to return a value with the strongest IPA
-  consistency type possible under the current system load.
+  Redis [@redis] or Riak [@riak], allowing it to provide a new type of
+  weak consistency that places *numeric error bounds* on the returned
+  values.  Within these bounds, IPA automatically adapts to return the
+  strongest IPA consistency type possible under the current system
+  load.
 
 We implement an IPA prototype based on Scala and Cassandra and show
 that IPA allows the programmer to trade off performance and
