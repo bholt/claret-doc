@@ -92,7 +92,7 @@ by relaxing the consistency of individual operations,
 safe in the knowledge that the IPA type system will enforce safety
 by requiring the developer to consider the effects of weak operations.
 
-Static and dynamic policies can apply to an entire ADT instance or on individual methods. For example, one could declare `List[Int] with LatencyBound(50 ms)`, in which case all read operations on the list are subject to the bound. Alternatively, one may wish to declare a`Set` with relaxed consistency for its `size` but strong consistency for its `contains` predicate.
+Static and dynamic policies can apply to an entire ADT instance or on individual methods. For example, one could declare `List[Int] with LatencyBound(50 ms)`, in which case all read operations on the list are subject to the bound. Alternatively, one may wish to declare a `Set` with relaxed consistency for its `size` but strong consistency for its `contains` predicate.
 The runtime is responsible for managing the interaction between these policies. In the case of a conflict between two bounds, the system can be conservative and choose stronger policies than specified without affecting correctness.
 
 In the ticket sales application, the `Counter` for each event's tickets has a relaxed accuracy policy: `ErrorTolerance(5%)`, allowing the system to quickly read the count of tickets remaining. An accuracy policy is appropriate here because it expresses a domain requirement---users want to see accurate ticket counts. As long as the system meets this requirement, it is free to relax consistency and maximize performance without violating correctness.
