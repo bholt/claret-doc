@@ -1,6 +1,6 @@
 
 Distributed applications and web services, such as online stores or
-social networks are expected to be scalable, available, responsive,
+social networks, are expected to be scalable, available, responsive,
 and fault-tolerant. To meet these steep requirements in the face of
 high round-trip latencies, network partitions, server failures, and
 load spikes, applications use eventually consistent datastores that
@@ -16,7 +16,7 @@ specify performance targets and correctness requirements as
 constraints on persistent data structures and handle uncertainty about
 the result of datastore reads using new *consistency types*.  We
 implement a prototype of this model in Scala on top of an existing
-datastore, Cassandra and use it to make performance/correctness
+datastore, Cassandra, and use it to make performance/correctness
 tradeoffs in two applications: a ticket sales service and a Twitter
 clone. Our evaluation shows that IPA prevents consistency-based
 programming errors and adapts consistency automatically in response to

@@ -34,10 +34,9 @@
 
 To provide good user experiences, modern datacenter applications and
 web services must balance the competing requirements of application
-correctness and responsiveness. For example, a web store must
-double-charging for purchases and keeping users waiting too long (each
-additional millisecond of latency translates to a loss in traffic and
-revenue [@linden06:amazon;@forrest09:slow]). Worse, programmers must
+correctness and responsiveness. For example, a web store
+double-charging for purchases or keeping users waiting too long (each
+additional millisecond of latency [@linden06:amazon;@forrest09:slow]) can translate to a loss in traffic and revenue. Worse, programmers must
 maintain this balance in an unpredictable environment where a black
 and blue dress [@buzzfeed-dress] or Justin Bieber [@bieber-instagram]
 can change application performance in the blink of an eye.

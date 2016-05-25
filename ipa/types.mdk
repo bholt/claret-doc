@@ -40,7 +40,7 @@ The IPA programming model consists of three parts:
 * Consistency policies on ADTs specify the desired consistency level for an object in application-specific terms (such as latency or accuracy bounds).
 * Consistency types track the consistency of operation results and enforce consistency safety by requiring developers to consider weak outcomes.
 
-Programmmers annotate ADTs with consistency policies to choose their desired level of consistency. The *consistency policy* on the *ADT operation* determines the *consistency type* of the result. Some examples are shown in [#adt-map]; the next few sections will introduce each of the policies and types in detail.
+Programmmers annotate ADTs with consistency policies to choose their desired level of consistency. The *consistency policy* on the *ADT operation* determines the *consistency type* of the result. [#adt-map] shows some examples; the next few sections will introduce each of the policies and types in detail.
 Together, these three components provide two key benefits for developers.
 First, the IPA type system enforces *consistency safety*, tracking the consistency level of each result and preventing inconsistent values from flowing into consistent values.
 Second, the programming interface enables performance--correctness trade-offs, because consistency policies on ADTs allow the runtime to select a consistency level for each individual operation that maximizes performance in a constantly changing environment.
@@ -67,7 +67,7 @@ about the safety of code using weak consistency, and hinders global
 optimizations that can be applied if the system knows the consistency
 level required for future operations.  The IPA programming model
 provides a set of consistency policies that can be placed on *ADT instances* to
-specify which consistency level to use for the lifetime of the object.  <!-- In
+specify consistency properties for the lifetime of the object.  <!-- In
 addition, the annotations express application-level requirements, such
 as latency or accuracy, allowing the system to fine-tune per-operation
 consistency to maximize performance and freeing the developer of this
@@ -95,12 +95,12 @@ by requiring the developer to consider the effects of weak operations.
 Static and dynamic policies can apply to an entire ADT instance or on individual methods. For example, one could declare `List[Int] with LatencyBound(50 ms)`, in which case all read operations on the list are subject to the bound. Alternatively, one may wish to declare a `Set` with relaxed consistency for its `size` but strong consistency for its `contains` predicate.
 The runtime is responsible for managing the interaction between these policies. In the case of a conflict between two bounds, the system can be conservative and choose stronger policies than specified without affecting correctness.
 
-In the ticket sales application, the `Counter` for each event's tickets has a relaxed accuracy policy: `ErrorTolerance(5%)`, allowing the system to quickly read the count of tickets remaining. An accuracy policy is appropriate here because it expresses a domain requirement---users want to see accurate ticket counts. As long as the system meets this requirement, it is free to relax consistency and maximize performance without violating correctness.
+In the ticket sales application, the `Counter` for each event's tickets could have a relaxed accuracy policy, `ErrorTolerance(5%)`, allowing the system to quickly read the count of tickets remaining. An accuracy policy is appropriate here because it expresses a domain requirement---users want to see accurate ticket counts. As long as the system meets this requirement, it is free to relax consistency and maximize performance without violating correctness.
 The `List` ADT used for events has a latency policy that also expresses a domain requirement---that pages on the website load in reasonable time.
 
 ## Consistency Types {#sec-ipa-types}
 
-The key to consistency safety in IPA is the consistency types, which means that enforcing type safety directly enforces consistency safety.
+The key to consistency safety in IPA is the consistency types---enforcing type safety directly enforces consistency safety.
 Read operations of ADTs annotated with consistency policies return instances of a *consistency type*.
 These consistency types track the consistency of the results
 and enforce a fundamental non-interference property: 
@@ -132,7 +132,7 @@ Endorsement is an upcast, invoked by `Consistent(x)`, to the top element `Consis
 ~
 <!-- [\vspace{-10pt}]{input:texraw} -->
 The core type system statically enforces safety by preventing weaker values from flowing into stronger computations.
-Forcing developers to explicitly endorse inconsistent values prevents them from accidentally using inconsistent data here they did not determine it was acceptable, essentially inverting the behavior of current systems where inconsistent data is always treated as if it was safe to use anywhere. However, endorsing values blindly in this way is not the intended use case; the key productivity benefit of the IPA type system comes from the other consistency types which correspond to the consistency policies in [#policies] which allow developers to handle dynamic variations in consistency, which we describe next.
+Forcing developers to explicitly endorse inconsistent values prevents them from accidentally using inconsistent data where they did not determine it was acceptable, essentially inverting the behavior of current systems where inconsistent data is always treated as if it was safe to use anywhere. However, endorsing values blindly in this way is not the intended use case; the key productivity benefit of the IPA type system comes from the other consistency types which correspond to the dynamic consistency policies in [#policies] which allow developers to handle dynamic variations in consistency, which we describe next.
 
 <!-- The IPA type system is similar to the probability type system of DECAF [@Boston:15:DECAF], which uses types to track the quality of results computed on approximate hardware, ensuring that a result of low quality cannot flow into a result of higher quality without explicit endorsement. -->
 <!-- We elide a thorough formal development of the core IPA type system due to its close similarity with DECAF, instead focusing on the additions introduced by IPA specifically to handle the dynamic annotations from the previous section. -->
@@ -162,7 +162,8 @@ Note that because of the subtyping relation on consistency types, omitted cases 
 other cases therefore need only be added if the application should respond differently to them. This subtyping behavior allows applications to be portable between systems supporting different forms of consistency (of which there are many).
 
 ### Interval types
-Tagging values with a consistency level is useful because it helps programmers tell which operation reorderings are possible (e.g. strongly consistent operations will be observed to happen in program order). Accuracy policies provide a different way of dealing with inconsistency by expressing it in terms of value uncertainty. It requires knowing the semantics of the allowed operations (e.g., if a Counter allows only increments and decrements, then reads can only change so much in given amount of time). Interval types express the uncertainty of a value by representing a range of possible values.
+Tagging values with a consistency level is useful because it helps programmers tell which operation reorderings are possible (e.g. strongly consistent operations will be observed to happen in program order). However, accuracy policies provide a different way of dealing with inconsistency by expressing it in terms of value uncertainty. 
+They require knowing the *abstract behavior* of operations in order to determine the change in abstract state which results from each reordered operation (e.g., reordering increments on a Counter has a known effect on the value of reads).
 
 The weak consistency type `Interval[T]` is the result of operations performed on an ADT with consistency policy `ErrorTolerance(x%)`.
 `Interval[T]` represents an interval of values within which the true (strongly consistent) result lies.

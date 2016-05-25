@@ -3,22 +3,23 @@
 
 IPA is implemented mostly as a client-side library to an off-the-shelf distributed storage system, though reservations are handled by a custom middleware layer which mediates accesses to any data with error tolerance policies. Our implementation is built on top of Cassandra, but IPA could work with any replicated storage system that supports fine-grained consistency control, which many commercial and research datastores do, including Riak [@riak]. 
 
-IPA's client-side programming interface is written in Scala, using the asynchronous futures-based Phantom [@Phantom] library for type-safe access to Cassandra data. Reservation server middleware is also built in Scala using Twitter's Finagle framework [@finagle]. Communication is done between clients and Cassandra via prepared statements, and between clients and reservations servers via Thrift remote-procedure-calls [@thrift]. Due to its type safety features, abstraction capability, and compatibility with Java, Scala has become popular for web service development, including widely-used frameworks such as Akka [@scala-akka] and Spark [@spark], and at established companies such as Twitter and LinkedIn [@scala-jobs;@scala-enterprise;@scala-twitter].
+IPA's client-side programming interface is written in Scala, using the asynchronous futures-based Phantom [@Phantom] library for type-safe access to Cassandra data. Reservation server middleware is also built in Scala using Twitter's Finagle framework [@finagle]. Communication is done between clients and Cassandra via prepared statements, and between clients and reservation servers via Thrift remote-procedure-calls [@thrift]. Due to its type safety features, abstraction capability, and compatibility with Java, Scala has become popular for web service development, including widely-used frameworks such as Akka [@scala-akka] and Spark [@spark], and at established companies such as Twitter and LinkedIn [@scala-jobs;@scala-enterprise;@scala-twitter].
 
 <!-- ## Type system -->
 
 The IPA type system, responsible for consistency safety, is also simply part of our client library, leveraging Scala's sophisticated type system.
-The IPA type lattice is implemented as a subclass hierarchy of parametric classes, using Scala's support for higher-kinded types to allow them to be destructured in match statements, and implicit conversions to allow `Consistent[T]` to be treated as type `T`. We use traits to implement ADT annotations; e.g. when the `LatencyBound` trait is mixed into an ADT, it wraps each of the methods, redefining them to have the new semantics and return the correct IPA type. [#fig-interfaces] shows an example.
+The IPA type lattice is implemented as a subclass hierarchy of parametric classes, using Scala's support for higher-kinded types to allow them to be destructured in match statements, and implicit conversions to allow `Consistent[T]` to be treated as type `T`. We use traits to implement ADT annotations; e.g. when the `LatencyBound` trait is mixed into an ADT, it wraps each of the methods, redefining them to have the new semantics and return the correct IPA type.
 
 <!-- ## Provided by IPA {} -->
 
-~ Fig {#fig-interfaces caption="Some of the reusable components provided by IPA and an example implemention of a Counter. [\vspace{-8pt}]{input:texraw}" }
+~ Fig {#fig-interfaces caption="Some of the reusable components provided by IPA and an example implemention of a Counter with error bounds. [\vspace{-8pt}]{input:texraw}" }
 ![](fig/interfaces.pdf)
 [\vspace{-18pt}]{input:texraw}
 ~
 
 IPA comes with a library of reference ADT implementations used in our experiments, but it is intended to be extended with custom ADTs to fit more specific use cases.
-Our implementation provides a number of primitives for building ADTs, some of which are shown in [#fig-interfaces]. To support latency bounds, there is a generic `LatencyBound` trait that provides facilities for executing a specified read operation at multiple consistency levels within a time limit. For implementing error bounds, IPA provides a generic reservation pool which ADTs can use. The library of reference ADTs includes:
+Our implementation provides a number of primitives for building ADTs, some of which are shown in [#fig-interfaces]. To support latency bounds, there is a generic `LatencyBound` trait that provides facilities for executing a specified read operation at multiple consistency levels within a time limit. For implementing error bounds, IPA provides a generic reservation pool which ADTs can use. [#fig-interfaces] shows how a Counter with error tolerance bounds is implemented using these pools.
+The library of reference ADTs includes:
 
 - `Counter` based on Cassandra's counter, supporting increment and decrement, with latency and error bounds
 - `BoundedCounter` CRDT from [@Balegas:15:BoundedCounter] that enforces a hard lower bound even with weak consistency. Our implementation adds the ability to bound error on the value of the counter and set latency bounds.
