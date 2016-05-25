@@ -1,7 +1,6 @@
 # Related Work
 
 **Consistency models.**
-
 IPA's consistency types could be easily extended to encompass the
 thriving ecosystem of consistency models: from *sequential
 consistency* [@Lamport:79:SC] and *linearizability*
@@ -21,7 +20,6 @@ operation and explicit dependency tracking, rather than annotating
 ADTs.
 
 **Higher-level consistency requirements.**
-
 Rather than enforcing consistency safety, some programming models
 allow programmers to express application correctness criteria
 directly.  Quelea [@Sivaramakrishnan:15:Quelea] has programmers write
@@ -91,31 +89,7 @@ implemented)] -->
 
 
 **Types for approximation.**
-
-<!-- As discussed in [#sec-types], IPA's programming model bears
-similarities with the type systems developed for *approximate
-computing*, in which values are tagged with their accuracy. EnerJ
-[@Sampson:11:EnerJ] and Rely [@Carbin:13:Rely] track the flow of
-approximate values to prevent them from interfering with precise
-computation. Chisel [@Misailovic:14:Chisel] and DECAF
-[@Boston:15:DECAF] extend this information-flow tracking to
-automatically infer the necessary accuracy of a computation's inputs
-to achieve application-level quality guarantees. IPA's interval types
-are similar in motivation to Uncertain&lt;T&gt;'s probability
-distributions [@Bornholt:14:UncertainT] and to a long line of work on
-interval analysis [@Moore:66:IA]. IPA targets a different class of
-applications to these existing approaches. The key difference is the
-source of approximation: rather than lossy hardware that can lose the
-true value forever, inconsistent values can be strengthened if
-necessary by forcing additional synchronization. --> <!-- Approximate
-type systems, including IPA, are inspired by a long line of work on
-information flow tracking (e.g.,
-[@myers99:_jflow;@sabelfeld03:_languag_based_infor_flow_secur;@denning77:_certif]). These
-systems use a combination of static type checking and dynamic analysis
-to enforce isolation between sensitive data and untrusted channels,
-guaranteeing a *non-interference* policy
-[@goguen82:_secur_polic_secur_model]: public information will never be
-influenced by confidential data. --> IPA's type system is inspired by
+IPA's type system is inspired by
 work on *approximate computing*, in which computations can be
 selectively made inaccurate to improve energy efficiency and
 performance. EnerJ [@Sampson:11:EnerJ;@Boston:15:DECAF] and Rely
@@ -128,7 +102,6 @@ inconsistent values can be strengthened by forcing additional
 synchronization if necessary.
 
 **Types for distributed and secure systems.**
-
 *Convergent* (or *conflict-free*) *replicated data types* (CRDTs)
 [@Shapiro:SSS11:CRDT] are data types designed for eventual
 consistency. Similar to how IPA types express weakened semantics which
@@ -142,12 +115,7 @@ incorporate performance bounds or variable accuracy. Particularly
 relevant to IPA, the Bounded Counter CRDT [@Balegas:15:BoundedCounter]
 enforces hard limits on the global value of a counter in a way similar
 to reservations but less general; this design informed our own
-reservations system for error bounds.  <!-- Bloom
-[@Alvaro:11:Bloom;@Conway:12:BloomL;@Alvaro:14:Blazes] is a language
-and runtime system for defining whole applications that are guaranteed
-to converge. Based around a conceptual monotonically growing set of
-facts, the language encourages coordination-free computation, but
-automatically creates synchronization points where necessary. -->
+reservations system for error bounds.
 Information flow tracking systems
 [@myers99:_jflow;@sabelfeld03:_languag_based_infor_flow_secur;@denning77:_certif],
 also use static type checking and dynamic analysis to enforce
