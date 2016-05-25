@@ -11,7 +11,7 @@ To control for variability, we perform our experiments with a number of simulate
 We use a local test cluster with nodes linked by standard ethernet and Linux's Network Emulation facility [@netem] (`tc netem`) to introduce packet delay and loss at the operating system level. We use Docker containers [@docker] to enable fine-grained control of the network conditions between processes on the same physical node.
 
 [#tab-conditions] shows the set of conditions we use in our experiments to explore the behavior of the system. The *uniform 5ms* link simulates a well-provisioned datacenter; *slow replica* models contention or hardware problems that cause one replica to be slower than others, and *geo-distributed* replicates the latencies between virtual machines in the U.S., Europe, and Asia on Amazon EC2 [@AmazonEC2]. These simulated conditions are validated by experiments on Google Compute Engine with virtual machines in four datacenters: the client in *us-east*, and the storage replicas in *us-central*, *europe-west*, and *asia-east*.
-We elide the results for *Local* (same rack in our own testbed) except in [#fig-twitter-model] because the differences between policies are negligible and strong consistency ought to always be the default.
+We elide the results for *Local* (same rack in our own testbed) except in [#fig-twitter-model] because the differences between policies are negligible and strong consistency should be the default.
 
 <!--
 The environment in which these experiments are normally carried out, on isolated systems with predictable, low latencies,
@@ -60,7 +60,7 @@ We start by measuring the performance of a simple application that randomly incr
 ![](plots/counter_lbound_tail.pdf){ .onecol }
 ~
 
-~ Fig { #fig-counter-err .wide caption="*Counter benchmark: error tolerance.* In (a), we see that wider error bounds reduce mean latency because fewer synchronizations are required, matching *weak* around 5-10%. In (b), we see actual error of *weak* compared with the actual interval for a 1% error bound with varying fraction of writes; average error is less than 1% but *maximum* error can be extremely high: up to 60%. [\vspace{-.2in}]{input:texraw}" }
+~ Fig { #fig-counter-err .wide caption="*Counter benchmark: error tolerance.* In (a), we see that wider error bounds reduce mean latency because fewer synchronizations are required, matching *weak* around 5-10%. In (b), we see actual error of *weak* compared with the actual interval for a 1% error bound with varying fraction of writes; average error is less than 1% but *maximum* error can be extremely high: up to 60%. [\vspace{-20pt}]{input:texraw}" }
 ~~ SubFigureRow
 ~~~ SubFigure {#fig-counter-error-perf; font-size: small; caption="Mean latency (increment *and* read)."}
 ![](plots/counter_err_perf.pdf)
@@ -105,18 +105,18 @@ Our Ticket sales web service, introduced in [#sec-background], is modeled after 
 - `purchase`: Purchase a ticket (or multiple)
 - `addEvent`: Add an event at a venue.
 
-~ Fig { #tickets-code caption="*Ticket service* code demonstrating use of consistency types. [\vspace{-10pt}]{input:texraw}" }
+~ Fig { #tickets-code caption="*Ticket service* code demonstrating consistency types. [\vspace{-14pt}]{input:texraw}" }
 ![](fig/tickets-code.pdf)
 [\vspace{-18pt}]{input:texraw}
 ~
 
 [#tickets-code] shows a snippet of code from the IPA implementation which can be compared with the non-IPA version from [#fig-tickets]. 
 Tickets are modeled using the `UUIDPool` type, which generates unique identifiers to reserve tickets for purchase. The ADT ensures that, even with weak consistency, it never gives out more than the maximum number of tickets, so it is safe to `endorse` the result of the `take` operation as long as one is okay with the possibility of a false negative.
-Rather than just using a weak read as in the original example, in IPA we can bound the inconsistency of the remaining ticket count using an error tolerance annotation on the tickets pool. Now to compute the price of the reserved ticket, we call `getTicketCount` and get an `Interval`, forcing us to decide how to handle the range of possible ticket counts. We decide to use the `max` value from the interval to be conservative and fair to users; the 5% error bound ensures that we don't sacrifice too much profit this way.
+Rather than just using a weak read as in the original example, in IPA we can bound the inconsistency of the remaining ticket count using an error tolerance annotation on the tickets pool. Now to compute the price of the reserved ticket, we call `getTicketCount` and get an `Interval`, forcing us to decide how to handle the range of possible ticket counts. We decide to use the `max` value from the interval to be fair to users; the 5% error bound ensures that we don't sacrifice too much profit this way.
 
 To evaluate the performance, we run a workload modelling a typical small-scale deployment: 50 venues and 200 events, with an average of 2000 tickets each (gaussian distribution centered at 2000, stddev 500); this ticket-to-event ratio ensures that some events run out tickets. Because real-world workloads exhibit power law distributions [@YCSB], we use a moderately skewed Zipf distribution with coefficient of 0.6 to select events.
 
-~ Fig { #plot-tickets caption="*Ticket service: mean latency*, ***log scale.*** Strong consistency is far too expensive (>10$\times$ slower) except when load and latencies are low, but 5% error tolerance allows latency to be comparable to weak consistency. The 20ms latency-bound variant is either slower or defaults to weak, providing little benefit. Note: the ticket `Pool` is safe even when weakly consistent."; page-align: top }
+~ Fig { #plot-tickets caption="*Ticket service: mean latency*, ***log scale.*** Strong consistency is far too expensive (>10$\times$ slower) except when load and latencies are low, but 5% error tolerance allows latency to be comparable to weak consistency. The 20ms latency-bound variant is either slower or defaults to weak, providing little benefit. Note: the ticket `Pool` is safe even when weakly consistent. [\vspace{-10pt}]{input:texraw}"; page-align: top }
 ![](plots/tickets.pdf){ .onecol }
 [\vspace{-18pt}]{input:texraw}
 ~
@@ -147,10 +147,10 @@ This is because ticket `UUIDPool`s begin *full*, with many tokens available, req
 
 Our second application is a Twitter-like service based on the Redis data modeling example, Retwis [@retwis]. The data model is simple: each user has a `Set` of followers, and a `List` of tweets in their timeline. When a user tweets, the tweet ID is eagerly inserted into all of their followers' timelines. Retweets are tracked with a `Set` of users who have retweeted each tweet.
 
-[#fig-twitter-model] shows the data model, with dynamic policy annotations: latency bounds on followers and timelines. Retweets have an error bound on the size; this ensures that when tweets are displayed, the retweet count is not grossly inaccurate. As shown in `displayTweet`, highly popular tweets with many retweets can tolerate approximate counts – they actually abbreviate the retweet count (e.g. "2.4M") – but average tweets, with less than 20 retweets, will get an exact count. This is important because for regular people, they will notice if a friend's retweet is not reflected in the count, whereas Ellen Degeneres's record-breaking celebrity selfie, which nearly brought down Twitter in 2014 [@ellenselfie], can scale because a 5% error tolerance on 3.4 million retweets provides significant slack.
+[#fig-twitter-model] shows the data model, with dynamic policy annotations: latency bounds on followers and timelines. Retweets have an error bound on the size; this ensures that when tweets are displayed, the retweet count is not grossly inaccurate. As shown in `displayTweet`, highly popular tweets with many retweets can tolerate approximate counts – they usually abbreviate the retweet count (e.g. "2.4M") – but average tweets, with only a few retweets, see an exact count. This is important because the average user will notice if a friend's retweet is not reflected in the count, whereas Ellen Degeneres's record-breaking celebrity selfie, which nearly brought down Twitter in 2014 [@ellenselfie], can scale because a 5% error tolerance on 3.4 million retweets provides significant slack.
 
 The code for `viewTimeline` in [#fig-twitter-model] demonstrates how latency-bound `Rushed[T]` types can be destructured with a match statement. In this case, the timeline (list of tweet IDs) is retrieved with a latency bound. Tweet content is added to the store before tweet IDs are pushed onto timelines, so with strong consistency we know that the list of IDs will all be able to load valid tweets. However, if the latency-bound type returns with weak consistency (`Inconsistent` case), then this *referential integrity* property may not hold. In that case, we must guard the call to `displayTweet` and retry if any of the operations fails if, for instance, the retweet set wasn't created yet.
 
-For our performance evaluation, we simulate a realistic workload by generating a synthetic power-law graph, using a Zipf distribution to determine the number of followers per user. Our workload is a random mix with 50% `timeline` reads, 14% `tweet`, 30% `retweet`, 5% `follow`, and 1% `newUser`.
+We simulate a realistic workload by generating a synthetic power-law graph, using a Zipf distribution to determine the number of followers per user. Our workload is a random mix with 50% `timeline` reads, 14% `tweet`, 30% `retweet`, 5% `follow`, and 1% `newUser`.
 
 We see in [#plot-twitter] that for all but the local (same rack) case, strong consistency is over 3$\times$ slower, but our implementation combining latency and error-bounds performs comparably with weak consistency, but with stronger guarantees for the programmer. Our simulated geo-distributed condition turns out to be the worst-case scenario for IPA's Twitter, with latency over 2$\times$ slower than weak consistency. This is because weak consistency performed noticeably better on our simulated network, which had one very close (1ms latency) replica that it used almost exclusively.
