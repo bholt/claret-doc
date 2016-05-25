@@ -90,13 +90,13 @@ In the ticket sales application, the `Counter` for each event's tickets has a re
 The `List` ADT used for events has a latency policy that also expresses a domain requirement---that pages on the website load in reasonable time.
 
 ## Consistency Types {#sec-ipa-types}
-[todo: why static type system rather than dynamic taint tracking?]
 
 The keys to the IPA type system are the consistency types themselves.
 Read operations of ADTs annotated with consistency policies return instances of an *IPA type*.
 These IPA types track the consistency of the results
 and enforce a fundamental non-interference property: 
 results from weakly consistent operations cannot flow into computations with stronger consistency without explicit endorsement.
+This could be enforced dynamically, as in dynamic information flow control systems, but the static guarantees of a type system allow errors to be caught at compile time.
 
 ~ Fig {#lattice caption="IPA Type Lattice parameterized by a type `T`.[\vspace{-10pt}]{input:texraw}"}
 ![](fig/lattice.pdf)
