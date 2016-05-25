@@ -34,18 +34,17 @@
 
 To provide good user experiences, modern datacenter applications and
 web services must balance the competing requirements of application
-correctness and responsiveness. For example, a web store must not
-double-charge for purchases but also cannot keep users waiting too
-long (each additional millisecond of latency translates to a loss in
-traffic and revenue [@linden06:amazon;@forrest09:slow]). Worse,
-programmers must maintain this balance in an unpredictable environment
-where a black and blue dress [@buzzfeed-dress] or Justin Bieber
-[@bieber-instagram] can change application performance in the blink of
-an eye.
+correctness and responsiveness. For example, a web store must
+double-charging for purchases and keeping users waiting too long (each
+additional millisecond of latency translates to a loss in traffic and
+revenue [@linden06:amazon;@forrest09:slow]). Worse, programmers must
+maintain this balance in an unpredictable environment where a black
+and blue dress [@buzzfeed-dress] or Justin Bieber [@bieber-instagram]
+can change application performance in the blink of an eye.
 
-Recognizing this trade-off, many existing storage systems support
-configurable consistency levels that allow programmers to set the
-consistency of individual operations
+Recognizing the trade-off between consistency and performance, many
+existing storage systems support configurable consistency levels that
+allow programmers to set the consistency of individual operations
 [@cassandra;@riak;@Li:12:RedBlue;@Sovran:11:Walter]. These allow
 programmers to weaken consistency guarantees only for data that is not
 critical to application correctness, retaining strong consistency for
@@ -57,14 +56,15 @@ traffic or datacenter failure) [@Terry:13:SLAs;@Stribling:09:WheelFS].
 guarantees (e.g., returning a slightly stale or estimated result is
 acceptable). Some storage systems support this type of adaptable
 consistency [@Terry:13:SLAs;@Stribling:09:WheelFS].--> Unfortunately,
-using these systems correctly is challenging. If programmers are
-*undisciplined* in their use of data from weakly consistent
-operations, they can corrupt strongly consistent stored data,
-inadvertently lowering the consistency of the storage system to its
-weakest level.
+using these systems correctly is challenging.  Programmers can
+inadvertently update strongly consistent data in the storage system
+using values read from weakly consistent operations, propagating
+inconsistency and corrupting stored data.  Over time, this
+*undisciplined* use of data from weakly consistent operations lowers
+the consistency of the storage system to its weakest level.
 
 In this paper, we propose a more disciplined approach to inconsistency
-in the *inconsistent, performance-bound, approximate (IPA)* storage
+in the *Inconsistent, Performance-bound, Approximate (IPA)* storage
 system. IPA introduces the following concepts:
 
 * *Consistency Safety*, a new property that ensures that values from
@@ -72,14 +72,12 @@ system. IPA introduces the following concepts:
   operations without explicit endorsement from the programmer.  IPA is
   the first storage system to provide consistency safety.
 
-* *Consistency Types.*, a new type system for which *type safety
-  implies consistency safety*. Consistency types define the
-  consistency and correctness of the returned value from every IPA
-  operation, allowing programmers to reason about their use of
-  different consistency levels.  IPA's type checker enforces the
-  disciplined use of IPA consistency types statically at compile time
-  by requiring programmers to handle all potential consistency cases,
-  or explicitly endorse the propagation of inconsistent values.
+* *Consistency Types*, a new type system in which *type safety implies
+  consistency safety*. Consistency types define the consistency and
+  correctness of the returned value from every storage operation,
+  allowing programmers to reason about their use of different
+  consistency levels.  IPA's type checker enforces the disciplined use
+  of IPA consistency types statically at compile time.
 
 * *Error-bounded Consistency.* IPA is a data structure store, like
   Redis [@redis] or Riak [@riak], allowing it to provide both

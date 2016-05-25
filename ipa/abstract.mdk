@@ -1,7 +1,27 @@
 
-Distributed applications and web services, such as online stores or social networks are expected to be scalable, always available, respond quickly to users around the world, and never lose data. To meet these steep requirements in the face of high round-trip latencies, network partitions, server failures, and load spikes, applications use eventually consistent datastores that allow them to weaken the consistency of some data.
-However, making this transition is highly error-prone because relaxed consistency models are notoriously difficult to understand and test. 
-<!-- Introducing weak consistency to handle worst-case scenarios also creates an ever-present risk of inconsistency even for the common case when everything is running smoothly. -->
+Distributed applications and web services, such as online stores or
+social networks are expected to be scalable, available, responsive,
+and fault-tolerant. To meet these steep requirements in the face of
+high round-trip latencies, network partitions, server failures, and
+load spikes, applications use eventually consistent datastores that
+allow them to weaken the consistency of some data.  However, making
+this transition is highly error-prone because relaxed consistency
+models are notoriously difficult to understand and test.  <!--
+Introducing weak consistency to handle worst-case scenarios also
+creates an ever-present risk of inconsistency even for the common case
+when everything is running smoothly. -->
 
-In this work, we propose a new programming model for distributed data that makes consistency properties explicit and uses a type system to enforce *consistency safety*. With the *Inconsistent Performance-bound Approximate* (IPA) storage system, programmers specify performance targets and correctness requirements as constraints on persistent data structures and handle uncertainty about the result of datastore reads using new *consistency types*.
-We implement a prototype of this model in Scala on top of an existing datastore, Cassandra and use it to make performance/correctness tradeoffs in two applications: a ticket sales service and a Twitter clone. Our evaluation shows that IPA helps prevent consistency-based programming errors, adapts consistency automatically in response to changing network conditions, and performs comparably to weak consistency and 2-10$\times$ faster than strong consistency.
+In this work, we propose a new programming model for distributed data
+that makes consistency properties explicit and uses a type system to
+enforce *consistency safety*. With the *Inconsistent,
+Performance-bound, Approximate* (IPA) storage system, programmers
+specify performance targets and correctness requirements as
+constraints on persistent data structures and handle uncertainty about
+the result of datastore reads using new *consistency types*.  We
+implement a prototype of this model in Scala on top of an existing
+datastore, Cassandra and use it to make performance/correctness
+tradeoffs in two applications: a ticket sales service and a Twitter
+clone. Our evaluation shows that IPA prevents consistency-based
+programming errors and adapts consistency automatically in response to
+changing network conditions, performing comparably to weak consistency
+and 2-10$\times$ faster than strong consistency.
