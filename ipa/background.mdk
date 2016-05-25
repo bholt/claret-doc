@@ -13,15 +13,14 @@ under high load, as several ticketing services did in October 2015,
 when tickets became available for the new Star Wars movie
 [@forbes:star-wars].
 
-~ Fig { #fig-tickets; caption="Ticket sales service. To meet latency
-target, `load_page` switches to a weak read, introducing a potential
-logical error when using this possibly-inconsistent value to determine
-if tickets can be purchased. [\vspace{-10pt}]{input:texraw}" }
-![](fig/tickets.pdf) [\vspace{-18pt}]{input:texraw} ~
+~ Fig { #fig-tickets; caption="Ticket sales service. To meet latency target, `load_page` switches to a weak read, introducing a potential logical error when using this possibly-inconsistent value to determine if tickets can be purchased. [\vspace{-10pt}]{input:texraw}" }
+![](fig/tickets.pdf)
+[\vspace{-18pt}]{input:texraw}
+~
 
 To allow the application to scale more gracefully and handle traffic
 spikes, the programmer may chose to weaken the consistency of some
-operations.  As shown in Figure [@fig-tickets], the ticket application
+operations.  As shown in [#fig-tickets], the ticket application
 displays each showing of the movie along with the number of tickets
 remaining.  For better performance, the programmer may want to weaken
 the consistency of the read operation that fetches the remaining
@@ -34,14 +33,14 @@ spikes.
 While this solves the programmer's performance problem, it introduces
 data consistency problem.  Suppose that, like Uber's surge pricing,
 the ticket sales application wants to raise the price of the last 100
-tickets for each showing to $20.  If the application uses a strongly
+tickets for each showing to &dollar;15.  If the application uses a strongly
 consistent read to fetch the remaining ticket count, then it can use
 that value to compute the price of the ticket on the last screen in
-Figure [@fig-tickets]. However, if the programmer choses to weaken the
+[#fig-tickets]. However, if the programmer choses to weaken the
 consistency of that read, then he must be careful when using it to
 calculate a purchase. Done in an undisciplined way, the application
 may over or under charge some users depending on the consistency of
-the returned value.  Worse, the theater expects to make $2000 for
+the returned value.  Worse, the theater expects to make &dollar;1500 for
 those tickets with the new pricing model, which may not happen with
 the new weaker read operation.  Thus, programmers need to be careful
 in their use of values returned from storage operations with weak
