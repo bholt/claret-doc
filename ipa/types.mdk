@@ -100,7 +100,7 @@ The `List` ADT used for events has a latency policy that also expresses a domain
 
 ## Consistency Types {#sec-ipa-types}
 
-The keys to the IPA type system are the consistency types themselves.
+The key to consistency safety in IPA is the consistency types, which means that enforcing type safety directly enforces consistency safety.
 Read operations of ADTs annotated with consistency policies return instances of an *consistency type*.
 These consistency types track the consistency of the results
 and enforce a fundamental non-interference property: 
