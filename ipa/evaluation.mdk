@@ -56,11 +56,7 @@ We start by measuring the performance of a simple application that randomly incr
 [\vspace{-16pt}]{input:texraw}
 ~
 
-~ Fig { #plot-counter-lbound-tail caption="*Counter: 95th percentile latency.* Latency bounds keep tail latency down, backing off to weak when necessary. [\vspace{-12pt}]{input:texraw}" }
-![](plots/counter_lbound_tail.pdf){ .onecol }
-~
-
-~ Fig { #fig-counter-err .wide caption="*Counter benchmark: error tolerance.* In (a), we see that wider error bounds reduce mean latency because fewer synchronizations are required, matching *weak* around 5-10%. In (b), we see actual error of *weak* compared with the actual interval for a 1% error bound with varying fraction of writes; average error is less than 1% but *maximum* error can be extremely high: up to 60%. [\vspace{-22pt}]{input:texraw}" }
+~ Fig { #fig-counter-err .wide caption="*Counter benchmark: error tolerance.* In (a), we see that wider error bounds reduce mean latency because fewer synchronizations are required, matching *weak* around 5-10%. In (b), we see actual error of *weak* compared with the actual interval for a 1% error bound with varying fraction of writes; average error is less than 1% but *maximum* error can be extremely high: up to 60%. [\vspace{-16pt}]{input:texraw}" }
 ~~ SubFigureRow
 ~~~ SubFigure {#fig-counter-error-perf; font-size: small; caption="Mean latency (increment *and* read)."}
 ![](plots/counter_err_perf.pdf)
@@ -72,6 +68,9 @@ We start by measuring the performance of a simple application that randomly incr
 [\vspace{-10pt}]{input:texraw}
 ~
 
+~ Fig { #plot-counter-lbound-tail caption="*Counter: 95th percentile latency.* Latency bounds keep tail latency down, backing off to weak when necessary. [\vspace{-12pt}]{input:texraw}" }
+![](plots/counter_lbound_tail.pdf){ .onecol }
+~
 
 Latency bounds provide predictable performance while maximizing consistency. We found that when latencies and load are low it is often possible to achieve strong consistency. [#plot-counter-lbound] shows the average operation latency with strong and weak consistency, as well with both 10ms and 50ms latency bounds.
 
@@ -105,7 +104,7 @@ Our Ticket sales web service, introduced in [#sec-background], is modeled after 
 - `purchase`: Purchase a ticket (or multiple)
 - `addEvent`: Add an event at a venue.
 
-~ Fig { #tickets-code caption="*Ticket service* code demonstrating consistency types. [\vspace{-16pt}]{input:texraw}" }
+~ Fig { #tickets-code caption="*Ticket service* code demonstrating consistency types. [\vspace{-8pt}]{input:texraw}" }
 ![](fig/tickets-code.pdf)
 [\vspace{-18pt}]{input:texraw}
 ~
