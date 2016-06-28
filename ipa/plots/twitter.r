@@ -52,7 +52,7 @@ save(
       y = overall_lat_mean,
       x=grp, color=grp, fill=grp, group=grp
   ))+
-  scale_x_discrete(labels=c('strong', 'IPA', 'weak'))+
+  scale_x_discrete(labels=c('Strong', 'IPA', 'Weak'))+
   #stat_summary(geom='bar', fun.y=mean, size=0.5, width=0.7)+
   geom_meanbar(position=position_dodge(width = 0.7))+
   # geom_point(position=position_dodge(width = 0.7), color='black')+
@@ -64,7 +64,8 @@ save(
   # theme(axis.title.x = element_blank())+
   theme.bar()+
   # coord_cartesian(ylim=c(0,500))+
-  ipa.scales()
+  ipa.scales()+
+  font_lato()
 , w=7, h=4.0)
 
 

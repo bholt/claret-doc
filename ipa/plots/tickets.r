@@ -63,3 +63,28 @@ save(
 
 ddply(d, .(bound, condition), summarize, 
   percent_strong=mean(read_strong/(read_strong+read_weak)*100), strong=mean(read_strong), weak=mean(read_weak))
+
+
+save(
+  ggplot(subset(d,
+  grepl('cons|tolerance:0.05',ipa_bound)
+        ), aes(
+      #y = view_lat_mean,
+      # y = purchase_lat_mean,
+      y = overall_lat_mean,
+      x=grp, color=grp, fill=grp, group=grp
+  ))+
+  #stat_summary(geom='bar', fun.y=mean, size=0.5, width=0.7)+
+  geom_meanbar(position=position_dodge(width = 0.7))+
+  scale_x_discrete(labels=c('Strong', 'IPA', 'Weak'))+
+  #ggtitle('Mean latency')+
+  scale_y_log10(breaks=c(10, 20, 50, 100, 500, 1000))+
+  ylab('Mean latency (ms)')+
+  facet_wrap(~condition, ncol=6, scale="free")+
+  theme_mine()+
+  # theme(axis.title.x = element_blank())+
+  theme.bar()+
+  # coord_cartesian(ylim=c(0,500))+
+  ipa.scales()+
+  font_lato()
+, 'tickets_ipa_only', w=6.5, h=4.0)

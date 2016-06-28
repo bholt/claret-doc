@@ -217,6 +217,12 @@ font_helvetica <- function() theme(
   strip.text.y = element_text(color="black", face="bold")
 )
 
+font_lato <- function() theme(
+  text = element_text(size=12, family="Lato"),
+  strip.text.x = element_text(family="Lato", color="black", face="bold"),
+  strip.text.y = element_text(family="Lato", color="black", face="bold")
+)
+
 theme_mine <- function() list(
   theme_light(),
   font_helvetica(),
@@ -293,10 +299,10 @@ mixes.counter <- list(
 )
 
 ipa.scales <- function(name = 'Bounds', guide = guide_legend(nrow=8), ...) {
-  c.strong <- c.yellow
+  c.strong <- c.green
   c.weak <- c.red
   c.lat <- c.blue
-  c.err <- c.green
+  c.err <- c.yellow
 
   colors <- c()
   colors[[ bounds[[b.csw]] ]] <- c.strong
