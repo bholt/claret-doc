@@ -293,31 +293,36 @@ mixes.counter <- list(
 )
 
 ipa.scales <- function(name = 'Bounds', guide = guide_legend(nrow=8), ...) {
+  c.strong <- c.yellow
+  c.weak <- c.red
+  c.lat <- c.blue
+  c.err <- c.green
+
   colors <- c()
-  colors[[ bounds[[b.csw]] ]] <- c.yellow
-  colors[[ bounds[[b.cst]] ]] <- c.yellow
-  colors[[ bounds[[b.cwk]] ]] <- c.red
-  colors[[ bounds[['consistency:weakwrite']] ]] <- c.red
-  colors[[ bounds[[b.l10]] ]] <- c.blue
-  colors[[ bounds[[b.l20]] ]] <- c.blue
-  colors[[ bounds[[b.l50]] ]] <- c.blue
-  colors[[ bounds[[b.t10]] ]] <- c.green
-  colors[[ bounds[[b.t05]] ]] <- c.green
-  colors[[ bounds[[b.t01]] ]] <- c.green
-  colors[[ bounds[[b.t00]] ]] <- c.green
+  colors[[ bounds[[b.csw]] ]] <- c.strong
+  colors[[ bounds[[b.cst]] ]] <- c.strong
+  colors[[ bounds[[b.cwk]] ]] <- c.weak
+  colors[[ bounds[['consistency:weakwrite']] ]] <- c.weak
+  colors[[ bounds[[b.l10]] ]] <- c.lat
+  colors[[ bounds[[b.l20]] ]] <- c.lat
+  colors[[ bounds[[b.l50]] ]] <- c.lat
+  colors[[ bounds[[b.t10]] ]] <- c.err
+  colors[[ bounds[[b.t05]] ]] <- c.err
+  colors[[ bounds[[b.t01]] ]] <- c.err
+  colors[[ bounds[[b.t00]] ]] <- c.err
 
   colors[[ bounds[[b.cst]]+'#0ms' ]] <- c.gray
   colors[[ bounds[[b.cst]]+'#200ms' ]] <- c.gray
-  colors[[ bounds[['consistency:weakwrite']]+'#200ms' ]] <- c.red
+  colors[[ bounds[['consistency:weakwrite']]+'#200ms' ]] <- c.weak
 
-  colors[[ bounds[[b.t10]]+'#200ms' ]] <- c.green
-  colors[[ bounds[[b.t05]]+'#200ms' ]] <- c.green
-  colors[[ bounds[[b.t01]]+'#200ms' ]] <- c.green
-  colors[[ bounds[[b.t00]]+'#200ms' ]] <- c.green
-  colors[[ bounds[[b.t10]]+'#0ms' ]] <- c.yellow
-  colors[[ bounds[[b.t05]]+'#0ms' ]] <- c.yellow
-  colors[[ bounds[[b.t01]]+'#0ms' ]] <- c.yellow
-  colors[[ bounds[[b.t00]]+'#0ms' ]] <- c.yellow
+  colors[[ bounds[[b.t10]]+'#200ms' ]] <- c.err
+  colors[[ bounds[[b.t05]]+'#200ms' ]] <- c.err
+  colors[[ bounds[[b.t01]]+'#200ms' ]] <- c.err
+  colors[[ bounds[[b.t00]]+'#200ms' ]] <- c.err
+  colors[[ bounds[[b.t10]]+'#0ms' ]] <- c.strong
+  colors[[ bounds[[b.t05]]+'#0ms' ]] <- c.strong
+  colors[[ bounds[[b.t01]]+'#0ms' ]] <- c.strong
+  colors[[ bounds[[b.t00]]+'#0ms' ]] <- c.strong
 
   
   solid  <- 1
