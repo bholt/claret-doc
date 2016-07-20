@@ -16,6 +16,8 @@ library('Unicode')
 # library('Cairo')
 library('sitools')
 
+out <- function(obj) write(obj, stdout())
+
 si.labels <- function(...) { function(x) gsub(" ", "", f2si(x,...)) }
 k.labels <- function(x) { x/1000 + 'k' }
 
@@ -192,7 +194,7 @@ db.socc <- function(query, factors=c(), numeric=c()) {
   d$phasing <- factor(revalue(factor(d$phasing), c('0'='off','1'='on')))
   
   d$combining[is.na(d$combining)] <- 0
-    
+  
   d$cc <- factor(revalue(x(d$ccmode,d$combining), c(
     'rw#0'=RW,
     'simple#0'=COMM,
@@ -545,15 +547,14 @@ data.retwis <- function(select="*", where="client = 'dsretwis'") {
   
   lvl <- c(
     'read-heavy',
-    'post-heavy'
+    'post-heavy',
+    'extra post-heavy'
   )
   
   d$workload <- factor(revalue(d$mix, c(
     'geom_repost'=lvl[2],
-    # 'geom_heavy'=lvl[2],
-    # 'read_heavy'=lvl[1],
     '2read2heavy'=lvl[1],
-    'update_heavy'=lvl[3]
+    'geom_update_heavy'=lvl[3]
   )), levels=lvl)
   
   d$zmix <- sprintf('%s/%s', d$mix, d$alpha)
@@ -597,7 +598,8 @@ data.rubis <- function(select="*", where="client = 'rubis'") {
 
 retwis.mixes <- c(
   '2read2heavy'='read-heavy (98% read)',
-  'geom_repost'='post-heavy (90% read)'
+  'geom_repost'='post-heavy (90% read)',
+  'geom_update_heavy'='very post-heavy'
 )
 
 retwis.txns <- c('newuser', 'follow', 'post', 'repost', 'timeline')
@@ -614,7 +616,7 @@ data.retwis.socc <- function(select="*", where="duration = 60") {
   d$retwis_txn_count <- d$retwis
   
   # d$throughput <- d$ntxns * num(d$nclients) / d$total_time
-  d$avg_latency_ms <- d$txn_time / d$txn_count * 1000
+  d$avg_latency_ms <- d$txn_time * num(d$nclients) / d$txn_count * 1000
   
   d$prepare_total <- d$prepare_retries + d$txn_count
   d$prepare_retry_rate <- d$prepare_retries / d$prepare_total
@@ -646,6 +648,31 @@ data.retwis.socc <- function(select="*", where="duration = 60") {
   d$zmix <- sprintf('%s/%s', d$mix, d$alpha)
 
   # d$facet <- sprintf('%s\n%s', d$zmix, d$graph)
+  
+  return(d)
+}
+
+data.rubis.socc <- function(select="*", where="duration = 60") {
+  d <- db.socc(sprintf("select * from socc_rubis where total_time is not null and %s", where),
+        factors=c('shards', 'nclients'),
+        numeric=c('total_time', 'txn_count', 'threads'))
+
+  # d$state <- gsub('.*/(.*)', '\\1', d$loaddir)
+
+  d$zmix <- sprintf('%s/%s', d$mix, d$alpha)
+
+  # cat("# computing total for fields: "); cat(fields); cat("\n")
+  d$prepare_total <- d$prepare_retries + d$txn_count
+  d$prepare_retry_rate <- d$prepare_retries / d$prepare_total
+
+  # compute avg latencies for each txn type
+  txns <- gsub('rubis_(.*)_count', '\\1', names(d[,grepl('rubis_(.*)_count',names(d))]))
+  for (t in txns) d[["rubis_"+t+"_avg_latency_ms"]] <- d[["rubis_"+t+"_latency"]] / d[["rubis_"+t+"_count"]]
+
+  d$throughput <- d$txn_count / d$total_time
+  d$avg_latency_ms <- d$txn_time*num(d$nclients) / d$txn_count * 1000
+
+  d$rubis_txn_count <- with(d, rubis_AddUser_count + rubis_BrowseItems_count + rubis_CloseAuction_count + rubis_NewBid_count + rubis_NewComment_count + rubis_OpenAuction_count + rubis_UserSummary_count + rubis_ViewAuction_count)
   
   return(d)
 }

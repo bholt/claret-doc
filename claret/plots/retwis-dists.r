@@ -2,7 +2,7 @@
 source('common.r')
 
 d <- tryCatch({
-  d <- data.retwis(where="name like '%28.1%' and nclients = 2 and nthreads = 64 and server_followers_hist is not null and server_reposts_hist is not null order by id desc limit 1")
+  d <- data.retwis.socc(where="name like '%28.1%' and nclients = 2 and nthreads = 64 and server_followers_hist is not null and server_reposts_hist is not null order by id desc limit 1")
   d$server_followers_hist <- jsfix(d$server_followers_hist)
   d$server_reposts_hist <- jsfix(d$server_reposts_hist)
   
