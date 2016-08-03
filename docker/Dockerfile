@@ -75,10 +75,9 @@ RUN cd /usr/local/share/fonts &&\
     wget http://www.marksimonson.com/assets/content/fonts/AnonymousPro-1.002.zip &&\
     unzip AnonymousPro-1.002.zip &&\
     mv AnonymousPro-1.002.001 AnonymousPro &&\
-    mkdir CrimsonText && cd CrimsonText &&\
-    wget http://www.fontsquirrel.com/fonts/download/crimson &&\
-    unzip crimson && rm crimson &&\
-    cd .. && rm -f *.zip &&\
+    git clone https://github.com/skosch/Crimson.git /tmp/Crimson &&\
+    mkdir Crimson && cp "/tmp/Crimson/Desktop Fonts/OTF/*" Crimson &&\
+    rm -rf /tmp/Crimson && rm -f *.zip &&\
     fc-cache -v
 
 RUN apt-get install -y ruby-dev && gem install bibtex-ruby
