@@ -2,18 +2,12 @@
 source('common.r')
 a <- parse.args()
 
-d <- tryCatch(
-  {
+d <- data.or.csv('data/rawmix-tput-vs-lat.csv', gen = function() {
     d <- data.rawmix(where="name like 'v0.28.1%' and nclients = 4 and duration = 30 and length = 4 and rate = 100 and total_time < 61")
     
     d <- subset(d, commute_ratio == 0.5 & alpha == 0.6)
     
-    write.csv(subset(d, select = c('name', 'nclients', 'nthreads', 'cc', 'phasing', 'cc_ph', 'rate', 'alpha', 'commute_ratio', 'timeout_scaling', 'throughput', 'op_timeouts', 'avg_latency_ms', 'txn_failed')), file = 'data/rawmix-tput-vs-lat.csv')
-    
     d
-  }, error = function(e) {
-    error.database_unreachable(e)
-    d <- db.csv(file = 'data/rawmix-tput-vs-lat.csv')
   }
 )
 
@@ -29,7 +23,7 @@ d[d$cc_ph == NOTXN,]$cc <- RW
 # subset to just my selected set of lines
 d <- subset(d, cc_ph %in% c(RW+BASE, COMM, COMM+PH, COMB+PH, NOTXN))
 
-d.mean <- mean_path(d, throughput, avg_latency_ms, .(nthreads,cc,phasing,cc_ph))
+# d.mean <- mean_path(d, throughput, avg_latency_ms, .(nthreads,cc,phasing,cc_ph))
 
 save(
   ggplot(d.mean, aes(
@@ -40,9 +34,10 @@ save(
   ))+
   xlab('Throughput (txn/s)')+ylab('Mean latency (ms)')+
   geom_point()+
-  geom_path()+
+  # geom_path()+
+  geom_mean_path(s, throughput, avg_latency_ms, .(x,facet,cc_ph, rate))+
   expand_limits(y=0)+
-  coord_cartesian(ylim=c(0,12))+
+  coord_cartesian(ylim=c(0,4))+
   scale_y_continuous(breaks=c(2,4,6,8,10,12))+
   cc_ph_scales(guide = guide_legend(nrow=5))+
   my_theme()+

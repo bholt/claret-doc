@@ -94,7 +94,7 @@ data.or.csv <- function(csv, gen) {
       d
     }, error = function(e) {
       error.database_unreachable(e)
-      d <- db.cstv(file = csv)
+      d <- db.csv(file = csv)
     }
   )
 }
@@ -673,6 +673,27 @@ data.rubis.socc <- function(select="*", where="duration = 60") {
   d$avg_latency_ms <- d$txn_time*num(d$nclients) / d$txn_count * 1000
 
   d$rubis_txn_count <- with(d, rubis_AddUser_count + rubis_BrowseItems_count + rubis_CloseAuction_count + rubis_NewBid_count + rubis_NewComment_count + rubis_OpenAuction_count + rubis_UserSummary_count + rubis_ViewAuction_count)
+  
+  return(d)
+}
+
+data.rawmix.socc <- function(select="*", where="duration = 30") {
+  d <- db.socc(sprintf("select * from socc_rawmix where total_time is not null and %s", where),
+        factors=c('nclients'),
+        numeric=c('total_time', 'txn_count', 'threads'))
+
+  # d$state <- gsub('.*/(.*)', '\\1', d$loaddir)
+  
+  d$zipf <- d$alpha
+  
+  d$zmix <- sprintf('%s/%s', d$commute_ratio, d$alpha)
+
+  # cat("# computing total for fields: "); cat(fields); cat("\n")
+  d$prepare_total <- d$prepare_retries + d$txn_count
+  d$prepare_retry_rate <- d$prepare_retries / d$prepare_total
+  
+  d$throughput <- d$txn_count / d$total_time
+  d$avg_latency_ms <- d$txn_time*num(d$nclients) / d$txn_count * 1000
   
   return(d)
 }
