@@ -88,8 +88,8 @@ save(
       x=grp, color='black', fill=grp, group=grp
   ))+
   geom_meanbar(position=position_dodge(width = 0.7))+
-  geom_text(aes(label=y+'%', y = -5), data = s.l.l, color='black', size=2.3, family='Helvetica')+
-  geom_text(aes(label=label), data = ann.strong, color='black', size=2.5, family='Helvetica', hjust=-0.2)+
+  geom_text(aes(label=y+'%', y = -5), data = s.l.l, color='black', size=2.3, family='Lato')+
+  geom_text(aes(label=label), data = ann.strong, color='black', size=2.5, family='Lato', hjust=-0.2)+
   
   scale_y_continuous(breaks=c(0, 10, 25, 50, 75, 100))+
   
@@ -142,7 +142,7 @@ save(
   # stat_summary(geom='bar', fun.y='mean')+
   geom_meanbar(position=position_dodge(width = 0.7))+
   # geom_text(aes(label=ipa_version), color='black', size=1)+
-  geom_text(aes(label=label), data = ann.strong, color='black', size=2.5, family='Helvetica', hjust=-0.2)+
+  geom_text(aes(label=label), data = ann.strong, color='black', size=2.5, family='Lato', hjust=-0.2)+
   
   ylab('95th percentile latency')+
   theme_mine()+

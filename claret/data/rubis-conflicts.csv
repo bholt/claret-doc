@@ -1,41 +1,31 @@
 "","cc_ph","tag","count"
-"1","r/w locks
-(baseline)","Open-Open",394.28
-"2","r/w locks
-(baseline)","Open-Close",189.28
-"3","r/w locks
-(baseline)","Browse-Open/Close",420.6
-"4","r/w locks
-(baseline)","Bid-View",3305.8
-"5","r/w locks
-(baseline)","Bid-Bid",788322.32
+"1","r/w locks (baseline)","Open-Open",394.28
+"2","r/w locks (baseline)","Open-Close",189.28
+"3","r/w locks (baseline)","Browse-Open/Close",420.6
+"4","r/w locks (baseline)","Bid-View",3305.8
+"5","r/w locks (baseline)","Bid-Bid",788322.32
 "6","boosting","Open-Open",1144.44444444444
 "7","boosting","Open-Close",5347.07407407407
 "8","boosting","Browse-Open/Close",4380.88888888889
 "9","boosting","Bid-View",65618.5185185185
 "10","boosting","Bid-Bid",2614.81481481481
 "11","boosting
- + phasing","Open-Open",129.333333333333
++phasing","Open-Open",129.333333333333
 "12","boosting
- + phasing","Open-Close",258.5
++phasing","Open-Close",258.5
 "13","boosting
- + phasing","Browse-Open/Close",179.733333333333
++phasing","Browse-Open/Close",179.733333333333
 "14","boosting
- + phasing","Bid-View",3473.43333333333
++phasing","Bid-View",3473.43333333333
 "15","boosting
- + phasing","Bid-Bid",765.2
-"16","boosting
- + combining
- + phasing","Open-Open",101.625
-"17","boosting
- + combining
- + phasing","Open-Close",232.625
-"18","boosting
- + combining
- + phasing","Browse-Open/Close",146.125
-"19","boosting
- + combining
- + phasing","Bid-View",2432.04166666667
-"20","boosting
- + combining
- + phasing","Bid-Bid",52.2083333333333
++phasing","Bid-Bid",765.2
+"16","boosting+combining
++phasing","Open-Open",101.625
+"17","boosting+combining
++phasing","Open-Close",232.625
+"18","boosting+combining
++phasing","Browse-Open/Close",146.125
+"19","boosting+combining
++phasing","Bid-View",2432.04166666667
+"20","boosting+combining
++phasing","Bid-Bid",52.2083333333333

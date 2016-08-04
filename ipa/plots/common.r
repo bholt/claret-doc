@@ -212,7 +212,7 @@ font_roboto <- function() theme(
 )
 
 font_helvetica <- function() theme(
-  text = element_text(size=12, family="Helvetica"),
+  text = element_text(size=12, family="Lato"),
   strip.text.x = element_text(color="black", face="bold"),
   strip.text.y = element_text(color="black", face="bold")
 )

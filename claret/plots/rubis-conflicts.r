@@ -101,7 +101,7 @@ save(
     legend.position = c(0.86, 0.73),
     legend.key.size = unit(60,'pt'),
     legend.title = element_blank(),
-    text = element_text(size=26, family="Helvetica"),
+    text = element_text(size=26, family="Lato"),
     panel.grid.major.y = element_line(color="grey80", size=0.2),
     panel.grid.minor.y = element_line(color="grey90", size=0.2),
     panel.grid.major.x = element_blank(),

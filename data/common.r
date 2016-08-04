@@ -21,14 +21,14 @@ out <- function(obj) write(obj, stdout())
 si.labels <- function(...) { function(x) gsub(" ", "", f2si(x,...)) }
 k.labels <- function(x) { x/1000 + 'k' }
 
-COMB <- "boosting\n + combining"
+COMB <- "boosting+combining"
 COMM <- "boosting"
 RW   <- "r/w locks"
-PH   <- "\n + phasing"
+PH   <- "\n+phasing"
 ALL  <- "all"
-COMM_PH <- "boosting\n+\nphasing"
-BASE <- "\n(baseline)"
-NOTXN <- "without\ntransactions"
+COMM_PH <- "boosting+phasing"
+BASE <- " (baseline)"
+NOTXN <- "without transactions"
 BETT <- "better "
 REDIS <- "redis"
 
@@ -486,7 +486,7 @@ my_theme <- function() theme(
 )
 
 font_helvetica <- function() theme(
-  text = element_text(size=12, family="Helvetica"),
+  text = element_text(size=12, family="Lato"),
   strip.text.x = element_text(color="black", face="bold"),
   strip.text.y = element_text(color="black", face="bold")
 )
@@ -497,7 +497,14 @@ theme.mine <- function() list(
   theme(
     panel.grid.major.x = element_blank(),
     panel.grid.minor.x = element_blank(),
-    strip.background = element_blank()
+    strip.background = element_blank(),
+    legend.key = element_rect(fill=NA, color=NA),
+    legend.text = element_text(lineheight=0.9),
+    legend.key.height = unit(16,'pt'),
+    legend.key.width = unit(20,'pt'),
+    legend.title.align = 0.5,
+    legend.margin = unit(0,'pt'),
+    legend.title = element_blank()
   )
 )
 

@@ -53,8 +53,8 @@ save(
     group = cc_ph, fill = cc_ph, color = cc_ph, linetype = cc_ph
   ))+
   xlab('Zipf parameter')+ylab('Peak throughput (txn/s)')+
-  stat_summary(geom='line', fun.y=max)+
-  stat_summary(geom='point', fun.y=max)+
+  stat_summary(geom='line', fun.y=max, size=0.7)+
+  #stat_summary(geom='point', fun.y=max)+
   # geom_text(size=1.2)+
   expand_limits(y=0)+
   scale_x_continuous(breaks=c(0.2,0.4,0.6,0.8,1.0,1.2,1.4))+
@@ -65,8 +65,11 @@ save(
   # color_scales('', my_palette)+
   # phasing.linetype(title='Phasing:', guide = guide_legend(nrow = 2))+
   cc_ph_scales()+
-  my_theme() #+legend.bottom()
-, w=5, h=3)
+  theme.mine()+theme(
+    legend.key.height = unit(20,'pt'),
+    legend.key.width = unit(20,'pt')
+  )
+, w=6.5, h=3)
 
 save(
   ggplot(subset.modes(subset(d.mix.mean, commute_ratio != 0.5)), aes(
@@ -75,8 +78,8 @@ save(
     group = cc_ph, fill = cc_ph, color = cc_ph, linetype = cc_ph
   ))+
   xlab('Operation mix (% update)')+ylab('Peak throughput (txn/s)')+
-  stat_summary(geom='line', fun.y=max)+
-  stat_summary(geom='point', fun.y=max)+
+  stat_summary(geom='line', fun.y=max, size=0.7)+
+  #stat_summary(geom='point', fun.y=max)+
   # stat_summary(geom='text', fun.y=max, size=1.2)+
   expand_limits(y=0)+
   scale_x_continuous(breaks=c(0,20,40,60,80,100))+
@@ -85,5 +88,9 @@ save(
   # cc_scales(title='Mode:', guide = guide_legend(nrow = 3))+
   # phasing.linetype(guide = guide_legend(nrow = 2))+
   cc_ph_scales()+
-  my_theme() #+legend.bottom()
-, 'rawmix-mix', w=5, h=3)
+  theme.mine()+theme(
+    legend.key.height = unit(20,'pt'),
+    legend.key.width = unit(20,'pt')
+  )
+  
+, 'rawmix-mix', w=6.5, h=3)

@@ -2,14 +2,14 @@
 source('common.r')
 a <- parse.args()
 
-d <- data.or.csv('data/rawmix-tput-vs-lat.csv', gen = function() {
+# d <- data.or.csv('data/rawmix-tput-vs-lat.csv', gen = function() {
     d <- data.rawmix(where="name like 'v0.28.1%' and nclients = 4 and duration = 30 and length = 4 and rate = 100 and total_time < 61")
     
     d <- subset(d, commute_ratio == 0.5 & alpha == 0.6)
     
-    d
-  }
-)
+    # d
+  # }
+# )
 
 d$label <- d$nthreads * num(d$nclients) + "x" + d$rate
 
@@ -26,25 +26,33 @@ d <- subset(d, cc_ph %in% c(RW+BASE, COMM, COMM+PH, COMB+PH, NOTXN))
 # d.mean <- mean_path(d, throughput, avg_latency_ms, .(nthreads,cc,phasing,cc_ph))
 
 save(
-  ggplot(d.mean, aes(
-    x = x,
-    y = y,
-    label = nthreads,
+  ggplot(d, aes(
+    x = throughput,
+    y = avg_latency_ms,
     group = cc_ph, fill = cc_ph, color = cc_ph, linetype = cc_ph
   ))+
   xlab('Throughput (txn/s)')+ylab('Mean latency (ms)')+
-  geom_point()+
+  # geom_point()+
   # geom_path()+
-  geom_mean_path(s, throughput, avg_latency_ms, .(x,facet,cc_ph, rate))+
+  geom_mean_path(d, throughput, avg_latency_ms, .(x,cc_ph,rate))+
   expand_limits(y=0)+
   coord_cartesian(ylim=c(0,4))+
-  scale_y_continuous(breaks=c(2,4,6,8,10,12))+
+  # scale_y_continuous(breaks=c(2,4,6,8,10))+
+  scale_x_continuous(labels=function(x){ x/1000 + 'k' })+
   cc_ph_scales(guide = guide_legend(nrow=5))+
-  my_theme()+
+  theme.mine()+
   theme(
     panel.grid.major.x = element_line(color="grey80", size=0.2),
     panel.grid.minor.x = element_line(color="grey90", size=0.2),
-    panel.grid.minor.y = element_line(color="grey90", size=0.2)
+    panel.grid.minor.y = element_line(color="grey90", size=0.2),
+    legend.key = element_rect(fill=NA, color=NA),
+    legend.text = element_text(lineheight=0.9),
+    legend.key.height = unit(32,'pt'),
+    legend.key.width = unit(20,'pt'),
+    legend.title.align = 0.5,
+    legend.margin = unit(0,'pt'),
+    legend.title = element_blank()
+    
   )
 , w=5, h=2.5)
 
@@ -104,35 +112,35 @@ save(
 # , w=4.5, h=3.5)
 
 
-dr <- data.or.csv(
-  csv = 'data/rawmix-retries.csv',
-  gen = function() {
-    d <- data.rawmix(where="name like 'v0.28%' and nclients = 4 and duration = 30 and length = 4 and rate = 50")
-    dc <- adply(d, 1, function(r){
-        c <- fromJSON(jsfix(r$server_txn_conflict_on_tag))
-        c <- c[['0']][['s']]
-        data.frame(conflicts = c$conflicts, conflicts_total = c$total)
-      })
-    subset(dc, select = c('name', 'nthreads', 'cc', 'phasing', 'disable_txns', 'cc_ph', 'txn_retries', 'txn_count', 'total_time', 'throughput', 'avg_latency_ms', 'conflicts', 'conflicts_total', 'server_acquire_attempts', 'server_acquire_first_success'))
-  }
-)
-
-dr$cc_ph <- factor(dr$cc_ph, levels = rev(levels(dr$cc_ph)))
-# dr$retry_rate <- with(dr, txn_retries / txn_count * 100)
-dr$retry_rate <- with(dr, txn_retries / total_time)
-
-dr$acquire_rate <- with(dr,
-  (server_acquire_first_success)/server_acquire_attempts * 100
-)
-
-save(
-  ggplot(subset(dr, disable_txns == 0), aes(x = cc_ph, y = acquire_rate, group = cc_ph, color = cc_ph, fill = cc_ph))+
-    xlab('mode')+
-    ylab('lock acquire success (percentage)')+
-    stat_summary(geom='bar', fun.y=mean)+
-    scale_y_continuous(labels=function(x) x+"%")+
-    expand_limits(y=0)+
-    cc_ph_scales()+
-    coord_flip()+
-    my_theme()+theme(legend.position='none')
-, 'rawmix-retries', w=4.5, h=2.5)
+# dr <- data.or.csv(
+#   csv = 'data/rawmix-retries.csv',
+#   gen = function() {
+#     d <- data.rawmix(where="name like 'v0.28%' and nclients = 4 and duration = 30 and length = 4 and rate = 50")
+#     dc <- adply(d, 1, function(r){
+#         c <- fromJSON(jsfix(r$server_txn_conflict_on_tag))
+#         c <- c[['0']][['s']]
+#         data.frame(conflicts = c$conflicts, conflicts_total = c$total)
+#       })
+#     subset(dc, select = c('name', 'nthreads', 'cc', 'phasing', 'disable_txns', 'cc_ph', 'txn_retries', 'txn_count', 'total_time', 'throughput', 'avg_latency_ms', 'conflicts', 'conflicts_total', 'server_acquire_attempts', 'server_acquire_first_success'))
+#   }
+# )
+#
+# dr$cc_ph <- factor(dr$cc_ph, levels = rev(levels(dr$cc_ph)))
+# # dr$retry_rate <- with(dr, txn_retries / txn_count * 100)
+# dr$retry_rate <- with(dr, txn_retries / total_time)
+#
+# dr$acquire_rate <- with(dr,
+#   (server_acquire_first_success)/server_acquire_attempts * 100
+# )
+#
+# save(
+#   ggplot(subset(dr, disable_txns == 0), aes(x = cc_ph, y = acquire_rate, group = cc_ph, color = cc_ph, fill = cc_ph))+
+#     xlab('mode')+
+#     ylab('lock acquire success (percentage)')+
+#     stat_summary(geom='bar', fun.y=mean)+
+#     scale_y_continuous(labels=function(x) x+"%")+
+#     expand_limits(y=0)+
+#     cc_ph_scales()+
+#     coord_flip()+
+#     my_theme()+theme(legend.position='none')
+# , 'rawmix-retries', w=4.5, h=2.5)
