@@ -61,7 +61,7 @@ Any client requests requiring reservations are routed to one of a number of *res
 Reservations have been used previously to enforce hard global invariants in the form of upper or lower bounds on values [@Balegas:15:BoundedCounter], integrity constraints [@Balegas:15:Indigo], or logical assertions [@Liu:14:Warranties]. However, enforcing error tolerance bounds presents a new design challenge because the bounds are constantly shifting.
 Consider a `Counter` with a 10% error bound, shown in [#fig-reservations]. If the current value is 100, then 10 increments can be done before anyone must be told about it. However, we have 3 reservation servers, so these 10 reservations are distributed among them, allowing each to do some increments without synchronizing. If only 10 outstanding increments are allowed, reads are guaranteed to maintain the 10% error bound.
 
-~ Fig { #fig-reservations caption="Reservations enforcing error bounds.[\vspace{-10pt}]{input:texraw}" }
+~ Fig { #fig-reservations caption="*Enforcing error bounds on a Counter:* (A) Each replica has some number of tokens allocated to it, must add up to less than the max (in this case, 10% of the current value). (B) Reservation Server 1 has sufficient tokens available, so both increments consume a token and proceed to Replica 1. (C) Reads return the range of possible values, determined by total number of allocated tokens; in this case, it reads the value 100, knows that there are 10 tokens total, but 5 of them (local to RS2) are unused, so it returns 100..105. (D) *Eventually,* when the increments have propagated, reservation server reclaims its tokens.[\vspace{-10pt}]{input:texraw}" }
 ![](fig/reservations.pdf)
 [\vspace{-16pt}]{input:texraw}
 ~
