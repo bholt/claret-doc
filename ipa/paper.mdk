@@ -160,7 +160,7 @@ consistency, type system, programming model
 [INCLUDE="conclusion"]
 
 # Acknowledgments {-}
-We thank the anonymous reviewers for feedback on earlier versions of this paper. 
-This research was funded in part by NSF under grant #1518703, DARPA under contract [todo: #], C-FAR, one of the six SRC STARnet Centers, sponsored by MARCO and DARPA, and gifts by Google and Microsoft.
+We thank the anonymous reviewers for their feedback. 
+This research was funded in part by NSF under grant #1518703, DARPA under contract FA8750--16--2--0032, C-FAR, one of the six SRC STARnet Centers, sponsored by MARCO and DARPA, and gifts by Google and Microsoft.
 
 [BIB]
