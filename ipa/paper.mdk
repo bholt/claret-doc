@@ -6,7 +6,7 @@ email:       [Submission Type: Research]{font-size:small}
 Heading Base: 2
 Bib style:    plainnat
 Bibliography: refs.bib
-doc class:    [twocolumn,10pt]article
+doc class:    [10pt,reprint]style/socc
 
 css:          style/style.css
 Logo: False
@@ -42,8 +42,7 @@ Colorizer: scala
 
 p,ul,ol,li { replace="/\[(?:TODO|todo):\s*(.*?)\]/[\1]{#todo}/g" }
 
-
-
+@tex TitleBlock { display=none }
 
 ~H1: tex-cmd=\section
 ~H2: tex-cmd=\subsection
@@ -75,21 +74,50 @@ p,ul,ol,li { replace="/\[(?:TODO|todo):\s*(.*?)\]/[\1]{#todo}/g" }
 @tex .zoom50: width=80%
 
 Tex Header:
-	% do not change these values
-	\baselineskip 12pt
-	\textheight 9in
-	\textwidth 6.5in
-	\oddsidemargin 0in
-	\topmargin 0in
-	\headheight 0in
-	\headsep 0in
 	\captionsetup{belowskip=0pt,aboveskip=0pt}
 	\setlist{nosep,leftmargin=12pt}
 	\frenchspacing
 
+H1 { tex-cmd-outer-before="\phantomsection" }
+H2 { tex-cmd-outer-before="\phantomsection" }
+H3 { tex-cmd-outer-before="\phantomsection" }
 
 
 ~ TexRaw
+
+\setmainfont{Times}
+\setmonofont[Scale=0.9]{Anonymous Pro}
+
+\special{papersize=8.5in,11in}
+\setlength{\pdfpageheight}{\paperheight}
+\setlength{\pdfpagewidth}{\paperwidth}
+
+\conferenceinfo{Submission to SoCC '16}{October, 2016, Santa Clara, CA, USA}
+\copyrightyear{2016}
+\copyrightdata{978-1-nnnn-nnnn-n/yy/mm}
+\doi{nnnnnnn.nnnnnnn}
+
+% Uncomment one of the following two, if you are not going for the 
+% traditional copyright transfer agreement.
+
+%\exclusivelicense                % ACM gets exclusive license to publish, 
+                                  % you retain copyright
+
+%\permissiontopublish             % ACM gets nonexclusive license to publish
+                                  % (paid open-access papers, 
+                                  % short abstracts)
+
+%\titlebanner{banner above paper title}        % These are ignored unless
+%\preprintfooter{short description of paper}   % 'preprint' option specified.
+
+\title{Disciplined Inconsistency with Consistency Types}
+
+\authorinfo{Brandon Holt \and James Bornholt \and Irene Zhang \and Dan Ports \and Mark Oskin \and Luis Ceze}
+           {University of Washington}
+           {\{bholt,bornholt,iyzhang,drkp,oskin,luisceze\}@cs.uw.edu}
+
+\maketitle
+
 % redefines the caption setup of the figures environment in the beamer class.
 \captionsetup[figure]{labelformat=empty,aboveskip=4pt,belowskip=4pt}
 \setlength{\floatsep}{10pt plus 4pt minus 2pt}
@@ -102,9 +130,6 @@ Tex Header:
 
 \apptocmd{\sloppy}{\hbadness 10000\relax}{}{}
 
-\setmainfont{Times}
-\setmonofont[Scale=0.9]{Anonymous Pro}
-
 ~
 ~ HtmlRaw
 <link href='https://fonts.googleapis.com/css?family=Crimson+Text:400,400italic,700italic,700|Anonymous+Pro:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
@@ -115,6 +140,14 @@ Tex Header:
 ~ Abstract
 [INCLUDE="abstract"]
 ~
+
+~ TexRaw
+\category{C.2.4}{Distributed Systems}{Distributed databases}
+
+\keywords
+consistency, type system, programming model
+~
+
 
 [INCLUDE="introduction"]
 [INCLUDE="background"]
