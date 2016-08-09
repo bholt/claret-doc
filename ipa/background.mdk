@@ -19,7 +19,7 @@ when tickets became available for the new Star Wars movie
 ~
 
 To allow the application to scale more gracefully and handle traffic
-spikes, the programmer may chose to weaken the consistency of some
+spikes, the programmer may choose to weaken the consistency of some
 operations.  As shown in [#fig-tickets], the ticket application
 displays each showing of the movie along with the number of tickets
 remaining.  For better performance, the programmer may want to weaken
