@@ -80,6 +80,14 @@ RUN cd /usr/local/share/fonts &&\
     unzip crimson && rm crimson &&\
     cd .. && rm -f *.zip &&\
     fc-cache -v
+    
+RUN cd /usr/local/share/fonts &&\
+    wget http://www.latofonts.com/download/Lato2OFL.zip &&\
+    unzip Lato2OFL.zip &&\
+    rm -rf Lato2OFL.zip __MACOSX &&\
+    fc-cache -v
+    
+    
 
 RUN apt-get install -y ruby-dev && gem install bibtex-ruby
 
