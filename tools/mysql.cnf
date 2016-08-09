@@ -1,0 +1,6 @@
+[client]
+user = guest
+host = server.sampa
+port = 3306
+database = claret
+password = beard615

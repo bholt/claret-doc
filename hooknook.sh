@@ -20,6 +20,9 @@ if [ $(docker ps | grep $container | wc -l) -eq '0' ]; then
   # because for some reason madoko thinks it needs this file to exist
   dexec 'touch /usr/local/bin/madoko.mdk'
   
+  # fix mysql config
+  dexec 'cat > ~/.my.cnf' < tools/mysql.cnf
+  
   dexec 'cd claret-doc; make deploy'
 
 else # if container exists, then just pull latest and re-run
