@@ -23,6 +23,7 @@ Package: [all]hypcap
 Package: style/mathpartir
 Package: mathptmx
 Package: enumitem
+Package: flushend
 Package: [font={small}]caption
 Package: [small,compact]titlesec
 Package: [stretch=0,shrink=25]microtype

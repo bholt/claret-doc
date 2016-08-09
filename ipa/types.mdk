@@ -92,10 +92,10 @@ by relaxing the consistency of individual operations,
 safe in the knowledge that the IPA type system will enforce safety
 by requiring the developer to consider the effects of weak operations.
 
-Static and dynamic policies can apply to an entire ADT instance or on individual methods. For example, one could declare `List[Int] with LatencyBound(50 ms)`, in which case all read operations on the list are subject to the bound. Alternatively, one may wish to declare a `Set` with relaxed consistency for its `size` but strong consistency for its `contains` predicate.
+Static and dynamic policies can apply to an entire ADT instance or on individual methods. For example, one could declare `List[Int] with LatencyBound(50 ms)`, in which case all read operations on the list are subject to the bound. Alternatively, one could declare a `Set` with relaxed consistency for its `size` but strong consistency for its `contains` predicate.
 The runtime is responsible for managing the interaction between these policies. In the case of a conflict between two bounds, the system can be conservative and choose stronger policies than specified without affecting correctness.
 
-In the ticket sales application, the `Counter` for each event's tickets could have a relaxed accuracy policy, `ErrorTolerance(5%)`, allowing the system to quickly read the count of tickets remaining. An accuracy policy is appropriate here because it expresses a domain requirement---users want to see accurate ticket counts. As long as the system meets this requirement, it is free to relax consistency and maximize performance without violating correctness.
+In the ticket sales application, the `Counter` for each event's tickets could have a relaxed accuracy policy, specified with `ErrorTolerance(5%)`, allowing the system to quickly read the count of tickets remaining. An accuracy policy is appropriate here because it expresses a domain requirement---users want to see accurate ticket counts. As long as the system meets this requirement, it is free to relax consistency and maximize performance without violating correctness.
 The `List` ADT used for events has a latency policy that also expresses a domain requirement---that pages on the website load in reasonable time.
 
 ## Consistency Types {#sec-ipa-types}
@@ -124,11 +124,10 @@ The bottom element `Inconsistent[T]` specifies an object with the weakest possib
 ~-->
 
 The only possible operation on `Inconsistent[T]` is to *endorse* it.
-Endorsement is an upcast, invoked by `Consistent(x)`, to the top element `Consistent[T]` from other types in the lattice:
-[\vspace{-8pt}]{input:texraw}
+Endorsement is an upcast, invoked by `endorse(x)`, to the top element `Consistent[T]` from other types in the lattice:
+
 ~ Math
-\inferrule{\Gamma \vdash e_1 : \tau[T] \\ T \prec \tau[T]}{\Gamma \vdash \operatorname{Consistent}(e_1) : T}
-\vspace{-6pt}
+\inferrule{\Gamma \vdash e_1 : \tau[T] \\ T \prec \tau[T]}{\Gamma \vdash \operatorname{endorse}(e_1) : T}
 ~
 <!-- [\vspace{-10pt}]{input:texraw} -->
 The core type system statically enforces safety by preventing weaker values from flowing into stronger computations.

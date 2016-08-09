@@ -19,7 +19,7 @@ operation and explicit dependency tracking, rather than annotating
 ADTs.
 
 **Higher-level consistency requirements.**
-Rather than enforcing consistency safety, some programming models
+Some programming models
 allow users to express application correctness criteria
 directly.  In Quelea [@Sivaramakrishnan:15:Quelea], programmers write
 *contracts* to describe *visibility* and *ordering* constraints,
@@ -33,8 +33,7 @@ Indigo nor Quelea, however, allow programmers to specify
 approximations or error tolerances, nor do they enforce any kind of
 performance bounds.
 
-IPA's latency-bound policies were inspired by the *consistency-based
-SLAs* of Pileus [@Terry:13:SLAs]. Consistency SLAs specify a target
+IPA's latency-bound policies were inspired by Pileus's [@Terry:13:SLAs] *consistency-based SLAs*. Consistency SLAs specify a target
 latency and consistency level (e.g. 100 ms with read-my-writes),
 associated with a *utility*. Each operation specifies a set of SLAs,
 and the system predicts which is most likely to be met, attempting to
@@ -43,16 +42,16 @@ consistency level. Other systems, including PRACTI
 [@Belaramani:06:PRACTI], PADS [@Belaramani:09:PADS], and WheelFS
 [@Stribling:09:WheelFS], have given developers ways of expressing
 their desired performance and correctness requirements through
-*semantic cues* and policies.
+*semantic cues*.
 
 <!--
 Probabilistically bounded staleness (PBS) [@Bailis:12:PBS] are a form of performance and correctness bound. Using a predictive model, PBS is able to quantify the degree of inconsistency that is likely for a given operation, but it has not been used to directly improve programming models. This kind of knowledge could be applied within IPA's runtime system to make better latency predictions or to provide a new IPA probabilistic IPA type similar to `Interval[T]`.
 -->
 
-A long history of systems have been built around the principle that applications may be willing to tolerate slightly stale data in exchange for improved performance, including databases [@roehm02:_fas;@plattner04:_ganym;@bernstein06:_relax_curren_serial_for_middl;@pu91:_replic_contr_distr_system] and distributed caches [@ports10:_trans_consis_autom_manag_applic_data_cache;@olston99:_adapt_precis_settin_cached_approx_values]. These systems generally require developers to explicitly specify staleness bounds on each transaction in terms of absolute time (although Bernstein et al.'s model can generate these from error bounds when a value's maximum rate of change is known).
+The principle that applications may be willing to tolerate slightly stale data in exchange for improve performance has a long history in databases [@roehm02:_fas;@plattner04:_ganym;@bernstein06:_relax_curren_serial_for_middl;@pu91:_replic_contr_distr_system] and distributed caches [@ports10:_trans_consis_autom_manag_applic_data_cache;@olston99:_adapt_precis_settin_cached_approx_values]. These systems generally require developers to explicitly specify staleness bounds on each transaction in terms of absolute time (although Bernstein et al.'s model can generate these from error bounds when a value's maximum rate of change is known).
 
 The above techniques are relevant but largely orthogonal to our work:
-they provide techniques which could be used in an IPA datastore
+they provide techniques which could be used in IPA
 to trade off correctness in new ways. This work builds on those
 insights, introducing a new error tolerance mechanism, proposing
 ADT annotations rather than per-operation, but most importantly,
@@ -60,7 +59,7 @@ providing *consistency safety* via consistency types, which ensure
 that all possible cases are handled whenever the system adjusts
 consistency to meet performance targets. Previous systems gave some
 feedback to programs about achieved consistency, but did not provide
-facilities to ensure and help developers use the information
+facilities to ensure developers use the information
 correctly.
 
 

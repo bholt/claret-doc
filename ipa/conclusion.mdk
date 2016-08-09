@@ -8,6 +8,6 @@ how to adapt when conditions change and provide it with opportunities for optimi
 consistency safety, ensuring that all potential weak outcomes are
 handled, and allowing applications to make choices based on the
 accuracy of the values the system returns.  The policies, types and
-enforcement systems implemented in this work are only a sampling of
-the full range of possibilities within the framework of *Inconsistent,
+enforcement systems implemented in this work are a sample of
+what is possible within the framework of *Inconsistent,
 Performance-bound, and Approximate* types.
