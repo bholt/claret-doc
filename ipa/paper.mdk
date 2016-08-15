@@ -38,8 +38,6 @@ Colorizer: scala
 
 ~Notes: color=gray font-size=90% font-family=Lato-Light
 
-~a: .tex-tooltip
-
 
 p,ul,ol,li { replace="/\[(?:TODO|todo):\s*(.*?)\]/[\1]{#todo}/g" }
 
@@ -83,7 +81,6 @@ H1 { tex-cmd-outer-before="\phantomsection" }
 H2 { tex-cmd-outer-before="\phantomsection" }
 H3 { tex-cmd-outer-before="\phantomsection" }
 
-
 ~ TexRaw
 
 \setmainfont{Times}
@@ -93,15 +90,12 @@ H3 { tex-cmd-outer-before="\phantomsection" }
 \setlength{\pdfpageheight}{\paperheight}
 \setlength{\pdfpagewidth}{\paperwidth}
 
-\conferenceinfo{Submission to SoCC '16}{October, 2016, Santa Clara, CA, USA}
-\copyrightyear{2016}
-\copyrightdata{978-1-nnnn-nnnn-n/yy/mm}
-\doi{nnnnnnn.nnnnnnn}
+\copyrightyear{2016} 
+\conferenceinfo{SoCC '16}{October 05 - 07, 2016, Santa Clara, CA, USA}
+\copyrightdata{978-1-4503-4525-5/16/10}
+\doi{2987550.2987559}
 
-% Uncomment one of the following two, if you are not going for the 
-% traditional copyright transfer agreement.
-
-%\exclusivelicense                % ACM gets exclusive license to publish, 
+\exclusivelicense                % ACM gets exclusive license to publish, 
                                   % you retain copyright
 
 %\permissiontopublish             % ACM gets nonexclusive license to publish
