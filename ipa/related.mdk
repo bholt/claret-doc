@@ -22,13 +22,9 @@ ADTs.
 Some programming models
 allow users to express application correctness criteria
 directly.  In Quelea [@Sivaramakrishnan:15:Quelea], programmers write
-*contracts* to describe *visibility* and *ordering* constraints,
-independent of any particular consistency hierarchy, then the system selects the consistency level necessary for each
-operation.  In Indigo [@Balegas:15:Indigo], programmers write
+*contracts* to describe *visibility* and *ordering* constraints and the system selects the necessary consistency. In Indigo [@Balegas:15:Indigo], programmers write
 *invariants* over abstract state and annotate post-conditions on
-actions in terms of the abstract state. The system analyzes annotated
-programs and adds coordination logic to prevent invariant violations,
-using a reservation system to enforce numeric constraints. Neither
+actions in terms of the abstract state and the system adds coordination logic, employing reservations for numeric bounds. Neither
 Indigo nor Quelea, however, allow programmers to specify
 approximations or error tolerances, nor do they enforce any kind of
 performance bounds.
@@ -101,18 +97,12 @@ synchronization.
 **Types for distributed and secure systems.**
 *Convergent* (or *conflict-free*) *replicated data types* (CRDTs)
 [@Shapiro:SSS11:CRDT] are data types designed for eventual
-consistency. Similar to how IPA types express weakened semantics which
-allow for implementation on weak consistency, CRDTs guarantee that
-they will converge on eventual consistency by forcing all update
-operations to commute. CRDTs can be useful because they allow
+consistency that guarantee convergence by forcing all updates to commute. 
+CRDTs can be useful because they allow
 concurrent updates with meaningful semantics, but they are still only
 eventually (or causally) consistent, so users must still deal with
 temporary divergence and out-of-date reads, and they do not
-incorporate performance bounds or variable accuracy. Particularly
-relevant to IPA, the Bounded Counter CRDT [@Balegas:15:BoundedCounter]
-enforces hard limits on the global value of a counter in a way similar
-to reservations but less general; this design informed our own
-reservations system for error bounds.
+incorporate performance bounds or variable accuracy. The Bounded Counter CRDT [@Balegas:15:BoundedCounter] informed the design of our reservations for error bounds, but enforces global value bounds and does not bound uncertainty.
 Information flow tracking systems
 [@myers99:_jflow;@sabelfeld03:_languag_based_infor_flow_secur;@denning77:_certif],
 also use static type checking and dynamic analysis to enforce
