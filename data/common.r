@@ -21,14 +21,14 @@ out <- function(obj) write(obj, stdout())
 si.labels <- function(...) { function(x) gsub(" ", "", f2si(x,...)) }
 k.labels <- function(x) { x/1000 + 'k' }
 
-COMB <- "boosting+combining"
+COMB <- "boosting\n+combining"
 COMM <- "boosting"
 RW   <- "r/w locks"
 PH   <- "\n+phasing"
 ALL  <- "all"
 COMM_PH <- "boosting+phasing"
-BASE <- " (baseline)"
-NOTXN <- "without transactions"
+BASE <- "\n(baseline)"
+NOTXN <- "without\ntransactions"
 BETT <- "better "
 REDIS <- "redis"
 
@@ -407,7 +407,7 @@ phasing.linetype <- function(title="Phasing:", ...) {
 
 subset.modes <- function(d) subset(d, cc_ph %in% c(RW+BASE, RW+PH, COMM+PH, COMB+PH, NOTXN))
 
-cc_ph_scales <- function(name = 'Mode', guide = guide_legend(nrow = 7), ...) {
+cc_ph_scales <- function(name = 'Mode', guide = guide_legend(nrow = 5), ...) {
   colors <- c()
   colors[[RW+BASE]] <- c.gray
   colors[[RW+PH]] <- c.gray

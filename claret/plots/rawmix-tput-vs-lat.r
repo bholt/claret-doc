@@ -56,6 +56,7 @@ save(
   )
 , w=5, h=2.5)
 
+write.csv(ddply(d, .(cc_ph,x), summarize, throughput=mean(throughput)), file='rawmix-tput.csv')
 
 save(
   ggplot(subset(d), aes(
@@ -66,10 +67,23 @@ save(
   xlab('Clients')+ylab('Throughput (txn/s)')+
   stat_summary(geom='line', fun.y=mean)+
   stat_summary(geom='point', fun.y=mean)+  
-  scale_x_continuous(trans=log2_trans(), breaks=c(16,32,64,128,256,384))+
+  scale_x_continuous(breaks=c(16,64,128,256,384))+
+  scale_y_continuous(labels=function(x){ x/1000 + 'k' }, breaks=c(10000,20000,30000,40000,50000,60000,70000))+
   expand_limits(y=0)+
   cc_ph_scales()+
-  my_theme()
+  theme.mine()+
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    legend.key = element_rect(fill=NA, color=NA),
+    legend.text = element_text(lineheight=0.9),
+    legend.key.height = unit(40,'pt'),
+    legend.key.width = unit(20,'pt'),
+    legend.title.align = 0.5,
+    legend.margin = unit(0,'pt'),
+    legend.title = element_blank() 
+  )
 , 'rawmix-tput', w=5, h=3.5)
 
 # save(

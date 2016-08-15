@@ -1,0 +1,51 @@
+"","cc_ph","x","throughput"
+"1","without
+transactions",16,6329.40662758098
+"2","without
+transactions",64,25305.5393615006
+"3","without
+transactions",128,50519.0317784905
+"4","without
+transactions",256,72187.5871088855
+"5","without
+transactions",384,74551.179645594
+"6","boosting
++combining
++phasing",16,6333.08459165926
+"7","boosting
++combining
++phasing",64,25348.7893574279
+"8","boosting
++combining
++phasing",128,44624.7478235261
+"9","boosting
++combining
++phasing",256,47381.7321843468
+"10","boosting
++combining
++phasing",384,46732.9124206723
+"11","boosting
++phasing",16,6333.21821160196
+"12","boosting
++phasing",64,25348.0174608828
+"13","boosting
++phasing",128,43115.9983721147
+"14","boosting
++phasing",256,44614.1719444355
+"15","boosting
++phasing",384,43186.7337451218
+"16","boosting",16,6333.00892264333
+"17","boosting",64,25352.6968501127
+"18","boosting",128,28039.8286618478
+"19","boosting",256,24066.6222511728
+"20","boosting",384,21918.4134049089
+"21","r/w locks
+(baseline)",16,6333.47694618404
+"22","r/w locks
+(baseline)",64,17925.1460505818
+"23","r/w locks
+(baseline)",128,12460.1425486468
+"24","r/w locks
+(baseline)",256,9244.50942282684
+"25","r/w locks
+(baseline)",384,7447.16576225713
