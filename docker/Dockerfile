@@ -86,12 +86,14 @@ RUN cd /usr/local/share/fonts &&\
     unzip Lato2OFL.zip &&\
     rm -rf Lato2OFL.zip __MACOSX &&\
     fc-cache -v
-    
-    
 
 RUN apt-get install -y ruby-dev && gem install bibtex-ruby
 
 RUN apt-get install -y texlive-generic-extra
+
+# fix madoko fontspec loading to work with mathspec
+RUN sed -i.bak s/\{fontspec\}/[no-math]{fontspec}/g /usr/local/lib/node_modules/madoko/styles/css.sty &&\
+    sed -i.bak s/\{fontspec\}/[no-math]{fontspec}/g /usr/local/lib/node_modules/madoko/styles/madoko2.sty
 
 VOLUME /src
 WORKDIR /src
