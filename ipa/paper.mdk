@@ -90,12 +90,18 @@ H3 { tex-cmd-outer-before="\phantomsection" }
 \setlength{\pdfpageheight}{\paperheight}
 \setlength{\pdfpagewidth}{\paperwidth}
 
-\copyrightyear{2016} 
-\conferenceinfo{SoCC '16}{October 05 - 07, 2016, Santa Clara, CA, USA}
-\copyrightdata{978-1-4503-4525-5/16/10}
-\doi{2987550.2987559}
+\CopyrightYear{2016} 
+\setcopyright{acmlicensed}
+\conferenceinfo{SoCC '16,}{October 05 - 07, 2016, Santa Clara, CA, USA}
+\isbn{978-1-4503-4525-5/16/10}\acmPrice{\$15.00}
+\doi{http://dx.doi.org/10.1145/2987550.2987559}
 
-\exclusivelicense                % ACM gets exclusive license to publish, 
+%\copyrightyear{2016} 
+%\conferenceinfo{SoCC '16}{October 05 - 07, 2016, Santa Clara, CA, USA}
+%\copyrightdata{978-1-4503-4525-5/16/10}
+%\doi{2987550.2987559}
+
+%\exclusivelicense                % ACM gets exclusive license to publish, 
                                   % you retain copyright
 
 %\permissiontopublish             % ACM gets nonexclusive license to publish
