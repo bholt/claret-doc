@@ -6,7 +6,7 @@ email:       [Submission Type: Research]{font-size:small}
 Heading Base: 2
 Bib style:    plainnat
 Bibliography: refs.bib
-doc class:    [10pt,reprint]style/socc
+doc class:    [10pt]style/socc
 
 css:          style/style.css
 Logo: False
